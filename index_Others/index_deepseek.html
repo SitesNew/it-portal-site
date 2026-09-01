@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Учбово-методичний довідник ІТ</title>
+    <style>
+        /* ===== Загальні скидання та змінні ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg: #f8f9fa;
+            --bg-card: #ffffff;
+            --text: #1e2a3a;
+            --text-muted: #3d4f5f;
+            --accent: #0d6efd;
+            --accent-hover: #0b5ed7;
+            --border: #dde1e6;
+            --shadow: 0 4px 20px rgba(0,0,0,0.06);
+            --radius: 16px;
+            --transition: 0.3s ease;
+            --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+        body.dark {
+            --bg: #12171f;
+            --bg-card: #1e2835;
+            --text: #e8edf3;
+            --text-muted: #b0c0d0;
+            --border: #2c3848;
+            --shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            line-height: 1.6;
+            padding: 20px;
+            transition: background var(--transition), color var(--transition);
+        }
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* ===== Шапка ===== */
+        .header-top {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            background: var(--bg-card);
+            padding: 16px 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 28px;
+            border: 1px solid var(--border);
+        }
+        .logo h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+        .logo a {
+            text-decoration: none;
+            background: linear-gradient(135deg, var(--accent), #6f42c1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: opacity 0.2s;
+        }
+        .logo a:hover {
+            opacity: 0.8;
+        }
+        .logo small {
+            font-size: 0.75rem;
+            -webkit-text-fill-color: var(--text-muted);
+            background: none;
+            display: block;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+        }
+        .controls select, .controls button {
+            padding: 8px 14px;
+            border-radius: 40px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+        .controls select:hover, .controls button:hover {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: #fff;
+        }
+        .theme-toggle {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 8px 14px;
+            font-size: 1.2rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            border-color: var(--accent);
+        }
+
+        /* ===== ГОЛОВНЕ МЕНЮ (ГРУПИ ВИНЕСЕНО ОКРЕМО) ===== */
+        .main-nav {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 8px 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 28px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 12px;
+        }
+        .main-nav a {
+            color: var(--text);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .main-nav a:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        /* Групи в меню - як випадаючі */
+        .main-nav .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .main-nav .dropdown > a {
+            cursor: default;
+        }
+        .main-nav .dropdown-content {
+            display: none;
+            position: absolute;
+            background: var(--bg-card);
+            min-width: 240px;
+            max-height: 70vh;
+            overflow-y: auto;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+            border-radius: 12px;
+            padding: 8px 0;
+            z-index: 999;
+            border: 1px solid var(--border);
+            top: 100%;
+            left: 0;
+        }
+        .main-nav .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .main-nav .dropdown-content a {
+            display: block;
+            padding: 6px 20px;
+            white-space: nowrap;
+            border-radius: 0;
+            font-weight: 400;
+            font-size: 0.85rem;
+        }
+        .main-nav .dropdown-content a:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        /* ===== Картинка ===== */
+        .hero-img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+            background: var(--bg-card);
+            padding: 4px;
+        }
+
+        /* ===== Основний текст ===== */
+        .content-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 28px 30px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            margin-bottom: 28px;
+        }
+        .content-card h2 {
+            font-size: 1.8rem;
+            margin-top: 0.2rem;
+            margin-bottom: 0.6rem;
+        }
+        .content-card h3 {
+            font-size: 1.3rem;
+            margin-top: 1.8rem;
+            margin-bottom: 0.4rem;
+            color: var(--accent);
+        }
+        .content-card p {
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+        .content-card .highlight {
+            background: var(--bg);
+            padding: 14px 20px;
+            border-radius: 12px;
+            border-left: 5px solid var(--accent);
+            margin: 1.2rem 0;
+        }
+
+        /* ===== Сітка розділів на сторінці ===== */
+        .sections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+            margin-top: 12px;
+        }
+        .section-item {
+            background: var(--bg);
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+        .section-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+            border-color: var(--accent);
+        }
+        .section-item a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            width: 100%;
+        }
+        .section-item a:hover {
+            color: var(--accent);
+        }
+        .section-item .emoji {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        /* ===== Групи на сторінці ===== */
+        .group-title {
+            font-size: 1.5rem;
+            margin: 32px 0 12px 0;
+            padding-bottom: 6px;
+            border-bottom: 3px solid var(--accent);
+            display: inline-block;
+        }
+
+        /* ===== Підвал ===== */
+        .footer {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 28px 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            margin-top: 32px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        .footer .copy {
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        /* ===== Адаптив ===== */
+        @media (max-width: 700px) {
+            .header-top { flex-direction: column; align-items: stretch; }
+            .controls { justify-content: center; }
+            .main-nav { flex-direction: column; align-items: stretch; }
+            .main-nav .dropdown-content { position: static; max-height: none; }
+            .content-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- ===== ШАПКА ===== -->
+    <header class="header-top">
+        <div class="logo">
+            <h1><a href="index.html" title="На головну">💻 ІТ-Довідник</a></h1>
+            <small>Учбово-методичний портал</small>
+        </div>
+        <div class="controls">
+            <label for="langSelect" style="display:none;">Мова</label>
+            <select id="langSelect">
+                <option value="ua">🇺🇦 UA</option>
+                <option value="ru">🇷🇺 RU</option>
+                <option value="en">🇬🇧 EN</option>
+            </select>
+            <button class="theme-toggle" id="themeToggle" title="Змінити тему">🌓</button>
+        </div>
+    </header>
+
+    <!-- ===== ГОЛОВНЕ МЕНЮ (ГРУПИ — ОКРЕМІ ПУНКТИ) ===== -->
+    <nav class="main-nav">
+        <a href="index.html">🏠 Головна</a>
+
+        <!-- Група: Розробка -->
+        <div class="dropdown">
+            <a href="#">🛠 Розробка ▾</a>
+            <div class="dropdown-content">
+                <a href="design_patterns.html">🧩 Патерни проєктування</a>
+                <a href="developer_tools.html">🔧 Інструменти розробника</a>
+                <a href="weblang-directory.html">🌐 Довідник мов веб-програмування</a>
+                <a href="proglang-directory.html">📜 Довідник мов програмування (не для WEB)</a>
+                <a href="data-structures-algorithms.html">📐 Структури даних та алгоритми</a>
+                <a href="software-engineering-sdlc.html">📋 Основи програмної інженерії / SDLC</a>
+                <a href="software-testing-qa.html">🧪 Тестування ПЗ (QA / Testing)</a>
+                <a href="version-control-systems.html">📌 Системи контролю версій</a>
+                <a href="api-microservices-integrations.html">🔗 API, мікросервіси та інтеграції</a>
+                <a href="mobile-development.html">📱 Мобільна розробка</a>
+                <a href="ui-ux-design.html">🎨 UI/UX та дизайн інтерфейсів</a>
+                <a href="game-development.html">🎮 Розробка ігор</a>
+                <a href="compilers-interpreters.html">⚙️ Компілятори та інтерпретатори</a>
+                <a href="formal-methods.html">🧮 Формальні методи / Теорія обчислень</a>
+            </div>
+        </div>
+
+        <!-- Група: Дані та ШІ -->
+        <div class="dropdown">
+            <a href="#">📊 Дані & ШІ ▾</a>
+            <div class="dropdown-content">
+                <a href="data-science-bigdata.html">📈 Data Science, Big Data та аналітика</a>
+                <a href="machine-learning-ai.html">🤖 Машинне навчання та ШІ</a>
+                <a href="spr_subd.html">🗄️ Довідник СУБД</a>
+                <a href="spr_ai_servises.html">✨ Довідник сервісів Штучного Інтелекту</a>
+                <a href="search-engines.html">🔍 Пошукові системи</a>
+                <a href="seo-tools.html">📊 SEO-інструменти</a>
+            </div>
+        </div>
+
+        <!-- Група: Інфраструктура -->
+        <div class="dropdown">
+            <a href="#">☁️ Інфраструктура ▾</a>
+            <div class="dropdown-content">
+                <a href="architecture_it.html">🏛️ Архітектури ІТ</a>
+                <a href="cloud_virtualization.html">☁️ Хмари та віртуалізація</a>
+                <a href="networks_and_protocols.html">🌐 Мережі та протоколи</a>
+                <a href="spr_os.html">🖥️ Довідник операційних систем</a>
+                <a href="file_systems.html">📁 Файлові системи</a>
+                <a href="ports.html">🔌 Порти та інтерфейси</a>
+                <a href="hardware.html">🖨️ Класифікація комп'ютерних систем</a>
+                <a href="apparat.html">⚡ Апаратне забезпечення</a>
+                <a href="storage-devices.html">💾 Засоби збереження інформації</a>
+                <a href="devops-basics.html">🔄 Основи DevOps & CI/CD</a>
+                <a href="parallel-distributed-computing.html">⚡ Паралельні та розподілені обчислення</a>
+                <a href="legacy-mainframes.html">🏛️ Легасі-системи та Мейнфрейми</a>
+                <a href="internet-of-things.html">📡 Інтернет речей (IoT)</a>
+                <a href="blockchain-distributed-ledgers.html">🔗 Блокчейн та розподілені реєстри</a>
+                <a href="quantum-computing.html">⚛️ Квантові обчислення</a>
+                <a href="robotics.html">🤖 Робототехніка</a>
+            </div>
+        </div>
+
+        <!-- Група: Безпека -->
+        <div class="dropdown">
+            <a href="#">🔒 Безпека ▾</a>
+            <div class="dropdown-content">
+                <a href="cybersecurity.html">🛡️ Кібербезпека</a>
+            </div>
+        </div>
+
+        <!-- Група: Люди, проєкти, кар'єра -->
+        <div class="dropdown">
+            <a href="#">👥 Люди & Проєкти ▾</a>
+            <div class="dropdown-content">
+                <a href="it-project-management.html">📋 Управління ІТ-проєктами</a>
+                <a href="it-careers-specialties.html">💼 Кар'єра в ІТ / спеціальності</a>
+                <a href="it-and-business.html">🏢 ІТ та Бізнес-процеси</a>
+                <a href="accessibility.html">♿ Доступність (Accessibility)</a>
+            </div>
+        </div>
+
+        <!-- Група: Інше -->
+        <div class="dropdown">
+            <a href="#">🧩 Інше ▾</a>
+            <div class="dropdown-content">
+                <a href="history-computing.html">📜 Історія обчислювальної техніки</a>
+                <a href="history-programming-languages.html">📖 Історія мов програмування</a>
+                <a href="office_editors.html">📝 Текстові редактори та офісні програми</a>
+                <a href="social_networks.html">📱 Соціальні мережі</a>
+                <a href="it-glossary.html">📙 Глосарій термінів ІТ</a>
+                <a href="ar-vr-metaverse.html">🥽 AR/VR / метавсесвіти</a>
+            </div>
+        </div>
+
+        <!-- НОВИНИ — окремий пункт -->
+        <a href="it-news.html">📰 Новини</a>
+
+        <!-- КОНТАКТИ — ведуть на підвал -->
+        <a href="#footer">📧 Контакти</a>
+    </nav>
+
+    <!-- ===== КАРТИНКА ===== -->
+    <img src="rozvitok_it.png" alt="Розвиток ІТ" class="hero-img" onerror="this.style.display='none'">
+
+    <!-- ===== ОСНОВНИЙ ТЕКСТ ===== -->
+    <div class="content-card">
+        <h2>📘 Що таке Інформаційні Технології?</h2>
+        <p><strong>Інформаційні технології (ІТ)</strong> — це сукупність методів, процесів і засобів для збирання, зберігання, обробки та передачі інформації за допомогою комп'ютерів і телекомунікацій. Це не просто «комп'ютери» — це нервова система сучасної цивілізації, що поєднує мільярди пристроїв та людей у єдине цифрове середовище.</p>
+
+        <h3>❓ Для чого потрібні?</h3>
+        <p>Від лікування пацієнтів і запуску супутників до управління фінансами та навчання дітей. ІТ автоматизують рутину, аналізують величезні масиви даних, з'єднують людей через континенти та відкривають можливості, про які ми не мріяли пів століття тому. Без ІТ сучасна медицина, наука, транспорт і економіка просто неможливі.</p>
+
+        <h3>📍 Місце в житті</h3>
+        <p>Сьогодні ІТ проникли в кожну сферу — медицину, транспорт, сільське господарство, мистецтво, політику. Смартфон у кишені, безконтактна оплата, відеозв'язок з рідними, прогноз погоди — усе це результат праці мільйонів фахівців, що розвивали технології десятиліттями. ІТ перетворилися з привілею обраних на базову інфраструктуру, як електрика чи водопостачання.</p>
+
+        <div class="highlight">
+            <h3 style="margin-top:0; color:var(--text);">🚀 Перспективи та майбутнє</h3>
+            <p>Інформаційні технології вже не лише «обслуговують» бізнес і побут — вони стають інфраструктурою суспільства: від охорони здоров'я й освіти до енергетики, транспорту та безпеки. У найближчі роки розвиток ІТ визначатимуть кілька взаємопов'язаних напрямів.</p>
+            <p><strong>🧠 Штучний інтелект</strong> — переходить від експериментів до повсякденного інструменту: генерація коду й контенту, аналітика, персоналізація сервісів, автономні агенти. Зростає попит на якісні дані, пояснюваність рішень і етичні рамки.</p>
+            <p><strong>☁️ Хмара, край (edge) і розподілені системи</strong> — забезпечують масштаб і швидкість: обчислення ближче до користувача й датчиків зменшують затримки, гібридні архітектури стають нормою.</p>
+            <p><strong>🔐 Кібербезпека</strong> — виходить на перший план: що більше систем онлайн, то вища ціна помилки. Захист ідентичності, ланцюгів постачання ПЗ і критичної інфраструктури — обов'язкова частина будь-якої ІТ-стратегії.</p>
+            <p><strong>📱 Нові інтерфейси й платформи</strong> — мобільність, голосові й мультимодальні інтерфейси, доповнена реальність, інтернет речей — змінюють спосіб взаємодії людини з цифровим світом.</p>
+            <p><strong>❤️ Людський вимір</strong> — залишається вирішальним: потрібні фахівці, які поєднують техніку з розумінням домену, а також цифрова грамотність суспільства. Майбутнє ІТ — не лише швидші процесори й «розумніші» моделі, а й відповідальні, доступні та стійкі системи, що підсилюють людину, а не замінюють її сліпо.</p>
+        </div>
+    </div>
+
+    <!-- ===== РОЗДІЛИ НА СТОРІНЦІ ===== -->
+    <h2 style="margin-top:32px;">📂 Розділи порталу</h2>
+    <p style="color:var(--text-muted); margin-bottom:12px;">Натисніть на назву, щоб перейти до детального матеріалу.</p>
+
+    <h3 class="group-title">🛠 Розробка</h3>
+    <div class="sections-grid">
+        <div class="section-item"><a href="design_patterns.html"><span class="emoji">🧩</span>Патерни проєктування</a></div>
+        <div class="section-item"><a href="developer_tools.html"><span class="emoji">🔧</span>Інструменти розробника</a></div>
+        <div class="section-item"><a href="weblang-directory.html"><span class="emoji">🌐</span>Довідник мов веб-програмування</a></div>
+        <div class="section-item"><a href="proglang-directory.html"><span class="emoji">📜</span>Довідник мов програмування (не для WEB)</a></div>
+        <div class="section-item"><a href="data-structures-algorithms.html"><span class="emoji">📐</span>Структури даних та алгоритми</a></div>
+        <div class="section-item"><a href="software-engineering-sdlc.html"><span class="emoji">📋</span>Основи програмної інженерії / SDLC</a></div>
+        <div class="section-item"><a href="software-testing-qa.html"><span class="emoji">🧪</span>Тестування ПЗ (QA / Testing)</a></div>
+        <div class="section-item"><a href="version-control-systems.html"><span class="emoji">📌</span>Системи контролю версій</a></div>
+        <div class="section-item"><a href="api-microservices-integrations.html"><span class="emoji">🔗</span>API, мікросервіси та інтеграції</a></div>
+        <div class="section-item"><a href="mobile-development.html"><span class="emoji">📱</span>Мобільна розробка</a></div>
+        <div class="section-item"><a href="ui-ux-design.html"><span class="emoji">🎨</span>UI/UX та дизайн інтерфейсів</a></div>
+        <div class="section-item"><a href="game-development.html"><span class="emoji">🎮</span>Розробка ігор</a></div>
+        <div class="section-item"><a href="compilers-interpreters.html"><span class="emoji">⚙️</span>Компілятори та інтерпретатори</a></div>
+        <div class="section-item"><a href="formal-methods.html"><span class="emoji">🧮</span>Формальні методи / Теорія обчислень</a></div>
+    </div>
+
+    <h3 class="group-title">📊 Дані & Штучний інтелект</h3>
+    <div class="sections-grid">
+        <div class="section-item"><a href="data-science-bigdata.html"><span class="emoji">📈</span>Data Science, Big Data та аналітика</a></div>
+        <div class="section-item"><a href="machine-learning-ai.html"><span class="emoji">🤖</span>Машинне навчання та ШІ</a></div>
+        <div class="section-item"><a href="spr_subd.html"><span class="emoji">🗄️</span>Довідник СУБД</a></div>
+        <div class="section-item"><a href="spr_ai_servises.html"><span class="emoji">✨</span>Довідник сервісів Штучного Інтелекту</a></div>
+        <div class="section-item"><a href="search-engines.html"><span class="emoji">🔍</span>Пошукові системи</a></div>
+        <div class="section-item"><a href="seo-tools.html"><span class="emoji">📊</span>SEO-інструменти</a></div>
+    </div>
+
+    <h3 class="group-title">☁️ Інфраструктура</h3>
+    <div class="sections-grid">
+        <div class="section-item"><a href="architecture_it.html"><span class="emoji">🏛️</span>Архітектури ІТ</a></div>
+        <div class="section-item"><a href="cloud_virtualization.html"><span class="emoji">☁️</span>Хмари та віртуалізація</a></div>
+        <div class="section-item"><a href="networks_and_protocols.html"><span class="emoji">🌐</span>Мережі та протоколи</a></div>
+        <div class="section-item"><a href="spr_os.html"><span class="emoji">🖥️</span>Довідник операційних систем</a></div>
+        <div class="section-item"><a href="file_systems.html"><span class="emoji">📁</span>Файлові системи</a></div>
+        <div class="section-item"><a href="ports.html"><span class="emoji">🔌</span>Порти та інтерфейси</a></div>
+        <div class="section-item"><a href="hardware.html"><span class="emoji">🖨️</span>Класифікація комп'ютерних систем</a></div>
+        <div class="section-item"><a href="apparat.html"><span class="emoji">⚡</span>Апаратне забезпечення</a></div>
+        <div class="section-item"><a href="storage-devices.html"><span class="emoji">💾</span>Засоби збереження інформації</a></div>
+        <div class="section-item"><a href="devops-basics.html"><span class="emoji">🔄</span>Основи DevOps & CI/CD</a></div>
+        <div class="section-item"><a href="parallel-distributed-computing.html"><span class="emoji">⚡</span>Паралельні та розподілені обчислення</a></div>
+        <div class="section-item"><a href="legacy-mainframes.html"><span class="emoji">🏛️</span>Легасі-системи та Мейнфрейми</a></div>
+        <div class="section-item"><a href="internet-of-things.html"><span class="emoji">📡</span>Інтернет речей (IoT)</a></div>
+        <div class="section-item"><a href="blockchain-distributed-ledgers.html"><span class="emoji">🔗</span>Блокчейн та розподілені реєстри</a></div>
+        <div class="section-item"><a href="quantum-computing.html"><span class="emoji">⚛️</span>Квантові обчислення</a></div>
+        <div class="section-item"><a href="robotics.html"><span class="emoji">🤖</span>Робототехніка</a></div>
+    </div>
+
+    <h3 class="group-title">🔒 Безпека</h3>
+    <div class="sections-grid">
+        <div class="section-item"><a href="cybersecurity.html"><span class="emoji">🛡️</span>Кібербезпека</a></div>
+    </div>
+
+    <h3 class="group-title">👥 Люди, проєкти & кар'єра</h3>
+    <div class="sections-grid">
+        <div class="section-item"><a href="it-project-management.html"><span class="emoji">📋</span>Управління ІТ-проєктами</a></div>
+        <div class="section-item"><a href="it-careers-specialties.html"><span class="emoji">💼</span>Кар'єра в ІТ / спеціальності</a></div>
+        <div class="section-item"><a href="it-and-business.html"><span class="emoji">🏢</span>ІТ та Бізнес-процеси</a></div>
+        <div class="section-item"><a href="accessibility.html"><span class="emoji">♿</span>Доступність (Accessibility)</a></div>
+    </div>
+
+    <h3 class="group-title">🧩 Інше</h3>
+    <div class="sections-grid">
+        <div class="section-item"><a href="history-computing.html"><span class="emoji">📜</span>Історія обчислювальної техніки</a></div>
+        <div class="section-item"><a href="history-programming-languages.html"><span class="emoji">📖</span>Історія мов програмування</a></div>
+        <div class="section-item"><a href="office_editors.html"><span class="emoji">📝</span>Текстові редактори та офісні програми</a></div>
+        <div class="section-item"><a href="social_networks.html"><span class="emoji">📱</span>Соціальні мережі</a></div>
+        <div class="section-item"><a href="it-glossary.html"><span class="emoji">📙</span>Глосарій термінів ІТ</a></div>
+        <div class="section-item"><a href="ar-vr-metaverse.html"><span class="emoji">🥽</span>AR/VR / метавсесвіти</a></div>
+    </div>
+
+    <!-- ===== ПІДВАЛ ===== -->
+    <footer class="footer" id="footer">
+        <div class="copy">
+            Учбово-методичний довідник : "Що таке Інформаційні Технології ?"
+            <br>
+            <span id="copyrightYear"></span>
+        </div>
+        <div style="margin:10px 0;">
+            E-mail:&nbsp;&nbsp;&nbsp; <a href="mailto:_pvi@ukr.net" target="_blank">_pvi@ukr.net</a>
+        </div>
+        <div>
+            Всі матеріали, надані на цьому інформаційному ресурсі призначені ВИКЛЮЧНО з ОЗНАЙОМЧОЮ, НАВЧАЛЬНОЮ та ОСВІТНЬОЮ МЕТОЮ,
+            <br>адміністрація ресурсу не претендує на їх авторство и не несе відповідальності на їхній зміст.
+            <br>Створено з допомогою різних Сервісів Штучного Інтелекту
+        </div>
+    </footer>
+
+</div>
+
+<!-- ===== JavaScript ===== -->
+<script>
+    (function setCopyright() {
+        const now = new Date();
+        const year = now.getFullYear();
+        document.getElementById('copyrightYear').innerHTML = `Copyright © 2025 - ${year} рік.`;
+    })();
+
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', function() {
+        document.body.classList.toggle('dark');
+        this.textContent = document.body.classList.contains('dark') ? '☀️' : '🌓';
+    });
+
+    document.getElementById('langSelect').addEventListener('change', function(e) {
+        const lang = e.target.value;
+        document.documentElement.lang = lang;
+        let langName = { ua:'українську', ru:'російську', en:'англійську' }[lang] || 'українську';
+        alert(`Мову змінено на ${langName}. (Текст поки що українською, ви можете додати переклади)`);
+    });
+</script>
+
+</body>
+</html>

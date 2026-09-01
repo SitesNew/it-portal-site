@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-uk="Архітектури ІТ" data-ru="Архитектуры ИТ" data-en="IT Architectures">Архітектури ІТ</title>
+<style>
+:root {
+  --bg-gradient-start: #0f0c29; --bg-gradient-mid: #302b63; --bg-gradient-end: #24243e;
+  --text-primary: #e0e0e0; --text-secondary: #888; --text-muted: #666;
+  --accent-cyan: #00d4ff; --accent-red: #ff6b6b; --accent-yellow: #ffd93d;
+  --accent-green: #6bcb77; --accent-blue: #4d96ff; --accent-purple: #9b59b6;
+  --accent-orange: #e67e22; --accent-gray: #95a5a6;
+  --card-bg: rgba(255,255,255,0.05); --card-border: rgba(255,255,255,0.08);
+  --header-bg: rgba(0,0,0,0.4); --nav-bg: rgba(0,0,0,0.25);
+  --tip-bg: rgba(0,212,255,0.1); --tip-border: #00d4ff;
+  --code-bg: rgba(0,0,0,0.3); --shadow: rgba(0,212,255,0.1);
+}
+[data-theme="light"] {
+  --bg-gradient-start: #f0f2f5; --bg-gradient-mid: #e4e7ec; --bg-gradient-end: #d9dce5;
+  --text-primary: #1a1a2e; --text-secondary: #555; --text-muted: #888;
+  --accent-cyan: #0066cc; --accent-red: #cc3333; --accent-yellow: #cc9900;
+  --accent-green: #228b22; --accent-blue: #1a5276; --accent-purple: #7d3c98;
+  --accent-orange: #d35400; --accent-gray: #5d6d7e;
+  --card-bg: rgba(255,255,255,0.7); --card-border: rgba(0,0,0,0.1);
+  --header-bg: rgba(255,255,255,0.8); --nav-bg: rgba(255,255,255,0.6);
+  --tip-bg: rgba(0,102,204,0.1); --tip-border: #0066cc;
+  --code-bg: rgba(0,0,0,0.05); --shadow: rgba(0,0,0,0.1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  background: linear-gradient(135deg,var(--bg-gradient-start),var(--bg-gradient-mid),var(--bg-gradient-end));
+  color:var(--text-primary); min-height:100vh; line-height:1.7; transition:background 0.5s,color 0.5s;
+}
+.header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:15px 30px; background:var(--header-bg); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--card-border); position:sticky; top:0; z-index:1000; transition:background 0.5s;
+}
+.home-link { color:var(--accent-cyan); text-decoration:none; font-size:1.1rem; font-weight:600; transition:color 0.3s; display:flex; align-items:center; gap:8px; }
+.home-link:hover { color:var(--accent-red); }
+.home-link::before { content:"\2190"; font-size:1.2rem; }
+.page-name { font-size:1.1rem; font-weight:600; color:var(--accent-cyan); margin-left:15px; padding-left:15px; border-left:2px solid var(--card-border); transition:color 0.3s; }
+.header-controls { display:flex; align-items:center; gap:15px; }
+.theme-toggle { background:var(--card-bg); border:1px solid var(--card-border); border-radius:30px; padding:5px 15px; cursor:pointer; font-size:1.2rem; transition:all 0.3s; color:var(--text-primary); }
+.theme-toggle:hover { transform:scale(1.1); border-color:var(--accent-cyan); }
+.lang-switcher { display:flex; gap:8px; }
+.lang-btn { background:var(--card-bg); border:1px solid var(--card-border); color:var(--text-primary); padding:6px 14px; border-radius:20px; cursor:pointer; font-size:0.85rem; transition:all 0.3s; text-decoration:none; font-weight:500; }
+.lang-btn:hover,.lang-btn.active { background:var(--accent-cyan); color:#fff; border-color:var(--accent-cyan); }
+.nav-menu {
+  display:flex; justify-content:center; gap:4px; padding:12px 20px; background:var(--nav-bg);
+  border-bottom:1px solid var(--card-border); flex-wrap:wrap; transition:background 0.5s;
+  position:sticky; top:58px; z-index:999; backdrop-filter:blur(8px);
+}
+.nav-menu a { color:var(--text-secondary); text-decoration:none; padding:7px 14px; border-radius:8px; transition:all 0.3s; font-size:0.85rem; white-space:nowrap; }
+.nav-menu a:hover { color:var(--accent-cyan); background:rgba(0,212,255,0.1); }
+.nav-menu a.active { color:var(--accent-cyan); background:rgba(0,212,255,0.15); font-weight:600; }
+.main-content { max-width:1100px; margin:0 auto; padding:40px 30px 60px; }
+.page-hero { text-align:center; padding:30px 20px 5px; }
+.page-hero .hero-icon { font-size:3.5rem; margin-bottom:8px; animation:float 3s ease-in-out infinite; }
+.page-hero .hero-tagline { font-size:1.15rem; color:var(--text-secondary); font-style:italic; max-width:700px; margin:0 auto; line-height:1.5; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+.page-title { text-align:center; font-size:2.4rem; margin-bottom:10px; background:linear-gradient(90deg,var(--accent-cyan),var(--accent-red),var(--accent-yellow)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.page-subtitle { text-align:center; color:var(--text-secondary); font-size:1.1rem; margin-bottom:50px; }
+.section { background:var(--card-bg); border:1px solid var(--card-border); border-radius:16px; padding:30px; margin-bottom:30px; transition:transform 0.3s,box-shadow 0.3s,background 0.5s,border-color 0.5s; scroll-margin-top:120px; }
+.section:hover { transform:translateY(-3px); box-shadow:0 10px 40px var(--shadow); }
+.section h2 { color:var(--accent-cyan); font-size:1.5rem; margin-bottom:20px; display:flex; align-items:center; gap:12px; }
+.section h2 .icon { font-size:1.8rem; }
+.section h3 { color:var(--accent-yellow); font-size:1.15rem; margin:25px 0 12px; }
+.section h4 { color:var(--accent-orange); font-size:1.05rem; margin:20px 0 10px; }
+.section p { margin-bottom:12px; text-align:justify; }
+.section ul,.section ol { margin-left:25px; margin-bottom:15px; }
+.section li { margin-bottom:8px; }
+.section li::marker { color:var(--accent-cyan); }
+.arch-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px; margin-top:20px; }
+.arch-card { background:var(--code-bg); border:1px solid var(--card-border); border-radius:12px; padding:20px; transition:all 0.3s; }
+.arch-card:hover { border-color:var(--accent-cyan); }
+.arch-card h4 { color:var(--accent-red); font-size:1.1rem; margin-bottom:10px; }
+.arch-card p { font-size:0.9rem; color:var(--text-secondary); text-align:left; margin-bottom:0; }
+.vn-diagram { display:flex; flex-direction:column; gap:4px; margin:20px 0; max-width:600px; }
+.vn-block { padding:12px 20px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; font-weight:500; color:#fff; }
+.vn-block span:first-child { font-weight:700; }
+.vn-block span:last-child { font-size:0.85rem; opacity:0.9; }
+.cpu { background:linear-gradient(90deg,#ff6b6b,#ee5a5a); }
+.mem { background:linear-gradient(90deg,#4d96ff,#3d85ee); }
+.io { background:linear-gradient(90deg,#6bcb77,#5ab865); }
+.bus { background:linear-gradient(90deg,#ffd93d,#e6c237); color:#222; }
+.tip { background:var(--tip-bg); border-left:4px solid var(--tip-border); padding:15px 20px; border-radius:0 8px 8px 0; margin:20px 0; font-size:0.95rem; transition:background 0.5s; }
+.tip strong { color:var(--accent-cyan); }
+.comparison-table { width:100%; border-collapse:collapse; margin:15px 0; font-size:0.95rem; }
+.comparison-table th,.comparison-table td { padding:12px 15px; text-align:left; border-bottom:1px solid var(--card-border); }
+.comparison-table th { background:var(--code-bg); color:var(--accent-cyan); font-weight:600; }
+.comparison-table tr:hover { background:rgba(0,212,255,0.03); }
+.footer { text-align:center; padding:30px; background:var(--header-bg); border-top:1px solid var(--card-border); color:var(--text-muted); font-size:0.9rem; transition:background 0.5s; }
+.footer a { color:var(--accent-cyan); text-decoration:none; }
+code { background:var(--code-bg); padding:2px 6px; border-radius:4px; font-family:'Consolas',monospace; font-size:0.9em; }
+@media(max-width:768px){
+  .header { flex-direction:column; gap:12px; padding:12px 15px; }
+  .header-controls { gap:10px; }
+  .page-name { font-size:0.95rem; margin-left:10px; padding-left:10px; }
+  .page-title { font-size:1.7rem; }
+  .page-hero .hero-icon{font-size:2.8rem} .page-hero .hero-tagline{font-size:1rem}
+  .section { padding:20px; scroll-margin-top:150px; }
+  .nav-menu { gap:3px; padding:8px 10px; top:90px; }
+  .nav-menu a { padding:5px 10px; font-size:0.78rem; }
+  .vn-block { flex-direction:column; align-items:flex-start; gap:4px; }
+  .comparison-table { font-size:0.85rem; }
+  .comparison-table th,.comparison-table td { padding:8px 10px; }
+}
+</style>
+<base target="_blank">
+</head>
+<body>
+
+<header class="header">
+<a href="index.html" class="home-link" target="_self"><span data-uk="Головна сторінка" data-ru="Главная страница" data-en="Home page">Головна сторінка</span></a>
+<span class="page-name" data-uk="Архітектури ІТ" data-ru="Архитектуры ИТ" data-en="IT Architectures">Архітектури ІТ</span>
+<div class="header-controls">
+<button class="theme-toggle" onclick="toggleTheme()" title="Switch theme">&#127769;</button>
+<div class="lang-switcher">
+<button class="lang-btn active" onclick="setLang('uk')">UK</button>
+<button class="lang-btn" onclick="setLang('ru')">RU</button>
+<button class="lang-btn" onclick="setLang('en')">EN</button>
+</div>
+</div>
+</header>
+
+<nav class="nav-menu">
+<a href="#intro" target="_self" data-uk="Вступ" data-ru="Введение" data-en="Intro">Вступ</a>
+<a href="#classic" target="_self" data-uk="Класичні" data-ru="Классические" data-en="Classic">Класичні</a>
+<a href="#monolith" target="_self" data-uk="Моноліт" data-ru="Монолит" data-en="Monolith">Моноліт</a>
+<a href="#microservices" target="_self" data-uk="Мікросервіси" data-ru="Микросервисы" data-en="Microservices">Мікросервіси</a>
+<a href="#serverless" target="_self" data-uk="Serverless" data-ru="Serverless" data-en="Serverless">Serverless</a>
+<a href="#event-driven" target="_self" data-uk="Event-driven" data-ru="Event-driven" data-en="Event-driven">Event-driven</a>
+<a href="#microfrontends" target="_self" data-uk="Мікрофронтенди" data-ru="Микрофронтенды" data-en="Microfrontends">Мікрофронтенди</a>
+<a href="#service-mesh" target="_self" data-uk="Service Mesh" data-ru="Service Mesh" data-en="Service Mesh">Service Mesh</a>
+<a href="#comparison" target="_self" data-uk="Порівняння" data-ru="Сравнение" data-en="Comparison">Порівняння</a>
+<a href="#summary" target="_self" data-uk="Підсумок" data-ru="Итог" data-en="Summary">Підсумок</a>
+</nav>
+
+<main class="main-content">
+<div class="page-hero">
+  <div class="hero-icon">&#127959;</div>
+  <div class="hero-tagline" data-uk="Від фон Неймана та Гарварда до сучасних мікросервісів, serverless та event-driven систем" data-ru="От фон Неймана и Гарварда до современных микросервисов, serverless и event-driven систем" data-en="From von Neumann and Harvard to modern microservices, serverless and event-driven systems">Від фон Неймана та Гарварда до сучасних мікросервісів, serverless та event-driven систем</div>
+</div>
+
+<h1 class="page-title" data-uk="Архітектури ІТ" data-ru="Архитектуры ИТ" data-en="IT Architectures">Архітектури ІТ</h1>
+<p class="page-subtitle" data-uk="Фундаментальні та сучасні підходи до проєктування програмних і апаратних систем" data-ru="Фундаментальные и современные подходы к проектированию программных и аппаратных систем" data-en="Fundamental and modern approaches to designing software and hardware systems">Фундаментальні та сучасні підходи до проєктування програмних і апаратних систем</p>
+
+<section class="section" id="intro">
+<h2><span class="icon">&#127959;</span> <span data-uk="Що таке архітектура ІТ?" data-ru="Что такое архитектура ИТ?" data-en="What is IT architecture?">Що таке архітектура ІТ?</span></h2>
+<p data-uk="Архітектура ІТ — це концептуальна модель, яка визначає структуру, компоненти, інтерфейси та принципи взаємодії елементів інформаційної системи. Вона охоплює як апаратне забезпечення (процесори, пам'ять, шини), так і програмне (додатки, сервіси, бази даних). Правильно обрана архітектура визначає масштабованість, продуктивність, надійність та вартість підтримки системи." data-ru="Архитектура ИТ — это концептуальная модель, определяющая структуру, компоненты, интерфейсы и принципы взаимодействия элементов информационной системы. Она охватывает как аппаратное обеспечение (процессоры, память, шины), так и программное (приложения, сервисы, базы данных). Правильно выбранная архитектура определяет масштабируемость, производительность, надёжность и стоимость поддержки системы." data-en="IT architecture is a conceptual model that defines the structure, components, interfaces and interaction principles of an information system's elements. It covers both hardware (processors, memory, buses) and software (applications, services, databases). The right architecture determines scalability, performance, reliability and maintenance cost.">Архітектура ІТ — це концептуальна модель, яка визначає структуру, компоненти, інтерфейси та принципи взаємодії елементів інформаційної системи. Вона охоплює як апаратне забезпечення (процесори, пам'ять, шини), так і програмне (додатки, сервіси, бази даних). Правильно обрана архітектура визначає масштабованість, продуктивність, надійність та вартість підтримки системи.</p>
+<p data-uk="Історія архітектур почалася з фундаментальних моделей фон Неймана (1945) та Гарварда (1937), еволюціонувала через монолітні додатки (1980-2000-і), сервісно-орієнтовану архітектуру SOA (2000-і), і досягла сучасних підходів: мікросервіси, serverless, event-driven, мікрофронтенди та service mesh. Кожен етап вирішував проблеми попереднього: масштабованість, гнучкість, швидкість розгортання та відмовостійкість." data-ru="История архитектур началась с фундаментальных моделей фон Неймана (1945) и Гарварда (1937), эволюционировала через монолитные приложения (1980-2000-е), сервисно-ориентированную архитектуру SOA (2000-е), и достигла современных подходов: микросервисы, serverless, event-driven, микрофронтенды и service mesh. Каждый этап решал проблемы предыдущего: масштабируемость, гибкость, скорость развёртывания и отказоустойчивость." data-en="The history of architectures began with the fundamental von Neumann (1945) and Harvard (1937) models, evolved through monolithic applications (1980s-2000s), service-oriented architecture SOA (2000s), and reached modern approaches: microservices, serverless, event-driven, microfrontends and service mesh. Each stage solved the problems of the previous one: scalability, flexibility, deployment speed and fault tolerance.">Історія архітектур почалася з фундаментальних моделей фон Неймана (1945) та Гарварда (1937), еволюціонувала через монолітні додатки (1980-2000-і), сервісно-орієнтовану архітектуру SOA (2000-і), і досягла сучасних підходів: мікросервіси, serverless, event-driven, мікрофронтенди та service mesh. Кожен етап вирішував проблеми попереднього: масштабованість, гнучкість, швидкість розгортання та відмовостійкість.</p>
+</section>
+
+<section class="section" id="classic">
+<h2><span class="icon">&#128295;</span> <span data-uk="Класичні апаратні архітектури" data-ru="Классические аппаратные архитектуры" data-en="Classic Hardware Architectures">Класичні апаратні архітектури</span></h2>
+
+<h3>&#128313; <span data-uk="Архітектура фон Неймана (Princeton)" data-ru="Архитектура фон Неймана (Princeton)" data-en="Von Neumann Architecture (Princeton)">Архітектура фон Неймана (Princeton)</span></h3>
+<p data-uk="Запропонована Джоном фон Нейманом у 1945 році в доповіді «First Draft of a Report on the EDVAC». Це фундаментальна модель комп'ютера, що використовується досі в більшості процесорів (x86, ARM). Її ключова особливість — спільна шина для даних і команд." data-ru="Предложена Джоном фон Нейманом в 1945 году в докладе «First Draft of a Report on the EDVAC». Это фундаментальная модель компьютера, используемая до сих пор в большинстве процессоров (x86, ARM). Её ключевая особенность — общая шина для данных и команд." data-en="Proposed by John von Neumann in 1945 in the report 'First Draft of a Report on the EDVAC'. This is the fundamental computer model still used in most processors (x86, ARM). Its key feature is a shared bus for data and instructions.">Запропонована Джоном фон Нейманом у 1945 році в доповіді «First Draft of a Report on the EDVAC». Це фундаментальна модель комп'ютера, що використовується досі в більшості процесорів (x86, ARM). Її ключова особливість — спільна шина для даних і команд.</p>
+<div class="vn-diagram">
+<div class="vn-block cpu"><span data-uk="CPU (Процесор)" data-ru="CPU (Процессор)" data-en="CPU (Processor)">CPU (Процесор)</span><span>ALU + CU + Регістри</span></div>
+<div class="vn-block bus"><span data-uk="Системна шина" data-ru="Системная шина" data-en="System Bus">Системна шина</span><span data-uk="Адреса + Дані + Керування" data-ru="Адрес + Данные + Управление" data-en="Address + Data + Control">Адреса + Дані + Керування</span></div>
+<div class="vn-block mem"><span data-uk="Пам'ять (RAM)" data-ru="Память (RAM)" data-en="Memory (RAM)">Пам'ять (RAM)</span><span data-uk="Команди + Дані разом" data-ru="Команды + Данные вместе" data-en="Instructions + Data together">Команди + Дані разом</span></div>
+<div class="vn-block io"><span data-uk="Введення/Виведення" data-ru="Ввод/Вывод" data-en="Input/Output">Введення/Виведення</span><span data-uk="Клавіатура, дисплей, диск" data-ru="Клавиатура, дисплей, диск" data-en="Keyboard, display, disk">Клавіатура, дисплей, диск</span></div>
+</div>
+<ul>
+<li data-uk="Принципи: програма зберігається в пам'яті (stored-program), послідовне виконання команд, двійкова система числення, адресація пам'яті." data-ru="Принципы: программа хранится в памяти (stored-program), последовательное выполнение команд, двоичная система счисления, адресация памяти." data-en="Principles: stored-program concept, sequential instruction execution, binary number system, memory addressing.">Принципи: програма зберігається в пам'яті (stored-program), послідовне виконання команд, двійкова система числення, адресація пам'яті.</li>
+<li data-uk="Вузьке місце (bottleneck): через спільну шину процесор не може одночасно читати команду і дані — це обмежує продуктивність (von Neumann bottleneck)." data-ru="Узкое место (bottleneck): из-за общей шины процессор не может одновременно читать команду и данные — это ограничивает производительность (von Neumann bottleneck)." data-en="Bottleneck: because of the shared bus, the processor cannot read an instruction and data simultaneously — this limits performance (von Neumann bottleneck).">Вузьке місце (bottleneck): через спільну шину процесор не може одночасно читати команду і дані — це обмежує продуктивність (von Neumann bottleneck).</li>
+<li data-uk="Застосування: персональні комп'ютери, сервери, смартфони, вбудовані системи." data-ru="Применение: персональные компьютеры, серверы, смартфоны, встроенные системы." data-en="Applications: personal computers, servers, smartphones, embedded systems.">Застосування: персональні комп'ютери, сервери, смартфони, вбудовані системи.</li>
+</ul>
+
+<h3>&#128313; <span data-uk="Архітектура Гарварда" data-ru="Архитектура Гарварда" data-en="Harvard Architecture">Архітектура Гарварда</span></h3>
+<p data-uk="Розроблена Говардом Ейкеном у Гарвардському університеті (1937-1944) для комп'ютера Mark I. Головна відмінність — роздільні шини та пам'ять для команд і даних, що дозволяє паралельний доступ." data-ru="Разработана Говардом Эйкеном в Гарвардском университете (1937-1944) для компьютера Mark I. Главное отличие — раздельные шины и память для команд и данных, что позволяет параллельный доступ." data-en="Developed by Howard Aiken at Harvard University (1937-1944) for the Mark I computer. The main difference is separate buses and memory for instructions and data, enabling parallel access.">Розроблена Говардом Ейкеном у Гарвардському університеті (1937-1944) для комп'ютера Mark I. Головна відмінність — роздільні шини та пам'ять для команд і даних, що дозволяє паралельний доступ.</p>
+<ul>
+<li data-uk="Пам'ять програм (Program Memory) та пам'ять даних (Data Memory) — фізично розділені." data-ru="Память програм (Program Memory) и память данных (Data Memory) — физически разделены." data-en="Program Memory and Data Memory are physically separate.">Пам'ять програм (Program Memory) та пам'ять даних (Data Memory) — фізично розділені.</li>
+<li data-uk="Процесор може одночасно отримувати команду і дані — вища продуктивність на тактовій частоті." data-ru="Процессор может одновременно получать команду и данные — более высокая производительность на тактовой частоте." data-en="The processor can fetch an instruction and data simultaneously — higher performance at the same clock frequency.">Процесор може одночасно отримувати команду і дані — вища продуктивність на тактовій частоті.</li>
+<li data-uk="Застосування: мікроконтролери (ARM Cortex-M, AVR, PIC), цифрові сигнальні процесори (DSP), кеш-пам'ять сучасних CPU (L1 instruction cache + L1 data cache — модифікована Гарвардська архітектура)." data-ru="Применение: микроконтроллеры (ARM Cortex-M, AVR, PIC), цифровые сигнальные процессоры (DSP), кэш-память современных CPU (L1 instruction cache + L1 data cache — модифицированная Гарвардская архитектура)." data-en="Applications: microcontrollers (ARM Cortex-M, AVR, PIC), digital signal processors (DSP), cache memory of modern CPUs (L1 instruction cache + L1 data cache — modified Harvard architecture).">Застосування: мікроконтролери (ARM Cortex-M, AVR, PIC), цифрові сигнальні процесори (DSP), кеш-пам'ять сучасних CPU (L1 instruction cache + L1 data cache — модифікована Гарвардська архітектура).</li>
+</ul>
+<div class="tip">
+<strong data-uk="Порівняння:" data-ru="Сравнение:" data-en="Comparison:">Порівняння:</strong>
+<span data-uk=" Фон Нейман — простота, гнучкість, самомодифікація коду (програма може змінювати себе). Гарвард — швидкість, безпека (код не перезаписується даними), передбачуваність. Сучасні CPU використовують модифіковану Гарвардську архітектуру на рівні кешу, але з єдиною адресним простором (Modified Harvard Architecture)." data-ru=" Фон Нейман — простота, гибкость, самомодификация кода (программа может изменять себя). Гарвард — скорость, безопасность (код не перезаписывается данными), предсказуемость. Современные CPU используют модифицированную Гарвардскую архитектуру на уровне кэша, но с единым адресным пространством (Modified Harvard Architecture)." data-en=" Von Neumann — simplicity, flexibility, self-modifying code. Harvard — speed, security (code cannot be overwritten by data), predictability. Modern CPUs use modified Harvard architecture at the cache level but with a unified address space."> Фон Нейман — простота, гнучкість, самомодифікація коду (програма може змінювати себе). Гарвард — швидкість, безпека (код не перезаписується даними), передбачуваність. Сучасні CPU використовують модифіковану Гарвардську архітектуру на рівні кешу, але з єдиною адресним простором (Modified Harvard Architecture).</span>
+</div>
+</section>
+
+<section class="section" id="monolith">
+<h2><span class="icon">&#128230;</span> <span data-uk="Монолітна архітектура" data-ru="Монолитная архитектура" data-en="Monolithic Architecture">Монолітна архітектура</span></h2>
+<p data-uk="Моноліт — це класичний підхід, коли весь додаток (UI, бізнес-логіка, доступ до даних) зібраний в єдиний виконуваний файл або розгорнутий як один процес. Це був домінуючий підхід до 2010-х років." data-ru="Монолит — это классический подход, когда всё приложение (UI, бизнес-логика, доступ к данным) собрано в единый исполняемый файл или развёрнуто как один процесс. Это был доминирующий подход до 2010-х годов." data-en="A monolith is the classic approach where the entire application (UI, business logic, data access) is built into a single executable file or deployed as one process. This was the dominant approach until the 2010s.">Моноліт — це класичний підхід, коли весь додаток (UI, бізнес-логіка, доступ до даних) зібраний в єдиний виконуваний файл або розгорнутий як один процес. Це був домінуючий підхід до 2010-х років.</p>
+<ul>
+<li data-uk="Переваги: простота розробки та тестування, легке налагодження (debugging), швидкість внутрішніх викликів (in-process), просте розгортання (один артефакт), цілісність транзакцій (ACID у межах однієї БД)." data-ru="Преимущества: простота разработки и тестирования, лёгкая отладка (debugging), высокая скорость внутренних вызовов (in-process), простое развёртывание (один артефакт), целостность транзакций (ACID в рамках одной БД)." data-en="Pros: simple development and testing, easy debugging, fast internal calls (in-process), simple deployment (one artifact), transaction integrity (ACID within a single DB).">Переваги: простота розробки та тестування, легке налагодження (debugging), швидкість внутрішніх викликів (in-process), просте розгортання (один артефакт), цілісність транзакцій (ACID у межах однієї БД).</li>
+<li data-uk="Недоліки: складність масштабування (треба масштабувати все разом), тісне зчеплення компонентів (tight coupling), ризик «великого вибуху» при деплої, обмеження технологічного стеку (всі модулі на одній мові/фреймворку), довгий час збірки та тестування." data-ru="Недостатки: сложность масштабирования (нужно масштабировать всё вместе), тесное связывание компонентов (tight coupling), риск «большого взрыва» при деплое, ограничение технологического стека (все модули на одном языке/фреймворке), долгое время сборки и тестирования." data-en="Cons: difficult scaling (must scale everything together), tight coupling, risk of 'big bang' deployment, limited tech stack (all modules in one language/framework), long build and test times.">Недоліки: складність масштабування (треба масштабувати все разом), тісне зчеплення компонентів (tight coupling), ризик «великого вибуху» при деплої, обмеження технологічного стеку (всі модулі на одній мові/фреймворку), довгий час збірки та тестування.</li>
+<li data-uk="Приклади: традиційні Java EE додатки (EAR/WAR), Ruby on Rails, Django, Laravel, .NET Framework додатки до появи .NET Core." data-ru="Примеры: традиционные Java EE приложения (EAR/WAR), Ruby on Rails, Django, Laravel, .NET Framework приложения до появления .NET Core." data-en="Examples: traditional Java EE applications (EAR/WAR), Ruby on Rails, Django, Laravel, .NET Framework apps before .NET Core.">Приклади: традиційні Java EE додатки (EAR/WAR), Ruby on Rails, Django, Laravel, .NET Framework додатки до появи .NET Core.</li>
+</ul>
+<div class="tip">
+<strong data-uk="Коли обирати моноліт:" data-ru="Когда выбирать монолит:" data-en="When to choose monolith:">Коли обирати моноліт:</strong>
+<span data-uk=" MVP-стартапи, невеликі команди (2-5 розробників), додатки з чітко визначеною областю, коли швидкість розробки важливіша за масштабованість. Багато успішних продуктів (Shopify, Etsy) починали як моноліти." data-ru=" MVP-стартапы, небольшие команды (2-5 разработчиков), приложения с чётко определённой областью, когда скорость разработки важнее масштабируемости. Многие успешные продукты (Shopify, Etsy) начинались как монолиты." data-en=" MVP startups, small teams (2-5 developers), applications with a well-defined scope, when development speed matters more than scalability. Many successful products (Shopify, Etsy) started as monoliths."> MVP-стартапи, невеликі команди (2-5 розробників), додатки з чітко визначеною областю, коли швидкість розробки важливіша за масштабованість. Багато успішних продуктів (Shopify, Etsy) починали як моноліти.</span>
+</div>
+</section>
+
+<section class="section" id="microservices">
+<h2><span class="icon">&#128295;</span> <span data-uk="Мікросервісна архітектура" data-ru="Микросервисная архитектура" data-en="Microservices Architecture">Мікросервісна архітектура</span></h2>
+<p data-uk="Мікросервіси — це підхід до побудови додатка як набору невеликих, слабко пов'язаних сервісів, кожен з яких відповідає за конкретну бізнес-задачу та спілкується з іншими через мережеві протоколи (HTTP/gRPC/повідомлення). Популяризований Netflix, Amazon, Uber." data-ru="Микросервисы — это подход к построению приложения как набора небольших, слабо связанных сервисов, каждый из которых отвечает за конкретную бизнес-задачу и общается с другими через сетевые протоколы (HTTP/gRPC/сообщения). Популяризирован Netflix, Amazon, Uber." data-en="Microservices is an approach to building an application as a set of small, loosely coupled services, each responsible for a specific business task and communicating with others via network protocols (HTTP/gRPC/messaging). Popularized by Netflix, Amazon, Uber.">Мікросервіси — це підхід до побудови додатка як набору невеликих, слабко пов'язаних сервісів, кожен з яких відповідає за конкретну бізнес-задачу та спілкується з іншими через мережеві протоколи (HTTP/gRPC/повідомлення). Популяризований Netflix, Amazon, Uber.</p>
+
+<h4 data-uk="Ключові характеристики:" data-ru="Ключевые характеристики:" data-en="Key characteristics:">Ключові характеристики:</h4>
+<ul>
+<li data-uk="Single Responsibility — кожен сервіс виконує одну бізнес-функцію (наприклад, «кошик», «оплата», «користувачі»)." data-ru="Single Responsibility — каждый сервис выполняет одну бизнес-функцию (например, «корзина», «оплата», «пользователи»)." data-en="Single Responsibility — each service performs one business function (e.g., 'cart', 'payment', 'users').">Single Responsibility — кожен сервіс виконує одну бізнес-функцію (наприклад, «кошик», «оплата», «користувачі»).</li>
+<li data-uk="Незалежне розгортання (Independent Deployability) — оновлення одного сервісу не вимагає перезбірки всього додатка." data-ru="Независимое развёртывание (Independent Deployability) — обновление одного сервиса не требует пересборки всего приложения." data-en="Independent Deployability — updating one service does not require rebuilding the entire application.">Незалежне розгортання (Independent Deployability) — оновлення одного сервісу не вимагає перезбірки всього додатка.</li>
+<li data-uk="Поліглотність (Polyglot) — кожен сервіс може використовувати свою мову, фреймворк та базу даних (Node.js + MongoDB для одного, Go + PostgreSQL для іншого)." data-ru="Полиглотность (Polyglot) — каждый сервис может использовать свой язык, фреймворк и базу данных (Node.js + MongoDB для одного, Go + PostgreSQL для другого)." data-en="Polyglot — each service can use its own language, framework and database (Node.js + MongoDB for one, Go + PostgreSQL for another).">Поліглотність (Polyglot) — кожен сервіс може використовувати свою мову, фреймворк та базу даних (Node.js + MongoDB для одного, Go + PostgreSQL для іншого).</li>
+<li data-uk="Відмовостійкість (Fault Isolation) — падіння одного сервісу не обов'язково призводить до падіння всього додатка (якщо реалізовано circuit breaker, fallback)." data-ru="Отказоустойчивость (Fault Isolation) — падение одного сервиса не обязательно приводит к падению всего приложения (если реализован circuit breaker, fallback)." data-en="Fault Isolation — failure of one service does not necessarily crash the entire application (if circuit breaker, fallback are implemented).">Відмовостійкість (Fault Isolation) — падіння одного сервісу не обов'язково призводить до падіння всього додатка (якщо реалізовано circuit breaker, fallback).</li>
+</ul>
+
+<h4 data-uk="Виклики:" data-ru="Вызовы:" data-en="Challenges:">Виклики:</h4>
+<ul>
+<li data-uk="Розподілені транзакції — складно забезпечити ACID між сервісами. Використовують Saga pattern (choreography або orchestration), eventual consistency." data-ru="Распределённые транзакции — сложно обеспечить ACID между сервисами. Используют Saga pattern (choreography или orchestration), eventual consistency." data-en="Distributed transactions — difficult to ensure ACID across services. Saga pattern (choreography or orchestration), eventual consistency are used.">Розподілені транзакції — складно забезпечити ACID між сервісами. Використовують Saga pattern (choreography або orchestration), eventual consistency.</li>
+<li data-uk="Мережеві затримки — кожен виклик між сервісами це HTTP/gRPC запит (~1-50 мс), на відміну від in-process виклику (<1 мкс)." data-ru="Сетевые задержки — каждый вызов между сервисами это HTTP/gRPC запрос (~1-50 мс), в отличие от in-process вызова (<1 мкс)." data-en="Network latency — every call between services is an HTTP/gRPC request (~1-50 ms), unlike in-process calls (<1 µs).">Мережеві затримки — кожен виклик між сервісами це HTTP/gRPC запит (~1-50 мс), на відміну від in-process виклику (<1 мкс).</li>
+<li data-uk="Складність моніторингу та налагодження — потрібні distributed tracing (Jaeger, Zipkin), централізоване логування (ELK, Loki), метрики (Prometheus, Grafana)." data-ru="Сложность мониторинга и отладки — нужны distributed tracing (Jaeger, Zipkin), централизованное логирование (ELK, Loki), метрики (Prometheus, Grafana)." data-en="Monitoring and debugging complexity — requires distributed tracing (Jaeger, Zipkin), centralized logging (ELK, Loki), metrics (Prometheus, Grafana).">Складність моніторингу та налагодження — потрібні distributed tracing (Jaeger, Zipkin), централізоване логування (ELK, Loki), метрики (Prometheus, Grafana).</li>
+<li data-uk="Data Consistency — кожен сервіс має власну БД, дані дублюються (denormalization), потрібна синхронізація через event sourcing або CQRS." data-ru="Data Consistency — каждый сервис имеет собственную БД, данные дублируются (denormalization), нужна синхронизация через event sourcing или CQRS." data-en="Data Consistency — each service has its own database, data is duplicated (denormalization), synchronization via event sourcing or CQRS is needed.">Data Consistency — кожен сервіс має власну БД, дані дублюються (denormalization), потрібна синхронізація через event sourcing або CQRS.</li>
+</ul>
+<div class="tip">
+<strong data-uk="Порада:" data-ru="Совет:" data-en="Tip:">Порада:</strong>
+<span data-uk=" Не починайте з мікросервісів! Мартін Фаулер радить: «Monolith First» — спочатку побудуйте моноліт, зрозумійте домен, а потім виділяйте сервіси. Передчасна декомпозиція призводить до «distributed monolith» — найгіршого з обох світів." data-ru=" Не начинайте с микросервисов! Мартин Фаулер советует: «Monolith First» — сначала постройте монолит, поймите домен, а потом выделяйте сервисы. Преждевременная декомпозиция приводит к «distributed monolith» — худшему из обоих миров." data-en=" Don't start with microservices! Martin Fowler advises: 'Monolith First' — build a monolith first, understand the domain, then extract services. Premature decomposition leads to a 'distributed monolith' — the worst of both worlds."> Не починайте з мікросервісів! Мартін Фаулер радить: «Monolith First» — спочатку побудуйте моноліт, зрозумійте домен, а потім виділяйте сервіси. Передчасна декомпозиція призводить до «distributed monolith» — найгіршого з обох світів.</span>
+</div>
+</section>
+
+<section class="section" id="serverless">
+<h2><span class="icon">&#9729;</span> <span data-uk="Serverless та FaaS" data-ru="Serverless и FaaS" data-en="Serverless and FaaS">Serverless та FaaS</span></h2>
+<p data-uk="Serverless (безсерверні обчислення) — модель, при якій розробник пише код, а хмарний провайдер повністю керує інфраструктурою: автоматичне масштабування, патчинг ОС, балансування навантаження, моніторинг. Розробник не бачить і не керує серверами." data-ru="Serverless (бессерверные вычисления) — модель, при которой разработчик пишет код, а облачный провайдер полностью управляет инфраструктурой: автоматическое масштабирование, патчинг ОС, балансировка нагрузки, мониторинг. Разработчик не видит и не управляет серверами." data-en="Serverless is a model where the developer writes code and the cloud provider fully manages the infrastructure: automatic scaling, OS patching, load balancing, monitoring. The developer does not see or manage servers.">Serverless (безсерверні обчислення) — модель, при якій розробник пише код, а хмарний провайдер повністю керує інфраструктурою: автоматичне масштабування, патчинг ОС, балансування навантаження, моніторинг. Розробник не бачить і не керує серверами.</p>
+
+<h4 data-uk="FaaS (Function as a Service)" data-ru="FaaS (Function as a Service)" data-en="FaaS (Function as a Service)">FaaS (Function as a Service)</h4>
+<p data-uk="Найпопулярніша форма serverless. Код розбивається на окремі функції, кожна з яких запускається у відповідь на подію (HTTP-запит, завантаження файлу, повідомлення з черги, таймер). Після виконання функція «засинає» — ресурси звільняються." data-ru="Самая популярная форма serverless. Код разбивается на отдельные функции, каждая из которых запускается в ответ на событие (HTTP-запрос, загрузка файла, сообщение из очереди, таймер). После выполнения функция «засыпает» — ресурсы освобождаются." data-en="The most popular form of serverless. Code is broken into individual functions, each triggered by an event (HTTP request, file upload, queue message, timer). After execution, the function 'goes to sleep' — resources are freed.">Найпопулярніша форма serverless. Код розбивається на окремі функції, кожна з яких запускається у відповідь на подію (HTTP-запит, завантаження файлу, повідомлення з черги, таймер). Після виконання функція «засинає» — ресурси звільняються.</p>
+<ul>
+<li data-uk="AWS Lambda — піонер FaaS (2014). Підтримує Python, Node.js, Java, Go, C#, Ruby, Rust. Максимальний час виконання: 15 хвилин." data-ru="AWS Lambda — пионер FaaS (2014). Поддерживает Python, Node.js, Java, Go, C#, Ruby, Rust. Максимальное время выполнения: 15 минут." data-en="AWS Lambda — FaaS pioneer (2014). Supports Python, Node.js, Java, Go, C#, Ruby, Rust. Max execution time: 15 minutes.">AWS Lambda — піонер FaaS (2014). Підтримує Python, Node.js, Java, Go, C#, Ruby, Rust. Максимальний час виконання: 15 хвилин.</li>
+<li data-uk="Azure Functions, Google Cloud Functions, Cloudflare Workers, Vercel Functions — альтернативи з різними особливостями." data-ru="Azure Functions, Google Cloud Functions, Cloudflare Workers, Vercel Functions — альтернативы с разными особенностями." data-en="Azure Functions, Google Cloud Functions, Cloudflare Workers, Vercel Functions — alternatives with different features.">Azure Functions, Google Cloud Functions, Cloudflare Workers, Vercel Functions — альтернативи з різними особливостями.</li>
+<li data-uk="Cold Start — затримка при першому запуску функції (100 мс — 3 с), коли провайдер ініціалізує середовище виконання." data-ru="Cold Start — задержка при первом запуске функции (100 мс — 3 с), когда провайдер инициализирует среду выполнения." data-en="Cold Start — latency on first function invocation (100 ms — 3 s), when the provider initializes the runtime environment.">Cold Start — затримка при першому запуску функції (100 мс — 3 с), коли провайдер ініціалізує середовище виконання.</li>
+</ul>
+
+<h4 data-uk="BaaS (Backend as a Service)" data-ru="BaaS (Backend as a Service)" data-en="BaaS (Backend as a Service)">BaaS (Backend as a Service)</h4>
+<p data-uk="Ще один різновид serverless, де провайдер надає готові backend-сервіси: аутентифікацію (Auth0, Firebase Auth), бази даних (Firebase Firestore, AWS DynamoDB, Supabase), файлове сховище, push-сповіщення. Фронтенд-розробник може побудувати повноцінний додаток без написання backend-коду." data-ru="Ещё один вид serverless, где провайдер предоставляет готовые backend-сервисы: аутентификацию (Auth0, Firebase Auth), базы данных (Firebase Firestore, AWS DynamoDB, Supabase), файловое хранилище, push-уведомления. Фронтенд-разработчик может построить полноценное приложение без написания backend-кода." data-en="Another form of serverless where the provider offers ready-made backend services: authentication (Auth0, Firebase Auth), databases (Firebase Firestore, AWS DynamoDB, Supabase), file storage, push notifications. A frontend developer can build a full application without writing backend code.">Ще один різновид serverless, де провайдер надає готові backend-сервіси: аутентифікацію (Auth0, Firebase Auth), бази даних (Firebase Firestore, AWS DynamoDB, Supabase), файлове сховище, push-сповіщення. Фронтенд-розробник може побудувати повноцінний додаток без написання backend-коду.</p>
+<div class="tip">
+<strong data-uk="Коли використовувати Serverless:" data-ru="Когда использовать Serverless:" data-en="When to use Serverless:">Коли використовувати Serverless:</strong>
+<span data-uk=" Змінне навантаження (spiky traffic), обробка файлів, чати та боти, IoT-події, CRON-завдання, API-шлюзи. Не підходить для: довготривалих обчислень (>15 хв), stateful-процесів (потрібен зовнішній state), систем з передбачуваним постійним навантаженням (дорожче за VM)." data-ru=" Изменяемая нагрузка (spiky traffic), обработка файлов, чаты и боты, IoT-события, CRON-задачи, API-шлюзы. Не подходит для: длительных вычислений (>15 мин), stateful-процессов (нужен внешний state), систем с предсказуемой постоянной нагрузкой (дороже VM)." data-en=" Variable load (spiky traffic), file processing, chatbots, IoT events, CRON tasks, API gateways. Not suitable for: long-running computations (>15 min), stateful processes (external state needed), systems with predictable steady load (more expensive than VMs)."> Змінне навантаження (spiky traffic), обробка файлів, чати та боти, IoT-події, CRON-завдання, API-шлюзи. Не підходить для: довготривалих обчислень (>15 хв), stateful-процесів (потрібен зовнішній state), систем з передбачуваним постійним навантаженням (дорожче за VM).</span>
+</div>
+</section>
+
+<section class="section" id="event-driven">
+<h2><span class="icon">&#9889;</span> <span data-uk="Event-driven архітектура" data-ru="Event-driven архитектура" data-en="Event-driven Architecture">Event-driven архітектура</span></h2>
+<p data-uk="Event-driven архітектура (EDA) — це парадигма, при якій компоненти системи реагують на події (events) замість прямих синхронних викликів. Подія — це факт, що сталася (користувач зареєструвався, замовлення створено, платіж пройшов). Компоненти не знають один про одного — вони знають лише про брокер повідомлень." data-ru="Event-driven архитектура (EDA) — это парадигма, при которой компоненты системы реагируют на события (events) вместо прямых синхронных вызовов. Событие — это факт, который произошёл (пользователь зарегистрировался, заказ создан, платёж прошёл). Компоненты не знают друг о друге — они знают только о брокере сообщений." data-en="Event-driven architecture (EDA) is a paradigm where system components react to events instead of direct synchronous calls. An event is a fact that has occurred (user registered, order created, payment succeeded). Components do not know about each other — they only know about the message broker.">Event-driven архітектура (EDA) — це парадигма, при якій компоненти системи реагують на події (events) замість прямих синхронних викликів. Подія — це факт, що сталася (користувач зареєструвався, замовлення створено, платіж пройшов). Компоненти не знають один про одного — вони знають лише про брокер повідомлень.</p>
+
+<h4 data-uk="Ключові компоненти:" data-ru="Ключевые компоненты:" data-en="Key components:">Ключові компоненти:</h4>
+<ul>
+<li data-uk="Event Producers — джерела подій (веб-додаток, IoT-датчик, база даних)." data-ru="Event Producers — источники событий (веб-приложение, IoT-датчик, база данных)." data-en="Event Producers — sources of events (web app, IoT sensor, database).">Event Producers — джерела подій (веб-додаток, IoT-датчик, база даних).</li>
+<li data-uk="Event Broker / Message Bus — посередник, що отримує, зберігає та розподіляє події. Приклади: Apache Kafka, RabbitMQ, AWS SNS/SQS, Google Pub/Sub, NATS, Redis Streams." data-ru="Event Broker / Message Bus — посредник, получающий, хранящий и распределяющий события. Примеры: Apache Kafka, RabbitMQ, AWS SNS/SQS, Google Pub/Sub, NATS, Redis Streams." data-en="Event Broker / Message Bus — intermediary that receives, stores and distributes events. Examples: Apache Kafka, RabbitMQ, AWS SNS/SQS, Google Pub/Sub, NATS, Redis Streams.">Event Broker / Message Bus — посередник, що отримує, зберігає та розподіляє події. Приклади: Apache Kafka, RabbitMQ, AWS SNS/SQS, Google Pub/Sub, NATS, Redis Streams.</li>
+<li data-uk="Event Consumers — обробники, що підписані на певні типи подій і виконують бізнес-логіку." data-ru="Event Consumers — обработчики, подписанные на определённые типы событий и выполняющие бизнес-логику." data-en="Event Consumers — handlers subscribed to specific event types and executing business logic.">Event Consumers — обробники, що підписані на певні типи подій і виконують бізнес-логіку.</li>
+</ul>
+
+<h4 data-uk="Патерни:" data-ru="Паттерны:" data-en="Patterns:">Патерни:</h4>
+<ul>
+<li data-uk="Pub/Sub (Publish-Subscribe) — продюсер публікує подію в топік, всі підписники отримують її. Приклад: сповіщення всім користувачам про нову публікацію." data-ru="Pub/Sub (Publish-Subscribe) — продюсер публикует событие в топик, все подписчики получают его. Пример: уведомление всем пользователям о новой публикации." data-en="Pub/Sub — producer publishes an event to a topic, all subscribers receive it. Example: notifying all users about a new post.">Pub/Sub (Publish-Subscribe) — продюсер публікує подію в топік, всі підписники отримують її. Приклад: сповіщення всім користувачам про нову публікацію.</li>
+<li data-uk="Event Sourcing — замість зберігання поточного стану об'єкта зберігається журнал усіх подій, що з ним трапилися. Стан відтворюється replay всіх подій. Приклад: банківський рахунок = сума всіх транзакцій." data-ru="Event Sourcing — вместо хранения текущего состояния объекта хранится журнал всех событий, которые с ним произошли. Состояние воспроизводится replay всех событий. Пример: банковский счёт = сумма всех транзакций." data-en="Event Sourcing — instead of storing the current state of an object, a log of all events that happened to it is stored. State is reconstructed by replaying all events. Example: bank account = sum of all transactions.">Event Sourcing — замість зберігання поточного стану об'єкта зберігається журнал усіх подій, що з ним трапилися. Стан відтворюється replay всіх подій. Приклад: банківський рахунок = сума всіх транзакцій.</li>
+<li data-uk="CQRS (Command Query Responsibility Segregation) — розділення моделей для читання та запису. Команда змінює стан і генерує подію, а запит читає оптимізовану read-модель." data-ru="CQRS (Command Query Responsibility Segregation) — разделение моделей для чтения и записи. Команда изменяет состояние и генерирует событие, а запрос читает оптимизированную read-модель." data-en="CQRS — separation of models for reading and writing. A command changes state and generates an event, while a query reads an optimized read model.">CQRS (Command Query Responsibility Segregation) — розділення моделей для читання та запису. Команда змінює стан і генерує подію, а запит читає оптимізовану read-модель.</li>
+</ul>
+<div class="tip">
+<strong data-uk="Переваги EDA:" data-ru="Преимущества EDA:" data-en="EDA Pros:">Переваги EDA:</strong>
+<span data-uk=" Слабка зв'язаність (loose coupling), масштабованість (додавайте consumer'ів без змін producer'ів), відмовостійкість (повідомлення зберігаються в черзі), аудит (журнал подій = повна історія системи). Мінуси: eventual consistency, складність трасування, ризик «event storm» при поганому проєктуванні." data-ru=" Слабая связанность (loose coupling), масштабируемость (добавляйте consumer'ов без изменений producer'ов), отказоустойчивость (сообщения хранятся в очереди), аудит (журнал событий = полная история системы). Минусы: eventual consistency, сложность трассировки, риск «event storm» при плохом проектировании." data-en=" Loose coupling, scalability (add consumers without changing producers), fault tolerance (messages stored in queue), audit (event log = complete system history). Cons: eventual consistency, tracing complexity, risk of 'event storm' with poor design."> Слабка зв'язаність (loose coupling), масштабованість (додавайте consumer'ів без змін producer'ів), відмовостійкість (повідомлення зберігаються в черзі), аудит (журнал подій = повна історія системи). Мінуси: eventual consistency, складність трасування, ризик «event storm» при поганому проєктуванні.</span>
+</div>
+</section>
+
+<section class="section" id="microfrontends">
+<h2><span class="icon">&#128208;</span> <span data-uk="Мікрофронтенди" data-ru="Микрофронтенды" data-en="Microfrontends">Мікрофронтенди</span></h2>
+<p data-uk="Мікрофронтенди — це розширення ідеї мікросервісів на фронтенд. Замість одного великого SPA (Single Page Application) додаток розбивається на незалежні фронтенд-модулі, кожен з яких розробляється, тестується та розгортається окремою командою. Термін популяризував ThoughtWorks у 2016 році." data-ru="Микрофронтенды — это расширение идеи микросервисов на фронтенд. Вместо одного большого SPA (Single Page Application) приложение разбивается на независимые фронтенд-модули, каждый из которых разрабатывается, тестируется и развёртывается отдельной командой. Термин популяризировал ThoughtWorks в 2016 году." data-en="Microfrontends extend the microservices idea to the frontend. Instead of one large SPA (Single Page Application), the app is split into independent frontend modules, each developed, tested and deployed by a separate team. The term was popularized by ThoughtWorks in 2016.">Мікрофронтенди — це розширення ідеї мікросервісів на фронтенд. Замість одного великого SPA (Single Page Application) додаток розбивається на незалежні фронтенд-модулі, кожен з яких розробляється, тестується та розгортається окремою командою. Термін популяризував ThoughtWorks у 2016 році.</p>
+
+<h4 data-uk="Підходи до інтеграції:" data-ru="Подходы к интеграции:" data-en="Integration approaches:">Підходи до інтеграції:</h4>
+<ul>
+<li data-uk="Build-time інтеграція — модулі збираються в один bundle під час збірки (npm-пакети, monorepo). Мінус: втрачається незалежне розгортання." data-ru="Build-time интеграция — модули собираются в один bundle во время сборки (npm-пакеты, monorepo). Минус: теряется независимое развёртывание." data-en="Build-time integration — modules are bundled together at build time (npm packages, monorepo). Con: loses independent deployment.">Build-time інтеграція — модулі збираються в один bundle під час збірки (npm-пакети, monorepo). Мінус: втрачається незалежне розгортання.</li>
+<li data-uk="Run-time інтеграція через iframe — кожен мікрофронтенд завантажується в окремий iframe. Плюси: повна ізоляція (CSS, JS). Мінуси: складність комунікації, проблеми з доступністю, SEO." data-ru="Run-time интеграция через iframe — каждый микрофронтенд загружается в отдельный iframe. Плюсы: полная изоляция (CSS, JS). Минусы: сложность коммуникации, проблемы с доступностью, SEO." data-en="Run-time integration via iframe — each microfrontend loads in a separate iframe. Pros: full isolation (CSS, JS). Cons: communication complexity, accessibility issues, SEO.">Run-time інтеграція через iframe — кожен мікрофронтенд завантажується в окремий iframe. Плюси: повна ізоляція (CSS, JS). Мінуси: складність комунікації, проблеми з доступністю, SEO.</li>
+<li data-uk="Run-time через Web Components — кожен модуль експортує власний custom element (<user-profile>, <shopping-cart>), які монтуються в DOM host-додатка. Плюси: нативний стандарт, стилі можна інкапсулювати через Shadow DOM." data-ru="Run-time через Web Components — каждый модуль экспортирует свой custom element (<user-profile>, <shopping-cart>), которые монтируются в DOM host-приложения. Плюсы: нативный стандарт, стили можно инкапсулировать через Shadow DOM." data-en="Run-time via Web Components — each module exports its own custom element (<user-profile>, <shopping-cart>), mounted into the host app's DOM. Pros: native standard, styles can be encapsulated via Shadow DOM.">Run-time через Web Components — кожен модуль експортує власний custom element (&lt;user-profile&gt;, &lt;shopping-cart&gt;), які монтуються в DOM host-додатка. Плюси: нативний стандарт, стилі можна інкапсулювати через Shadow DOM.</li>
+<li data-uk="Module Federation (Webpack 5) — динамічне завантаження віддалених модулів під час виконання. Кожен модуль — окремий deploy, але вони діляться загальними залежностями." data-ru="Module Federation (Webpack 5) — динамическая загрузка удалённых модулей во время выполнения. Каждый модуль — отдельный deploy, но они делят общие зависимости." data-en="Module Federation (Webpack 5) — dynamic loading of remote modules at runtime. Each module is a separate deploy, but they share common dependencies.">Module Federation (Webpack 5) — динамічне завантаження віддалених модулів під час виконання. Кожен модуль — окремий deploy, але вони діляться загальними залежностями.</li>
+</ul>
+
+<h4 data-uk="Виклики:" data-ru="Вызовы:" data-en="Challenges:">Виклики:</h4>
+<ul>
+<li data-uk="Консистентність UI — різні команди можуть використовувати різні дизайн-системи. Рішення: shared component library (Storybook), Design Tokens." data-ru="Консистентность UI — разные команды могут использовать разные дизайн-системы. Решение: shared component library (Storybook), Design Tokens." data-en="UI consistency — different teams may use different design systems. Solution: shared component library (Storybook), Design Tokens.">Консистентність UI — різні команди можуть використовувати різні дизайн-системи. Рішення: shared component library (Storybook), Design Tokens.</li>
+<li data-uk="Роутинг — навігація між мікрофронтендами має бути безшовною. Рішення: shell-застосунок (host) керує роутингом верхнього рівня." data-ru="Роутинг — навигация между микрофронтендами должна быть бесшовной. Решение: shell-приложение (host) управляет роутингом верхнего уровня." data-en="Routing — navigation between microfrontends must be seamless. Solution: shell application (host) manages top-level routing.">Роутинг — навігація між мікрофронтендами має бути безшовною. Рішення: shell-застосунок (host) керує роутингом верхнього рівня.</li>
+<li data-uk="Продуктивність — кожен модуль може тягнути свою копію React/Vue/Angular. Рішення: shared dependencies через Module Federation, singleton бібліотеки." data-ru="Производительность — каждый модуль может тянуть свою копию React/Vue/Angular. Решение: shared dependencies через Module Federation, singleton библиотеки." data-en="Performance — each module may pull its own copy of React/Vue/Angular. Solution: shared dependencies via Module Federation, singleton libraries.">Продуктивність — кожен модуль може тягнути свою копію React/Vue/Angular. Рішення: shared dependencies через Module Federation, singleton бібліотеки.</li>
+</ul>
+<div class="tip">
+<strong data-uk="Коли використовувати:" data-ru="Когда использовать:" data-en="When to use:">Коли використовувати:</strong>
+<span data-uk=" Великі організації з кількома фронтенд-командами (>30 розробників), різні піддомени з різними життєвими циклами, потреба в незалежному деплої. Не потрібно для: невеликих команд (<10), простих landing pages, MVP." data-ru=" Крупные организации с несколькими фронтенд-командами (>30 разработчиков), разные поддомены с разными жизненными циклами, потребность в независимом деплое. Не нужно для: небольших команд (<10), простых landing pages, MVP." data-en=" Large organizations with multiple frontend teams (>30 developers), different subdomains with different lifecycles, need for independent deployment. Not needed for: small teams (<10), simple landing pages, MVP."> Великі організації з кількома фронтенд-командами (>30 розробників), різні піддомени з різними життєвими циклами, потреба в незалежному деплої. Не потрібно для: невеликих команд (&lt;10), простих landing pages, MVP.</span>
+</div>
+</section>
+
+<section class="section" id="service-mesh">
+<h2><span class="icon">&#128376;</span> <span data-uk="Service Mesh" data-ru="Service Mesh" data-en="Service Mesh">Service Mesh</span></h2>
+<p data-uk="Service Mesh — це інфраструктурний шар, що керує всією комунікацією між сервісами в мікросервісній архітектурі. Замість того щоб кожен сервіс сам реалізовував retry, timeout, circuit breaker, mTLS, observability — ці функції виносяться в прозорий проксі (sidecar), який працює поруч з кожним сервісом." data-ru="Service Mesh — это инфраструктурный слой, управляющий всей коммуникацией между сервисами в микросервисной архитектуре. Вместо того чтобы каждый сервис сам реализовывал retry, timeout, circuit breaker, mTLS, observability — эти функции выносятся в прозрачный прокси (sidecar), который работает рядом с каждым сервисом." data-en="Service Mesh is an infrastructure layer that manages all communication between services in a microservices architecture. Instead of each service implementing retry, timeout, circuit breaker, mTLS, observability itself — these functions are moved to a transparent proxy (sidecar) running alongside each service.">Service Mesh — це інфраструктурний шар, що керує всією комунікацією між сервісами в мікросервісній архітектурі. Замість того щоб кожен сервіс сам реалізовував retry, timeout, circuit breaker, mTLS, observability — ці функції виносяться в прозорий проксі (sidecar), який працює поруч з кожним сервісом.</p>
+
+<h4 data-uk="Ключові можливості:" data-ru="Ключевые возможности:" data-en="Key capabilities:">Ключові можливості:</h4>
+<ul>
+<li data-uk="Traffic Management — розподіл трафіку (canary deployment, A/B testing, blue-green), retry, timeout, fault injection (хаос-інжиніринг)." data-ru="Traffic Management — распределение трафика (canary deployment, A/B testing, blue-green), retry, timeout, fault injection (хаос-инжиниринг)." data-en="Traffic Management — traffic splitting (canary deployment, A/B testing, blue-green), retry, timeout, fault injection (chaos engineering).">Traffic Management — розподіл трафіку (canary deployment, A/B testing, blue-green), retry, timeout, fault injection (хаос-інжиніринг).</li>
+<li data-uk="Security — автоматичне mTLS (mutual TLS) між усіма сервісами, політики доступу (authorization policies), аутентифікація (JWT validation)." data-ru="Security — автоматическое mTLS (mutual TLS) между всеми сервисами, политики доступа (authorization policies), аутентификация (JWT validation)." data-en="Security — automatic mTLS (mutual TLS) between all services, authorization policies, authentication (JWT validation).">Security — автоматичне mTLS (mutual TLS) між усіма сервісами, політики доступу (authorization policies), аутентифікація (JWT validation).</li>
+<li data-uk="Observability — автоматичний збір метрик (latency, error rate, throughput), distributed tracing (кожен запит проходить через sidecar, який додає span'и), логування." data-ru="Observability — автоматический сбор метрик (latency, error rate, throughput), distributed tracing (каждый запрос проходит через sidecar, который добавляет span'ы), логирование." data-en="Observability — automatic metrics collection (latency, error rate, throughput), distributed tracing (each request passes through the sidecar which adds spans), logging.">Observability — автоматичний збір метрик (latency, error rate, throughput), distributed tracing (кожен запит проходить через sidecar, який додає span'и), логування.</li>
+</ul>
+
+<h4 data-uk="Популярні реалізації:" data-ru="Популярные реализации:" data-en="Popular implementations:">Популярні реалізації:</h4>
+<ul>
+<li data-uk="Istio — найпотужніший і найскладніший. Працює поверх Envoy proxy. Підтримує Kubernetes, VMs. Розроблений Google, IBM, Lyft." data-ru="Istio — самый мощный и сложный. Работает поверх Envoy proxy. Поддерживает Kubernetes, VMs. Разработан Google, IBM, Lyft." data-en="Istio — the most powerful and complex. Runs on top of Envoy proxy. Supports Kubernetes, VMs. Developed by Google, IBM, Lyft.">Istio — найпотужніший і найскладніший. Працює поверх Envoy proxy. Підтримує Kubernetes, VMs. Розроблений Google, IBM, Lyft.</li>
+<li data-uk="Linkerd — легкий, орієнтований на простоту. Написаний на Rust. Кращий вибір для початку роботи з service mesh." data-ru="Linkerd — лёгкий, ориентированный на простоту. Написан на Rust. Лучший выбор для начала работы с service mesh." data-en="Linkerd — lightweight, simplicity-focused. Written in Rust. Best choice for getting started with service mesh.">Linkerd — легкий, орієнтований на простоту. Написаний на Rust. Кращий вибір для початку роботи з service mesh.</li>
+<li data-uk="Consul Connect — від HashiCorp. Інтегрується з Consul service discovery. Підтримує як sidecar, так і native integration." data-ru="Consul Connect — от HashiCorp. Интегрируется с Consul service discovery. Поддерживает как sidecar, так и native integration." data-en="Consul Connect — from HashiCorp. Integrates with Consul service discovery. Supports both sidecar and native integration.">Consul Connect — від HashiCorp. Інтегрується з Consul service discovery. Підтримує як sidecar, так і native integration.</li>
+</ul>
+<div class="tip">
+<strong data-uk="Sidecar Pattern:" data-ru="Sidecar Pattern:" data-en="Sidecar Pattern:">Sidecar Pattern:</strong>
+<span data-uk=" Кожен pod у Kubernetes отримує додатковий контейнер (Envoy/Linkerd proxy), який перехоплює весь вхідний та вихідний трафік основного сервісу. Сервіс «не знає» про існування mesh — він просто надсилає HTTP-запити на localhost, а sidecar додає всю «магію»." data-ru=" Каждый pod в Kubernetes получает дополнительный контейнер (Envoy/Linkerd proxy), который перехватывает весь входящий и исходящий трафик основного сервиса. Сервис «не знает» о существовании mesh — он просто отправляет HTTP-запросы на localhost, а sidecar добавляет всю «магию»." data-en=" Each pod in Kubernetes gets an additional container (Envoy/Linkerd proxy) that intercepts all incoming and outgoing traffic of the main service. The service 'does not know' about the mesh — it simply sends HTTP requests to localhost, and the sidecar adds all the 'magic'."> Кожен pod у Kubernetes отримує додатковий контейнер (Envoy/Linkerd proxy), який перехоплює весь вхідний та вихідний трафік основного сервісу. Сервіс «не знає» про існування mesh — він просто надсилає HTTP-запити на localhost, а sidecar додає всю «магію».</span>
+</div>
+</section>
+
+<section class="section" id="comparison">
+<h2><span class="icon">&#128200;</span> <span data-uk="Порівняння архітектур" data-ru="Сравнение архитектур" data-en="Architecture Comparison">Порівняння архітектур</span></h2>
+<p data-uk="Таблиця нижче узагальнює ключові характеристики розглянутих архітектур для швидкого вибору підходу під конкретний проєкт." data-ru="Таблица ниже обобщает ключевые характеристики рассмотренных архитектур для быстрого выбора подхода под конкретный проект." data-en="The table below summarizes the key characteristics of the architectures discussed for quick selection of an approach for a specific project.">Таблиця нижче узагальнює ключові характеристики розглянутих архітектур для швидкого вибору підходу під конкретний проєкт.</p>
+<table class="comparison-table">
+<tr>
+<th data-uk="Архітектура" data-ru="Архитектура" data-en="Architecture">Архітектура</th>
+<th data-uk="Масштабованість" data-ru="Масштабируемость" data-en="Scalability">Масштабованість</th>
+<th data-uk="Складність" data-ru="Сложность" data-en="Complexity">Складність</th>
+<th data-uk="Швидкість деплою" data-ru="Скорость деплоя" data-en="Deploy Speed">Швидкість деплою</th>
+<th data-uk="Найкраще для" data-ru="Лучше всего для" data-en="Best For">Найкраще для</th>
+</tr>
+<tr>
+<td data-uk="Моноліт" data-ru="Монолит" data-en="Monolith">Моноліт</td>
+<td data-uk="Вертикальна" data-ru="Вертикальная" data-en="Vertical">Вертикальна</td>
+<td data-uk="Низька" data-ru="Низкая" data-en="Low">Низька</td>
+<td data-uk="Повна перезбірка" data-ru="Полная пересборка" data-en="Full rebuild">Повна перезбірка</td>
+<td data-uk="MVP, невеликі команди" data-ru="MVP, небольшие команды" data-en="MVP, small teams">MVP, невеликі команди</td>
+</tr>
+<tr>
+<td data-uk="Мікросервіси" data-ru="Микросервисы" data-en="Microservices">Мікросервіси</td>
+<td data-uk="Горизонтальна" data-ru="Горизонтальная" data-en="Horizontal">Горизонтальна</td>
+<td data-uk="Висока" data-ru="Высокая" data-en="High">Висока</td>
+<td data-uk="Незалежний деплой" data-ru="Независимый деплой" data-en="Independent deploy">Незалежний деплой</td>
+<td data-uk="Великі системи, >30 розробників" data-ru="Большие системы, >30 разработчиков" data-en="Large systems, >30 developers">Великі системи, >30 розробників</td>
+</tr>
+<tr>
+<td data-uk="Serverless" data-ru="Serverless" data-en="Serverless">Serverless</td>
+<td data-uk="Автоматична" data-ru="Автоматическая" data-en="Automatic">Автоматична</td>
+<td data-uk="Середня" data-ru="Средняя" data-en="Medium">Середня</td>
+<td data-uk="Миттєва" data-ru="Мгновенная" data-en="Instant">Миттєва</td>
+<td data-uk="Змінне навантаження, API, обробка" data-ru="Изменяемая нагрузка, API, обработка" data-en="Variable load, APIs, processing">Змінне навантаження, API, обробка</td>
+</tr>
+<tr>
+<td data-uk="Event-driven" data-ru="Event-driven" data-en="Event-driven">Event-driven</td>
+<td data-uk="Висока" data-ru="Высокая" data-en="High">Висока</td>
+<td data-uk="Висока" data-ru="Высокая" data-en="High">Висока</td>
+<td data-uk="Асинхронний" data-ru="Асинхронный" data-en="Asynchronous">Асинхронний</td>
+<td data-uk="Реальний час, IoT, фінанси" data-ru="Реальное время, IoT, финансы" data-en="Real-time, IoT, finance">Реальний час, IoT, фінанси</td>
+</tr>
+<tr>
+<td data-uk="Мікрофронтенди" data-ru="Микрофронтенды" data-en="Microfrontends">Мікрофронтенди</td>
+<td data-uk="Організаційна" data-ru="Организационная" data-en="Organizational">Організаційна</td>
+<td data-uk="Середня" data-ru="Средняя" data-en="Medium">Середня</td>
+<td data-uk="Незалежний" data-ru="Независимый" data-en="Independent">Незалежний</td>
+<td data-uk="Великі фронтенд-команди" data-ru="Большие фронтенд-команды" data-en="Large frontend teams">Великі фронтенд-команди</td>
+</tr>
+<tr>
+<td data-uk="Service Mesh" data-ru="Service Mesh" data-en="Service Mesh">Service Mesh</td>
+<td data-uk="Інфраструктурна" data-ru="Инфраструктурная" data-en="Infrastructure">Інфраструктурна</td>
+<td data-uk="Висока" data-ru="Высокая" data-en="High">Висока</td>
+<td data-uk="Прозорий" data-ru="Прозрачный" data-en="Transparent">Прозорий</td>
+<td data-uk="Kubernetes, >20 сервісів" data-ru="Kubernetes, >20 сервисов" data-en="Kubernetes, >20 services">Kubernetes, >20 сервісів</td>
+</tr>
+</table>
+</section>
+
+<section class="section" id="summary">
+<h2><span class="icon">&#127919;</span> <span data-uk="Підсумок" data-ru="Итог" data-en="Summary">Підсумок</span></h2>
+<p data-uk="Архітектура ІТ — це не статичний вибір, а еволюційний шлях. Фундаментальні моделі фон Неймана та Гарварда заклали основи сучасних процесорів, а програмні архітектури еволюціонували від монолітів до розподілених систем. Кожен підхід має свої компроміси: моноліт — простота, мікросервіси — масштабованість, serverless — економія, event-driven — гнучкість, мікрофронтенди — організаційна масштабованість, service mesh — інфраструктурна надійність." data-ru="Архитектура ИТ — это не статичный выбор, а эволюционный путь. Фундаментальные модели фон Неймана и Гарварда заложили основы современных процессоров, а программные архитектуры эволюционировали от монолитов к распределённым системам. Каждый подход имеет свои компромиссы: монолит — простота, микросервисы — масштабируемость, serverless — экономия, event-driven — гибкость, микрофронтенды — организационная масштабируемость, service mesh — инфраструктурная надёжность." data-en="IT architecture is not a static choice but an evolutionary path. The fundamental von Neumann and Harvard models laid the foundations for modern processors, while software architectures evolved from monoliths to distributed systems. Each approach has its trade-offs: monolith — simplicity, microservices — scalability, serverless — cost savings, event-driven — flexibility, microfrontends — organizational scalability, service mesh — infrastructure reliability.">Архітектура ІТ — це не статичний вибір, а еволюційний шлях. Фундаментальні моделі фон Неймана та Гарварда заклали основи сучасних процесорів, а програмні архітектури еволюціонували від монолітів до розподілених систем. Кожен підхід має свої компроміси: моноліт — простота, мікросервіси — масштабованість, serverless — економія, event-driven — гнучкість, мікрофронтенди — організаційна масштабованість, service mesh — інфраструктурна надійність.</p>
+<p data-uk="Ключове правило: не гнатися за модою, а обирати архітектуру під команду, домен та етап розвитку продукту. Моноліт — чудовий старт. Мікросервіси — коли домен зрозумілий і команда зросла. Serverless — для змінного навантаження. Event-driven — для асинхронних процесів. Мікрофронтенди — коли фронтенд-команд багато. Service Mesh — коли сервісів більше 20 і потрібна уніфікована observability та security." data-ru="Ключевое правило: не гнаться за модой, а выбирать архитектуру под команду, домен и этап развития продукта. Монолит — отличный старт. Микросервисы — когда домен понятен и команда выросла. Serverless — для изменяемой нагрузки. Event-driven — для асинхронных процессов. Микрофронтенды — когда фронтенд-команд много. Service Mesh — когда сервисов больше 20 и нужна унифицированная observability и security." data-en="The key rule: don't chase trends, but choose architecture for your team, domain and product stage. Monolith — great start. Microservices — when the domain is understood and the team has grown. Serverless — for variable load. Event-driven — for asynchronous processes. Microfrontends — when there are many frontend teams. Service Mesh — when there are more than 20 services and unified observability and security are needed.">Ключове правило: не гнатися за модою, а обирати архітектуру під команду, домен та етап розвитку продукту. Моноліт — чудовий старт. Мікросервіси — коли домен зрозумілий і команда зросла. Serverless — для змінного навантаження. Event-driven — для асинхронних процесів. Мікрофронтенди — коли фронтенд-команд багато. Service Mesh — коли сервісів більше 20 і потрібна уніфікована observability та security.</p>
+<p data-uk="Майбутнє архітектур: поєднання підходів (polyglot architecture), AI-driven оптимізація інфраструктури, квантові обчислення (вимагатимуть нових архітектурних патернів), edge computing (розподілені мікросервіси ближче до користувача), та поступовий перехід до platform engineering — коли внутрішній DevEx-портал абстрагує складність всіх цих архітектур від розробників." data-ru="Будущее архитектур: сочетание подходов (polyglot architecture), AI-driven оптимизация инфраструктуры, квантовые вычисления (потребуют новых архитектурных паттернов), edge computing (распределённые микросервисы ближе к пользователю), и постепенный переход к platform engineering — когда внутренний DevEx-портал абстрагирует сложность всех этих архитектур от разработчиков." data-en="The future of architectures: combining approaches (polyglot architecture), AI-driven infrastructure optimization, quantum computing (will require new architectural patterns), edge computing (distributed microservices closer to the user), and gradual transition to platform engineering — where an internal DevEx portal abstracts the complexity of all these architectures from developers.">Майбутнє архітектур: поєднання підходів (polyglot architecture), AI-driven оптимізація інфраструктури, квантові обчислення (вимагатимуть нових архітектурних патернів), edge computing (розподілені мікросервіси ближче до користувача), та поступовий перехід до platform engineering — коли внутрішній DevEx-портал абстрагує складність всіх цих архітектур від розробників.</p>
+</section>
+</main>
+
+<footer class="footer">
+<p>&larr; <a href="index.html" data-uk="Повернутися на головну сторінку" data-ru="Вернуться на главную страницу" data-en="Return to home page">Повернутися на головну сторінку</a></p>
+<p style="margin-top:10px; font-size:0.8rem;">&copy; 2026 — <span data-uk="Навчальний проєкт. Архітектури ІТ." data-ru="Учебный проект. Архитектуры ИТ." data-en="Educational project. IT Architectures.">Навчальний проєкт. Архітектури ІТ.</span></p>
+</footer>
+
+<script>
+function toggleTheme() {
+  var body = document.body;
+  var btn = document.querySelector('.theme-toggle');
+  var current = body.getAttribute('data-theme');
+  if (current === 'light') {
+    body.removeAttribute('data-theme');
+    btn.innerHTML = '&#127769;';
+    localStorage.setItem('theme', 'dark');
+  } else {
+    body.setAttribute('data-theme', 'light');
+    btn.innerHTML = '&#9728;';
+    localStorage.setItem('theme', 'light');
+  }
+}
+(function(){
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') {
+    document.body.setAttribute('data-theme', 'light');
+    document.querySelector('.theme-toggle').innerHTML = '&#9728;';
+  }
+})();
+
+function setLang(lang) {
+  document.querySelectorAll('.lang-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.querySelectorAll('.lang-btn').forEach(function(btn){
+    if (btn.textContent.toLowerCase() === lang) btn.classList.add('active');
+  });
+  document.querySelectorAll('[data-uk][data-ru][data-en]').forEach(function(el){
+    var text = el.getAttribute('data-' + lang);
+    if (text) el.textContent = text;
+  });
+  var titleEl = document.querySelector('title');
+  if (titleEl) {
+    var titleText = titleEl.getAttribute('data-' + lang);
+    if (titleText) document.title = titleText;
+  }
+  document.querySelector('html').setAttribute('lang', lang === 'uk' ? 'uk' : lang === 'ru' ? 'ru' : 'en');
+  localStorage.setItem('lang', lang);
+}
+(function(){
+  var saved = localStorage.getItem('lang');
+  if (saved && saved !== 'uk') setLang(saved);
+})();
+
+// === SCROLL SPY ===
+(function(){
+  var sections = document.querySelectorAll('.section[id]');
+  var navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
+  function onScroll() {
+    var scrollPos = window.scrollY + 150;
+    sections.forEach(function(sec){
+      var top = sec.offsetTop;
+      var bottom = top + sec.offsetHeight;
+      var id = sec.getAttribute('id');
+      if (scrollPos >= top && scrollPos < bottom) {
+        navLinks.forEach(function(link){
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + id) link.classList.add('active');
+        });
+      }
+    });
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+})();
+</script>
+</body>
+</html>

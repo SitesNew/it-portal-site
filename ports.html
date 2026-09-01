@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-uk="Порти та інтерфейси" data-ru="Порты и интерфейсы" data-en="Ports and Interfaces">Порти та інтерфейси</title>
+<style>
+:root {
+  --bg-gradient-start: #0f0c29; --bg-gradient-mid: #302b63; --bg-gradient-end: #24243e;
+  --text-primary: #e0e0e0; --text-secondary: #888; --text-muted: #666;
+  --accent-cyan: #00d4ff; --accent-red: #ff6b6b; --accent-yellow: #ffd93d;
+  --accent-green: #6bcb77; --accent-blue: #4d96ff; --accent-purple: #9b59b6;
+  --accent-orange: #e67e22; --accent-gray: #95a5a6;
+  --card-bg: rgba(255,255,255,0.05); --card-border: rgba(255,255,255,0.08);
+  --header-bg: rgba(0,0,0,0.4); --nav-bg: rgba(0,0,0,0.25);
+  --tip-bg: rgba(0,212,255,0.1); --tip-border: #00d4ff;
+  --code-bg: rgba(0,0,0,0.3); --shadow: rgba(0,212,255,0.1);
+}
+[data-theme="light"] {
+  --bg-gradient-start: #f0f2f5; --bg-gradient-mid: #e4e7ec; --bg-gradient-end: #d9dce5;
+  --text-primary: #1a1a2e; --text-secondary: #555; --text-muted: #888;
+  --accent-cyan: #0066cc; --accent-red: #cc3333; --accent-yellow: #cc9900;
+  --accent-green: #228b22; --accent-blue: #1a5276; --accent-purple: #7d3c98;
+  --accent-orange: #d35400; --accent-gray: #5d6d7e;
+  --card-bg: rgba(255,255,255,0.7); --card-border: rgba(0,0,0,0.1);
+  --header-bg: rgba(255,255,255,0.8); --nav-bg: rgba(255,255,255,0.6);
+  --tip-bg: rgba(0,102,204,0.1); --tip-border: #0066cc;
+  --code-bg: rgba(0,0,0,0.05); --shadow: rgba(0,0,0,0.1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  background: linear-gradient(135deg,var(--bg-gradient-start),var(--bg-gradient-mid),var(--bg-gradient-end));
+  color:var(--text-primary); min-height:100vh; line-height:1.7; transition:background 0.5s,color 0.5s;
+}
+.header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:15px 30px; background:var(--header-bg); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--card-border); position:sticky; top:0; z-index:1000; transition:background 0.5s;
+}
+.home-link { color:var(--accent-cyan); text-decoration:none; font-size:1.1rem; font-weight:600; transition:color 0.3s; display:flex; align-items:center; gap:8px; }
+.home-link:hover { color:var(--accent-red); }
+.home-link::before { content:"\2190"; font-size:1.2rem; }
+.page-name { font-size:1.1rem; font-weight:600; color:var(--accent-cyan); margin-left:15px; padding-left:15px; border-left:2px solid var(--card-border); transition:color 0.3s; }
+.header-controls { display:flex; align-items:center; gap:15px; }
+.theme-toggle { background:var(--card-bg); border:1px solid var(--card-border); border-radius:30px; padding:5px 15px; cursor:pointer; font-size:1.2rem; transition:all 0.3s; color:var(--text-primary); }
+.theme-toggle:hover { transform:scale(1.1); border-color:var(--accent-cyan); }
+.lang-switcher { display:flex; gap:8px; }
+.lang-btn { background:var(--card-bg); border:1px solid var(--card-border); color:var(--text-primary); padding:6px 14px; border-radius:20px; cursor:pointer; font-size:0.85rem; transition:all 0.3s; text-decoration:none; font-weight:500; }
+.lang-btn:hover,.lang-btn.active { background:var(--accent-cyan); color:#fff; border-color:var(--accent-cyan); }
+.nav-menu {
+  display:flex; justify-content:center; gap:4px; padding:12px 20px; background:var(--nav-bg);
+  border-bottom:1px solid var(--card-border); flex-wrap:wrap; transition:background 0.5s;
+  position:sticky; top:58px; z-index:999; backdrop-filter:blur(8px);
+}
+.nav-menu a { color:var(--text-secondary); text-decoration:none; padding:7px 14px; border-radius:8px; transition:all 0.3s; font-size:0.85rem; white-space:nowrap; }
+.nav-menu a:hover { color:var(--accent-cyan); background:rgba(0,212,255,0.1); }
+.nav-menu a.active { color:var(--accent-cyan); background:rgba(0,212,255,0.15); font-weight:600; }
+.main-content { max-width:1100px; margin:0 auto; padding:40px 30px 60px; }
+.page-hero { text-align:center; padding:30px 20px 5px; }
+.page-hero .hero-icon { font-size:3.5rem; margin-bottom:8px; animation:float 3s ease-in-out infinite; }
+.page-hero .hero-tagline { font-size:1.15rem; color:var(--text-secondary); font-style:italic; max-width:700px; margin:0 auto; line-height:1.5; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+.page-title { text-align:center; font-size:2.4rem; margin-bottom:10px; background:linear-gradient(90deg,var(--accent-cyan),var(--accent-red),var(--accent-yellow)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.page-subtitle { text-align:center; color:var(--text-secondary); font-size:1.1rem; margin-bottom:50px; }
+.section { background:var(--card-bg); border:1px solid var(--card-border); border-radius:16px; padding:30px; margin-bottom:30px; transition:transform 0.3s,box-shadow 0.3s,background 0.5s,border-color 0.5s; scroll-margin-top:120px; }
+.section:hover { transform:translateY(-3px); box-shadow:0 10px 40px var(--shadow); }
+.section h2 { color:var(--accent-cyan); font-size:1.5rem; margin-bottom:20px; display:flex; align-items:center; gap:12px; }
+.section h2 .icon { font-size:1.8rem; }
+.section h3 { color:var(--accent-yellow); font-size:1.15rem; margin:25px 0 12px; }
+.section h4 { color:var(--accent-orange); font-size:1.05rem; margin:20px 0 10px; }
+.section p { margin-bottom:12px; text-align:justify; }
+.section ul,.section ol { margin-left:25px; margin-bottom:15px; }
+.section li { margin-bottom:8px; }
+.section li::marker { color:var(--accent-cyan); }
+.port-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px; margin-top:20px; }
+.port-card { background:var(--code-bg); border:1px solid var(--card-border); border-radius:12px; padding:20px; transition:all 0.3s; }
+.port-card:hover { border-color:var(--accent-cyan); }
+.port-card h4 { color:var(--accent-red); font-size:1.1rem; margin-bottom:10px; }
+.port-card p { font-size:0.9rem; color:var(--text-secondary); text-align:left; margin-bottom:0; }
+.tip { background:var(--tip-bg); border-left:4px solid var(--tip-border); padding:15px 20px; border-radius:0 8px 8px 0; margin:20px 0; font-size:0.95rem; transition:background 0.5s; }
+.tip strong { color:var(--accent-cyan); }
+.comparison-table { width:100%; border-collapse:collapse; margin:15px 0; font-size:0.95rem; }
+.comparison-table th,.comparison-table td { padding:12px 15px; text-align:left; border-bottom:1px solid var(--card-border); }
+.comparison-table th { background:var(--code-bg); color:var(--accent-cyan); font-weight:600; }
+.comparison-table tr:hover { background:rgba(0,212,255,0.03); }
+.footer { text-align:center; padding:30px; background:var(--header-bg); border-top:1px solid var(--card-border); color:var(--text-muted); font-size:0.9rem; transition:background 0.5s; }
+.footer a { color:var(--accent-cyan); text-decoration:none; }
+code { background:var(--code-bg); padding:2px 6px; border-radius:4px; font-family:'Consolas',monospace; font-size:0.9em; }
+@media(max-width:768px){
+  .header { flex-direction:column; gap:12px; padding:12px 15px; }
+  .header-controls { gap:10px; }
+  .page-name { font-size:0.95rem; margin-left:10px; padding-left:10px; }
+  .page-title { font-size:1.7rem; }
+  .page-hero .hero-icon{font-size:2.8rem} .page-hero .hero-tagline{font-size:1rem}
+  .section { padding:20px; scroll-margin-top:150px; }
+  .nav-menu { gap:3px; padding:8px 10px; top:90px; }
+  .nav-menu a { padding:5px 10px; font-size:0.78rem; }
+  .comparison-table { font-size:0.85rem; }
+  .comparison-table th,.comparison-table td { padding:8px 10px; }
+}
+</style>
+<base target="_blank">
+</head>
+<body>
+
+<header class="header">
+<a href="index.html" class="home-link" target="_self"><span data-uk="Головна сторінка" data-ru="Главная страница" data-en="Home page">Головна сторінка</span></a>
+<span class="page-name" data-uk="Порти та інтерфейси" data-ru="Порты и интерфейсы" data-en="Ports and Interfaces">Порти та інтерфейси</span>
+<div class="header-controls">
+<button class="theme-toggle" onclick="toggleTheme()" title="Switch theme">&#127769;</button>
+<div class="lang-switcher">
+<button class="lang-btn active" onclick="setLang('uk')">UK</button>
+<button class="lang-btn" onclick="setLang('ru')">RU</button>
+<button class="lang-btn" onclick="setLang('en')">EN</button>
+</div>
+</div>
+</header>
+
+<nav class="nav-menu">
+<a href="#intro" target="_self" data-uk="Вступ" data-ru="Введение" data-en="Intro">Вступ</a>
+<a href="#serial" target="_self" data-uk="COM/RS-232" data-ru="COM/RS-232" data-en="COM/RS-232">COM/RS-232</a>
+<a href="#parallel" target="_self" data-uk="LPT" data-ru="LPT" data-en="LPT">LPT</a>
+<a href="#ps2" target="_self" data-uk="PS/2" data-ru="PS/2" data-en="PS/2">PS/2</a>
+<a href="#usb" target="_self" data-uk="USB" data-ru="USB" data-en="USB">USB</a>
+<a href="#thunderbolt" target="_self" data-uk="Thunderbolt" data-ru="Thunderbolt" data-en="Thunderbolt">Thunderbolt</a>
+<a href="#video" target="_self" data-uk="Відео" data-ru="Видео" data-en="Video">Відео</a>
+<a href="#storage" target="_self" data-uk="Накопичувачі" data-ru="Накопители" data-en="Storage">Накопичувачі</a>
+<a href="#network" target="_self" data-uk="Мережа" data-ru="Сеть" data-en="Network">Мережа</a>
+<a href="#wireless" target="_self" data-uk="Бездротові" data-ru="Беспроводные" data-en="Wireless">Бездротові</a>
+<a href="#comparison" target="_self" data-uk="Порівняння" data-ru="Сравнение" data-en="Comparison">Порівняння</a>
+<a href="#summary" target="_self" data-uk="Підсумок" data-ru="Итог" data-en="Summary">Підсумок</a>
+</nav>
+
+<main class="main-content">
+<div class="page-hero">
+  <div class="hero-icon">&#128268;</div>
+  <div class="hero-tagline" data-uk="Від класичних COM і LPT до сучасних USB4, Thunderbolt та бездротових інтерфейсів" data-ru="От классических COM и LPT до современных USB4, Thunderbolt и беспроводных интерфейсов" data-en="From classic COM and LPT to modern USB4, Thunderbolt and wireless interfaces">Від класичних COM і LPT до сучасних USB4, Thunderbolt та бездротових інтерфейсів</div>
+</div>
+
+<h1 class="page-title" data-uk="Порти та інтерфейси" data-ru="Порты и интерфейсы" data-en="Ports and Interfaces">Порти та інтерфейси</h1>
+<p class="page-subtitle" data-uk="Еволюція фізичних з'єднань комп'ютера: від послідовних портів до універсальних високошвидкісних шин" data-ru="Эволюция физических соединений компьютера: от последовательных портов до универсальных высокоскоростных шин" data-en="Evolution of computer physical connections: from serial ports to universal high-speed buses">Еволюція фізичних з'єднань комп'ютера: від послідовних портів до універсальних високошвидкісних шин</p>
+
+<section class="section" id="intro">
+<h2><span class="icon">&#128268;</span> <span data-uk="Що таке порт та інтерфейс?" data-ru="Что такое порт и интерфейс?" data-en="What is a port and interface?">Що таке порт та інтерфейс?</span></h2>
+<p data-uk="Порт — це фізичний або логічний роз'єм на комп'ютері, через який відбувається обмін даними з периферійними пристроями або іншими комп'ютерами. Інтерфейс — це набір правил, протоколів та специфікацій, що визначають, як саме відбувається цей обмін: електричні сигнали, формат даних, швидкість передачі, топологія з'єднання." data-ru="Порт — это физический или логический разъём на компьютере, через который происходит обмен данными с периферийными устройствами или другими компьютерами. Интерфейс — это набор правил, протоколов и спецификаций, определяющих, как именно происходит этот обмен: электрические сигналы, формат данных, скорость передачи, топология соединения." data-en="A port is a physical or logical connector on a computer through which data is exchanged with peripheral devices or other computers. An interface is a set of rules, protocols and specifications that define how this exchange occurs: electrical signals, data format, transfer speed, connection topology.">Порт — це фізичний або логічний роз'єм на комп'ютері, через який відбувається обмін даними з периферійними пристроями або іншими комп'ютерами. Інтерфейс — це набір правил, протоколів та специфікацій, що визначають, як саме відбувається цей обмін: електричні сигнали, формат даних, швидкість передачі, топологія з'єднання.</p>
+<p data-uk="Історія портів почалася з ранніх комп'ютерів 1960-70-х, що використовували послідовні порти для терміналів і модемів. З часом з'явилися паралельні порти для принтерів, PS/2 для клавіатур і мишей, а потім революцію зробив USB (1996) — універсальна шина, що замінила десятки спеціалізованих роз'ємів. Сьогодні ми маємо USB4 (40 Гбіт/с), Thunderbolt 4, NVMe через PCIe, та бездротові інтерфейси, що поступово витісняють дротові з'єднання." data-ru="История портов началась с ранних компьютеров 1960-70-х, использовавших последовательные порты для терминалов и модемов. Со временем появились параллельные порты для принтеров, PS/2 для клавиатур и мышей, а затем революцию совершил USB (1996) — универсальная шина, заменившая десятки специализированных разъёмов. Сегодня мы имеем USB4 (40 Гбит/с), Thunderbolt 4, NVMe через PCIe, и беспроводные интерфейсы, постепенно вытесняющие проводные соединения." data-en="The history of ports began with early computers of the 1960s-70s that used serial ports for terminals and modems. Over time, parallel ports for printers, PS/2 for keyboards and mice appeared, and then USB (1996) revolutionized everything — a universal bus that replaced dozens of specialized connectors. Today we have USB4 (40 Gbps), Thunderbolt 4, NVMe via PCIe, and wireless interfaces gradually displacing wired connections.">Історія портів почалася з ранніх комп'ютерів 1960-70-х, що використовували послідовні порти для терміналів і модемів. З часом з'явилися паралельні порти для принтерів, PS/2 для клавіатур і мишей, а потім революцію зробив USB (1996) — універсальна шина, що замінила десятки спеціалізованих роз'ємів. Сьогодні ми маємо USB4 (40 Гбіт/с), Thunderbolt 4, NVMe через PCIe, та бездротові інтерфейси, що поступово витісняють дротові з'єднання.</p>
+</section>
+
+<section class="section" id="serial">
+<h2><span class="icon">&#128225;</span> <span data-uk="Послідовні порти (COM / RS-232)" data-ru="Последовательные порты (COM / RS-232)" data-en="Serial Ports (COM / RS-232)">Послідовні порти (COM / RS-232)</span></h2>
+<p data-uk="Послідовний порт передає дані біт за бітом по одній лінії (або парі ліній для повнодуплексного зв'язку). Стандарт RS-232 (Recommended Standard 232) був опублікований у 1960 році Electronic Industries Alliance (EIA) і став основою для COM-портів персональних комп'ютерів." data-ru="Последовательный порт передаёт данные бит за битом по одной линии (или паре линий для полнодуплексной связи). Стандарт RS-232 (Recommended Standard 232) был опубликован в 1960 году Electronic Industries Alliance (EIA) и стал основой для COM-портов персональных компьютеров." data-en="A serial port transmits data bit by bit over a single line (or pair of lines for full-duplex communication). The RS-232 standard (Recommended Standard 232) was published in 1960 by the Electronic Industries Alliance (EIA) and became the basis for PC COM ports.">Послідовний порт передає дані біт за бітом по одній лінії (або парі ліній для повнодуплексного зв'язку). Стандарт RS-232 (Recommended Standard 232) був опублікований у 1960 році Electronic Industries Alliance (EIA) і став основою для COM-портів персональних комп'ютерів.</p>
+<ul>
+<li data-uk="Роз'єм: DB-9 (9 pin) або DB-25 (25 pin). Сигнали: TXD (передача), RXD (прийом), RTS/CTS (керування потоком), DTR/DSR (готовність), DCD (виявлення несучої), RI (дзвінок модему)." data-ru="Разъём: DB-9 (9 pin) или DB-25 (25 pin). Сигналы: TXD (передача), RXD (приём), RTS/CTS (управление потоком), DTR/DSR (готовность), DCD (обнаружение несущей), RI (звонок модема)." data-en="Connector: DB-9 (9 pin) or DB-25 (25 pin). Signals: TXD (transmit), RXD (receive), RTS/CTS (flow control), DTR/DSR (ready), DCD (carrier detect), RI (ring indicator).">Роз'єм: DB-9 (9 pin) або DB-25 (25 pin). Сигнали: TXD (передача), RXD (прийом), RTS/CTS (керування потоком), DTR/DSR (готовність), DCD (виявлення несучої), RI (дзвінок модему).</li>
+<li data-uk="Швидкість: від 75 біт/с до 115 200 біт/с (стандартно), сучасні чіпи підтримують до 921 600 біт/с." data-ru="Скорость: от 75 бит/с до 115 200 бит/с (стандартно), современные чипы поддерживают до 921 600 бит/с." data-en="Speed: from 75 bps to 115,200 bps (standard), modern chips support up to 921,600 bps.">Швидкість: від 75 біт/с до 115 200 біт/с (стандартно), сучасні чіпи підтримують до 921 600 біт/с.</li>
+<li data-uk="Рівні сигналів: ±3В…±15В (логічна 1 = -12В, логічний 0 = +12В). Дальність: до 15 м при низькій швидкості." data-ru="Уровни сигналов: ±3В…±15В (логическая 1 = -12В, логический 0 = +12В). Дальность: до 15 м при низкой скорости." data-en="Signal levels: ±3V…±15V (logic 1 = -12V, logic 0 = +12V). Distance: up to 15 m at low speed.">Рівні сигналів: ±3В…±15В (логічна 1 = -12В, логічний 0 = +12В). Дальність: до 15 м при низькій швидкості.</li>
+<li data-uk="Сучасні нащадки: RS-422 (диференційний сигнал, до 10 Мбіт/с, 1200 м), RS-485 (мультидроп — до 32 пристроїв на шині), UART (Universal Asynchronous Receiver-Transmitter) — чіп, що реалізує послідовний протокол у мікроконтролерах." data-ru="Современные наследники: RS-422 (дифференциальный сигнал, до 10 Мбит/с, 1200 м), RS-485 (мультидроп — до 32 устройств на шине), UART (Universal Asynchronous Receiver-Transmitter) — чип, реализующий последовательный протокол в микроконтроллерах." data-en="Modern descendants: RS-422 (differential signal, up to 10 Mbps, 1200 m), RS-485 (multidrop — up to 32 devices on bus), UART (Universal Asynchronous Receiver-Transmitter) — chip implementing serial protocol in microcontrollers.">Сучасні нащадки: RS-422 (диференційний сигнал, до 10 Мбіт/с, 1200 м), RS-485 (мультидроп — до 32 пристроїв на шині), UART (Universal Asynchronous Receiver-Transmitter) — чіп, що реалізує послідовний протокол у мікроконтролерах.</li>
+</ul>
+<div class="tip">
+<strong data-uk="Де ще використовується:" data-ru="Где ещё использується:" data-en="Where still used:">Де ще використовується:</strong>
+<span data-uk=" Промислова автоматика (RS-485 для MODBUS), мікроконтролери (Arduino UART), мережеве обладнання (консольний порт Cisco), GPS-модулі, 3D-принтери (G-code через USB-UART)." data-ru=" Промышленная автоматика (RS-485 для MODBUS), микроконтроллеры (Arduino UART), сетевое оборудование (консольный порт Cisco), GPS-модули, 3D-принтеры (G-code через USB-UART)." data-en=" Industrial automation (RS-485 for MODBUS), microcontrollers (Arduino UART), networking equipment (Cisco console port), GPS modules, 3D printers (G-code via USB-UART)."> Промислова автоматика (RS-485 для MODBUS), мікроконтролери (Arduino UART), мережеве обладнання (консольний порт Cisco), GPS-модулі, 3D-принтери (G-code через USB-UART).</span>
+</div>
+</section>
+
+<section class="section" id="parallel">
+<h2><span class="icon">&#128424;</span> <span data-uk="Паралельний порт (LPT)" data-ru="Параллельный порт (LPT)" data-en="Parallel Port (LPT)">Паралельний порт (LPT)</span></h2>
+<p data-uk="Паралельний порт передає 8 біт (1 байт) одночасно по 8 лініях даних. Був розроблений Centronics у 1970 році для підключення принтерів і став стандартним портом IBM PC під позначенням LPT (Line PrinTer)." data-ru="Параллельный порт передаёт 8 бит (1 байт) одновременно по 8 линиям данных. Был разработан Centronics в 1970 году для подключения принтеров и стал стандартным портом IBM PC под обозначением LPT (Line PrinTer)." data-en="A parallel port transmits 8 bits (1 byte) simultaneously over 8 data lines. Developed by Centronics in 1970 for printer connection and became the standard IBM PC port designated LPT (Line PrinTer).">Паралельний порт передає 8 біт (1 байт) одночасно по 8 лініях даних. Був розроблений Centronics у 1970 році для підключення принтерів і став стандартним портом IBM PC під позначенням LPT (Line PrinTer).</p>
+<ul>
+<li data-uk="Роз'єм: DB-25 (на комп'ютері) або Centronics 36-pin (на принтері)." data-ru="Разъём: DB-25 (на компьютере) или Centronics 36-pin (на принтере)." data-en="Connector: DB-25 (on computer) or Centronics 36-pin (on printer).">Роз'єм: DB-25 (на комп'ютері) або Centronics 36-pin (на принтері).</li>
+<li data-uk="Швидкість: до 150 кБ/с у режимі SPP (Standard Parallel Port), до 2 МБ/с у EPP (Enhanced Parallel Port) та ECP (Extended Capabilities Port)." data-ru="Скорость: до 150 кБ/с в режиме SPP (Standard Parallel Port), до 2 МБ/с в EPP (Enhanced Parallel Port) и ECP (Extended Capabilities Port)." data-en="Speed: up to 150 KB/s in SPP mode (Standard Parallel Port), up to 2 MB/s in EPP (Enhanced Parallel Port) and ECP (Extended Capabilities Port).">Швидкість: до 150 кБ/с у режимі SPP (Standard Parallel Port), до 2 МБ/с у EPP (Enhanced Parallel Port) та ECP (Extended Capabilities Port).</li>
+<li data-uk="Сигнали: 8 ліній даних, 4 лінії керування (STROBE, AUTO FEED, INIT, SELECT IN), 5 ліній стану (ACK, BUSY, PE, SELECT, ERROR)." data-ru="Сигналы: 8 линий данных, 4 линии управления (STROBE, AUTO FEED, INIT, SELECT IN), 5 линий состояния (ACK, BUSY, PE, SELECT, ERROR)." data-en="Signals: 8 data lines, 4 control lines (STROBE, AUTO FEED, INIT, SELECT IN), 5 status lines (ACK, BUSY, PE, SELECT, ERROR).">Сигнали: 8 ліній даних, 4 лінії керування (STROBE, AUTO FEED, INIT, SELECT IN), 5 ліній стану (ACK, BUSY, PE, SELECT, ERROR).</li>
+<li data-uk="Нестандартне застосування: програматори мікроконтролерів (Bit-Bang), підключення ZIP-дисків, сканерів, адаптери JTAG." data-ru="Нестандартное применение: программаторы микроконтроллеров (Bit-Bang), подключение ZIP-дисков, сканеров, адаптеры JTAG." data-en="Non-standard uses: microcontroller programmers (Bit-Bang), ZIP drive connection, scanners, JTAG adapters.">Нестандартне застосування: програматори мікроконтролерів (Bit-Bang), підключення ZIP-дисків, сканерів, адаптери JTAG.</li>
+</ul>
+<div class="tip">
+<strong data-uk="Чому LPT зник:" data-ru="Почему LPT исчез:" data-en="Why LPT disappeared:">Чому LPT зник:</strong>
+<span data-uk=" Обмежена швидкість, громіздкий кабель (до 3 м), відсутність hot-plug, конфлікти IRQ. USB забезпечив вищу швидкість, менші роз'єми, Plug-and-Play і живлення по шині — повністю витіснив LPT до 2010-х." data-ru=" Ограниченная скорость, громоздкий кабель (до 3 м), отсутствие hot-plug, конфликты IRQ. USB обеспечил более высокую скорость, меньшие разъёмы, Plug-and-Play и питание по шине — полностью вытеснил LPT к 2010-м." data-en=" Limited speed, bulky cable (up to 3 m), no hot-plug, IRQ conflicts. USB provided higher speed, smaller connectors, Plug-and-Play and bus power — completely displaced LPT by the 2010s."> Обмежена швидкість, громіздкий кабель (до 3 м), відсутність hot-plug, конфлікти IRQ. USB забезпечив вищу швидкість, менші роз'єми, Plug-and-Play і живлення по шині — повністю витіснив LPT до 2010-х.</span>
+</div>
+</section>
+
+<section class="section" id="ps2">
+<h2><span class="icon">&#9000;</span> <span data-uk="PS/2 — порт для клавіатури та миші" data-ru="PS/2 — порт для клавиатуры и мыши" data-en="PS/2 — Keyboard and Mouse Port">PS/2 — порт для клавіатури та миші</span></h2>
+<p data-uk="PS/2 (Personal System/2) — інтерфейс, представлений IBM у 1987 році разом із лінійкою комп'ютерів PS/2. Використовував 6-pin mini-DIN роз'єм для клавіатури (фіолетовий) та миші (зелений)." data-ru="PS/2 (Personal System/2) — интерфейс, представленный IBM в 1987 году вместе с линейкой компьютеров PS/2. Использовал 6-pin mini-DIN разъём для клавиатуры (фиолетовый) и мыши (зелёный)." data-en="PS/2 (Personal System/2) — an interface introduced by IBM in 1987 along with the PS/2 computer line. Used a 6-pin mini-DIN connector for keyboard (purple) and mouse (green).">PS/2 (Personal System/2) — інтерфейс, представлений IBM у 1987 році разом із лінійкою комп'ютерів PS/2. Використовував 6-pin mini-DIN роз'єм для клавіатури (фіолетовий) та миші (зелений).</p>
+<ul>
+<li data-uk="Протокол: синхронний послідовний (clock + data). Клавіатура — скан-коди (Scan Code Set 1/2/3), миша — пакети з координатами X/Y та станом кнопок." data-ru="Протокол: синхронный последовательный (clock + data). Клавиатура — скан-коды (Scan Code Set 1/2/3), мышь — пакеты с координатами X/Y и состоянием кнопок." data-en="Protocol: synchronous serial (clock + data). Keyboard — scan codes (Scan Code Set 1/2/3), mouse — packets with X/Y coordinates and button states.">Протокол: синхронний послідовний (clock + data). Клавіатура — скан-коди (Scan Code Set 1/2/3), миша — пакети з координатами X/Y та станом кнопок.</li>
+<li data-uk="Переваги перед USB: немає polling (пристрій надсилає дані за перериванням), нижча затримка (latency), підтримка N-key rollover (одночасне натискання безлічі клавіш)." data-ru="Преимущества перед USB: нет polling (устройство отправляет данные по прерыванию), меньшая задержка (latency), поддержка N-key rollover (одновременное нажатие множества клавиш)." data-en="Advantages over USB: no polling (device sends data on interrupt), lower latency, N-key rollover support (simultaneous pressing of many keys).">Переваги перед USB: немає polling (пристрій надсилає дані за перериванням), нижча затримка (latency), підтримка N-key rollover (одночасне натискання безлічі клавіш).</li>
+<li data-uk="Недоліки: немає hot-plug (підключення «на ходу» часто вимагає перезавантаження), окремі порти для клавіатури і миші, обмежена функціональність (без підтримки макросів, RGB-підсвітки, додаткових кнопок)." data-ru="Недостатки: нет hot-plug (подключение «на ходу» часто требует перезагрузки), отдельные порты для клавиатуры и мыши, ограниченная функциональность (без поддержки макросов, RGB-подсветки, дополнительных кнопок)." data-en="Cons: no hot-plug (connecting 'on the fly' often requires reboot), separate ports for keyboard and mouse, limited functionality (no macro support, RGB lighting, extra buttons).">Недоліки: немає hot-plug (підключення «на ходу» часто вимагає перезавантаження), окремі порти для клавіатури і миші, обмежена функціональність (без підтримки макросів, RGB-підсвітки, додаткових кнопок).</li>
+</ul>
+<div class="tip">
+<strong data-uk="Цікавий факт:" data-ru="Интересный факт:" data-en="Fun fact:">Цікавий факт:</strong>
+<span data-uk=" PS/2-роз'єми на сучасних материнських платах збереглися завдяки геймерам та ентузіастам, яким важлива мінімальна затримка вводу. Деякі топові механічні клавіатури (Ducky, Leopold) досі пропонують PS/2-адаптер у комплекті." data-ru=" PS/2-разъёмы на современных материнских платах сохранились благодаря геймерам и энтузиастам, которым важна минимальная задержка ввода. Некоторые топовые механические клавиатуры (Ducky, Leopold) до сих пор предлагают PS/2-адаптер в комплекте." data-en=" PS/2 connectors on modern motherboards have been preserved thanks to gamers and enthusiasts for whom minimal input latency is important. Some top mechanical keyboards (Ducky, Leopold) still include a PS/2 adapter."> PS/2-роз'єми на сучасних материнських платах збереглися завдяки геймерам та ентузіастам, яким важлива мінімальна затримка вводу. Деякі топові механічні клавіатури (Ducky, Leopold) досі пропонують PS/2-адаптер у комплекті.</span>
+</div>
+</section>
+
+<section class="section" id="usb">
+<h2><span class="icon">&#128268;</span> <span data-uk="USB — універсальна послідовна шина" data-ru="USB — универсальная последовательная шина" data-en="USB — Universal Serial Bus">USB — універсальна послідовна шина</span></h2>
+<p data-uk="USB (Universal Serial Bus) — революційний стандарт, розроблений консорціумом Intel, Microsoft, IBM, Compaq, DEC, NEC та Nortel у 1994-1996 роках. Мета — замінити десятки різних портів (COM, LPT, PS/2, GamePort) одним універсальним роз'ємом з підтримкою hot-plug, Plug-and-Play та живлення по шині." data-ru="USB (Universal Serial Bus) — революционный стандарт, разработанный консорциумом Intel, Microsoft, IBM, Compaq, DEC, NEC и Nortel в 1994-1996 годах. Цель — заменить десятки разных портов (COM, LPT, PS/2, GamePort) одним универсальным разъёмом с поддержкой hot-plug, Plug-and-Play и питания по шине." data-en="USB (Universal Serial Bus) — a revolutionary standard developed by a consortium of Intel, Microsoft, IBM, Compaq, DEC, NEC and Nortel in 1994-1996. The goal was to replace dozens of different ports (COM, LPT, PS/2, GamePort) with a single universal connector supporting hot-plug, Plug-and-Play and bus power.">USB (Universal Serial Bus) — революційний стандарт, розроблений консорціумом Intel, Microsoft, IBM, Compaq, DEC, NEC та Nortel у 1994-1996 роках. Мета — замінити десятки різних портів (COM, LPT, PS/2, GamePort) одним універсальним роз'ємом з підтримкою hot-plug, Plug-and-Play та живлення по шині.</p>
+
+<h4 data-uk="Еволюція версій USB:" data-ru="Эволюция версий USB:" data-en="USB Version Evolution:">Еволюція версій USB:</h4>
+<table class="comparison-table">
+<tr>
+<th data-uk="Версія" data-ru="Версия" data-en="Version">Версія</th>
+<th data-uk="Рік" data-ru="Год" data-en="Year">Рік</th>
+<th data-uk="Швидкість" data-ru="Скорость" data-en="Speed">Швидкість</th>
+<th data-uk="Живлення" data-ru="Питание" data-en="Power">Живлення</th>
+<th data-uk="Роз'єм" data-ru="Разъём" data-en="Connector">Роз'єм</th>
+</tr>
+<tr>
+<td>USB 1.0 Low Speed</td><td>1996</td><td>1,5 Мбіт/с</td><td>5В, 100 мА</td>
+<td data-uk="Type-A, Type-B" data-ru="Type-A, Type-B" data-en="Type-A, Type-B">Type-A, Type-B</td>
+</tr>
+<tr>
+<td>USB 1.1 Full Speed</td><td>1998</td><td>12 Мбіт/с</td><td>5В, 500 мА</td>
+<td data-uk="Type-A, Type-B" data-ru="Type-A, Type-B" data-en="Type-A, Type-B">Type-A, Type-B</td>
+</tr>
+<tr>
+<td>USB 2.0 Hi-Speed</td><td>2000</td><td>480 Мбіт/с</td><td>5В, 500 мА</td>
+<td data-uk="Type-A, Type-B, mini, micro" data-ru="Type-A, Type-B, mini, micro" data-en="Type-A, Type-B, mini, micro">Type-A, Type-B, mini, micro</td>
+</tr>
+<tr>
+<td>USB 3.0 / 3.1 Gen 1</td><td>2008/2013</td><td>5 Гбіт/с</td><td>5В, 900 мА</td>
+<td data-uk="Type-A (синій), Type-B, micro-B" data-ru="Type-A (синий), Type-B, micro-B" data-en="Type-A (blue), Type-B, micro-B">Type-A (синій), Type-B, micro-B</td>
+</tr>
+<tr>
+<td>USB 3.1 Gen 2 / 3.2 Gen 2</td><td>2013/2017</td><td>10 Гбіт/с</td><td>5В, 1,5 А</td>
+<td data-uk="Type-A, Type-C" data-ru="Type-A, Type-C" data-en="Type-A, Type-C">Type-A, Type-C</td>
+</tr>
+<tr>
+<td>USB 3.2 Gen 2x2</td><td>2017</td><td>20 Гбіт/с</td><td>5В, 3 А / 20В, 5 А (PD)</td>
+<td data-uk="Type-C" data-ru="Type-C" data-en="Type-C">Type-C</td>
+</tr>
+<tr>
+<td>USB4</td><td>2019</td><td>40 Гбіт/с</td><td>до 100 Вт (PD 3.0)</td>
+<td data-uk="Type-C" data-ru="Type-C" data-en="Type-C">Type-C</td>
+</tr>
+<tr>
+<td>USB4 v2</td><td>2022</td><td>80 Гбіт/с</td><td>до 240 Вт (EPR)</td>
+<td data-uk="Type-C" data-ru="Type-C" data-en="Type-C">Type-C</td>
+</tr>
+</table>
+
+<h4 data-uk="USB Type-C — один роз'єм для всього:" data-ru="USB Type-C — один разъём для всего:" data-en="USB Type-C — one connector for everything:">USB Type-C — один роз'єм для всього:</h4>
+<ul>
+<li data-uk="Симетричний (реверсивний) — вставляється будь-якою стороною. 24 контакти." data-ru="Симметричный (реверсивный) — вставляется любой стороной. 24 контакта." data-en="Symmetrical (reversible) — inserts either way. 24 pins.">Симетричний (реверсивний) — вставляється будь-якою стороною. 24 контакти.</li>
+<li data-uk="USB Power Delivery (PD): до 100 Вт (20В × 5А) у стандарті, до 240 Вт (48В × 5А) у Extended Power Range (EPR) — достатньо для зарядки ноутбуків і навіть потужних ігрових ноутбуків." data-ru="USB Power Delivery (PD): до 100 Вт (20В × 5А) в стандарте, до 240 Вт (48В × 5А) в Extended Power Range (EPR) — достаточно для зарядки ноутбуков и даже мощных игровых ноутбуков." data-en="USB Power Delivery (PD): up to 100 W (20V × 5A) in standard, up to 240 W (48V × 5A) in Extended Power Range (EPR) — enough to charge laptops and even powerful gaming laptops.">USB Power Delivery (PD): до 100 Вт (20В × 5А) у стандарті, до 240 Вт (48В × 5А) у Extended Power Range (EPR) — достатньо для зарядки ноутбуків і навіть потужних ігрових ноутбуків.</li>
+<li data-uk="Alternate Modes: DisplayPort, HDMI, Thunderbolt 3/4, MHL — через один Type-C кабель можна передавати відео 8K, дані та живлення одночасно." data-ru="Alternate Modes: DisplayPort, HDMI, Thunderbolt 3/4, MHL — через один Type-C кабель можно передавать видео 8K, данные и питание одновременно." data-en="Alternate Modes: DisplayPort, HDMI, Thunderbolt 3/4, MHL — through a single Type-C cable you can transfer 8K video, data and power simultaneously.">Alternate Modes: DisplayPort, HDMI, Thunderbolt 3/4, MHL — через один Type-C кабель можна передавати відео 8K, дані та живлення одночасно.</li>
+<li data-uk="USB4 базується на протоколі Thunderbolt 3 — підтримує тунелювання PCIe та DisplayPort, дозволяючи підключати зовнішні відеокарти (eGPU) та монітори через один порт." data-ru="USB4 базируется на протоколе Thunderbolt 3 — поддерживает туннелирование PCIe и DisplayPort, позволяя подключать внешние видеокарты (eGPU) и мониторы через один порт." data-en="USB4 is based on the Thunderbolt 3 protocol — supports PCIe and DisplayPort tunneling, allowing external GPUs (eGPU) and monitors to be connected through a single port.">USB4 базується на протоколі Thunderbolt 3 — підтримує тунелювання PCIe та DisplayPort, дозволяючи підключати зовнішні відеокарти (eGPU) та монітори через один порт.</li>
+</ul>
+</section>
+
+<section class="section" id="thunderbolt">
+<h2><span class="icon">&#9889;</span> <span data-uk="Thunderbolt" data-ru="Thunderbolt" data-en="Thunderbolt">Thunderbolt</span></h2>
+<p data-uk="Thunderbolt — високошвидкісний інтерфейс, розроблений Intel спільно з Apple. Поєднує PCI Express та DisplayPort в одному кабелі. Спочатку використовував Mini DisplayPort роз'єм (Thunderbolt 1/2), а з версії 3 перейшов на USB Type-C." data-ru="Thunderbolt — высокоскоростной интерфейс, разработанный Intel совместно с Apple. Объединяет PCI Express и DisplayPort в одном кабеле. Изначально использовал Mini DisplayPort разъём (Thunderbolt 1/2), а с версии 3 перешёл на USB Type-C." data-en="Thunderbolt is a high-speed interface developed by Intel in collaboration with Apple. Combines PCI Express and DisplayPort in a single cable. Initially used a Mini DisplayPort connector (Thunderbolt 1/2), and from version 3 switched to USB Type-C.">Thunderbolt — високошвидкісний інтерфейс, розроблений Intel спільно з Apple. Поєднує PCI Express та DisplayPort в одному кабелі. Спочатку використовував Mini DisplayPort роз'єм (Thunderbolt 1/2), а з версії 3 перейшов на USB Type-C.</p>
+<table class="comparison-table">
+<tr>
+<th data-uk="Версія" data-ru="Версия" data-en="Version">Версія</th>
+<th data-uk="Рік" data-ru="Год" data-en="Year">Рік</th>
+<th data-uk="Швидкість" data-ru="Скорость" data-en="Speed">Швидкість</th>
+<th data-uk="Роз'єм" data-ru="Разъём" data-en="Connector">Роз'єм</th>
+<th data-uk="Можливості" data-ru="Возможности" data-en="Capabilities">Можливості</th>
+</tr>
+<tr>
+<td>Thunderbolt 1</td><td>2011</td><td>10 Гбіт/с</td><td>Mini DisplayPort</td>
+<td data-uk="2 канали по 10 Гбіт/с, DisplayPort 1.1a" data-ru="2 канала по 10 Гбит/с, DisplayPort 1.1a" data-en="2 channels at 10 Gbps, DisplayPort 1.1a">2 канали по 10 Гбіт/с, DisplayPort 1.1a</td>
+</tr>
+<tr>
+<td>Thunderbolt 2</td><td>2013</td><td>20 Гбіт/с</td><td>Mini DisplayPort</td>
+<td data-uk="Об'єднання каналів, DisplayPort 1.2" data-ru="Объединение каналов, DisplayPort 1.2" data-en="Channel bonding, DisplayPort 1.2">Об'єднання каналів, DisplayPort 1.2</td>
+</tr>
+<tr>
+<td>Thunderbolt 3</td><td>2015</td><td>40 Гбіт/с</td><td>USB Type-C</td>
+<td data-uk="PCIe 3.0 x4, USB 3.1 Gen 2, DP 1.2, живлення 100 Вт" data-ru="PCIe 3.0 x4, USB 3.1 Gen 2, DP 1.2, питание 100 Вт" data-en="PCIe 3.0 x4, USB 3.1 Gen 2, DP 1.2, 100 W power">PCIe 3.0 x4, USB 3.1 Gen 2, DP 1.2, живлення 100 Вт</td>
+</tr>
+<tr>
+<td>Thunderbolt 4</td><td>2020</td><td>40 Гбіт/с</td><td>USB Type-C</td>
+<td data-uk="2 монітори 4K або 1×8K, PCIe 32 Гбіт/с, пробудження від клавіатури" data-ru="2 монитора 4K или 1×8K, PCIe 32 Гбит/с, пробуждение от клавиатуры" data-en="2×4K or 1×8K monitors, PCIe 32 Gbps, wake from keyboard">2 монітори 4K або 1×8K, PCIe 32 Гбіт/с, пробудження від клавіатури</td>
+</tr>
+<tr>
+<td>Thunderbolt 5</td><td>2024</td><td>120 Гбіт/с</td><td>USB Type-C</td>
+<td data-uk="3 монітори 4K@144 Гц, 8K@60 Гц, PCIe 64 Гбіт/с, 240 Вт" data-ru="3 монитора 4K@144 Гц, 8K@60 Гц, PCIe 64 Гбит/с, 240 Вт" data-en="3×4K@144 Hz, 8K@60 Hz, PCIe 64 Gbps, 240 W">3 монітори 4K@144 Гц, 8K@60 Гц, PCIe 64 Гбіт/с, 240 Вт</td>
+</tr>
+</table>
+<div class="tip">
+<strong data-uk="Thunderbolt vs USB4:" data-ru="Thunderbolt vs USB4:" data-en="Thunderbolt vs USB4:">Thunderbolt vs USB4:</strong>
+<span data-uk=" USB4 — відкритий стандарт на базі Thunderbolt 3, але з необов'язковими вимогами. Thunderbolt 4 — сертифікація Intel з жорсткішими вимогами: гарантована підтримка 2×4K, PCIe 32 Гбіт/с, пробудження, захист DMA. Thunderbolt 5 — подвоєна пропускна здатність завдяки PAM-3 модуляції." data-ru=" USB4 — открытый стандарт на базе Thunderbolt 3, но с необязательными требованиями. Thunderbolt 4 — сертификация Intel с более жёсткими требованиями: гарантированная поддержка 2×4K, PCIe 32 Гбит/с, пробуждение, защита DMA. Thunderbolt 5 — удвоенная пропускная способность благодаря PAM-3 модуляции." data-en=" USB4 is an open standard based on Thunderbolt 3 but with optional requirements. Thunderbolt 4 is Intel certification with stricter requirements: guaranteed 2×4K support, PCIe 32 Gbps, wake, DMA protection. Thunderbolt 5 — doubled bandwidth thanks to PAM-3 modulation."> USB4 — відкритий стандарт на базі Thunderbolt 3, але з необов'язковими вимогами. Thunderbolt 4 — сертифікація Intel з жорсткішими вимогами: гарантована підтримка 2×4K, PCIe 32 Гбіт/с, пробудження, захист DMA. Thunderbolt 5 — подвоєна пропускна здатність завдяки PAM-3 модуляції.</span>
+</div>
+</section>
+
+<section class="section" id="video">
+<h2><span class="icon">&#127909;</span> <span data-uk="Відеоінтерфейси" data-ru="Видеоинтерфейсы" data-en="Video Interfaces">Відеоінтерфейси</span></h2>
+<p data-uk="Відеоінтерфейси передають зображення від графічного адаптера до монітора. Еволюція йшла від аналогових сигналів до цифрових, від низької роздільної здатності до 8K та HDR." data-ru="Видеоинтерфейсы передают изображение от графического адаптера к монитору. Эволюция шла от аналоговых сигналов к цифровым, от низкого разрешения до 8K и HDR." data-en="Video interfaces transmit images from the graphics adapter to the monitor. Evolution went from analog signals to digital, from low resolution to 8K and HDR.">Відеоінтерфейси передають зображення від графічного адаптера до монітора. Еволюція йшла від аналогових сигналів до цифрових, від низької роздільної здатності до 8K та HDR.</p>
+
+<h4 data-uk="VGA (Video Graphics Array)" data-ru="VGA (Video Graphics Array)" data-en="VGA (Video Graphics Array)">VGA (Video Graphics Array)</h4>
+<ul>
+<li data-uk="Розроблений IBM у 1987 році. 15-pin D-Sub (DE-15). Аналоговий сигнал RGB + HSync/VSync." data-ru="Разработан IBM в 1987 году. 15-pin D-Sub (DE-15). Аналоговый сигнал RGB + HSync/VSync." data-en="Developed by IBM in 1987. 15-pin D-Sub (DE-15). Analog RGB + HSync/VSync signal.">Розроблений IBM у 1987 році. 15-pin D-Sub (DE-15). Аналоговий сигнал RGB + HSync/VSync.</li>
+<li data-uk="Максимум: 2048×1536 @ 85 Гц. Недоліки: шум аналогового сигналу, відсутність аудіо, великий роз'єм." data-ru="Максимум: 2048×1536 @ 85 Гц. Недостатки: шум аналогового сигнала, отсутствие аудио, большой разъём." data-en="Maximum: 2048×1536 @ 85 Hz. Cons: analog signal noise, no audio, large connector.">Максимум: 2048×1536 @ 85 Гц. Недоліки: шум аналогового сигналу, відсутність аудіо, великий роз'єм.</li>
+<li data-uk="Досі використовується в проєкторах, промислових моніторах та старому обладнанні." data-ru="До сих пор используется в проекторах, промышленных мониторах и старом оборудовании." data-en="Still used in projectors, industrial monitors and legacy equipment.">Досі використовується в проєкторах, промислових моніторах та старому обладнанні.</li>
+</ul>
+
+<h4 data-uk="DVI (Digital Visual Interface)" data-ru="DVI (Digital Visual Interface)" data-en="DVI (Digital Visual Interface)">DVI (Digital Visual Interface)</h4>
+<ul>
+<li data-uk="Розроблений DDWG у 1999 році. 24+5 pin (Dual-Link). Підтримує аналоговий (DVI-A), цифровий (DVI-D) та комбінований (DVI-I) режими." data-ru="Разработан DDWG в 1999 году. 24+5 pin (Dual-Link). Поддерживает аналоговый (DVI-A), цифровой (DVI-D) и комбинированный (DVI-I) режимы." data-en="Developed by DDWG in 1999. 24+5 pin (Dual-Link). Supports analog (DVI-A), digital (DVI-D) and combined (DVI-I) modes.">Розроблений DDWG у 1999 році. 24+5 pin (Dual-Link). Підтримує аналоговий (DVI-A), цифровий (DVI-D) та комбінований (DVI-I) режими.</li>
+<li data-uk="Single-Link: до 1920×1200 @ 60 Гц. Dual-Link: до 2560×1600 @ 60 Гц. Без аудіо." data-ru="Single-Link: до 1920×1200 @ 60 Гц. Dual-Link: до 2560×1600 @ 60 Гц. Без аудио." data-en="Single-Link: up to 1920×1200 @ 60 Hz. Dual-Link: up to 2560×1600 @ 60 Hz. No audio.">Single-Link: до 1920×1200 @ 60 Гц. Dual-Link: до 2560×1600 @ 60 Гц. Без аудіо.</li>
+</ul>
+
+<h4 data-uk="HDMI (High-Definition Multimedia Interface)" data-ru="HDMI (High-Definition Multimedia Interface)" data-en="HDMI (High-Definition Multimedia Interface)">HDMI (High-Definition Multimedia Interface)</h4>
+<ul>
+<li data-uk="Розроблений у 2002 році (Hitachi, Panasonic, Philips, Silicon Image, Sony, Thomson, Toshiba). Цифровий, з підтримкою аудіо (ARC/eARC)." data-ru="Разработан в 2002 году (Hitachi, Panasonic, Philips, Silicon Image, Sony, Thomson, Toshiba). Цифровой, с поддержкой аудио (ARC/eARC)." data-en="Developed in 2002 (Hitachi, Panasonic, Philips, Silicon Image, Sony, Thomson, Toshiba). Digital, with audio support (ARC/eARC).">Розроблений у 2002 році (Hitachi, Panasonic, Philips, Silicon Image, Sony, Thomson, Toshiba). Цифровий, з підтримкою аудіо (ARC/eARC).</li>
+<li data-uk="HDMI 1.4: 4K@30 Гц, 3D, ARC. HDMI 2.0: 4K@60 Гц, HDR, 18 Гбіт/с. HDMI 2.1: 8K@60 / 4K@120 Гц, 48 Гбіт/с, eARC, VRR (Variable Refresh Rate), ALLM." data-ru="HDMI 1.4: 4K@30 Гц, 3D, ARC. HDMI 2.0: 4K@60 Гц, HDR, 18 Гбит/с. HDMI 2.1: 8K@60 / 4K@120 Гц, 48 Гбит/с, eARC, VRR (Variable Refresh Rate), ALLM." data-en="HDMI 1.4: 4K@30 Hz, 3D, ARC. HDMI 2.0: 4K@60 Hz, HDR, 18 Gbps. HDMI 2.1: 8K@60 / 4K@120 Hz, 48 Gbps, eARC, VRR (Variable Refresh Rate), ALLM.">HDMI 1.4: 4K@30 Гц, 3D, ARC. HDMI 2.0: 4K@60 Гц, HDR, 18 Гбіт/с. HDMI 2.1: 8K@60 / 4K@120 Гц, 48 Гбіт/с, eARC, VRR (Variable Refresh Rate), ALLM.</li>
+<li data-uk="Роз'єми: Type-A (стандартний), Type-C (mini), Type-D (micro)." data-ru="Разъёмы: Type-A (стандартный), Type-C (mini), Type-D (micro)." data-en="Connectors: Type-A (standard), Type-C (mini), Type-D (micro).">Роз'єми: Type-A (стандартний), Type-C (mini), Type-D (micro).</li>
+</ul>
+
+<h4 data-uk="DisplayPort (DP)" data-ru="DisplayPort (DP)" data-en="DisplayPort (DP)">DisplayPort (DP)</h4>
+<ul>
+<li data-uk="Розроблений VESA у 2006 році. Цифровий, пакетний протокол (як Ethernet/PCIe). Може передавати кілька потоків (MST — Multi-Stream Transport) через один кабель." data-ru="Разработан VESA в 2006 году. Цифровой, пакетный протокол (как Ethernet/PCIe). Может передавать несколько потоков (MST — Multi-Stream Transport) через один кабель." data-en="Developed by VESA in 2006. Digital, packet-based protocol (like Ethernet/PCIe). Can transmit multiple streams (MST — Multi-Stream Transport) through a single cable.">Розроблений VESA у 2006 році. Цифровий, пакетний протокол (як Ethernet/PCIe). Може передавати кілька потоків (MST — Multi-Stream Transport) через один кабель.</li>
+<li data-uk="DP 1.2: 4K@60 Гц, 21,6 Гбіт/с. DP 1.4: 8K@60 Гц, HDR, DSC (стиснення), 32,4 Гбіт/с. DP 2.0: 16K@60 Гц, 80 Гбіт/с." data-ru="DP 1.2: 4K@60 Гц, 21,6 Гбит/с. DP 1.4: 8K@60 Гц, HDR, DSC (сжатие), 32,4 Гбит/с. DP 2.0: 16K@60 Гц, 80 Гбит/с." data-en="DP 1.2: 4K@60 Hz, 21.6 Gbps. DP 1.4: 8K@60 Hz, HDR, DSC (compression), 32.4 Gbps. DP 2.0: 16K@60 Hz, 80 Gbps.">DP 1.2: 4K@60 Гц, 21,6 Гбіт/с. DP 1.4: 8K@60 Гц, HDR, DSC (стиснення), 32,4 Гбіт/с. DP 2.0: 16K@60 Гц, 80 Гбіт/с.</li>
+<li data-uk="Mini DisplayPort — компактна версія від Apple (2008). USB Type-C з DP Alt Mode — сучасний стандарт для ноутбуків." data-ru="Mini DisplayPort — компактная версия от Apple (2008). USB Type-C с DP Alt Mode — современный стандарт для ноутбуков." data-en="Mini DisplayPort — compact version from Apple (2008). USB Type-C with DP Alt Mode — modern standard for laptops.">Mini DisplayPort — компактна версія від Apple (2008). USB Type-C з DP Alt Mode — сучасний стандарт для ноутбуків.</li>
+</ul>
+<div class="tip">
+<strong data-uk="Що обрати:" data-ru="Что выбрать:" data-en="What to choose:">Що обрати:</strong>
+<span data-uk=" Для ПК і моніторів — DisplayPort (краща підтримка VRR, MST, вища пропускна здатність). Для ТБ і консолей — HDMI 2.1 (універсальність, eARC). Для старого обладнання — DVI або VGA через адаптер." data-ru=" Для ПК и мониторов — DisplayPort (лучшая поддержка VRR, MST, более высокая пропускная способность). Для ТВ и консолей — HDMI 2.1 (универсальность, eARC). Для старого оборудования — DVI или VGA через адаптер." data-en=" For PC and monitors — DisplayPort (better VRR support, MST, higher bandwidth). For TV and consoles — HDMI 2.1 (universality, eARC). For legacy equipment — DVI or VGA via adapter."> Для ПК і моніторів — DisplayPort (краща підтримка VRR, MST, вища пропускна здатність). Для ТБ і консолей — HDMI 2.1 (універсальність, eARC). Для старого обладнання — DVI або VGA через адаптер.</span>
+</div>
+</section>
+
+<section class="section" id="storage">
+<h2><span class="icon">&#128190;</span> <span data-uk="Інтерфейси накопичувачів" data-ru="Интерфейсы накопителей" data-en="Storage Interfaces">Інтерфейси накопичувачів</span></h2>
+
+<h4 data-uk="SATA (Serial ATA)" data-ru="SATA (Serial ATA)" data-en="SATA (Serial ATA)">SATA (Serial ATA)</h4>
+<p data-uk="SATA замінив паралельний ATA (PATA/IDE) у 2003 році. Передає дані послідовно диференційними парами, що зменшує перешкоди та дозволяє використовувати тонші й довші кабелі (до 1 м)." data-ru="SATA заменил параллельный ATA (PATA/IDE) в 2003 году. Передаёт данные последовательно дифференциальными парами, что уменьшает помехи и позволяет использовать более тонкие и длинные кабели (до 1 м)." data-en="SATA replaced Parallel ATA (PATA/IDE) in 2003. Transmits data serially over differential pairs, reducing interference and allowing thinner and longer cables (up to 1 m).">SATA замінив паралельний ATA (PATA/IDE) у 2003 році. Передає дані послідовно диференційними парами, що зменшує перешкоди та дозволяє використовувати тонші й довші кабелі (до 1 м).</p>
+<ul>
+<li data-uk="SATA I: 1,5 Гбіт/с (~150 МБ/с). SATA II: 3 Гбіт/с (~300 МБ/с). SATA III: 6 Гбіт/с (~600 МБ/с)." data-ru="SATA I: 1,5 Гбит/с (~150 МБ/с). SATA II: 3 Гбит/с (~300 МБ/с). SATA III: 6 Гбит/с (~600 МБ/с)." data-en="SATA I: 1.5 Gbps (~150 MB/s). SATA II: 3 Gbps (~300 MB/s). SATA III: 6 Gbps (~600 MB/s).">SATA I: 1,5 Гбіт/с (~150 МБ/с). SATA II: 3 Гбіт/с (~300 МБ/с). SATA III: 6 Гбіт/с (~600 МБ/с).</li>
+<li data-uk="Роз'єм: 7-pin для даних + 15-pin для живлення. Підтримує hot-plug (для зовнішніх накопичувачів eSATA)." data-ru="Разъём: 7-pin для данных + 15-pin для питания. Поддерживает hot-plug (для внешних накопителей eSATA)." data-en="Connector: 7-pin for data + 15-pin for power. Supports hot-plug (for external eSATA drives).">Роз'єм: 7-pin для даних + 15-pin для живлення. Підтримує hot-plug (для зовнішніх накопичувачів eSATA).</li>
+<li data-uk="Обмеження: SATA III — вузьке місце для сучасних SSD, які здатні на швидкість 3-7 ГБ/с." data-ru="Ограничение: SATA III — узкое место для современных SSD, способных на скорость 3-7 ГБ/с." data-en="Limitation: SATA III is a bottleneck for modern SSDs capable of 3-7 GB/s.">Обмеження: SATA III — вузьке місце для сучасних SSD, які здатні на швидкість 3-7 ГБ/с.</li>
+</ul>
+
+<h4 data-uk="NVMe (Non-Volatile Memory Express)" data-ru="NVMe (Non-Volatile Memory Express)" data-en="NVMe (Non-Volatile Memory Express)">NVMe (Non-Volatile Memory Express)</h4>
+<p data-uk="NVMe — протокол доступу до SSD через шину PCI Express, розроблений консорціумом у 2011 році. Замість повільного AHCI (розроблений для механічних HDD) NVMe оптимізований для паралельної роботи з флеш-пам'яттю." data-ru="NVMe — протокол доступа к SSD через шину PCI Express, разработанный консорциумом в 2011 году. Вместо медленного AHCI (разработанного для механических HDD) NVMe оптимизирован для параллельной работы с флеш-памятью." data-en="NVMe is a protocol for accessing SSDs via the PCI Express bus, developed by a consortium in 2011. Instead of slow AHCI (designed for mechanical HDDs), NVMe is optimized for parallel operation with flash memory.">NVMe — протокол доступу до SSD через шину PCI Express, розроблений консорціумом у 2011 році. Замість повільного AHCI (розроблений для механічних HDD) NVMe оптимізований для паралельної роботи з флеш-пам'яттю.</p>
+<ul>
+<li data-uk="Форм-фактори: M.2 (2280 — 22×80 мм, найпоширеніший), U.2 (2,5" для серверів), PCIe AIC (карта розширення), E1.S / E3.S (дата-центри)." data-ru="Форм-факторы: M.2 (2280 — 22×80 мм, самый распространённый), U.2 (2,5" для серверов), PCIe AIC (карта расширения), E1.S / E3.S (дата-центры)." data-en="Form factors: M.2 (2280 — 22×80 mm, most common), U.2 (2.5" for servers), PCIe AIC (expansion card), E1.S / E3.S (data centers).">Форм-фактори: M.2 (2280 — 22×80 мм, найпоширеніший), U.2 (2,5" для серверів), PCIe AIC (карта розширення), E1.S / E3.S (дата-центри).</li>
+<li data-uk="Швидкість: PCIe 3.0 x4 — до 4 ГБ/с, PCIe 4.0 x4 — до 8 ГБ/с, PCIe 5.0 x4 — до 16 ГБ/с." data-ru="Скорость: PCIe 3.0 x4 — до 4 ГБ/с, PCIe 4.0 x4 — до 8 ГБ/с, PCIe 5.0 x4 — до 16 ГБ/с." data-en="Speed: PCIe 3.0 x4 — up to 4 GB/s, PCIe 4.0 x4 — up to 8 GB/s, PCIe 5.0 x4 — up to 16 GB/s.">Швидкість: PCIe 3.0 x4 — до 4 ГБ/с, PCIe 4.0 x4 — до 8 ГБ/с, PCIe 5.0 x4 — до 16 ГБ/с.</li>
+<li data-uk="Ключі M.2: B-key (SATA + PCIe ×2), M-key (PCIe ×4), B+M-key (універсальний)." data-ru="Ключи M.2: B-key (SATA + PCIe ×2), M-key (PCIe ×4), B+M-key (универсальный)." data-en="M.2 keys: B-key (SATA + PCIe ×2), M-key (PCIe ×4), B+M-key (universal).">Ключі M.2: B-key (SATA + PCIe ×2), M-key (PCIe ×4), B+M-key (універсальний).</li>
+<li data-uk="NVMe-oF (NVMe over Fabrics) — доступ до віддалених NVMe-накопичувачів через мережу (RDMA, Fibre Channel, TCP)." data-ru="NVMe-oF (NVMe over Fabrics) — доступ к удалённым NVMe-накопителям через сеть (RDMA, Fibre Channel, TCP)." data-en="NVMe-oF (NVMe over Fabrics) — access to remote NVMe drives over the network (RDMA, Fibre Channel, TCP).">NVMe-oF (NVMe over Fabrics) — доступ до віддалених NVMe-накопичувачів через мережу (RDMA, Fibre Channel, TCP).</li>
+</ul>
+<div class="tip">
+<strong data-uk="M.2 vs SATA SSD:" data-ru="M.2 vs SATA SSD:" data-en="M.2 vs SATA SSD:">M.2 vs SATA SSD:</strong>
+<span data-uk=" Не всі M.2 SSD швидкі! M.2 SATA — це той же SATA III (~550 МБ/с), просто в компактному форм-факторі. M.2 NVMe (PCIe) — справжня революція швидкості. Перевіряйте інтерфейс перед покупкою!" data-ru=" Не все M.2 SSD быстрые! M.2 SATA — это тот же SATA III (~550 МБ/с), просто в компактном форм-факторе. M.2 NVMe (PCIe) — настоящая революция скорости. Проверяйте интерфейс перед покупкой!" data-en=" Not all M.2 SSDs are fast! M.2 SATA is the same SATA III (~550 MB/s), just in a compact form factor. M.2 NVMe (PCIe) is the real speed revolution. Check the interface before buying!"> Не всі M.2 SSD швидкі! M.2 SATA — це той же SATA III (~550 МБ/с), просто в компактному форм-факторі. M.2 NVMe (PCIe) — справжня революція швидкості. Перевіряйте інтерфейс перед покупкою!</span>
+</div>
+</section>
+
+<section class="section" id="network">
+<h2><span class="icon">&#128225;</span> <span data-uk="Мережеві порти" data-ru="Сетевые порты" data-en="Network Ports">Мережеві порти</span></h2>
+
+<h4 data-uk="RJ-45 та Ethernet" data-ru="RJ-45 и Ethernet" data-en="RJ-45 and Ethernet">RJ-45 та Ethernet</h4>
+<p data-uk="RJ-45 (Registered Jack 45) — стандартний 8P8C роз'єм для витої пари (Cat5e/Cat6/Cat6a/Cat7/Cat8). Забезпечує дротове з'єднання локальної мережі Ethernet." data-ru="RJ-45 (Registered Jack 45) — стандартный 8P8C разъём для витой пары (Cat5e/Cat6/Cat6a/Cat7/Cat8). Обеспечивает проводное соединение локальной сети Ethernet." data-en="RJ-45 (Registered Jack 45) — standard 8P8C connector for twisted pair (Cat5e/Cat6/Cat6a/Cat7/Cat8). Provides wired local area network Ethernet connection.">RJ-45 (Registered Jack 45) — стандартний 8P8C роз'єм для витої пари (Cat5e/Cat6/Cat6a/Cat7/Cat8). Забезпечує дротове з'єднання локальної мережі Ethernet.</p>
+<ul>
+<li data-uk="10BASE-T: 10 Мбіт/с. 100BASE-TX (Fast Ethernet): 100 Мбіт/с. 1000BASE-T (Gigabit Ethernet): 1 Гбіт/с. 2.5GBASE-T / 5GBASE-T: 2,5 / 5 Гбіт/с. 10GBASE-T: 10 Гбіт/с." data-ru="10BASE-T: 10 Мбит/с. 100BASE-TX (Fast Ethernet): 100 Мбит/с. 1000BASE-T (Gigabit Ethernet): 1 Гбит/с. 2.5GBASE-T / 5GBASE-T: 2,5 / 5 Гбит/с. 10GBASE-T: 10 Гбит/с." data-en="10BASE-T: 10 Mbps. 100BASE-TX (Fast Ethernet): 100 Mbps. 1000BASE-T (Gigabit Ethernet): 1 Gbps. 2.5GBASE-T / 5GBASE-T: 2.5 / 5 Gbps. 10GBASE-T: 10 Gbps.">10BASE-T: 10 Мбіт/с. 100BASE-TX (Fast Ethernet): 100 Мбіт/с. 1000BASE-T (Gigabit Ethernet): 1 Гбіт/с. 2.5GBASE-T / 5GBASE-T: 2,5 / 5 Гбіт/с. 10GBASE-T: 10 Гбіт/с.</li>
+<li data-uk="PoE (Power over Ethernet): передача живлення через ту ж виту пару. PoE (15,4 Вт), PoE+ (30 Вт), PoE++ (60/90 Вт) — для IP-камер, точок доступу, VoIP-телефонів." data-ru="PoE (Power over Ethernet): передача питания через ту же витую пару. PoE (15,4 Вт), PoE+ (30 Вт), PoE++ (60/90 Вт) — для IP-камер, точек доступа, VoIP-телефонов." data-en="PoE (Power over Ethernet): power transmission over the same twisted pair. PoE (15.4 W), PoE+ (30 W), PoE++ (60/90 W) — for IP cameras, access points, VoIP phones.">PoE (Power over Ethernet): передача живлення через ту ж виту пару. PoE (15,4 Вт), PoE+ (30 Вт), PoE++ (60/90 Вт) — для IP-камер, точок доступу, VoIP-телефонів.</li>
+</ul>
+
+<h4 data-uk="Оптоволоконні порти" data-ru="Оптоволоконные порты" data-en="Fiber Optic Ports">Оптоволоконні порти</h4>
+<ul>
+<li data-uk="SFP (Small Form-factor Pluggable): гігабітні модулі (1 Гбіт/с). SFP+: 10 Гбіт/с. QSFP+: 40 Гбіт/с. QSFP28: 100 Гбіт/с. QSFP-DD: 200/400 Гбіт/с." data-ru="SFP (Small Form-factor Pluggable): гигабитные модули (1 Гбит/с). SFP+: 10 Гбит/с. QSFP+: 40 Гбит/с. QSFP28: 100 Гбит/с. QSFP-DD: 200/400 Гбит/с." data-en="SFP (Small Form-factor Pluggable): gigabit modules (1 Gbps). SFP+: 10 Gbps. QSFP+: 40 Gbps. QSFP28: 100 Gbps. QSFP-DD: 200/400 Gbps.">SFP (Small Form-factor Pluggable): гігабітні модулі (1 Гбіт/с). SFP+: 10 Гбіт/с. QSFP+: 40 Гбіт/с. QSFP28: 100 Гбіт/с. QSFP-DD: 200/400 Гбіт/с.</li>
+<li data-uk="Типи оптоволокна: Single-mode (одномодове, дальність до 80+ км) та Multi-mode (багатомодове, до 550 м). Роз'єми: LC, SC, ST, MTP/MPO." data-ru="Типы оптоволокна: Single-mode (одномодовое, дальность до 80+ км) и Multi-mode (многомодовое, до 550 м). Разъёмы: LC, SC, ST, MTP/MPO." data-en="Fiber types: Single-mode (up to 80+ km) and Multi-mode (up to 550 m). Connectors: LC, SC, ST, MTP/MPO.">Типи оптоволокна: Single-mode (одномодове, дальність до 80+ км) та Multi-mode (багатомодове, до 550 м). Роз'єми: LC, SC, ST, MTP/MPO.</li>
+</ul>
+</section>
+
+<section class="section" id="wireless">
+<h2><span class="icon">&#128246;</span> <span data-uk="Бездротові інтерфейси" data-ru="Беспроводные интерфейсы" data-en="Wireless Interfaces">Бездротові інтерфейси</span></h2>
+
+<h4 data-uk="Bluetooth" data-ru="Bluetooth" data-en="Bluetooth">Bluetooth</h4>
+<p data-uk="Bluetooth — стандарт бездротового зв'язку ближнього радіусу дії (PAN), розроблений Ericsson у 1994 році. Робить у діапазоні 2,4 ГГц (ISM)." data-ru="Bluetooth — стандарт беспроводной связи ближнего радиуса действия (PAN), разработанный Ericsson в 1994 году. Работает в диапазоне 2,4 ГГц (ISM)." data-en="Bluetooth is a short-range wireless communication standard (PAN), developed by Ericsson in 1994. Operates in the 2.4 GHz band (ISM).">Bluetooth — стандарт бездротового зв'язку ближнього радіусу дії (PAN), розроблений Ericsson у 1994 році. Робить у діапазоні 2,4 ГГц (ISM).</p>
+<ul>
+<li data-uk="BLE (Bluetooth Low Energy, 2010): оптимізований для IoT-датчиків, фітнес-браслетів, смарт-годинників. Енергоспоживання в десятки разів нижче за класичний Bluetooth." data-ru="BLE (Bluetooth Low Energy, 2010): оптимизирован для IoT-датчиков, фитнес-браслетов, смарт-часов. Энергопотребление в десятки раз ниже классического Bluetooth." data-en="BLE (Bluetooth Low Energy, 2010): optimized for IoT sensors, fitness bracelets, smartwatches. Power consumption is dozens of times lower than classic Bluetooth.">BLE (Bluetooth Low Energy, 2010): оптимізований для IoT-датчиків, фітнес-браслетів, смарт-годинників. Енергоспоживання в десятки разів нижче за класичний Bluetooth.</li>
+<li data-uk="Версії: 4.0 (BLE), 4.2 (швидше, безпечніше), 5.0 (2× швидкість, 4× дальність, 8× broadcasting), 5.3 (покращена стабільність, канальне класифікування)." data-ru="Версии: 4.0 (BLE), 4.2 (быстрее, безопаснее), 5.0 (2× скорость, 4× дальность, 8× broadcasting), 5.3 (улучшенная стабильность, канальное классифицирование)." data-en="Versions: 4.0 (BLE), 4.2 (faster, more secure), 5.0 (2× speed, 4× range, 8× broadcasting), 5.3 (improved stability, channel classification).">Версії: 4.0 (BLE), 4.2 (швидше, безпечніше), 5.0 (2× швидкість, 4× дальність, 8× broadcasting), 5.3 (покращена стабільність, канальне класифікування).</li>
+<li data-uk="Дальність: Class 2 — 10 м, Class 1 — 100 м. Швидкість: Bluetooth 5 — до 2 Мбіт/с (BLE), до 50 Мбіт/с (EDR класичний)." data-ru="Дальность: Class 2 — 10 м, Class 1 — 100 м. Скорость: Bluetooth 5 — до 2 Мбит/с (BLE), до 50 Мбит/с (EDR классический)." data-en="Range: Class 2 — 10 m, Class 1 — 100 m. Speed: Bluetooth 5 — up to 2 Mbps (BLE), up to 50 Mbps (classic EDR).">Дальність: Class 2 — 10 м, Class 1 — 100 м. Швидкість: Bluetooth 5 — до 2 Мбіт/с (BLE), до 50 Мбіт/с (EDR класичний).</li>
+</ul>
+
+<h4 data-uk="Wi-Fi (IEEE 802.11)" data-ru="Wi-Fi (IEEE 802.11)" data-en="Wi-Fi (IEEE 802.11)">Wi-Fi (IEEE 802.11)</h4>
+<ul>
+<li data-uk="802.11b (1999): 11 Мбіт/с, 2,4 ГГц. 802.11a (1999): 54 Мбіт/с, 5 ГГц. 802.11g (2003): 54 Мбіт/с, 2,4 ГГц. 802.11n (Wi-Fi 4, 2009): 600 Мбіт/с, 2,4/5 ГГц, MIMO." data-ru="802.11b (1999): 11 Мбит/с, 2,4 ГГц. 802.11a (1999): 54 Мбит/с, 5 ГГц. 802.11g (2003): 54 Мбит/с, 2,4 ГГц. 802.11n (Wi-Fi 4, 2009): 600 Мбит/с, 2,4/5 ГГц, MIMO." data-en="802.11b (1999): 11 Mbps, 2.4 GHz. 802.11a (1999): 54 Mbps, 5 GHz. 802.11g (2003): 54 Mbps, 2.4 GHz. 802.11n (Wi-Fi 4, 2009): 600 Mbps, 2.4/5 GHz, MIMO.">802.11b (1999): 11 Мбіт/с, 2,4 ГГц. 802.11a (1999): 54 Мбіт/с, 5 ГГц. 802.11g (2003): 54 Мбіт/с, 2,4 ГГц. 802.11n (Wi-Fi 4, 2009): 600 Мбіт/с, 2,4/5 ГГц, MIMO.</li>
+<li data-uk="802.11ac (Wi-Fi 5, 2014): до 3,5 Гбіт/с, тільки 5 ГГц, MU-MIMO, ширина каналу 80/160 МГц." data-ru="802.11ac (Wi-Fi 5, 2014): до 3,5 Гбит/с, только 5 ГГц, MU-MIMO, ширина канала 80/160 МГц." data-en="802.11ac (Wi-Fi 5, 2014): up to 3.5 Gbps, 5 GHz only, MU-MIMO, 80/160 MHz channel width.">802.11ac (Wi-Fi 5, 2014): до 3,5 Гбіт/с, тільки 5 ГГц, MU-MIMO, ширина каналу 80/160 МГц.</li>
+<li data-uk="802.11ax (Wi-Fi 6, 2019): до 9,6 Гбіт/с, 2,4/5 ГГц, OFDMA (ефективніше використання спектра), Target Wake Time (енергозбереження). Wi-Fi 6E (2020): додатково 6 ГГц (менше перешкод, 1200 МГц спектру)." data-ru="802.11ax (Wi-Fi 6, 2019): до 9,6 Гбит/с, 2,4/5 ГГц, OFDMA (эффективное использование спектра), Target Wake Time (энергосбережение). Wi-Fi 6E (2020): дополнительно 6 ГГц (меньше помех, 1200 МГц спектра)." data-en="802.11ax (Wi-Fi 6, 2019): up to 9.6 Gbps, 2.4/5 GHz, OFDMA (more efficient spectrum use), Target Wake Time (power saving). Wi-Fi 6E (2020): additional 6 GHz band (less interference, 1200 MHz spectrum).">802.11ax (Wi-Fi 6, 2019): до 9,6 Гбіт/с, 2,4/5 ГГц, OFDMA (ефективніше використання спектра), Target Wake Time (енергозбереження). Wi-Fi 6E (2020): додатково 6 ГГц (менше перешкод, 1200 МГц спектру).</li>
+<li data-uk="802.11be (Wi-Fi 7, 2024): до 46 Гбіт/с, 320 МГц канали, MLO (Multi-Link Operation — одночасна робота на кількох частотах), 4K-QAM." data-ru="802.11be (Wi-Fi 7, 2024): до 46 Гбит/с, 320 МГц каналы, MLO (Multi-Link Operation — одновременная работа на нескольких частотах), 4K-QAM." data-en="802.11be (Wi-Fi 7, 2024): up to 46 Gbps, 320 MHz channels, MLO (Multi-Link Operation — simultaneous operation on multiple frequencies), 4K-QAM.">802.11be (Wi-Fi 7, 2024): до 46 Гбіт/с, 320 МГц канали, MLO (Multi-Link Operation — одночасна робота на кількох частотах), 4K-QAM.</li>
+</ul>
+
+<h4 data-uk="NFC, IR та інші" data-ru="NFC, IR и другие" data-en="NFC, IR and others">NFC, IR та інші</h4>
+<ul>
+<li data-uk="NFC (Near Field Communication): 13,56 МГц, дальність до 10 см. Використовується для безконтактних платежів (Apple Pay, Google Pay), проїзних квитків, парування пристроїв. Швидкість: 106-424 кбіт/с." data-ru="NFC (Near Field Communication): 13,56 МГц, дальность до 10 см. Используется для бесконтактных платежей (Apple Pay, Google Pay), проездных билетов, сопряжения устройств. Скорость: 106-424 кбит/с." data-en="NFC (Near Field Communication): 13.56 MHz, range up to 10 cm. Used for contactless payments (Apple Pay, Google Pay), transit tickets, device pairing. Speed: 106-424 kbps.">NFC (Near Field Communication): 13,56 МГц, дальність до 10 см. Використовується для безконтактних платежів (Apple Pay, Google Pay), проїзних квитків, парування пристроїв. Швидкість: 106-424 кбіт/с.</li>
+<li data-uk="IrDA (Infrared Data Association): інфрачервоний порт, популярний у 1990-2000-х для передачі файлів між телефонами та ноутбуками. Дальність до 1 м, пряма видимість. Замінений Bluetooth та Wi-Fi Direct." data-ru="IrDA (Infrared Data Association): инфракрасный порт, популярный в 1990-2000-х для передачи файлов между телефонами и ноутбуками. Дальность до 1 м, прямая видимость. Заменён Bluetooth и Wi-Fi Direct." data-en="IrDA (Infrared Data Association): infrared port, popular in the 1990s-2000s for file transfer between phones and laptops. Range up to 1 m, line of sight. Replaced by Bluetooth and Wi-Fi Direct.">IrDA (Infrared Data Association): інфрачервоний порт, популярний у 1990-2000-х для передачі файлів між телефонами та ноутбуками. Дальність до 1 м, пряма видимість. Замінений Bluetooth та Wi-Fi Direct.</li>
+<li data-uk="Wi-Fi Direct: пряме з'єднання пристроїв без точки доступу (AirDrop, Miracast, Chromecast)." data-ru="Wi-Fi Direct: прямое соединение устройств без точки доступа (AirDrop, Miracast, Chromecast)." data-en="Wi-Fi Direct: direct device connection without an access point (AirDrop, Miracast, Chromecast).">Wi-Fi Direct: пряме з'єднання пристроїв без точки доступу (AirDrop, Miracast, Chromecast).</li>
+<li data-uk="UWB (Ultra-Wideband): широкосмуговий зв'язок для точного позиціонування (AirTag, Samsung SmartTag+, ключі автомобілів). Дальність до 200 м, точність 10 см." data-ru="UWB (Ultra-Wideband): широкополосная связь для точного позиционирования (AirTag, Samsung SmartTag+, ключи автомобилей). Дальность до 200 м, точность 10 см." data-en="UWB (Ultra-Wideband): wideband communication for precise positioning (AirTag, Samsung SmartTag+, car keys). Range up to 200 m, accuracy 10 cm.">UWB (Ultra-Wideband): широкосмуговий зв'язок для точного позиціонування (AirTag, Samsung SmartTag+, ключі автомобілів). Дальність до 200 м, точність 10 см.</li>
+</ul>
+</section>
+
+<section class="section" id="comparison">
+<h2><span class="icon">&#128200;</span> <span data-uk="Порівняння інтерфейсів" data-ru="Сравнение интерфейсов" data-en="Interface Comparison">Порівняння інтерфейсів</span></h2>
+<table class="comparison-table">
+<tr>
+<th data-uk="Інтерфейс" data-ru="Интерфейс" data-en="Interface">Інтерфейс</th>
+<th data-uk="Швидкість" data-ru="Скорость" data-en="Speed">Швидкість</th>
+<th data-uk="Живлення" data-ru="Питание" data-en="Power">Живлення</th>
+<th data-uk="Hot-plug" data-ru="Hot-plug" data-en="Hot-plug">Hot-plug</th>
+<th data-uk="Статус" data-ru="Статус" data-en="Status">Статус</th>
+</tr>
+<tr>
+<td>RS-232 (COM)</td><td data-uk="до 921 кбіт/с" data-ru="до 921 кбит/с" data-en="up to 921 kbps">до 921 кбіт/с</td>
+<td data-uk="Ні" data-ru="Нет" data-en="No">Ні</td>
+<td data-uk="Ні" data-ru="Нет" data-en="No">Ні</td>
+<td data-uk="Застарілий, ніша" data-ru="Устаревший, ниша" data-en="Legacy, niche">Застарілий, ніша</td>
+</tr>
+<tr>
+<td>LPT</td><td data-uk="до 2 МБ/с" data-ru="до 2 МБ/с" data-en="up to 2 MB/s">до 2 МБ/с</td>
+<td data-uk="Ні" data-ru="Нет" data-en="No">Ні</td>
+<td data-uk="Ні" data-ru="Нет" data-en="No">Ні</td>
+<td data-uk="Вимерлий" data-ru="Вымерший" data-en="Extinct">Вимерлий</td>
+</tr>
+<tr>
+<td>PS/2</td><td data-uk="~10 кБ/с" data-ru="~10 кБ/с" data-en="~10 KB/s">~10 кБ/с</td>
+<td data-uk="Ні" data-ru="Нет" data-en="No">Ні</td>
+<td data-uk="Ні" data-ru="Нет" data-en="No">Ні</td>
+<td data-uk="Рідкісний" data-ru="Редкий" data-en="Rare">Рідкісний</td>
+</tr>
+<tr>
+<td>USB 2.0</td><td data-uk="480 Мбіт/с" data-ru="480 Мбит/с" data-en="480 Mbps">480 Мбіт/с</td>
+<td data-uk="2,5 Вт" data-ru="2,5 Вт" data-en="2.5 W">2,5 Вт</td>
+<td data-uk="Так" data-ru="Да" data-en="Yes">Так</td>
+<td data-uk="Поширений" data-ru="Распространённый" data-en="Common">Поширений</td>
+</tr>
+<tr>
+<td>USB 3.2 Gen 2</td><td data-uk="10 Гбіт/с" data-ru="10 Гбит/с" data-en="10 Gbps">10 Гбіт/с</td>
+<td data-uk="4,5 Вт" data-ru="4,5 Вт" data-en="4.5 W">4,5 Вт</td>
+<td data-uk="Так" data-ru="Да" data-en="Yes">Так</td>
+<td data-uk="Поширений" data-ru="Распространённый" data-en="Common">Поширений</td>
+</tr>
+<tr>
+<td>USB4 / TB4</td><td data-uk="40 Гбіт/с" data-ru="40 Гбит/с" data-en="40 Gbps">40 Гбіт/с</td>
+<td data-uk="до 100 Вт" data-ru="до 100 Вт" data-en="up to 100 W">до 100 Вт</td>
+<td data-uk="Так" data-ru="Да" data-en="Yes">Так</td>
+<td data-uk="Сучасний" data-ru="Современный" data-en="Modern">Сучасний</td>
+</tr>
+<tr>
+<td>HDMI 2.1</td><td data-uk="48 Гбіт/с" data-ru="48 Гбит/с" data-en="48 Gbps">48 Гбіт/с</td>
+<td data-uk="Ні" data-ru="Нет" data-en="No">Ні</td>
+<td data-uk="Так" data-ru="Да" data-en="Yes">Так</td>
+<td data-uk="Стандарт ТБ" data-ru="Стандарт ТВ" data-en="TV standard">Стандарт ТБ</td>
+</tr>
+<tr>
+<td>DisplayPort 2.0</td><td data-uk="80 Гбіт/с" data-ru="80 Гбит/с" data-en="80 Gbps">80 Гбіт/с</td>
+<td data-uk="Ні" data-ru="Нет" data-en="No">Ні</td>
+<td data-uk="Так" data-ru="Да" data-en="Yes">Так</td>
+<td data-uk="Сучасний ПК" data-ru="Современный ПК" data-en="Modern PC">Сучасний ПК</td>
+</tr>
+<tr>
+<td>SATA III</td><td data-uk="6 Гбіт/с" data-ru="6 Гбит/с" data-en="6 Gbps">6 Гбіт/с</td>
+<td data-uk="Ні" data-ru="Нет" data-en="No">Ні</td>
+<td data-uk="Частково" data-ru="Частично" data-en="Partial">Частково</td>
+<td data-uk="Поширений" data-ru="Распространённый" data-en="Common">Поширений</td>
+</tr>
+<tr>
+<td>NVMe (PCIe 4.0)</td><td data-uk="до 8 ГБ/с" data-ru="до 8 ГБ/с" data-en="up to 8 GB/s">до 8 ГБ/с</td>
+<td data-uk="Ні" data-ru="Нет" data-en="No">Ні</td>
+<td data-uk="Так" data-ru="Да" data-en="Yes">Так</td>
+<td data-uk="Сучасний" data-ru="Современный" data-en="Modern">Сучасний</td>
+</tr>
+<tr>
+<td>Ethernet (RJ-45)</td><td data-uk="до 10 Гбіт/с" data-ru="до 10 Гбит/с" data-en="up to 10 Gbps">до 10 Гбіт/с</td>
+<td data-uk="PoE до 90 Вт" data-ru="PoE до 90 Вт" data-en="PoE up to 90 W">PoE до 90 Вт</td>
+<td data-uk="Так" data-ru="Да" data-en="Yes">Так</td>
+<td data-uk="Стандарт" data-ru="Стандарт" data-en="Standard">Стандарт</td>
+</tr>
+<tr>
+<td>Wi-Fi 7</td><td data-uk="до 46 Гбіт/с" data-ru="до 46 Гбит/с" data-en="up to 46 Gbps">до 46 Гбіт/с</td>
+<td data-uk="Н/Д" data-ru="Н/Д" data-en="N/A">Н/Д</td>
+<td data-uk="Так" data-ru="Да" data-en="Yes">Так</td>
+<td data-uk="Сучасний" data-ru="Современный" data-en="Modern">Сучасний</td>
+</tr>
+</table>
+</section>
+
+<section class="section" id="summary">
+<h2><span class="icon">&#127919;</span> <span data-uk="Підсумок" data-ru="Итог" data-en="Summary">Підсумок</span></h2>
+<p data-uk="Еволюція портів та інтерфейсів — це історія прагнення до універсальності, швидкості та зручності. Від громіздких DB-25 і окремих портів для кожного пристрою ми прийшли до одного USB Type-C, що заміняє живлення, дані, відео та аудіо. Від дротових мереж — до Wi-Fi 7, що перевищує швидкість багатьох дротових з'єднань." data-ru="Эволюция портов и интерфейсов — это история стремления к универсальности, скорости и удобству. От громоздких DB-25 и отдельных портов для каждого устройства мы пришли к одному USB Type-C, заменяющему питание, данные, видео и аудио. От проводных сетей — к Wi-Fi 7, превышающему скорость многих проводных соединений." data-en="The evolution of ports and interfaces is a story of striving for universality, speed and convenience. From bulky DB-25 connectors and separate ports for each device, we have come to a single USB Type-C that replaces power, data, video and audio. From wired networks — to Wi-Fi 7, exceeding the speed of many wired connections.">Еволюція портів та інтерфейсів — це історія прагнення до універсальності, швидкості та зручності. Від громіздких DB-25 і окремих портів для кожного пристрою ми прийшли до одного USB Type-C, що заміняє живлення, дані, відео та аудіо. Від дротових мереж — до Wi-Fi 7, що перевищує швидкість багатьох дротових з'єднань.</p>
+<p data-uk="Ключові тренди: конвергенція (один роз'єм для всього — USB-C), бездротові технології витісняють дріт (Bluetooth для периферії, Wi-Fi для мережі, Qi для зарядки), оптоволокно йде в дата-центри та магістралі, а NVMe через PCIe стає стандартом для сховищ. Розуміння цих інтерфейсів є критично важливим для системних адміністраторів, інженерів підтримки, розробників embedded-систем та IT-архітекторів." data-ru="Ключевые тренды: конвергенция (один разъём для всего — USB-C), беспроводные технологии вытесняют провод (Bluetooth для периферии, Wi-Fi для сети, Qi для зарядки), оптоволокно уходит в дата-центры и магистрали, а NVMe через PCIe становится стандартом для хранилищ. Понимание этих интерфейсов является критически важным для системных администраторов, инженеров поддержки, разработчиков embedded-систем и ИТ-архитекторов." data-en="Key trends: convergence (one connector for everything — USB-C), wireless technologies displacing wires (Bluetooth for peripherals, Wi-Fi for networking, Qi for charging), fiber optics going to data centers and backbones, and NVMe via PCIe becoming the storage standard. Understanding these interfaces is critical for system administrators, support engineers, embedded systems developers and IT architects.">Ключові тренди: конвергенція (один роз'єм для всього — USB-C), бездротові технології витісняють дріт (Bluetooth для периферії, Wi-Fi для мережі, Qi для зарядки), оптоволокно йде в дата-центри та магістралі, а NVMe через PCIe стає стандартом для сховищ. Розуміння цих інтерфейсів є критично важним для системних адміністраторів, інженерів підтримки, розробників embedded-систем та IT-архітекторів.</p>
+<p data-uk="Майбутнє обіцяє: USB4 v2 (80 Гбіт/с), Thunderbolt 5 (120 Гбіт/с), Wi-Fi 8 (покращена ефективність спектра), оптичні USB-кабелі (до 100 м), бездротові зарядки на відстані (true wireless charging), та повну цифровізацію аудіо- та відеоз'єднань." data-ru="Будущее обещает: USB4 v2 (80 Гбит/с), Thunderbolt 5 (120 Гбит/с), Wi-Fi 8 (улучшенная эффективность спектра), оптические USB-кабели (до 100 м), беспроводные зарядки на расстоянии (true wireless charging), и полную цифровизацию аудио- и видеосоединений." data-en="The future promises: USB4 v2 (80 Gbps), Thunderbolt 5 (120 Gbps), Wi-Fi 8 (improved spectrum efficiency), optical USB cables (up to 100 m), distance wireless charging (true wireless charging), and full digitization of audio and video connections.">Майбутнє обіцяє: USB4 v2 (80 Гбіт/с), Thunderbolt 5 (120 Гбіт/с), Wi-Fi 8 (покращена ефективність спектра), оптичні USB-кабелі (до 100 м), бездротові зарядки на відстані (true wireless charging), та повну цифровізацію аудіо- та відеоз'єднань.</p>
+</section>
+</main>
+
+<footer class="footer">
+<p>&larr; <a href="index.html" data-uk="Повернутися на головну сторінку" data-ru="Вернуться на главную страницу" data-en="Return to home page">Повернутися на головну сторінку</a></p>
+<p style="margin-top:10px; font-size:0.8rem;">&copy; 2026 — <span data-uk="Навчальний проєкт. Порти та інтерфейси." data-ru="Учебный проект. Порты и интерфейсы." data-en="Educational project. Ports and Interfaces.">Навчальний проєкт. Порти та інтерфейси.</span></p>
+</footer>
+
+<script>
+function toggleTheme() {
+  var body = document.body;
+  var btn = document.querySelector('.theme-toggle');
+  var current = body.getAttribute('data-theme');
+  if (current === 'light') {
+    body.removeAttribute('data-theme');
+    btn.innerHTML = '&#127769;';
+    localStorage.setItem('theme', 'dark');
+  } else {
+    body.setAttribute('data-theme', 'light');
+    btn.innerHTML = '&#9728;';
+    localStorage.setItem('theme', 'light');
+  }
+}
+(function(){
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') {
+    document.body.setAttribute('data-theme', 'light');
+    document.querySelector('.theme-toggle').innerHTML = '&#9728;';
+  }
+})();
+
+function setLang(lang) {
+  document.querySelectorAll('.lang-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.querySelectorAll('.lang-btn').forEach(function(btn){
+    if (btn.textContent.toLowerCase() === lang) btn.classList.add('active');
+  });
+  document.querySelectorAll('[data-uk][data-ru][data-en]').forEach(function(el){
+    var text = el.getAttribute('data-' + lang);
+    if (text) el.textContent = text;
+  });
+  var titleEl = document.querySelector('title');
+  if (titleEl) {
+    var titleText = titleEl.getAttribute('data-' + lang);
+    if (titleText) document.title = titleText;
+  }
+  document.querySelector('html').setAttribute('lang', lang === 'uk' ? 'uk' : lang === 'ru' ? 'ru' : 'en');
+  localStorage.setItem('lang', lang);
+}
+(function(){
+  var saved = localStorage.getItem('lang');
+  if (saved && saved !== 'uk') setLang(saved);
+})();
+
+// === SCROLL SPY ===
+(function(){
+  var sections = document.querySelectorAll('.section[id]');
+  var navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
+  function onScroll() {
+    var scrollPos = window.scrollY + 150;
+    sections.forEach(function(sec){
+      var top = sec.offsetTop;
+      var bottom = top + sec.offsetHeight;
+      var id = sec.getAttribute('id');
+      if (scrollPos >= top && scrollPos < bottom) {
+        navLinks.forEach(function(link){
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + id) link.classList.add('active');
+        });
+      }
+    });
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+})();
+</script>
+</body>
+</html>

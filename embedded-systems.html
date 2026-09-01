@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вбудовані системи (Embedded) — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">🔌 Вбудовані системи (Embedded)</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    const categories = {
+        foundations: {
+            uk: "📘 Основи embedded",
+            ru: "📘 Основы embedded",
+            en: "📘 Embedded Foundations"
+        },
+        hardware: {
+            uk: "🔧 Апаратна платформа",
+            ru: "🔧 Аппаратная платформа",
+            en: "🔧 Hardware Platform"
+        },
+        software: {
+            uk: "💻 ПЗ та операційні системи",
+            ru: "💻 ПО и операционные системы",
+            en: "💻 Software & OS"
+        },
+        connectivity: {
+            uk: "📡 Зв’язок і периферія",
+            ru: "📡 Связь и периферия",
+            en: "📡 Connectivity & Peripherals"
+        },
+        practice: {
+            uk: "🛠️ Розробка, безпека, застосування",
+            ru: "🛠️ Разработка, безопасность, применение",
+            en: "🛠️ Development, Security, Applications"
+        }
+    };
+
+    const items = [
+        {
+            cat: "foundations",
+            icon: "🔌",
+            name: {
+                uk: "Що таке вбудована система",
+                ru: "Что такое встроенная система",
+                en: "What is an Embedded System"
+            },
+            desc: {
+                uk: "Комп’ютерна система, спеціалізована на виконанні конкретних функцій у складі більшого пристрою (від пральної машини до автомобіля чи супутника). Обмежені ресурси, часто real-time вимоги, довгий життєвий цикл.",
+                ru: "Компьютерная система, специализированная на выполнении конкретных функций в составе большего устройства (от стиральной машины до автомобиля или спутника). Ограниченные ресурсы, часто real-time требования, долгий жизненный цикл.",
+                en: "A computer system specialized for specific functions within a larger device (from a washing machine to a car or satellite). Limited resources, often real-time requirements, long life cycle."
+            },
+            traits: {
+                uk: "Спеціалізація, Обмежені ресурси, Real-time, Надійність, Інтеграція",
+                ru: "Специализация, Ограниченные ресурсы, Real-time, Надежность, Интеграция",
+                en: "Specialization, Limited resources, Real-time, Reliability, Integration"
+            },
+            spec: {
+                uk: "«Невидимий» комп’ютер усередині пристрою",
+                ru: "«Невидимый» компьютер внутри устройства",
+                en: "An “invisible” computer inside the device"
+            },
+            links: [
+                { name: "Embedded system overview", url: "https://en.wikipedia.org/wiki/Embedded_system" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "⏱️",
+            name: {
+                uk: "Real-time системи",
+                ru: "Real-time системы",
+                en: "Real-Time Systems"
+            },
+            desc: {
+                uk: "Системи, у яких коректність залежить не лише від результату, а й від часу його отримання. Hard real-time (пропуск дедлайну = відмова) vs soft real-time. Критично для авто, авіації, промисловості, медицини.",
+                ru: "Системы, в которых корректность зависит не только от результата, но и от времени его получения. Hard real-time (пропуск дедлайна = отказ) vs soft real-time. Критично для авто, авиации, промышленности, медицины.",
+                en: "Systems where correctness depends not only on the result but also on when it is produced. Hard real-time (missed deadline = failure) vs soft real-time. Critical for automotive, avionics, industry, medicine."
+            },
+            traits: {
+                uk: "Дедлайни, Hard/Soft RT, Детермінізм, Latency, Jitter",
+                ru: "Дедлайны, Hard/Soft RT, Детерминизм, Latency, Jitter",
+                en: "Deadlines, Hard/Soft RT, Determinism, Latency, Jitter"
+            },
+            spec: {
+                uk: "Час — частина специфікації",
+                ru: "Время — часть спецификации",
+                en: "Time is part of the specification"
+            },
+            links: [
+                { name: "Real-time computing", url: "https://en.wikipedia.org/wiki/Real-time_computing" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "📉",
+            name: {
+                uk: "Обмеження ресурсів",
+                ru: "Ограничения ресурсов",
+                en: "Resource Constraints"
+            },
+            desc: {
+                uk: "Мало RAM/Flash, обмежена обчислювальна потужність, жорсткі вимоги до енергоспоживання, розміру та вартості. Код і дані оптимізують під ці рамки; «розкіш» десктопних додатків тут недоступна.",
+                ru: "Мало RAM/Flash, ограниченная вычислительная мощность, жесткие требования к энергопотреблению, размеру и стоимости. Код и данные оптимизируют под эти рамки; «роскошь» десктопных приложений здесь недоступна.",
+                en: "Little RAM/Flash, limited compute power, strict power, size and cost constraints. Code and data are optimized within these limits; desktop-style “luxury” is unavailable."
+            },
+            traits: {
+                uk: "RAM, Flash, Енергія, Вартість, Розмір, Оптимізація",
+                ru: "RAM, Flash, Энергия, Стоимость, Размер, Оптимизация",
+                en: "RAM, Flash, Power, Cost, Size, Optimization"
+            },
+            spec: {
+                uk: "Кожен байт і міліампер мають значення",
+                ru: "Каждый байт и миллиампер имеют значение",
+                en: "Every byte and milliamp matters"
+            },
+            links: [
+                { name: "Embedded constraints", url: "https://www.embedded.com" }
+            ]
+        },
+        {
+            cat: "hardware",
+            icon: "🧠",
+            name: {
+                uk: "Мікроконтролери (MCU)",
+                ru: "Микроконтроллеры (MCU)",
+                en: "Microcontrollers (MCU)"
+            },
+            desc: {
+                uk: "Однокристальні комп’ютери: CPU + пам’ять + периферія на одному чіпі. Сімейства: ARM Cortex-M (STM32, nRF, RP2040), AVR, PIC, ESP32, RISC-V. Основа більшості embedded-пристроїв.",
+                ru: "Однокристальные компьютеры: CPU + память + периферия на одном чипе. Семейства: ARM Cortex-M (STM32, nRF, RP2040), AVR, PIC, ESP32, RISC-V. Основа большинства embedded-устройств.",
+                en: "Single-chip computers: CPU + memory + peripherals on one chip. Families: ARM Cortex-M (STM32, nRF, RP2040), AVR, PIC, ESP32, RISC-V. Foundation of most embedded devices."
+            },
+            traits: {
+                uk: "Cortex-M, STM32, ESP32, RISC-V, AVR, Периферія",
+                ru: "Cortex-M, STM32, ESP32, RISC-V, AVR, Периферия",
+                en: "Cortex-M, STM32, ESP32, RISC-V, AVR, Peripherals"
+            },
+            spec: {
+                uk: "MCU — «мозок» більшості вбудованих пристроїв",
+                ru: "MCU — «мозг» большинства встроенных устройств",
+                en: "MCU is the “brain” of most embedded devices"
+            },
+            links: [
+                { name: "STM32", url: "https://www.st.com/en/microcontrollers-microprocessors/stm32-32-bit-arm-cortex-mcus.html" },
+                { name: "ESP32", url: "https://www.espressif.com/en/products/socs/esp32" },
+                { name: "Raspberry Pi Pico", url: "https://www.raspberrypi.com/products/raspberry-pi-pico/" }
+            ]
+        },
+        {
+            cat: "hardware",
+            icon: "📱",
+            name: {
+                uk: "SoC, MPU та одноплатні комп’ютери",
+                ru: "SoC, MPU и одноплатные компьютеры",
+                en: "SoC, MPU and Single-Board Computers"
+            },
+            desc: {
+                uk: "Коли потрібні Linux, графіка, мережа: SoC/MPU (i.MX, Rockchip, Allwinner) та SBC (Raspberry Pi, BeagleBone, Jetson). Більше ресурсів, але вища складність ПЗ і енергоспоживання.",
+                ru: "Когда нужны Linux, графика, сеть: SoC/MPU (i.MX, Rockchip, Allwinner) и SBC (Raspberry Pi, BeagleBone, Jetson). Больше ресурсов, но выше сложность ПО и энергопотребления.",
+                en: "When you need Linux, graphics, networking: SoC/MPU (i.MX, Rockchip, Allwinner) and SBCs (Raspberry Pi, BeagleBone, Jetson). More resources, but higher software complexity and power use."
+            },
+            traits: {
+                uk: "Raspberry Pi, Linux, SoC, GPU, Більше ресурсів",
+                ru: "Raspberry Pi, Linux, SoC, GPU, Больше ресурсов",
+                en: "Raspberry Pi, Linux, SoC, GPU, More resources"
+            },
+            spec: {
+                uk: "Міст між MCU і повноцінним комп’ютером",
+                ru: "Мост между MCU и полноценным компьютером",
+                en: "Bridge between MCU and full computer"
+            },
+            links: [
+                { name: "Raspberry Pi", url: "https://www.raspberrypi.com" },
+                { name: "BeagleBoard", url: "https://beagleboard.org" },
+                { name: "NVIDIA Jetson", url: "https://developer.nvidia.com/embedded-computing" }
+            ]
+        },
+        {
+            cat: "hardware",
+            icon: "🔋",
+            name: {
+                uk: "Енергоспоживання та low-power",
+                ru: "Энергопотребление и low-power",
+                en: "Power Consumption and Low-Power Design"
+            },
+            desc: {
+                uk: "Режими сну, wake-up джерела, динамічне масштабування частоти/напруги, вибір периферії. Для батарейних пристроїв (носимі, IoT-сенсори) енергія — головний обмежувач часу роботи.",
+                ru: "Режимы сна, источники wake-up, динамическое масштабирование частоты/напряжения, выбор периферии. Для батарейных устройств (носимые, IoT-сенсоры) энергия — главный ограничитель времени работы.",
+                en: "Sleep modes, wake-up sources, dynamic frequency/voltage scaling, peripheral choice. For battery devices (wearables, IoT sensors) energy is the main limit on operating time."
+            },
+            traits: {
+                uk: "Sleep modes, Wake-up, DVFS, Battery, µA, Energy harvesting",
+                ru: "Sleep modes, Wake-up, DVFS, Battery, µA, Energy harvesting",
+                en: "Sleep modes, Wake-up, DVFS, Battery, µA, Energy harvesting"
+            },
+            spec: {
+                uk: "Мікроампери вирішують місяці роботи",
+                ru: "Микроамперы решают месяцы работы",
+                en: "Microamps decide months of operation"
+            },
+            links: [
+                { name: "Low-power design", url: "https://www.embedded.com/category/power-management/" }
+            ]
+        },
+        {
+            cat: "software",
+            icon: "⚙️",
+            name: {
+                uk: "Bare-metal та RTOS",
+                ru: "Bare-metal и RTOS",
+                en: "Bare-Metal and RTOS"
+            },
+            desc: {
+                uk: "Bare-metal — код без ОС, максимальний контроль і мінімальні накладні витрати. RTOS (FreeRTOS, Zephyr, ThreadX, RTX) додають задачі, планувальник, черги, таймери — зручніше для складнішої логіки при збереженні передбачуваності.",
+                ru: "Bare-metal — код без ОС, максимальный контроль и минимальные накладные расходы. RTOS (FreeRTOS, Zephyr, ThreadX, RTX) добавляют задачи, планировщик, очереди, таймеры — удобнее для более сложной логики при сохранении предсказуемости.",
+                en: "Bare-metal is code without an OS — maximum control and minimal overhead. RTOS (FreeRTOS, Zephyr, ThreadX, RTX) add tasks, scheduler, queues, timers — better for more complex logic while keeping predictability."
+            },
+            traits: {
+                uk: "Bare-metal, FreeRTOS, Zephyr, Планувальник, Задачі, ISR",
+                ru: "Bare-metal, FreeRTOS, Zephyr, Планировщик, Задачи, ISR",
+                en: "Bare-metal, FreeRTOS, Zephyr, Scheduler, Tasks, ISR"
+            },
+            spec: {
+                uk: "RTOS — компроміс між контролем і зручністю",
+                ru: "RTOS — компромисс между контролем и удобством",
+                en: "RTOS is a trade-off between control and convenience"
+            },
+            links: [
+                { name: "FreeRTOS", url: "https://www.freertos.org" },
+                { name: "Zephyr", url: "https://www.zephyrproject.org" }
+            ]
+        },
+        {
+            cat: "software",
+            icon: "🐧",
+            name: {
+                uk: "Embedded Linux",
+                ru: "Embedded Linux",
+                en: "Embedded Linux"
+            },
+            desc: {
+                uk: "Коли потрібні мережа, файлові системи, багатий стек ПЗ — використовують Linux (Yocto, Buildroot). Більше гнучкості, але більший footprint, складніший boot і оновлення, менш жорсткий real-time без PREEMPT_RT.",
+                ru: "Когда нужны сеть, файловые системы, богатый стек ПО — используют Linux (Yocto, Buildroot). Больше гибкости, но больший footprint, сложнее boot и обновления, менее жесткий real-time без PREEMPT_RT.",
+                en: "When you need networking, filesystems and a rich software stack — use Linux (Yocto, Buildroot). More flexibility, but larger footprint, more complex boot and updates, less hard real-time without PREEMPT_RT."
+            },
+            traits: {
+                uk: "Yocto, Buildroot, Device tree, Kernel, Userspace",
+                ru: "Yocto, Buildroot, Device tree, Kernel, Userspace",
+                en: "Yocto, Buildroot, Device tree, Kernel, Userspace"
+            },
+            spec: {
+                uk: "Потужність Linux — ціною складності",
+                ru: "Мощность Linux — ценой сложности",
+                en: "Linux power at the cost of complexity"
+            },
+            links: [
+                { name: "Yocto Project", url: "https://www.yoctoproject.org" },
+                { name: "Buildroot", url: "https://buildroot.org" }
+            ]
+        },
+        {
+            cat: "software",
+            icon: "📝",
+            name: {
+                uk: "Мови та інструменти розробки",
+                ru: "Языки и инструменты разработки",
+                en: "Languages and Development Tools"
+            },
+            desc: {
+                uk: "C і C++ — основа embedded. Rust набирає популярність завдяки безпеці пам’яті. Асемблер — для критичних ділянок. IDE: STM32CubeIDE, PlatformIO, VS Code + extension. Компілятори: GCC, Clang, IAR, Keil.",
+                ru: "C и C++ — основа embedded. Rust набирает популярность благодаря безопасности памяти. Ассемблер — для критических участков. IDE: STM32CubeIDE, PlatformIO, VS Code + extension. Компиляторы: GCC, Clang, IAR, Keil.",
+                en: "C and C++ are the foundation of embedded. Rust is gaining popularity for memory safety. Assembly for critical sections. IDEs: STM32CubeIDE, PlatformIO, VS Code + extensions. Compilers: GCC, Clang, IAR, Keil."
+            },
+            traits: {
+                uk: "C/C++, Rust, GCC, PlatformIO, Дебаг, JTAG/SWD",
+                ru: "C/C++, Rust, GCC, PlatformIO, Дебаг, JTAG/SWD",
+                en: "C/C++, Rust, GCC, PlatformIO, Debug, JTAG/SWD"
+            },
+            spec: {
+                uk: "C залишається королем, Rust — сильний претендент",
+                ru: "C остается королем, Rust — сильный претендент",
+                en: "C remains king, Rust is a strong contender"
+            },
+            links: [
+                { name: "PlatformIO", url: "https://platformio.org" },
+                { name: "Embedded Rust", url: "https://www.rust-lang.org/what/embedded" }
+            ]
+        },
+        {
+            cat: "connectivity",
+            icon: "🔌",
+            name: {
+                uk: "Шини та інтерфейси",
+                ru: "Шины и интерфейсы",
+                en: "Buses and Interfaces"
+            },
+            desc: {
+                uk: "I2C, SPI, UART — класика зв’язку з датчиками та модулями. CAN, LIN — автомобіль. USB, Ethernet — коли потрібна більша швидкість. GPIO, ADC, PWM, DAC — базова периферія майже кожного MCU.",
+                ru: "I2C, SPI, UART — классика связи с датчиками и модулями. CAN, LIN — автомобиль. USB, Ethernet — когда нужна большая скорость. GPIO, ADC, PWM, DAC — базовая периферия почти каждого MCU.",
+                en: "I2C, SPI, UART — classics for sensors and modules. CAN, LIN — automotive. USB, Ethernet — when higher speed is needed. GPIO, ADC, PWM, DAC — basic peripherals of almost every MCU."
+            },
+            traits: {
+                uk: "I2C, SPI, UART, CAN, GPIO, ADC, PWM",
+                ru: "I2C, SPI, UART, CAN, GPIO, ADC, PWM",
+                en: "I2C, SPI, UART, CAN, GPIO, ADC, PWM"
+            },
+            spec: {
+                uk: "Правильний інтерфейс = надійний зв’язок",
+                ru: "Правильный интерфейс = надежная связь",
+                en: "Right interface = reliable communication"
+            },
+            links: [
+                { name: "I2C / SPI explained", url: "https://learn.sparkfun.com/tutorials/i2c" }
+            ]
+        },
+        {
+            cat: "connectivity",
+            icon: "📶",
+            name: {
+                uk: "Бездротовий зв’язок у embedded",
+                ru: "Беспроводная связь в embedded",
+                en: "Wireless Connectivity in Embedded"
+            },
+            desc: {
+                uk: "Wi-Fi, Bluetooth/BLE, LoRa, Zigbee, Thread, NB-IoT, LTE-M — для IoT і віддалених пристроїв. Важливі енергія, дальність, стек протоколів і сертифікація радіо.",
+                ru: "Wi-Fi, Bluetooth/BLE, LoRa, Zigbee, Thread, NB-IoT, LTE-M — для IoT и удаленных устройств. Важны энергия, дальность, стек протоколов и сертификация радио.",
+                en: "Wi-Fi, Bluetooth/BLE, LoRa, Zigbee, Thread, NB-IoT, LTE-M — for IoT and remote devices. Power, range, protocol stack and radio certification matter."
+            },
+            traits: {
+                uk: "BLE, Wi-Fi, LoRa, Zigbee, Thread, Сертифікація",
+                ru: "BLE, Wi-Fi, LoRa, Zigbee, Thread, Сертификация",
+                en: "BLE, Wi-Fi, LoRa, Zigbee, Thread, Certification"
+            },
+            spec: {
+                uk: "Радіо — окремий світ складності",
+                ru: "Радио — отдельный мир сложности",
+                en: "Radio is a world of complexity on its own"
+            },
+            links: [
+                { name: "Bluetooth SIG", url: "https://www.bluetooth.com" },
+                { name: "LoRa Alliance", url: "https://lora-alliance.org" }
+            ]
+        },
+        {
+            cat: "connectivity",
+            icon: "🔄",
+            name: {
+                uk: "Протоколи даних і оновлення",
+                ru: "Протоколы данных и обновления",
+                en: "Data Protocols and Updates"
+            },
+            desc: {
+                uk: "MQTT, CoAP, HTTP — для обміну з хмарою/шлюзом. OTA (Over-the-Air) оновлення прошивки — критична можливість для підтримки безпеки та функцій після випуску пристрою.",
+                ru: "MQTT, CoAP, HTTP — для обмена с облаком/шлюзом. OTA (Over-the-Air) обновления прошивки — критическая возможность для поддержки безопасности и функций после выпуска устройства.",
+                en: "MQTT, CoAP, HTTP — for exchange with cloud/gateway. OTA (Over-the-Air) firmware updates are critical for security and features after device shipment."
+            },
+            traits: {
+                uk: "MQTT, CoAP, OTA, Прошивка, Версіонування, Безпека оновлень",
+                ru: "MQTT, CoAP, OTA, Прошивка, Версионирование, Безопасность обновлений",
+                en: "MQTT, CoAP, OTA, Firmware, Versioning, Update security"
+            },
+            spec: {
+                uk: "Без OTA пристрій швидко «застаріває»",
+                ru: "Без OTA устройство быстро «устаревает»",
+                en: "Without OTA a device ages quickly"
+            },
+            links: [
+                { name: "MQTT", url: "https://mqtt.org" },
+                { name: "OTA best practices", url: "https://docs.aws.amazon.com/freertos/latest/userguide/ota-update-management.html" }
+            ]
+        },
+        {
+            cat: "practice",
+            icon: "🛡️",
+            name: {
+                uk: "Безпека вбудованих систем",
+                ru: "Безопасность встроенных систем",
+                en: "Embedded Security"
+            },
+            desc: {
+                uk: "Secure boot, шифрування, захист ключів (TrustZone, secure element), захист від фізичного доступу, безпечні оновлення. Багато пристроїв довго живуть «у полі» — вразливості дорого виправляти.",
+                ru: "Secure boot, шифрование, защита ключей (TrustZone, secure element), защита от физического доступа, безопасные обновления. Многие устройства долго живут «в поле» — уязвимости дорого исправлять.",
+                en: "Secure boot, encryption, key protection (TrustZone, secure element), physical access protection, secure updates. Many devices live long “in the field” — vulnerabilities are expensive to fix."
+            },
+            traits: {
+                uk: "Secure boot, TrustZone, Шифрування, Secure element, Аудит",
+                ru: "Secure boot, TrustZone, Шифрование, Secure element, Аудит",
+                en: "Secure boot, TrustZone, Encryption, Secure element, Audit"
+            },
+            spec: {
+                uk: "Безпека має бути закладена з початку",
+                ru: "Безопасность должна быть заложена с начала",
+                en: "Security must be designed in from the start"
+            },
+            links: [
+                { name: "Platform Security Architecture", url: "https://www.arm.com/architecture/security-features" },
+                { name: "OWASP Embedded", url: "https://owasp.org/www-project-embedded-application-security/" }
+            ]
+        },
+        {
+            cat: "practice",
+            icon: "🧪",
+            name: {
+                uk: "Тестування та надійність",
+                ru: "Тестирование и надежность",
+                en: "Testing and Reliability"
+            },
+            desc: {
+                uk: "Unit-тести (на хості та на цілі), HIL (Hardware-in-the-Loop), стрес-тести, перевірка граничних умов, watchdog, brown-out detection. Надійність критична: відмова може означати аварію або відкликання партії.",
+                ru: "Unit-тесты (на хосте и на цели), HIL (Hardware-in-the-Loop), стресс-тесты, проверка граничных условий, watchdog, brown-out detection. Надежность критична: отказ может означать аварию или отзыв партии.",
+                en: "Unit tests (on host and on target), HIL (Hardware-in-the-Loop), stress tests, edge cases, watchdog, brown-out detection. Reliability is critical: failure can mean an accident or a product recall."
+            },
+            traits: {
+                uk: "Unit tests, HIL, Watchdog, Стрес, Граничні умови, CI",
+                ru: "Unit tests, HIL, Watchdog, Стресс, Граничные условия, CI",
+                en: "Unit tests, HIL, Watchdog, Stress, Edge cases, CI"
+            },
+            spec: {
+                uk: "Тестуйте так, ніби життя залежить від коду",
+                ru: "Тестируйте так, будто жизнь зависит от кода",
+                en: "Test as if lives depend on the code"
+            },
+            links: [
+                { name: "Unity / CMock", url: "https://www.throwtheswitch.org" },
+                { name: "HIL testing", url: "https://en.wikipedia.org/wiki/Hardware-in-the-loop_simulation" }
+            ]
+        },
+        {
+            cat: "practice",
+            icon: "🏭",
+            name: {
+                uk: "Сфери застосування",
+                ru: "Сферы применения",
+                en: "Application Domains"
+            },
+            desc: {
+                uk: "Автомобіль (ECU, ADAS), промисловість (PLC, контролери), медицина, побутова техніка, IoT-сенсори, авіація та космос, носимі пристрої, розумний дім. Кожна галузь має свої стандарти та сертифікації.",
+                ru: "Автомобиль (ECU, ADAS), промышленность (PLC, контроллеры), медицина, бытовая техника, IoT-сенсоры, авиация и космос, носимые устройства, умный дом. Каждая отрасль имеет свои стандарты и сертификации.",
+                en: "Automotive (ECU, ADAS), industry (PLC, controllers), medical, appliances, IoT sensors, avionics and space, wearables, smart home. Each domain has its own standards and certifications."
+            },
+            traits: {
+                uk: "Automotive, Industrial, Medical, IoT, Avionics, Consumer",
+                ru: "Automotive, Industrial, Medical, IoT, Avionics, Consumer",
+                en: "Automotive, Industrial, Medical, IoT, Avionics, Consumer"
+            },
+            spec: {
+                uk: "Стандарти галузі визначають вимоги до ПЗ і «заліза»",
+                ru: "Стандарты отрасли определяют требования к ПО и «железу»",
+                en: "Industry standards define software and hardware requirements"
+            },
+            links: [
+                { name: "ISO 26262 (Automotive)", url: "https://www.iso.org/standard/68383.html" },
+                { name: "IEC 61508", url: "https://www.iec.ch/functionalsafety" }
+            ]
+        },
+        {
+            cat: "practice",
+            icon: "🔄",
+            name: {
+                uk: "Життєвий цикл і підтримка",
+                ru: "Жизненный цикл и поддержка",
+                en: "Life Cycle and Support"
+            },
+            desc: {
+                uk: "Вбудовані продукти часто працюють 5–15+ років. Важливі: довгострокова доступність компонентів, можливість оновлень, діагностика в полі, управління EOL (end-of-life) чипів і залежностей.",
+                ru: "Встроенные продукты часто работают 5–15+ лет. Важны: долгосрочная доступность компонентов, возможность обновлений, диагностика в поле, управление EOL (end-of-life) чипов и зависимостей.",
+                en: "Embedded products often run for 5–15+ years. Important: long-term component availability, update capability, field diagnostics, managing chip and dependency EOL (end-of-life)."
+            },
+            traits: {
+                uk: "Довгий lifecycle, EOL, Оновлення, Діагностика, Підтримка",
+                ru: "Долгий lifecycle, EOL, Обновления, Диагностика, Поддержка",
+                en: "Long lifecycle, EOL, Updates, Diagnostics, Support"
+            },
+            spec: {
+                uk: "Проєктуйте з урахуванням років, а не місяців",
+                ru: "Проектируйте с учетом лет, а не месяцев",
+                en: "Design for years, not months"
+            },
+            links: [
+                { name: "Component longevity", url: "https://www.nxp.com/products/product-information:PRODUCT_LONGEVITY" }
+            ]
+        }
+    ];
+
+    const ui = {
+        uk: {
+            title: "Вбудовані системи (Embedded) — Довідник",
+            pageTitle: "🔌 Вбудовані системи (Embedded)",
+            home: "Головна сторінка",
+            all: "Усі розділи",
+            traits: "Ключові елементи та поняття",
+            mfgText: "Корисні ресурси:",
+            noResults: "Нічого не знайдено.",
+            footer: "🔌 Вбудовані системи (Embedded) | Довідник 2026",
+            introTitle: "Що таке вбудовані системи?",
+            intro1: "Вбудована (embedded) система — це спеціалізований комп’ютер усередині пристрою, який виконує конкретні функції: від керування двигуном автомобіля до збору даних із сенсора. На відміну від ПК, вона працює з обмеженими ресурсами, часто в режимі реального часу і з високими вимогами до надійності.",
+            intro2: "Галузь охоплює мікроконтролери, RTOS, embedded Linux, периферію, бездротовий зв’язок, безпеку та довгий життєвий цикл продуктів. Розуміння цих рівнів допомагає створювати ефективні, безпечні та підтримувані пристрої."
+        },
+        ru: {
+            title: "Встроенные системы (Embedded) — Справочник",
+            pageTitle: "🔌 Встроенные системы (Embedded)",
+            home: "Главная страница",
+            all: "Все разделы",
+            traits: "Ключевые элементы и понятия",
+            mfgText: "Полезные ресурсы:",
+            noResults: "Ничего не найдено.",
+            footer: "🔌 Встроенные системы (Embedded) | Справочник 2026",
+            introTitle: "Что такое встроенные системы?",
+            intro1: "Встроенная (embedded) система — это специализированный компьютер внутри устройства, выполняющий конкретные функции: от управления двигателем автомобиля до сбора данных с сенсора. В отличие от ПК, она работает с ограниченными ресурсами, часто в режиме реального времени и с высокими требованиями к надежности.",
+            intro2: "Область охватывает микроконтроллеры, RTOS, embedded Linux, периферию, беспроводную связь, безопасность и долгий жизненный цикл продуктов. Понимание этих уровней помогает создавать эффективные, безопасные и поддерживаемые устройства."
+        },
+        en: {
+            title: "Embedded Systems — Guide",
+            pageTitle: "🔌 Embedded Systems",
+            home: "Home page",
+            all: "All sections",
+            traits: "Key concepts and elements",
+            mfgText: "Useful resources:",
+            noResults: "Nothing found.",
+            footer: "🔌 Embedded Systems | Guide 2026",
+            introTitle: "What are Embedded Systems?",
+            intro1: "An embedded system is a specialized computer inside a device that performs specific functions: from controlling a car engine to collecting sensor data. Unlike a PC, it runs with limited resources, often in real time and with high reliability requirements.",
+            intro2: "The field covers microcontrollers, RTOS, embedded Linux, peripherals, wireless connectivity, security and long product life cycles. Understanding these layers helps build efficient, safe and maintainable devices."
+        }
+    };
+
+    let currentLang = safeGet("lang-embedded", "uk");
+    let activeCategory = "all";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-embedded", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + "</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) { return e.cat === catKey; });
+            if (!list.length) return;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        main.innerHTML = html || ('<div class="no-results">' + ui[currentLang].noResults + "</div>");
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

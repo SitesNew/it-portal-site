@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Етика, приватність і правові аспекти в ІТ — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">⚖️ Етика, приватність і право в ІТ</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    const categories = {
+        ethics: {
+            uk: "🧭 Етика в ІТ",
+            ru: "🧭 Этика в ИТ",
+            en: "🧭 Ethics in IT"
+        },
+        privacy: {
+            uk: "🔒 Приватність і захист даних",
+            ru: "🔒 Приватность и защита данных",
+            en: "🔒 Privacy & Data Protection"
+        },
+        legal: {
+            uk: "📜 Правові аспекти",
+            ru: "📜 Правовые аспекты",
+            en: "📜 Legal Aspects"
+        },
+        ai: {
+            uk: "🤖 Етика ШІ та алгоритмів",
+            ru: "🤖 Этика ИИ и алгоритмов",
+            en: "🤖 AI & Algorithm Ethics"
+        },
+        practice: {
+            uk: "🛠️ Практика та відповідальність",
+            ru: "🛠️ Практика и ответственность",
+            en: "🛠️ Practice & Responsibility"
+        }
+    };
+
+    const items = [
+        {
+            cat: "ethics",
+            icon: "🧭",
+            name: {
+                uk: "Чому етика важлива в ІТ",
+                ru: "Почему этика важна в ИТ",
+                en: "Why Ethics Matters in IT"
+            },
+            desc: {
+                uk: "Технології впливають на життя мільйонів людей: приватність, доступ до інформації, роботу, безпеку. Етичні рішення розробників і компаній визначають, чи приносить продукт користь, чи шкоду. «Можна» технічно ≠ «потрібно» етично.",
+                ru: "Технологии влияют на жизнь миллионов людей: приватность, доступ к информации, работу, безопасность. Этические решения разработчиков и компаний определяют, приносит ли продукт пользу или вред. «Можно» технически ≠ «нужно» этически.",
+                en: "Technology affects millions of lives: privacy, access to information, work, safety. Ethical choices by developers and companies determine whether a product helps or harms. Technically “possible” ≠ ethically “should”."
+            },
+            traits: {
+                uk: "Вплив, Відповідальність, Користь vs шкода, Цінності, Довіра",
+                ru: "Влияние, Ответственность, Польза vs вред, Ценности, Доверие",
+                en: "Impact, Responsibility, Benefit vs harm, Values, Trust"
+            },
+            spec: {
+                uk: "Код має наслідки в реальному світі",
+                ru: "Код имеет последствия в реальном мире",
+                en: "Code has consequences in the real world"
+            },
+            links: [
+                { name: "ACM Code of Ethics", url: "https://www.acm.org/code-of-ethics" },
+                { name: "IEEE Ethics", url: "https://www.ieee.org/about/corporate/governance/p7-8.html" }
+            ]
+        },
+        {
+            cat: "ethics",
+            icon: "📋",
+            name: {
+                uk: "Професійні кодекси етики",
+                ru: "Профессиональные кодексы этики",
+                en: "Professional Codes of Ethics"
+            },
+            desc: {
+                uk: "ACM, IEEE, BCS та інші організації формулюють принципи: суспільна користь, чесність, справедливість, конфіденційність, компетентність. Кодекси допомагають орієнтуватися в складних ситуаціях і захищати професійну гідність.",
+                ru: "ACM, IEEE, BCS и другие организации формулируют принципы: общественная польза, честность, справедливость, конфиденциальность, компетентность. Кодексы помогают ориентироваться в сложных ситуациях и защищать профессиональное достоинство.",
+                en: "ACM, IEEE, BCS and other bodies formulate principles: public good, honesty, fairness, confidentiality, competence. Codes help navigate hard situations and protect professional integrity."
+            },
+            traits: {
+                uk: "ACM, IEEE, Суспільна користь, Чесність, Конфіденційність",
+                ru: "ACM, IEEE, Общественная польза, Честность, Конфиденциальность",
+                en: "ACM, IEEE, Public good, Honesty, Confidentiality"
+            },
+            spec: {
+                uk: "Етика — частина професійної ідентичності",
+                ru: "Этика — часть профессиональной идентичности",
+                en: "Ethics is part of professional identity"
+            },
+            links: [
+                { name: "ACM Code of Ethics", url: "https://www.acm.org/code-of-ethics" },
+                { name: "IEEE Code of Ethics", url: "https://www.ieee.org/about/corporate/governance/p7-8.html" }
+            ]
+        },
+        {
+            cat: "ethics",
+            icon: "⚖️",
+            name: {
+                uk: "Конфлікти інтересів і тиск",
+                ru: "Конфликты интересов и давление",
+                en: "Conflicts of Interest and Pressure"
+            },
+            desc: {
+                uk: "Бізнес-цілі, терміни, керівництво можуть тиснути на рішення, що шкодять користувачам або суспільству. Важливо вміти розпізнавати конфлікти, документувати ризики і за потреби піднімати питання (speak up / escalate).",
+                ru: "Бизнес-цели, сроки, руководство могут давить на решения, вредящие пользователям или обществу. Важно уметь распознавать конфликты, документировать риски и при необходимости поднимать вопросы (speak up / escalate).",
+                en: "Business goals, deadlines, management can pressure decisions that harm users or society. It is important to recognize conflicts, document risks and escalate when needed (speak up)."
+            },
+            traits: {
+                uk: "Конфлікт інтересів, Speak up, Документування, Ескалація, Мужність",
+                ru: "Конфликт интересов, Speak up, Документирование, Эскалация, Мужество",
+                en: "Conflict of interest, Speak up, Documentation, Escalation, Courage"
+            },
+            spec: {
+                uk: "Мовчання теж є вибором з наслідками",
+                ru: "Молчание тоже является выбором с последствиями",
+                en: "Silence is also a choice with consequences"
+            },
+            links: [
+                { name: "Whistleblowing resources", url: "https://www.acm.org/code-of-ethics" }
+            ]
+        },
+        {
+            cat: "privacy",
+            icon: "🔒",
+            name: {
+                uk: "Приватність як право",
+                ru: "Приватность как право",
+                en: "Privacy as a Right"
+            },
+            desc: {
+                uk: "Право на приватність закріплене в міжнародних і національних нормах. Користувачі мають право знати, які дані збираються, для чого, і контролювати їх використання. Privacy by design — вбудовувати захист з самого початку продукту.",
+                ru: "Право на приватность закреплено в международных и национальных нормах. Пользователи имеют право знать, какие данные собираются, для чего, и контролировать их использование. Privacy by design — встраивать защиту с самого начала продукта.",
+                en: "The right to privacy is enshrined in international and national norms. Users have the right to know what data is collected, for what purpose, and to control its use. Privacy by design means building protection in from the start."
+            },
+            traits: {
+                uk: "Право на приватність, Контроль даних, Прозорість, Privacy by design",
+                ru: "Право на приватность, Контроль данных, Прозрачность, Privacy by design",
+                en: "Right to privacy, Data control, Transparency, Privacy by design"
+            },
+            spec: {
+                uk: "Приватність — не «опція», а базове очікування",
+                ru: "Приватность — не «опция», а базовое ожидание",
+                en: "Privacy is not optional, it is a baseline expectation"
+            },
+            links: [
+                { name: "Privacy by Design", url: "https://www.ipc.on.ca/wp-content/uploads/resources/7foundationalprinciples.pdf" },
+                { name: "EDPB", url: "https://edpb.europa.eu" }
+            ]
+        },
+        {
+            cat: "privacy",
+            icon: "🇪🇺",
+            name: {
+                uk: "GDPR та регулювання даних",
+                ru: "GDPR и регулирование данных",
+                en: "GDPR and Data Regulation"
+            },
+            desc: {
+                uk: "GDPR (ЄС) — один з найвпливовіших законів про захист персональних даних: згода, права суб’єктів даних, повідомлення про інциденти, штрафи. Аналоги: CCPA/CPRA (Каліфорнія), LGPD (Бразилія), закони України та інших країн.",
+                ru: "GDPR (ЕС) — один из самых влиятельных законов о защите персональных данных: согласие, права субъектов данных, уведомления об инцидентах, штрафы. Аналоги: CCPA/CPRA (Калифорния), LGPD (Бразилия), законы Украины и других стран.",
+                en: "GDPR (EU) is one of the most influential personal data protection laws: consent, data subject rights, breach notification, fines. Analogues: CCPA/CPRA (California), LGPD (Brazil), laws of Ukraine and other countries."
+            },
+            traits: {
+                uk: "GDPR, Згода, Права суб’єкта, DPIA, Штрафи, DPO",
+                ru: "GDPR, Согласие, Права субъекта, DPIA, Штрафы, DPO",
+                en: "GDPR, Consent, Data subject rights, DPIA, Fines, DPO"
+            },
+            spec: {
+                uk: "Незнання закону не звільняє від відповідальності",
+                ru: "Незнание закона не освобождает от ответственности",
+                en: "Ignorance of the law does not excuse liability"
+            },
+            links: [
+                { name: "GDPR official text", url: "https://gdpr.eu" },
+                { name: "EDPB Guidelines", url: "https://edpb.europa.eu/our-work-tools/general-guidance/gdpr-guidelines-recommendations-best-practices_en" }
+            ]
+        },
+        {
+            cat: "privacy",
+            icon: "🗃️",
+            name: {
+                uk: "Мінімізація даних і retention",
+                ru: "Минимизация данных и retention",
+                en: "Data Minimization and Retention"
+            },
+            desc: {
+                uk: "Збирайте лише те, що потрібно для мети. Зберігайте стільки, скільки необхідно, і видаляйте або анонімізуйте після. Менше даних = менший ризик при витоку і простіше дотримання вимог.",
+                ru: "Собирайте только то, что нужно для цели. Храните столько, сколько необходимо, и удаляйте или анонимизируйте после. Меньше данных = меньший риск при утечке и проще соблюдение требований.",
+                en: "Collect only what is needed for the purpose. Keep it only as long as necessary, then delete or anonymize. Less data = lower breach risk and easier compliance."
+            },
+            traits: {
+                uk: "Мінімізація, Retention, Анонімізація, Мета обробки, Видалення",
+                ru: "Минимизация, Retention, Анонимизация, Цель обработки, Удаление",
+                en: "Minimization, Retention, Anonymization, Purpose, Deletion"
+            },
+            spec: {
+                uk: "Дані, які ви не зберігаєте, не можуть витекти",
+                ru: "Данные, которые вы не храните, не могут утечь",
+                en: "Data you don’t store cannot leak"
+            },
+            links: [
+                { name: "Data minimization principle", url: "https://gdpr.eu/data-minimization/" }
+            ]
+        },
+        {
+            cat: "legal",
+            icon: "©️",
+            name: {
+                uk: "Інтелектуальна власність і ліцензії",
+                ru: "Интеллектуальная собственность и лицензии",
+                en: "Intellectual Property and Licenses"
+            },
+            desc: {
+                uk: "Авторське право, патенти, торгові марки, комерційна таємниця. Open-source ліцензії (MIT, Apache, GPL) визначають, як можна використовувати чужий код. Порушення IP — юридичні та репутаційні ризики.",
+                ru: "Авторское право, патенты, торговые марки, коммерческая тайна. Open-source лицензии (MIT, Apache, GPL) определяют, как можно использовать чужой код. Нарушение IP — юридические и репутационные риски.",
+                en: "Copyright, patents, trademarks, trade secrets. Open-source licenses (MIT, Apache, GPL) define how others’ code may be used. IP infringement brings legal and reputational risk."
+            },
+            traits: {
+                uk: "Copyright, Ліцензії, OSS, Патенти, Attribution, Copyleft",
+                ru: "Copyright, Лицензии, OSS, Патенты, Attribution, Copyleft",
+                en: "Copyright, Licenses, OSS, Patents, Attribution, Copyleft"
+            },
+            spec: {
+                uk: "Читайте ліцензії — вони мають силу закону",
+                ru: "Читайте лицензии — они имеют силу закона",
+                en: "Read the licenses — they have the force of law"
+            },
+            links: [
+                { name: "Choose a License", url: "https://choosealicense.com" },
+                { name: "SPDX", url: "https://spdx.dev" }
+            ]
+        },
+        {
+            cat: "legal",
+            icon: "📄",
+            name: {
+                uk: "Договори, SLA, відповідальність",
+                ru: "Договоры, SLA, ответственность",
+                en: "Contracts, SLA, Liability"
+            },
+            desc: {
+                uk: "Контракти, NDA, SLA (Service Level Agreement) визначають обов’язки сторін, рівень сервісу, обмеження відповідальності. У B2B і B2C важливо розуміти, що ви обіцяєте і за що відповідаєте юридично.",
+                ru: "Контракты, NDA, SLA (Service Level Agreement) определяют обязанности сторон, уровень сервиса, ограничения ответственности. В B2B и B2C важно понимать, что вы обещаете и за что отвечаете юридически.",
+                en: "Contracts, NDAs, SLAs define parties’ obligations, service levels and liability limits. In B2B and B2C it is important to know what you promise and what you are legally liable for."
+            },
+            traits: {
+                uk: "Контракт, NDA, SLA, Liability, Warranty, Indemnity",
+                ru: "Контракт, NDA, SLA, Liability, Warranty, Indemnity",
+                en: "Contract, NDA, SLA, Liability, Warranty, Indemnity"
+            },
+            spec: {
+                uk: "Юридичний текст має значення — читайте його",
+                ru: "Юридический текст имеет значение — читайте его",
+                en: "Legal text matters — read it"
+            },
+            links: [
+                { name: "SLA basics", url: "https://www.cio.com/article/274069/service-level-agreement-sla-definition-and-solutions.html" }
+            ]
+        },
+        {
+            cat: "legal",
+            icon: "🌍",
+            name: {
+                uk: "Транскордонна передача даних",
+                ru: "Трансграничная передача данных",
+                en: "Cross-Border Data Transfers"
+            },
+            desc: {
+                uk: "Передача персональних даних за межі країни/регіону регулюється окремо (adequacy decisions, SCCs, Binding Corporate Rules). Хмарні сервіси часто зберігають дані в інших юрисдикціях — це потрібно враховувати.",
+                ru: "Передача персональных данных за пределы страны/региона регулируется отдельно (adequacy decisions, SCCs, Binding Corporate Rules). Облачные сервисы часто хранят данные в других юрисдикциях — это нужно учитывать.",
+                en: "Transferring personal data outside a country/region is regulated separately (adequacy decisions, SCCs, Binding Corporate Rules). Cloud services often store data in other jurisdictions — this must be considered."
+            },
+            traits: {
+                uk: "SCCs, Adequacy, BCR, Хмара, Юрисдикція",
+                ru: "SCCs, Adequacy, BCR, Облако, Юрисдикция",
+                en: "SCCs, Adequacy, BCR, Cloud, Jurisdiction"
+            },
+            spec: {
+                uk: "Де лежать дані — питання права, не лише техніки",
+                ru: "Где лежат данные — вопрос права, а не только техники",
+                en: "Where data lives is a legal question, not only a technical one"
+            },
+            links: [
+                { name: "EU data transfers", url: "https://commission.europa.eu/law/law-topic/data-protection/international-dimension-data-protection_en" }
+            ]
+        },
+        {
+            cat: "ai",
+            icon: "🤖",
+            name: {
+                uk: "Упередження та справедливість алгоритмів",
+                ru: "Предвзятость и справедливость алгоритмов",
+                en: "Bias and Algorithmic Fairness"
+            },
+            desc: {
+                uk: "Моделі можуть відтворювати і посилювати упередження даних (раса, стать, вік). Це впливає на кредити, найм, медицину, правосуддя. Потрібні аудит, різноманітні дані, метрики справедливості та людський нагляд.",
+                ru: "Модели могут воспроизводить и усиливать предвзятость данных (раса, пол, возраст). Это влияет на кредиты, найм, медицину, правосудие. Нужны аудит, разнообразные данные, метрики справедливости и человеческий надзор.",
+                en: "Models can reproduce and amplify data bias (race, gender, age). This affects credit, hiring, medicine, justice. Audits, diverse data, fairness metrics and human oversight are needed."
+            },
+            traits: {
+                uk: "Bias, Fairness, Аудит, Різноманітність даних, Oversight",
+                ru: "Bias, Fairness, Аудит, Разнообразие данных, Oversight",
+                en: "Bias, Fairness, Audit, Data diversity, Oversight"
+            },
+            spec: {
+                uk: "«Нейтральний» алгоритм не існує без перевірки",
+                ru: "«Нейтральный» алгоритм не существует без проверки",
+                en: "A “neutral” algorithm does not exist without verification"
+            },
+            links: [
+                { name: "Fairness in ML", url: "https://fairmlbook.org" },
+                { name: "Google Responsible AI", url: "https://ai.google/responsibility/" }
+            ]
+        },
+        {
+            cat: "ai",
+            icon: "👁️",
+            name: {
+                uk: "Прозорість і пояснюваність ШІ",
+                ru: "Прозрачность и объяснимость ИИ",
+                en: "AI Transparency and Explainability"
+            },
+            desc: {
+                uk: "Користувачі та регулятори очікують розуміти, чому система прийняла рішення. Explainable AI (XAI), документація моделей, обмеження «чорних скриньок» у високоризикових сферах (медицина, фінанси, право).",
+                ru: "Пользователи и регуляторы ожидают понимать, почему система приняла решение. Explainable AI (XAI), документация моделей, ограничения «черных ящиков» в высокорисковых сферах (медицина, финансы, право).",
+                en: "Users and regulators expect to understand why a system made a decision. Explainable AI (XAI), model documentation, limits on “black boxes” in high-risk domains (medicine, finance, law)."
+            },
+            traits: {
+                uk: "XAI, Пояснення, Документація, Black box, Довіра",
+                ru: "XAI, Объяснение, Документация, Black box, Доверие",
+                en: "XAI, Explanation, Documentation, Black box, Trust"
+            },
+            spec: {
+                uk: "Якщо не можете пояснити — чи можна довіряти?",
+                ru: "Если не можете объяснить — можно ли доверять?",
+                en: "If you cannot explain it — can you trust it?"
+            },
+            links: [
+                { name: "Explainable AI", url: "https://www.darpa.mil/program/explainable-artificial-intelligence" }
+            ]
+        },
+        {
+            cat: "ai",
+            icon: "📜",
+            name: {
+                uk: "Регулювання ШІ (AI Act та інші)",
+                ru: "Регулирование ИИ (AI Act и другие)",
+                en: "AI Regulation (AI Act and Others)"
+            },
+            desc: {
+                uk: "EU AI Act класифікує системи за рівнем ризику і встановлює вимоги (прозорість, оцінка відповідності, заборона певних практик). Інші юрисдикції розробляють власні підходи. Регуляція ШІ швидко еволюціонує.",
+                ru: "EU AI Act классифицирует системы по уровню риска и устанавливает требования (прозрачность, оценка соответствия, запрет определенных практик). Другие юрисдикции разрабатывают свои подходы. Регулирование ИИ быстро эволюционирует.",
+                en: "The EU AI Act classifies systems by risk level and sets requirements (transparency, conformity assessment, bans on certain practices). Other jurisdictions are developing their own approaches. AI regulation is evolving quickly."
+            },
+            traits: {
+                uk: "AI Act, Ризик, Compliance, Заборони, Прозорість",
+                ru: "AI Act, Риск, Compliance, Запреты, Прозрачность",
+                en: "AI Act, Risk, Compliance, Prohibitions, Transparency"
+            },
+            spec: {
+                uk: "Високий ризик = високі вимоги до доказів",
+                ru: "Высокий риск = высокие требования к доказательствам",
+                en: "High risk = high evidence requirements"
+            },
+            links: [
+                { name: "EU AI Act", url: "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" }
+            ]
+        },
+        {
+            cat: "practice",
+            icon: "🛡️",
+            name: {
+                uk: "Security vs Privacy",
+                ru: "Security vs Privacy",
+                en: "Security vs Privacy"
+            },
+            desc: {
+                uk: "Безпека і приватність часто йдуть разом, але інколи конфліктують (моніторинг, логи, доступ адмінів). Потрібен баланс: захист систем без надмірного збору і спостереження. Принцип найменших привілеїв допомагає обом цілям.",
+                ru: "Безопасность и приватность часто идут вместе, но иногда конфликтуют (мониторинг, логи, доступ админов). Нужен баланс: защита систем без чрезмерного сбора и слежки. Принцип наименьших привилегий помогает обеим целям.",
+                en: "Security and privacy often go together, but sometimes conflict (monitoring, logs, admin access). Balance is needed: protect systems without excessive collection and surveillance. Least privilege helps both goals."
+            },
+            traits: {
+                uk: "Least privilege, Логи, Моніторинг, Баланс, Прозорість",
+                ru: "Least privilege, Логи, Мониторинг, Баланс, Прозрачность",
+                en: "Least privilege, Logs, Monitoring, Balance, Transparency"
+            },
+            spec: {
+                uk: "Безпека не виправдовує тотальне стеження",
+                ru: "Безопасность не оправдывает тотальную слежку",
+                en: "Security does not justify total surveillance"
+            },
+            links: [
+                { name: "Privacy Engineering", url: "https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final" }
+            ]
+        },
+        {
+            cat: "practice",
+            icon: "📢",
+            name: {
+                uk: "Прозорість для користувачів",
+                ru: "Прозрачность для пользователей",
+                en: "Transparency for Users"
+            },
+            desc: {
+                uk: "Зрозумілі політики приватності, зрозумілі згоди, можливість керувати налаштуваннями, повідомлення про інциденти. Dark patterns (маніпулятивні інтерфейси згоди) — етична і дедалі юридична проблема.",
+                ru: "Понятные политики приватности, понятные согласия, возможность управлять настройками, уведомления об инцидентах. Dark patterns (манипулятивные интерфейсы согласия) — этическая и все более юридическая проблема.",
+                en: "Clear privacy policies, clear consent, ability to manage settings, breach notifications. Dark patterns (manipulative consent UIs) are an ethical and increasingly legal problem."
+            },
+            traits: {
+                uk: "Політики, Згода, Dark patterns, Налаштування, Сповіщення",
+                ru: "Политики, Согласие, Dark patterns, Настройки, Уведомления",
+                en: "Policies, Consent, Dark patterns, Settings, Notifications"
+            },
+            spec: {
+                uk: "Якщо згоду важко зрозуміти — вона сумнівна",
+                ru: "Если согласие трудно понять — оно сомнительно",
+                en: "If consent is hard to understand, it is questionable"
+            },
+            links: [
+                { name: "Dark patterns", url: "https://www.darkpatterns.org" },
+                { name: "CNIL / EDPB on dark patterns", url: "https://edpb.europa.eu" }
+            ]
+        },
+        {
+            cat: "practice",
+            icon: "🏗️",
+            name: {
+                uk: "Вбудовування етики в процес",
+                ru: "Встраивание этики в процесс",
+                en: "Building Ethics into the Process"
+            },
+            desc: {
+                uk: "Етичний review на етапі дизайну, чеклісти, privacy impact assessment, різноманітність команд, навчання, канали для повідомлення проблем. Етика не «додаток в кінці», а частина інженерної культури.",
+                ru: "Этический review на этапе дизайна, чеклисты, privacy impact assessment, разнообразие команд, обучение, каналы для сообщения проблем. Этика не «добавка в конце», а часть инженерной культуры.",
+                en: "Ethical review at design time, checklists, privacy impact assessment, team diversity, training, channels to report issues. Ethics is not an “add-on at the end” but part of engineering culture."
+            },
+            traits: {
+                uk: "Review, Чеклісти, DPIA/PIA, Навчання, Культура",
+                ru: "Review, Чеклисты, DPIA/PIA, Обучение, Культура",
+                en: "Review, Checklists, DPIA/PIA, Training, Culture"
+            },
+            spec: {
+                uk: "Процес важливіший за разові «етичні проєкти»",
+                ru: "Процесс важнее разовых «этических проектов»",
+                en: "Process matters more than one-off “ethics projects”"
+            },
+            links: [
+                { name: "Ethics in tech practice", url: "https://www.acm.org/code-of-ethics" },
+                { name: "Privacy Impact Assessment", url: "https://www.oaic.gov.au/privacy/privacy-guidance-for-organisations-and-government-agencies/privacy-impact-assessments" }
+            ]
+        },
+        {
+            cat: "practice",
+            icon: "🤝",
+            name: {
+                uk: "Соціальна відповідальність ІТ",
+                ru: "Социальная ответственность ИТ",
+                en: "IT Social Responsibility"
+            },
+            desc: {
+                uk: "Доступність технологій, цифровий розрив, вплив на зайнятість, екологічний слід дата-центрів і пристроїв, боротьба з дезінформацією. ІТ-індустрія формує суспільство — і несе частку відповідальності за наслідки.",
+                ru: "Доступность технологий, цифровой разрыв, влияние на занятость, экологический след дата-центров и устройств, борьба с дезинформацией. ИТ-индустрия формирует общество — и несет долю ответственности за последствия.",
+                en: "Technology accessibility, digital divide, impact on employment, environmental footprint of data centers and devices, fighting disinformation. The IT industry shapes society — and shares responsibility for the outcomes."
+            },
+            traits: {
+                uk: "Доступність, Digital divide, ESG, Дезінформація, Сталість",
+                ru: "Доступность, Digital divide, ESG, Дезинформация, Устойчивость",
+                en: "Accessibility, Digital divide, ESG, Disinformation, Sustainability"
+            },
+            spec: {
+                uk: "Технології не нейтральні — їхній вплив реальний",
+                ru: "Технологии не нейтральны — их влияние реально",
+                en: "Technology is not neutral — its impact is real"
+            },
+            links: [
+                { name: "UN Sustainable Development Goals", url: "https://sdgs.un.org/goals" },
+                { name: "Green Software Foundation", url: "https://greensoftware.foundation" }
+            ]
+        }
+    ];
+
+    const ui = {
+        uk: {
+            title: "Етика, приватність і правові аспекти в ІТ — Довідник",
+            pageTitle: "⚖️ Етика, приватність і право в ІТ",
+            home: "Головна сторінка",
+            all: "Усі розділи",
+            traits: "Ключові елементи та поняття",
+            mfgText: "Корисні ресурси:",
+            noResults: "Нічого не знайдено.",
+            footer: "⚖️ Етика, приватність і правові аспекти в ІТ | Довідник 2026",
+            introTitle: "Чому етика, приватність і право важливі в ІТ?",
+            intro1: "Технології впливають на приватність, свободу, справедливість і безпеку людей. Етичні принципи, закони про захист даних (наприклад, GDPR) і правові норми щодо інтелектуальної власності, відповідальності та ШІ формують рамки, у яких працює сучасна ІТ-індустрія.",
+            intro2: "Розуміння цих аспектів допомагає будувати продукти, яким можна довіряти, уникати юридичних і репутаційних ризиків і брати відповідальність за вплив технологій на суспільство."
+        },
+        ru: {
+            title: "Этика, приватность и правовые аспекты в ИТ — Справочник",
+            pageTitle: "⚖️ Этика, приватность и право в ИТ",
+            home: "Главная страница",
+            all: "Все разделы",
+            traits: "Ключевые элементы и понятия",
+            mfgText: "Полезные ресурсы:",
+            noResults: "Ничего не найдено.",
+            footer: "⚖️ Этика, приватность и правовые аспекты в ИТ | Справочник 2026",
+            introTitle: "Почему этика, приватность и право важны в ИТ?",
+            intro1: "Технологии влияют на приватность, свободу, справедливость и безопасность людей. Этические принципы, законы о защите данных (например, GDPR) и правовые нормы об интеллектуальной собственности, ответственности и ИИ формируют рамки, в которых работает современная ИТ-индустрия.",
+            intro2: "Понимание этих аспектов помогает строить продукты, которым можно доверять, избегать юридических и репутационных рисков и брать ответственность за влияние технологий на общество."
+        },
+        en: {
+            title: "Ethics, Privacy and Legal Aspects in IT — Guide",
+            pageTitle: "⚖️ Ethics, Privacy & Law in IT",
+            home: "Home page",
+            all: "All sections",
+            traits: "Key concepts and elements",
+            mfgText: "Useful resources:",
+            noResults: "Nothing found.",
+            footer: "⚖️ Ethics, Privacy and Legal Aspects in IT | Guide 2026",
+            introTitle: "Why do ethics, privacy and law matter in IT?",
+            intro1: "Technology affects people’s privacy, freedom, fairness and safety. Ethical principles, data protection laws (e.g. GDPR) and legal rules on intellectual property, liability and AI form the framework in which the modern IT industry operates.",
+            intro2: "Understanding these aspects helps build products people can trust, avoid legal and reputational risks and take responsibility for the impact of technology on society."
+        }
+    };
+
+    let currentLang = safeGet("lang-ethics", "uk");
+    let activeCategory = "all";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-ethics", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + "</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) { return e.cat === catKey; });
+            if (!list.length) return;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        main.innerHTML = html || ('<div class="no-results">' + ui[currentLang].noResults + "</div>");
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

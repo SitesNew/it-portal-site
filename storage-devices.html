@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Засоби збереження інформації — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #9b51e0;
+            --accent-2: #00e5b0;
+            --gradient: linear-gradient(135deg, #9b51e0, #00abff);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(155,81,224,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(155,81,224,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(0,229,176,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">💾 Засоби збереження інформації</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+const categories = {
+    optical: { uk: "💿 Оптичні носії (CD/DVD/BD)", ru: "💿 Оптические носители (CD/DVD/BD)", en: "💿 Optical Media" },
+    flash: { uk: "⚡ Флеш-пам'ять (USB/SD/SSD)", ru: "⚡ Флеш-память (USB/SD/SSD)", en: "⚡ Flash & Solid State" },
+    magnetic: { uk: "🧲 Магнітні накопичувачі (HDD/Стрічки)", ru: "🧲 Магнитные накопители (HDD/Ленты)", en: "🧲 Magnetic Storage" },
+    cloud: { uk: "☁️ Хмарні сховища та сервіси", ru: "☁️ Облачные хранилища и сервисы", en: "☁️ Cloud Storage Services" }
+};
+
+const items = [
+    { cat: "optical", icon: "💿", name: "CD, DVD та Blu-ray диски",
+      desc: { uk: "Оптичні носії для лазерного зчитування даних. Історично важливі для розповсюдження музики, фільмів та програмного забезпечення.",
+              ru: "Оптические носители для лазерного считывания данных. Исторически важны для дистрибуции медиа и ПО.",
+              en: "Optical storage media read via laser. Historically vital for distribution of software, movies, and audio." },
+      traits: { uk: "CD: 700 МБ, DVD: 4.7-8.5 ГБ, BD: 25-100 ГБ, M-DISC", ru: "CD: 700 МБ, DVD: 4.7-8.5 ГБ, BD: 25-100 ГБ, M-DISC", en: "CD: 700 MB, DVD: 4.7-8.5 GB, BD: 25-100 GB, M-DISC" },
+      spec: "Принцип: Лазерний промінь (Optical Pit/Land)",
+      links: [
+        { name: "Verbatim", url: "https://www.verbatim.com" },
+        { name: "Sony", url: "https://www.sony.com" }
+      ]},
+
+    { cat: "flash", icon: "🔌", name: "USB Флешки та SD-карти",
+      desc: { uk: "Компактні напівпровідникові носії пам'яті без рухомих частин. Забезпечують високу мобільність та зручність переносу даних.",
+              ru: "Компактные полупроводниковые носители без подвижных частей. Высокая мобильность и удобство переноса данных.",
+              en: "Portable solid-state media with no moving parts. Highly portable and used for flexible file transfers." },
+      traits: { uk: "USB 3.2, UHS-II/III, NAND Flash, Plug-and-Play", ru: "USB 3.2, UHS-II/III, NAND Flash, Plug-and-Play", en: "USB 3.2, UHS-II/III, NAND Flash, Plug-and-Play" },
+      spec: "Формати: SDHC, SDXC, microSD, Type-C Flash",
+      links: [
+        { name: "SanDisk / WDC", url: "https://www.westerndigital.com" },
+        { name: "Kingston", url: "https://www.kingston.com" },
+        { name: "Lexar", url: "https://www.lexar.com" }
+      ]},
+
+    { cat: "flash", icon: "🚀", name: "Напівпровідникові накопичувачі (SSD)",
+      desc: { uk: "Швидкісні накопичувачі на базі мікросхем флеш-пам'яті (NAND). Використовуються як системні диски в ПК та серверах.",
+              ru: "Скоростные накопители на базе микросхем флеш-памяти (NAND). Используются как системные диски в ПК и серверах.",
+              en: "High-speed storage drives based on NAND flash memory chips. Primary storage for modern OS and apps." },
+      traits: { uk: "SATA III (~550 МБ/с), NVMe PCIe 4.0/5.0 (до 10000+ МБ/с)", ru: "SATA III (~550 МБ/с), NVMe PCIe 4.0/5.0 (до 10000+ МБ/с)", en: "SATA III (~550 MB/s), NVMe PCIe 4.0/5.0 (up to 10000+ MB/s)" },
+      spec: "Форм-фактори: 2.5\", M.2 2280, U.2",
+      links: [
+        { name: "Samsung Semiconductor", url: "https://semiconductor.samsung.com" },
+        { name: "Crucial / Micron", url: "https://www.crucial.com" },
+        { name: "Kioxia", url: "https://www.kioxia.com" }
+      ]},
+
+    { cat: "magnetic", icon: "💽", name: "Жорсткі диски (HDD)",
+      desc: { uk: "Магнітні накопичувачі з механічними пластинами. Забезпечують найкранє співвідношення ціни та об'єму для збереження даних.",
+              ru: "Магнитные накопители с механическими пластинами. Лучшее соотношение цены и объёма для архивов.",
+              en: "Magnetic platter-based mechanical drives providing the most cost-effective cost-per-gigabyte ratio." },
+      traits: { uk: "Об'єм до 20-30+ ТБ, 5400/7200 RPM, Cache 256MB", ru: "Объём до 20-30+ ТБ, 5400/7200 RPM, Кэш 256MB", en: "Capacity up to 20-30+ TB, 5400/7200 RPM, 256MB Cache" },
+      spec: "Технології: CMR, SMR, HAMR, MAMR",
+      links: [
+        { name: "Western Digital", url: "https://www.westerndigital.com" },
+        { name: "Seagate", url: "https://www.seagate.com" },
+        { name: "Toshiba", url: "https://www.toshiba-storage.com" }
+      ]},
+
+    { cat: "magnetic", icon: "📼", name: "Магнітні стрічки (LTO Tape)",
+      desc: { uk: "Стрічкові накопичувачі для довгострокового та холодного архівування критично важливих даних у ДЦ та корпораціях.",
+              ru: "Ленточные накопители для долгосрочного и холодного архивирования критических данных в дата-центрах.",
+              en: "High-density magnetic tape format used by enterprise data centers for long-term cold archival and backup." },
+      traits: { uk: "Термін зберігання 30+ років, LTO-8/LTO-9, Низька вартість 1 ТБ", ru: "Срок хранения 30+ лет, LTO-8/LTO-9, Низкая стоимость 1 ТБ", en: "30+ year shelf life, LTO-8/LTO-9, Lowest cost per TB" },
+      spec: "Захист: Фізичний ізольований бекап (Air-Gap)",
+      links: [
+        { name: "IBM Tape Storage", url: "https://www.ibm.com/products/tape-storage" },
+        { name: "Quantum", url: "https://www.quantum.com" }
+      ]},
+
+    { cat: "cloud", icon: "☁️", name: "Персональні хмарні сервіси",
+      desc: { uk: "Віртуальні сховища для синхронізації файлів між пристроями користувача, спільного доступу та автоматичного бекапу.",
+              ru: "Виртуальные хранилища для синхронизации файлов между устройствами пользователя и совместного доступа.",
+              en: "Consumer cloud platforms designed for cross-device file synchronization, collaboration, and backups." },
+      traits: { uk: "Кросплатформеність, Спільна робота, Шифрування, Синхронізація", ru: "Кроссплатформенность, Совместная работа, Шифрование", en: "Cross-platform, Real-time sync, Collaboration tools" },
+      spec: "Модель: SaaS / Freemium",
+      links: [
+        { name: "Google Drive", url: "https://drive.google.com" },
+        { name: "Microsoft OneDrive", url: "https://onedrive.live.com" },
+        { name: "Dropbox", url: "https://www.dropbox.com" },
+        { name: "iCloud", url: "https://www.icloud.com" }
+      ]},
+
+    { cat: "cloud", icon: "🏢", name: "Корпоративні хмарні об'єктні сховища",
+      desc: { uk: "Масштабовані хмарні інфраструктури (S3 API) для розробників, додатків, резервних копій та аналітики Big Data.",
+              ru: "Масштабируемые облачные инфраструктуры (S3 API) для разработчиков, приложений и резервных копий.",
+              en: "Highly scalable object storage solutions (S3-compatible) for hosting, backup archives, and big data." },
+      traits: { uk: "99.999999999% (11 9's) Надійність, S3 API, Glacier Hot/Cold Tiering", ru: "99.999999999% Надежность, S3 API, Glacier Hot/Cold Tiering", en: "99.999999999% Durability, S3 API, Multi-tier storage" },
+      spec: "Модель: IaaS / Pay-as-you-go",
+      links: [
+        { name: "Amazon S3", url: "https://aws.amazon.com/s3/" },
+        { name: "Backblaze B2", url: "https://www.backblaze.com/b2/" },
+        { name: "Cloudflare R2", url: "https://www.cloudflare.com/developer-platform/r2/" }
+      ]}
+];
+
+const ui = {
+    uk: {
+        title: "Засоби збереження інформації — Довідник",
+        pageTitle: "💾 Засоби збереження інформації",
+        home: "Головна сторінка",
+        all: "Усі засоби збереження",
+        traits: "Основні характеристики",
+        mfgText: "Виробники / Сервіси:",
+        noResults: "Нічого не знайдено.",
+        footer: "💾 Засоби збереження інформації | 2026"
+    },
+    ru: {
+        title: "Засобы хранения информации — Справочник",
+        pageTitle: "💾 Средства хранения информации",
+        home: "Главная страница",
+        all: "Все средства хранения",
+        traits: "Основные характеристики",
+        mfgText: "Производители / Сервисы:",
+        noResults: "Ничего не найдено.",
+        footer: "💾 Средства хранения информации | 2026"
+    },
+    en: {
+        title: "Data Storage Devices & Services",
+        pageTitle: "💾 Data Storage Essentials",
+        home: "Home page",
+        all: "All Storage Types",
+        traits: "Key Specifications",
+        mfgText: "Manufacturers / Services:",
+        noResults: "Nothing found.",
+        footer: "💾 Data Storage Essentials | 2026"
+    }
+};
+
+let currentLang = localStorage.getItem('lang-storage') || 'uk';
+let activeCategory = 'all';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang-storage', lang);
+    document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+    ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+    document.title = ui[lang].title;
+    document.getElementById('home-link').textContent = ui[lang].home;
+    document.getElementById('page-title').textContent = ui[lang].pageTitle;
+    renderFilters();
+    render();
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const cur = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+function renderFilters() {
+    const c = document.getElementById('filters');
+    let h = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+    for (const [k,v] of Object.entries(categories)) {
+        h += `<button class="filter-btn ${activeCategory===k?'active':''}" onclick="setCat('${k}')">${v[currentLang]}</button>`;
+    }
+    c.innerHTML = h;
+}
+
+function setCat(cat) {
+    activeCategory = cat;
+    renderFilters();
+    render();
+}
+
+function render() {
+    const main = document.getElementById('main');
+    let html = '';
+    const cats = (activeCategory === 'all') ? Object.keys(categories) : [activeCategory];
+
+    cats.forEach(catKey => {
+        const list = items.filter(e => e.cat === catKey);
+        if (!list.length) return;
+        html += `<div class="section-title">${categories[catKey][currentLang]}</div><div class="grid">`;
+        list.forEach(e => {
+            const tags = e.traits[currentLang].split(',').map(t => `<span class="tag">${t.trim()}</span>`).join('');
+            
+            let linksHtml = '';
+            if (e.links && e.links.length) {
+                linksHtml = `<div class="mfg-links"><strong style="width:100%; font-size:0.7rem; color:var(--text-muted); margin-bottom:2px;">${ui[currentLang].mfgText}</strong>` +
+                    e.links.map(l => `<a href="${l.url}" target="_blank" rel="noopener" class="mfg-link">🔗 ${l.name}</a>`).join('') +
+                    `</div>`;
+            }
+
+            html += `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">${e.icon}</div>
+                        <div class="card-title">${e.name}</div>
+                    </div>
+                    <div class="card-desc">${e.desc[currentLang]}</div>
+                    <div class="card-meta">
+                        <strong>${ui[currentLang].traits}</strong>
+                        <div style="margin-top:0.25rem">${tags}</div>
+                    </div>
+                    <div class="spec-tag">📌 ${e.spec}</div>
+                    ${linksHtml}
+                </div>`;
+        });
+        html += `</div>`;
+    });
+
+    if (!html) html = `<div class="no-results">${ui[currentLang].noResults}</div>`;
+    main.innerHTML = html;
+    document.getElementById('footer').textContent = ui[currentLang].footer;
+}
+
+setLang(currentLang);
+</script>
+</body>
+</html>

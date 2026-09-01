@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API, мікросервіси та інтеграції — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">🔌 API, мікросервіси та інтеграції</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    const categories = {
+        apiStyles: {
+            uk: "📡 Стилі та протоколи API",
+            ru: "📡 Стили и протоколы API",
+            en: "📡 API Styles & Protocols"
+        },
+        design: {
+            uk: "✏️ Проєктування API",
+            ru: "✏️ Проектирование API",
+            en: "✏️ API Design"
+        },
+        microservices: {
+            uk: "🧩 Мікросервіси",
+            ru: "🧩 Микросервисы",
+            en: "🧩 Microservices"
+        },
+        integration: {
+            uk: "🔗 Інтеграції та інфраструктура",
+            ru: "🔗 Интеграции и инфраструктура",
+            en: "🔗 Integration & Infrastructure"
+        }
+    };
+
+    const items = [
+        {
+            cat: "apiStyles",
+            icon: "🌐",
+            name: {
+                uk: "REST API",
+                ru: "REST API",
+                en: "REST API"
+            },
+            desc: {
+                uk: "Найпоширеніший стиль побудови веб-API. Базується на ресурсах, HTTP-методах (GET, POST, PUT, PATCH, DELETE) та статусах відповідей. Простий для розуміння і широко підтримується.",
+                ru: "Самый распространенный стиль построения веб-API. Основан на ресурсах, HTTP-методах (GET, POST, PUT, PATCH, DELETE) и статусах ответов. Прост для понимания и широко поддерживается.",
+                en: "The most common style for building web APIs. Based on resources, HTTP methods (GET, POST, PUT, PATCH, DELETE) and response status codes. Easy to understand and widely supported."
+            },
+            traits: {
+                uk: "Ресурси, HTTP-методи, Статус-коди, Stateless, JSON, HATEOAS",
+                ru: "Ресурсы, HTTP-методы, Статус-коды, Stateless, JSON, HATEOAS",
+                en: "Resources, HTTP methods, Status codes, Stateless, JSON, HATEOAS"
+            },
+            spec: {
+                uk: "Стандарт де-факто для публічних API",
+                ru: "Стандарт де-факто для публичных API",
+                en: "De-facto standard for public APIs"
+            },
+            links: [
+                { name: "REST API Tutorial", url: "https://restfulapi.net" },
+                { name: "HTTP Status Codes", url: "https://httpstatuses.com" },
+                { name: "OpenAPI", url: "https://www.openapis.org" }
+            ]
+        },
+        {
+            cat: "apiStyles",
+            icon: "📊",
+            name: {
+                uk: "GraphQL",
+                ru: "GraphQL",
+                en: "GraphQL"
+            },
+            desc: {
+                uk: "Мова запитів і середовище виконання, яке дозволяє клієнту точно вказувати, які дані йому потрібні. Один ендпоінт, гнучкі запити, менше надлишкових даних порівняно з класичним REST.",
+                ru: "Язык запросов и среда выполнения, позволяющая клиенту точно указывать, какие данные ему нужны. Один эндпоинт, гибкие запросы, меньше лишних данных по сравнению с классическим REST.",
+                en: "A query language and runtime that lets the client specify exactly which data it needs. Single endpoint, flexible queries, less over-fetching compared to classic REST."
+            },
+            traits: {
+                uk: "Схема, Запити, Мутації, Підписки, Один ендпоінт, Типізація",
+                ru: "Схема, Запросы, Мутации, Подписки, Один эндпоинт, Типизация",
+                en: "Schema, Queries, Mutations, Subscriptions, Single endpoint, Typing"
+            },
+            spec: {
+                uk: "Ідеально, коли клієнту потрібна гнучкість даних",
+                ru: "Идеально, когда клиенту нужна гибкость данных",
+                en: "Ideal when the client needs data flexibility"
+            },
+            links: [
+                { name: "GraphQL.org", url: "https://graphql.org" },
+                { name: "Apollo GraphQL", url: "https://www.apollographql.com" },
+                { name: "GraphQL Spec", url: "https://spec.graphql.org" }
+            ]
+        },
+        {
+            cat: "apiStyles",
+            icon: "⚡",
+            name: {
+                uk: "gRPC",
+                ru: "gRPC",
+                en: "gRPC"
+            },
+            desc: {
+                uk: "Високопродуктивний RPC-фреймворк від Google. Використовує Protocol Buffers (бінарний формат) і HTTP/2. Добре підходить для внутрішньої комунікації між мікросервісами.",
+                ru: "Высокопроизводительный RPC-фреймворк от Google. Использует Protocol Buffers (бинарный формат) и HTTP/2. Хорошо подходит для внутренней коммуникации между микросервисами.",
+                en: "High-performance RPC framework from Google. Uses Protocol Buffers (binary format) and HTTP/2. Excellent for internal communication between microservices."
+            },
+            traits: {
+                uk: "Protocol Buffers, HTTP/2, Стрімінг, Сильна типізація, Кодогенерація",
+                ru: "Protocol Buffers, HTTP/2, Стриминг, Сильная типизация, Кодогенерация",
+                en: "Protocol Buffers, HTTP/2, Streaming, Strong typing, Code generation"
+            },
+            spec: {
+                uk: "Найкращий вибір для service-to-service",
+                ru: "Лучший выбор для service-to-service",
+                en: "Best choice for service-to-service"
+            },
+            links: [
+                { name: "gRPC.io", url: "https://grpc.io" },
+                { name: "Protocol Buffers", url: "https://protobuf.dev" },
+                { name: "gRPC Gateway", url: "https://grpc-ecosystem.github.io/grpc-gateway/" }
+            ]
+        },
+        {
+            cat: "apiStyles",
+            icon: "📨",
+            name: {
+                uk: "Асинхронні API та події",
+                ru: "Асинхронные API и события",
+                en: "Async APIs and Events"
+            },
+            desc: {
+                uk: "Повідомлення, черги, шини подій і WebSocket / SSE дозволяють системам обмінюватися даними без жорсткої синхронної залежності. Підходять для високого навантаження та слабкої зв’язаності.",
+                ru: "Сообщения, очереди, шины событий и WebSocket / SSE позволяют системам обмениваться данными без жесткой синхронной зависимости. Подходят для высокой нагрузки и слабой связанности.",
+                en: "Messaging, queues, event buses and WebSocket / SSE let systems exchange data without tight synchronous coupling. Suitable for high load and loose coupling."
+            },
+            traits: {
+                uk: "Черги, Події, Pub/Sub, WebSocket, SSE, AsyncAPI",
+                ru: "Очереди, События, Pub/Sub, WebSocket, SSE, AsyncAPI",
+                en: "Queues, Events, Pub/Sub, WebSocket, SSE, AsyncAPI"
+            },
+            spec: {
+                uk: "Основа event-driven архітектури",
+                ru: "Основа event-driven архитектуры",
+                en: "Foundation of event-driven architecture"
+            },
+            links: [
+                { name: "AsyncAPI", url: "https://www.asyncapi.com" },
+                { name: "Apache Kafka", url: "https://kafka.apache.org" },
+                { name: "RabbitMQ", url: "https://www.rabbitmq.com" }
+            ]
+        },
+        {
+            cat: "design",
+            icon: "📐",
+            name: {
+                uk: "Принципи проєктування API",
+                ru: "Принципы проектирования API",
+                en: "API Design Principles"
+            },
+            desc: {
+                uk: "Добре спроектований API зрозумілий, передбачуваний, версіонований і стабільний. Важливі: консистентність імен, правильні статус-коди, пагінація, фільтрація, документація та зворотна сумісність.",
+                ru: "Хорошо спроектированный API понятен, предсказуем, версионирован и стабилен. Важны: консистентность имен, правильные статус-коды, пагинация, фильтрация, документация и обратная совместимость.",
+                en: "A well-designed API is clear, predictable, versioned and stable. Key points: consistent naming, correct status codes, pagination, filtering, documentation and backward compatibility."
+            },
+            traits: {
+                uk: "Консистентність, Версіонування, Пагінація, Документація, Зворотна сумісність",
+                ru: "Консистентность, Версионирование, Пагинация, Документация, Обратная совместимость",
+                en: "Consistency, Versioning, Pagination, Documentation, Backward compatibility"
+            },
+            spec: {
+                uk: "API — це довгостроковий контракт",
+                ru: "API — это долгосрочный контракт",
+                en: "An API is a long-term contract"
+            },
+            links: [
+                { name: "Microsoft API Guidelines", url: "https://github.com/microsoft/api-guidelines" },
+                { name: "Google API Design Guide", url: "https://cloud.google.com/apis/design" },
+                { name: "Zalando RESTful Guidelines", url: "https://opensource.zalando.com/restful-api-guidelines/" }
+            ]
+        },
+        {
+            cat: "design",
+            icon: "📄",
+            name: {
+                uk: "OpenAPI / Swagger та документація",
+                ru: "OpenAPI / Swagger и документация",
+                en: "OpenAPI / Swagger and Documentation"
+            },
+            desc: {
+                uk: "OpenAPI (колишній Swagger) — стандарт опису REST API. Дозволяє автоматично генерувати документацію, клієнтів, моки та тести. Жива документація значно спрощує інтеграцію для споживачів API.",
+                ru: "OpenAPI (бывший Swagger) — стандарт описания REST API. Позволяет автоматически генерировать документацию, клиентов, моки и тесты. Живая документация значительно упрощает интеграцию для потребителей API.",
+                en: "OpenAPI (formerly Swagger) is the standard for describing REST APIs. It enables automatic generation of documentation, clients, mocks and tests. Living documentation greatly simplifies integration for API consumers."
+            },
+            traits: {
+                uk: "Специфікація, Кодогенерація, Swagger UI, Моки, Контрактне тестування",
+                ru: "Спецификация, Кодогенерация, Swagger UI, Моки, Контрактное тестирование",
+                en: "Specification, Code generation, Swagger UI, Mocks, Contract testing"
+            },
+            spec: {
+                uk: "Документація має бути частиною API",
+                ru: "Документация должна быть частью API",
+                en: "Documentation should be part of the API"
+            },
+            links: [
+                { name: "OpenAPI Initiative", url: "https://www.openapis.org" },
+                { name: "Swagger Editor", url: "https://editor.swagger.io" },
+                { name: "Redoc", url: "https://redocly.com/redoc/" }
+            ]
+        },
+        {
+            cat: "design",
+            icon: "🔐",
+            name: {
+                uk: "Безпека API",
+                ru: "Безопасность API",
+                en: "API Security"
+            },
+            desc: {
+                uk: "Автентифікація (API-ключі, OAuth 2.0, JWT, mTLS), авторизація, обмеження частоти запитів (rate limiting), валідація вхідних даних і захист від типових атак (OWASP API Security Top 10).",
+                ru: "Аутентификация (API-ключи, OAuth 2.0, JWT, mTLS), авторизация, ограничение частоты запросов (rate limiting), валидация входных данных и защита от типичных атак (OWASP API Security Top 10).",
+                en: "Authentication (API keys, OAuth 2.0, JWT, mTLS), authorization, rate limiting, input validation and protection against common attacks (OWASP API Security Top 10)."
+            },
+            traits: {
+                uk: "OAuth 2.0, JWT, API Keys, Rate limiting, mTLS, OWASP",
+                ru: "OAuth 2.0, JWT, API Keys, Rate limiting, mTLS, OWASP",
+                en: "OAuth 2.0, JWT, API Keys, Rate limiting, mTLS, OWASP"
+            },
+            spec: {
+                uk: "Безпека не може бути «потім»",
+                ru: "Безопасность не может быть «потом»",
+                en: "Security cannot be an afterthought"
+            },
+            links: [
+                { name: "OWASP API Security", url: "https://owasp.org/www-project-api-security/" },
+                { name: "OAuth 2.0", url: "https://oauth.net/2/" },
+                { name: "JWT.io", url: "https://jwt.io" }
+            ]
+        },
+        {
+            cat: "microservices",
+            icon: "🧩",
+            name: {
+                uk: "Мікросервісна архітектура",
+                ru: "Микросервисная архитектура",
+                en: "Microservices Architecture"
+            },
+            desc: {
+                uk: "Підхід, коли додаток складається з невеликих незалежних сервісів, які спілкуються через API. Дає незалежне розгортання, масштабування та технологічну різноманітність, але ускладнює розподілені системи.",
+                ru: "Подход, при котором приложение состоит из небольших независимых сервисов, общающихся через API. Дает независимое развертывание, масштабирование и технологическое разнообразие, но усложняет распределенные системы.",
+                en: "An approach where an application is composed of small independent services that communicate via APIs. Enables independent deployment, scaling and technology diversity, but makes distributed systems more complex."
+            },
+            traits: {
+                uk: "Незалежність, Масштабування, Слабка зв’язаність, Розподіленість, DevOps",
+                ru: "Независимость, Масштабирование, Слабая связанность, Распределенность, DevOps",
+                en: "Independence, Scaling, Loose coupling, Distribution, DevOps"
+            },
+            spec: {
+                uk: "Не панацея — обирайте свідомо",
+                ru: "Не панацея — выбирайте осознанно",
+                en: "Not a silver bullet — choose deliberately"
+            },
+            links: [
+                { name: "Martin Fowler — Microservices", url: "https://martinfowler.com/articles/microservices.html" },
+                { name: "Microservices.io", url: "https://microservices.io" }
+            ]
+        },
+        {
+            cat: "microservices",
+            icon: "🗺️",
+            name: {
+                uk: "Service Discovery, Gateway, Mesh",
+                ru: "Service Discovery, Gateway, Mesh",
+                en: "Service Discovery, Gateway, Mesh"
+            },
+            desc: {
+                uk: "У мікросервісах сервіси з’являються і зникають динамічно. Service Discovery допомагає їх знаходити, API Gateway — єдина точка входу, Service Mesh (Istio, Linkerd) керує трафіком, безпекою та спостережуваністю між сервісами.",
+                ru: "В микросервисах сервисы появляются и исчезают динамически. Service Discovery помогает их находить, API Gateway — единая точка входа, Service Mesh (Istio, Linkerd) управляет трафиком, безопасностью и наблюдаемостью между сервисами.",
+                en: "In microservices, services appear and disappear dynamically. Service Discovery helps locate them, an API Gateway is the single entry point, and a Service Mesh (Istio, Linkerd) handles traffic, security and observability between services."
+            },
+            traits: {
+                uk: "Service Discovery, API Gateway, Service Mesh, Istio, Linkerd, Consul",
+                ru: "Service Discovery, API Gateway, Service Mesh, Istio, Linkerd, Consul",
+                en: "Service Discovery, API Gateway, Service Mesh, Istio, Linkerd, Consul"
+            },
+            spec: {
+                uk: "Інфраструктура для надійної комунікації",
+                ru: "Инфраструктура для надежной коммуникации",
+                en: "Infrastructure for reliable communication"
+            },
+            links: [
+                { name: "Kong Gateway", url: "https://konghq.com" },
+                { name: "Istio", url: "https://istio.io" },
+                { name: "Consul", url: "https://www.consul.io" }
+            ]
+        },
+        {
+            cat: "microservices",
+            icon: "📦",
+            name: {
+                uk: "Контейнери та оркестрація",
+                ru: "Контейнеры и оркестрация",
+                en: "Containers and Orchestration"
+            },
+            desc: {
+                uk: "Docker упаковує сервіс разом із залежностями. Kubernetes оркеструє контейнери: розгортання, масштабування, самовідновлення, балансування навантаження. Стандарт для запуску мікросервісів у продакшені.",
+                ru: "Docker упаковывает сервис вместе с зависимостями. Kubernetes оркестрирует контейнеры: развертывание, масштабирование, самовосстановление, балансировка нагрузки. Стандарт для запуска микросервисов в продакшене.",
+                en: "Docker packages a service with its dependencies. Kubernetes orchestrates containers: deployment, scaling, self-healing, load balancing. The standard for running microservices in production."
+            },
+            traits: {
+                uk: "Docker, Kubernetes, Поди, Сервіси, Масштабування, Health checks",
+                ru: "Docker, Kubernetes, Поды, Сервисы, Масштабирование, Health checks",
+                en: "Docker, Kubernetes, Pods, Services, Scaling, Health checks"
+            },
+            spec: {
+                uk: "Основа сучасного розгортання мікросервісів",
+                ru: "Основа современного развертывания микросервисов",
+                en: "Foundation of modern microservices deployment"
+            },
+            links: [
+                { name: "Docker", url: "https://www.docker.com" },
+                { name: "Kubernetes", url: "https://kubernetes.io" },
+                { name: "CNCF Landscape", url: "https://landscape.cncf.io" }
+            ]
+        },
+        {
+            cat: "integration",
+            icon: "🔄",
+            name: {
+                uk: "Шаблони інтеграції",
+                ru: "Шаблоны интеграции",
+                en: "Integration Patterns"
+            },
+            desc: {
+                uk: "Класичні шаблони: точка-точка, шина повідомлень, публікація-підписка, сага, API Composition, Backend for Frontend (BFF), Strangler Fig. Допомагають будувати надійні та еволюційні інтеграції.",
+                ru: "Классические шаблоны: точка-точка, шина сообщений, публикация-подписка, сага, API Composition, Backend for Frontend (BFF), Strangler Fig. Помогают строить надежные и эволюционные интеграции.",
+                en: "Classic patterns: point-to-point, message bus, publish-subscribe, saga, API Composition, Backend for Frontend (BFF), Strangler Fig. Help build reliable and evolutionary integrations."
+            },
+            traits: {
+                uk: "Saga, BFF, API Composition, Event Bus, Strangler Fig, CQRS",
+                ru: "Saga, BFF, API Composition, Event Bus, Strangler Fig, CQRS",
+                en: "Saga, BFF, API Composition, Event Bus, Strangler Fig, CQRS"
+            },
+            spec: {
+                uk: "Правильний шаблон зменшує складність",
+                ru: "Правильный шаблон снижает сложность",
+                en: "The right pattern reduces complexity"
+            },
+            links: [
+                { name: "Enterprise Integration Patterns", url: "https://www.enterpriseintegrationpatterns.com" },
+                { name: "Microservices Patterns", url: "https://microservices.io/patterns/index.html" }
+            ]
+        },
+        {
+            cat: "integration",
+            icon: "🧪",
+            name: {
+                uk: "Тестування API та контрактів",
+                ru: "Тестирование API и контрактов",
+                en: "API and Contract Testing"
+            },
+            desc: {
+                uk: "Перевірка API на відповідність специфікації, статусів, схем і поведінки. Контрактне тестування (Pact, Spring Cloud Contract) гарантує сумісність між споживачем і постачальником без повного end-to-end середовища.",
+                ru: "Проверка API на соответствие спецификации, статусов, схем и поведения. Контрактное тестирование (Pact, Spring Cloud Contract) гарантирует совместимость между потребителем и поставщиком без полного end-to-end окружения.",
+                en: "Verifying that an API matches its specification, statuses, schemas and behaviour. Contract testing (Pact, Spring Cloud Contract) ensures compatibility between consumer and provider without a full end-to-end environment."
+            },
+            traits: {
+                uk: "Схеми, Контракти, Pact, Postman, REST Assured, Моки",
+                ru: "Схемы, Контракты, Pact, Postman, REST Assured, Моки",
+                en: "Schemas, Contracts, Pact, Postman, REST Assured, Mocks"
+            },
+            spec: {
+                uk: "Контракти зменшують сюрпризи при інтеграції",
+                ru: "Контракты уменьшают сюрпризы при интеграции",
+                en: "Contracts reduce integration surprises"
+            },
+            links: [
+                { name: "Pact", url: "https://docs.pact.io" },
+                { name: "Postman", url: "https://www.postman.com" },
+                { name: "REST Assured", url: "https://rest-assured.io" }
+            ]
+        },
+        {
+            cat: "integration",
+            icon: "📈",
+            name: {
+                uk: "Спостережуваність API",
+                ru: "Наблюдаемость API",
+                en: "API Observability"
+            },
+            desc: {
+                uk: "Логи, метрики та трейси допомагають розуміти, що відбувається з API у продакшені: затримки, помилки, залежності між сервісами. OpenTelemetry став стандартом збору телеметрії.",
+                ru: "Логи, метрики и трейсы помогают понимать, что происходит с API в продакшене: задержки, ошибки, зависимости между сервисами. OpenTelemetry стал стандартом сбора телеметрии.",
+                en: "Logs, metrics and traces help understand what is happening with APIs in production: latency, errors, dependencies between services. OpenTelemetry has become the standard for collecting telemetry."
+            },
+            traits: {
+                uk: "Логи, Метрики, Трейси, OpenTelemetry, SLA/SLO, Алерти",
+                ru: "Логи, Метрики, Трейсы, OpenTelemetry, SLA/SLO, Алерты",
+                en: "Logs, Metrics, Traces, OpenTelemetry, SLA/SLO, Alerts"
+            },
+            spec: {
+                uk: "Без спостережуваності мікросервіси «сліпі»",
+                ru: "Без наблюдаемости микросервисы «слепы»",
+                en: "Without observability microservices are blind"
+            },
+            links: [
+                { name: "OpenTelemetry", url: "https://opentelemetry.io" },
+                { name: "Prometheus", url: "https://prometheus.io" },
+                { name: "Jaeger", url: "https://www.jaegertracing.io" }
+            ]
+        },
+        {
+            cat: "integration",
+            icon: "🛠️",
+            name: {
+                uk: "Інструменти для роботи з API",
+                ru: "Инструменты для работы с API",
+                en: "Tools for working with APIs"
+            },
+            desc: {
+                uk: "Postman, Insomnia, Bruno — для ручної та автоматизованої роботи з запитами. Insomnia та Bruno зручні для локальної роботи. Kong, Traefik, NGINX — для шлюзів. Apigee, Amazon API Gateway — хмарні рішення.",
+                ru: "Postman, Insomnia, Bruno — для ручной и автоматизированной работы с запросами. Insomnia и Bruno удобны для локальной работы. Kong, Traefik, NGINX — для шлюзов. Apigee, Amazon API Gateway — облачные решения.",
+                en: "Postman, Insomnia, Bruno — for manual and automated request work. Insomnia and Bruno are convenient locally. Kong, Traefik, NGINX — for gateways. Apigee, Amazon API Gateway — cloud solutions."
+            },
+            traits: {
+                uk: "Postman, Insomnia, Bruno, Kong, Traefik, API Gateway",
+                ru: "Postman, Insomnia, Bruno, Kong, Traefik, API Gateway",
+                en: "Postman, Insomnia, Bruno, Kong, Traefik, API Gateway"
+            },
+            spec: {
+                uk: "Обирайте інструменти під завдання команди",
+                ru: "Выбирайте инструменты под задачи команды",
+                en: "Choose tools that match team needs"
+            },
+            links: [
+                { name: "Postman", url: "https://www.postman.com" },
+                { name: "Insomnia", url: "https://insomnia.rest" },
+                { name: "Bruno", url: "https://www.usebruno.com" },
+                { name: "Kong", url: "https://konghq.com" }
+            ]
+        }
+    ];
+
+    const ui = {
+        uk: {
+            title: "API, мікросервіси та інтеграції — Довідник",
+            pageTitle: "🔌 API, мікросервіси та інтеграції",
+            home: "Головна сторінка",
+            all: "Усі розділи",
+            traits: "Ключові елементи та поняття",
+            mfgText: "Корисні ресурси:",
+            noResults: "Нічого не знайдено.",
+            footer: "🔌 API, мікросервіси та інтеграції | Довідник 2026",
+            introTitle: "Що таке API, мікросервіси та інтеграції?",
+            intro1: "API (Application Programming Interface) — це контракт, через який системи обмінюються даними та командами. Мікросервіси — архітектурний стиль, де додаток складається з невеликих незалежних сервісів. Інтеграції пов’язують ці сервіси та зовнішні системи між собою.",
+            intro2: "Сучасна розробка майже завжди включає REST, GraphQL або gRPC, проєктування зручних і безпечних API, а також надійні способи з’єднання сервісів. Розуміння цих підходів допомагає будувати масштабовані, підтримувані та еволюційні системи."
+        },
+        ru: {
+            title: "API, микросервисы и интеграции — Справочник",
+            pageTitle: "🔌 API, микросервисы и интеграции",
+            home: "Главная страница",
+            all: "Все разделы",
+            traits: "Ключевые элементы и понятия",
+            mfgText: "Полезные ресурсы:",
+            noResults: "Ничего не найдено.",
+            footer: "🔌 API, микросервисы и интеграции | Справочник 2026",
+            introTitle: "Что такое API, микросервисы и интеграции?",
+            intro1: "API (Application Programming Interface) — это контракт, через который системы обмениваются данными и командами. Микросервисы — архитектурный стиль, при котором приложение состоит из небольших независимых сервисов. Интеграции связывают эти сервисы и внешние системы между собой.",
+            intro2: "Современная разработка почти всегда включает REST, GraphQL или gRPC, проектирование удобных и безопасных API, а также надежные способы соединения сервисов. Понимание этих подходов помогает строить масштабируемые, поддерживаемые и эволюционные системы."
+        },
+        en: {
+            title: "API, Microservices and Integrations — Guide",
+            pageTitle: "🔌 API, Microservices & Integrations",
+            home: "Home page",
+            all: "All sections",
+            traits: "Key concepts and elements",
+            mfgText: "Useful resources:",
+            noResults: "Nothing found.",
+            footer: "🔌 API, Microservices & Integrations | Guide 2026",
+            introTitle: "What are APIs, microservices and integrations?",
+            intro1: "An API (Application Programming Interface) is the contract through which systems exchange data and commands. Microservices are an architectural style where an application is composed of small independent services. Integrations connect these services and external systems to each other.",
+            intro2: "Modern development almost always involves REST, GraphQL or gRPC, designing usable and secure APIs, and reliable ways to connect services. Understanding these approaches helps build scalable, maintainable and evolutionary systems."
+        }
+    };
+
+    let currentLang = safeGet("lang-api", "uk");
+    let activeCategory = "all";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-api", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + "</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) { return e.cat === catKey; });
+            if (!list.length) return;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        main.innerHTML = html || ('<div class="no-results">' + ui[currentLang].noResults + "</div>");
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

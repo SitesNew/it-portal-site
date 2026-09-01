@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Історія мов програмування</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #00e5b0;
+            --accent-2: #7c3aed;
+            --accent-3: #ff9f43;
+            --gradient: linear-gradient(135deg, #00e5b0, #7c3aed);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #000; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #000; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(0,229,176,0.2);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-year {
+            font-size: 0.75rem; color: var(--accent-2);
+            background: rgba(124,58,237,0.12);
+            padding: 0.15rem 0.5rem; border-radius: 1rem;
+            display: inline-block; margin-top: 0.15rem;
+        }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.6rem 0 0.4rem; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.4rem;
+        }
+        .card-meta strong { color: var(--text); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem; }
+        .card-link {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            color: var(--accent); text-decoration: none;
+            font-weight: 600; font-size: 0.85rem;
+            margin-top: 0.75rem; transition: gap 0.2s;
+        }
+        .card-link:hover { gap: 0.7rem; }
+        .card-link::after { content: "→"; }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.6rem 1.8rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.35rem; margin-bottom: 0.8rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro h3 {
+            font-size: 1.05rem; margin: 1.25rem 0 0.45rem; color: var(--accent);
+        }
+        .intro p { margin-bottom: 0.7rem; }
+        .intro ul { margin: 0.4rem 0 0.8rem 1.25rem; }
+        .intro li { margin-bottom: 0.35rem; }
+        .intro strong { color: var(--text); }
+
+        .no-results {
+            text-align: center; color: var(--text-muted);
+            padding: 3rem; font-size: 1.1rem; grid-column: 1 / -1;
+        }
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.05rem; }
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-hover); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">📜 Історія мов програмування</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+const categories = {
+    early:  { uk: "1950–1960-ті", ru: "1950–1960-е", en: "1950s–1960s" },
+    seventies: { uk: "1970-ті", ru: "1970-е", en: "1970s" },
+    eighties: { uk: "1980-ті", ru: "1980-е", en: "1980s" },
+    nineties: { uk: "1990-ті", ru: "1990-е", en: "1990s" },
+    modern: { uk: "2000-ні — сьогодні", ru: "2000-е — сегодня", en: "2000s — today" }
+};
+
+const languages = [
+    { id:"fortran", cat:"early", icon:"🔢", name:"Fortran", year:"1957",
+      url:"https://fortran-lang.org",
+      author:{ uk:"Джон Бекус (IBM)", ru:"Джон Бэкус (IBM)", en:"John Backus (IBM)" },
+      desc:{ uk:"Перша широко використовувана мова високого рівня. Створена для наукових і інженерних обчислень; ідея — писати формули, а не машинний код. Досі застосовується в HPC і суперкомп’ютерах.",
+             ru:"Первый широко используемый язык высокого уровня. Создан для научных и инженерных вычислений; идея — писать формулы, а не машинный код. До сих пор применяется в HPC и суперкомпьютерах.",
+             en:"First widely used high-level language. Built for scientific and engineering computing — write formulas, not machine code. Still used in HPC and supercomputers." }},
+    { id:"lisp", cat:"early", icon:"λ", name:"Lisp", year:"1958",
+      url:"https://common-lisp.net",
+      author:{ uk:"Джон Маккарті (MIT)", ru:"Джон Маккарти (MIT)", en:"John McCarthy (MIT)" },
+      desc:{ uk:"Мова для обробки списків і символьних обчислень. Основа раннього ШІ, макросів і функційного програмування. Вплинула на Scheme, Clojure, Emacs Lisp.",
+             ru:"Язык для обработки списков и символьных вычислений. Основа раннего ИИ, макросов и функционального программирования. Повлиял на Scheme, Clojure, Emacs Lisp.",
+             en:"Language for list processing and symbolic computation. Foundation of early AI, macros and functional programming. Influenced Scheme, Clojure, Emacs Lisp." }},
+    { id:"algol", cat:"early", icon:"📐", name:"ALGOL", year:"1958/60",
+      url:"https://en.wikipedia.org/wiki/ALGOL",
+      author:{ uk:"Міжнародний комітет", ru:"Международный комитет", en:"International committee" },
+      desc:{ uk:"Алгоритмічна мова з блоковою структурою та лексичною областю видимості. «Батько» синтаксису багатьох мов: Pascal, C, Java. Увів BNF-нотацію.",
+             ru:"Алгоритмический язык с блочной структурой и лексической областью видимости. «Отец» синтаксиса многих языков: Pascal, C, Java. Ввёл нотацию BNF.",
+             en:"Algorithmic language with block structure and lexical scoping. Ancestor of the syntax of Pascal, C, Java and many others. Introduced BNF notation." }},
+    { id:"cobol", cat:"early", icon:"🏦", name:"COBOL", year:"1959",
+      url:"https://www.cobol.com",
+      author:{ uk:"Грейс Хоппер та комітет CODASYL", ru:"Грейс Хоппер и комитет CODASYL", en:"Grace Hopper & CODASYL" },
+      desc:{ uk:"Мова для бізнесу та обробки даних. Читабельний англоподібний синтаксис. Досі обслуговує критичні банківські та державні системи.",
+             ru:"Язык для бизнеса и обработки данных. Читаемый англоподобный синтаксис. До сих пор обслуживает критические банковские и государственные системы.",
+             en:"Business and data-processing language with English-like syntax. Still runs critical banking and government systems." }},
+    { id:"basic", cat:"early", icon:"🅱️", name:"BASIC", year:"1964",
+      url:"https://en.wikipedia.org/wiki/BASIC",
+      author:{ uk:"Кемені та Курц (Dartmouth)", ru:"Кемени и Курц (Dartmouth)", en:"Kemeny & Kurtz (Dartmouth)" },
+      desc:{ uk:"Мова для навчання програмуванню. Зробила комп’ютери доступними студентам і любителям. Пізніше — Visual Basic, QB64, сучасні діалекти.",
+             ru:"Язык для обучения программированию. Сделал компьютеры доступными студентам и любителям. Позже — Visual Basic, QB64, современные диалекты.",
+             en:"Language designed for teaching programming. Made computers accessible to students and hobbyists. Later: Visual Basic, QB64 and modern dialects." }},
+    { id:"simula", cat:"early", icon:"🧱", name:"Simula", year:"1967",
+      url:"https://en.wikipedia.org/wiki/Simula",
+      author:{ uk:"Нігорд і Даль (Норвегія)", ru:"Нюгорд и Даль (Норвегия)", en:"Nygaard & Dahl (Norway)" },
+      desc:{ uk:"Перша об’єктно-орієнтована мова: класи, об’єкти, наслідування. Прямий предок Smalltalk, C++ і сучасної ООП-парадигми.",
+             ru:"Первый объектно-ориентированный язык: классы, объекты, наследование. Прямой предок Smalltalk, C++ и современной ООП-парадигмы.",
+             en:"First object-oriented language: classes, objects, inheritance. Direct ancestor of Smalltalk, C++ and modern OOP." }},
+
+    { id:"pascal", cat:"seventies", icon:"📘", name:"Pascal", year:"1970",
+      url:"https://www.freepascal.org",
+      author:{ uk:"Ніклаус Вірт", ru:"Никлаус Вирт", en:"Niklaus Wirth" },
+      desc:{ uk:"Структурована мова для навчання. Чіткі типи, процедури, надійність. На її основі — Delphi, Object Pascal.",
+             ru:"Структурированный язык для обучения. Чёткие типы, процедуры, надёжность. На его основе — Delphi, Object Pascal.",
+             en:"Structured language for teaching. Clear types, procedures, reliability. Basis for Delphi and Object Pascal." }},
+    { id:"c", cat:"seventies", icon:"©️", name:"C", year:"1972",
+      url:"https://en.cppreference.com/w/c",
+      author:{ uk:"Денніс Рітчі (Bell Labs)", ru:"Деннис Ритчи (Bell Labs)", en:"Dennis Ritchie (Bell Labs)" },
+      desc:{ uk:"Системна мова для Unix. Портативність, близькість до «заліза», мінімалізм. Основа C++, C#, Java, JavaScript, Python, Go, Rust.",
+             ru:"Системный язык для Unix. Портативность, близость к «железу», минимализм. Основа C++, C#, Java, JavaScript, Python, Go, Rust.",
+             en:"Systems language for Unix. Portability, closeness to the machine, minimalism. Foundation of C++, C#, Java, JavaScript, Python, Go, Rust." }},
+    { id:"prolog", cat:"seventies", icon:"🧩", name:"Prolog", year:"1972",
+      url:"https://www.swi-prolog.org",
+      author:{ uk:"Колмеров (Марсель)", ru:"Колмеров (Марсель)", en:"Colmerauer (Marseille)" },
+      desc:{ uk:"Логічна мова: програма — множина фактів і правил. Використовується в ШІ, експертних системах і NLP.",
+             ru:"Логический язык: программа — множество фактов и правил. Используется в ИИ, экспертных системах и NLP.",
+             en:"Logic language: a program is a set of facts and rules. Used in AI, expert systems and NLP." }},
+    { id:"smalltalk", cat:"seventies", icon:"💬", name:"Smalltalk", year:"1972",
+      url:"https://squeak.org",
+      author:{ uk:"Алан Кей (Xerox PARC)", ru:"Алан Кей (Xerox PARC)", en:"Alan Kay (Xerox PARC)" },
+      desc:{ uk:"Чиста ООП-мова з повідомленнями між об’єктами. Надихнула GUI, Objective-C, Ruby, сучасні IDE.",
+             ru:"Чистый ООП-язык с сообщениями между объектами. Вдохновил GUI, Objective-C, Ruby, современные IDE.",
+             en:"Pure OOP language with message-passing. Inspired GUIs, Objective-C, Ruby and modern IDEs." }},
+    { id:"sql", cat:"seventies", icon:"🗄️", name:"SQL", year:"1974",
+      url:"https://www.iso.org/standard/76583.html",
+      author:{ uk:"Чемберлін і Бойс (IBM)", ru:"Чемберлин и Бойс (IBM)", en:"Chamberlin & Boyce (IBM)" },
+      desc:{ uk:"Мова запитів до реляційних БД. Стандарт де-факто для даних: SELECT, JOIN, транзакції. Живе в PostgreSQL, MySQL, SQL Server тощо.",
+             ru:"Язык запросов к реляционным БД. Стандарт де-факто для данных: SELECT, JOIN, транзакции. Живёт в PostgreSQL, MySQL, SQL Server и др.",
+             en:"Query language for relational databases. De-facto data standard: SELECT, JOIN, transactions. Lives in PostgreSQL, MySQL, SQL Server and more." }},
+
+    { id:"cpp", cat:"eighties", icon:"➕", name:"C++", year:"1983/85",
+      url:"https://isocpp.org",
+      author:{ uk:"Бйорн Страуструп", ru:"Бьёрн Страуструп", en:"Bjarne Stroustrup" },
+      desc:{ uk:"«C з класами»: ООП, шаблони, RAII. Висока продуктивність для систем, ігор, фінансів, вбудованих систем.",
+             ru:"«C с классами»: ООП, шаблоны, RAII. Высокая производительность для систем, игр, финансов, встраиваемых систем.",
+             en:"“C with classes”: OOP, templates, RAII. High performance for systems, games, finance and embedded software." }},
+    { id:"ada", cat:"eighties", icon:"🛡️", name:"Ada", year:"1980/83",
+      url:"https://www.adacore.com/download",
+      author:{ uk:"Жан Ішбіа / DoD США", ru:"Жан Ишбиа / DoD США", en:"Jean Ichbiah / US DoD" },
+      desc:{ uk:"Мова для надійних систем (авіація, оборона). Сувора типізація, модульність, паралелізм. Названа на честь Ади Лавлейс.",
+             ru:"Язык для надёжных систем (авиация, оборона). Строгая типизация, модульность, параллелизм. Назван в честь Ады Лавлейс.",
+             en:"Language for reliable systems (avionics, defence). Strong typing, modularity, concurrency. Named after Ada Lovelace." }},
+    { id:"objc", cat:"eighties", icon:"🍎", name:"Objective-C", year:"1984",
+      url:"https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/",
+      author:{ uk:"Бред Кокс", ru:"Брэд Кокс", en:"Brad Cox" },
+      desc:{ uk:"C + повідомлення у стилі Smalltalk. Мова Apple для NeXT, macOS і iOS до епохи Swift.",
+             ru:"C + сообщения в стиле Smalltalk. Язык Apple для NeXT, macOS и iOS до эпохи Swift.",
+             en:"C plus Smalltalk-style messaging. Apple’s language for NeXT, macOS and iOS before Swift." }},
+    { id:"perl", cat:"eighties", icon:"🐪", name:"Perl", year:"1987",
+      url:"https://www.perl.org/get.html",
+      author:{ uk:"Ларрі Волл", ru:"Ларри Уолл", en:"Larry Wall" },
+      desc:{ uk:"«Швейцарський ніж» для тексту і скриптів. Регулярні вирази, CGI-ера вебу. Девіз: «є більше ніж один спосіб це зробити».",
+             ru:"«Швейцарский нож» для текста и скриптов. Регулярные выражения, CGI-эра веба. Девиз: «есть больше одного способа это сделать».",
+             en:"“Swiss army knife” for text and scripting. Regular expressions, the CGI era of the web. Motto: there’s more than one way to do it." }},
+    { id:"erlang", cat:"eighties", icon:"📡", name:"Erlang", year:"1986",
+      url:"https://www.erlang.org/downloads",
+      author:{ uk:"Армстронг та ін. (Ericsson)", ru:"Армстронг и др. (Ericsson)", en:"Armstrong et al. (Ericsson)" },
+      desc:{ uk:"Функційна мова з акторами для телеком і відмовостійких систем. Надихнула Elixir, Akka, сучасні розподілені архітектури.",
+             ru:"Функциональный язык с акторами для телекома и отказоустойчивых систем. Вдохновил Elixir, Akka, современные распределённые архитектуры.",
+             en:"Functional language with actors for telecom and fault-tolerant systems. Inspired Elixir, Akka and modern distributed designs." }},
+
+    { id:"python", cat:"nineties", icon:"🐍", name:"Python", year:"1991",
+      url:"https://www.python.org/downloads/",
+      author:{ uk:"Гвідо ван Россум", ru:"Гвидо ван Россум", en:"Guido van Rossum" },
+      desc:{ uk:"Читабельність понад усе. Універсальна мова: наука, веб, автоматизація, ШІ. Одна з найпопулярніших мов 2020-х.",
+             ru:"Читаемость превыше всего. Универсальный язык: наука, веб, автоматизация, ИИ. Один из самых популярных языков 2020-х.",
+             en:"Readability first. General-purpose: science, web, automation, AI. One of the most popular languages of the 2020s." }},
+    { id:"haskell", cat:"nineties", icon:"λ", name:"Haskell", year:"1990",
+      url:"https://www.haskell.org/downloads/",
+      author:{ uk:"Міжнародний комітет", ru:"Международный комитет", en:"International committee" },
+      desc:{ uk:"Чиста функційна мова з лінивими обчисленнями і сильною статичною типізацією. Лабораторія ідей для сучасних мов.",
+             ru:"Чистый функциональный язык с ленивыми вычислениями и сильной статической типизацией. Лаборатория идей для современных языков.",
+             en:"Pure functional language with lazy evaluation and strong static typing. A laboratory of ideas for modern languages." }},
+    { id:"java", cat:"nineties", icon:"☕", name:"Java", year:"1995",
+      url:"https://www.oracle.com/java/technologies/downloads/",
+      author:{ uk:"Джеймс Гослінг (Sun)", ru:"Джеймс Гослинг (Sun)", en:"James Gosling (Sun)" },
+      desc:{ uk:"«Напиши один раз — запускай скрізь» (JVM). Корпоративні системи, Android, величезний екосистемний стек.",
+             ru:"«Напиши один раз — запускай везде» (JVM). Корпоративные системы, Android, огромная экосистема.",
+             en:"“Write once, run anywhere” (JVM). Enterprise systems, Android, a huge ecosystem." }},
+    { id:"javascript", cat:"nineties", icon:"🟨", name:"JavaScript", year:"1995",
+      url:"https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+      author:{ uk:"Брендан Айк (Netscape)", ru:"Брендан Айк (Netscape)", en:"Brendan Eich (Netscape)" },
+      desc:{ uk:"Мова вебу, спочатку для браузера (за ~10 днів). Сьогодні — фронтенд, Node.js, мобільні й десктопні додатки.",
+             ru:"Язык веба, изначально для браузера (за ~10 дней). Сегодня — фронтенд, Node.js, мобильные и десктопные приложения.",
+             en:"The language of the web, first for the browser (in ~10 days). Now frontend, Node.js, mobile and desktop apps." }},
+    { id:"php", cat:"nineties", icon:"🐘", name:"PHP", year:"1995",
+      url:"https://www.php.net/downloads",
+      author:{ uk:"Расмус Лердорф", ru:"Расмус Лердорф", en:"Rasmus Lerdorf" },
+      desc:{ uk:"Серверні скрипти для веб-сторінок. WordPress, Laravel, велика частина класичного вебу.",
+             ru:"Серверные скрипты для веб-страниц. WordPress, Laravel, большая часть классического веба.",
+             en:"Server-side scripting for web pages. WordPress, Laravel, a large share of classic web." }},
+    { id:"ruby", cat:"nineties", icon:"💎", name:"Ruby", year:"1995",
+      url:"https://www.ruby-lang.org/en/downloads/",
+      author:{ uk:"Юкіхіро Мацумото", ru:"Юкихиро Мацумото", en:"Yukihiro Matsumoto" },
+      desc:{ uk:"Орієнтація на щастя програміста. Популярність через Ruby on Rails — швидка розробка веб-додатків.",
+             ru:"Ориентация на счастье программиста. Популярность благодаря Ruby on Rails — быстрая разработка веб-приложений.",
+             en:"Designed for programmer happiness. Popularity via Ruby on Rails — rapid web app development." }},
+
+    { id:"csharp", cat:"modern", icon:"#️⃣", name:"C#", year:"2000",
+      url:"https://dotnet.microsoft.com/download",
+      author:{ uk:"Андерс Гейлсберг (Microsoft)", ru:"Андерс Хейлсберг (Microsoft)", en:"Anders Hejlsberg (Microsoft)" },
+      desc:{ uk:"Мова платформи .NET. Сучасний синтаксис, сильна типізація, ігри (Unity), веб, десктоп, хмара.",
+             ru:"Язык платформы .NET. Современный синтаксис, сильная типизация, игры (Unity), веб, десктоп, облако.",
+             en:"Language of the .NET platform. Modern syntax, strong typing, games (Unity), web, desktop, cloud." }},
+    { id:"scala", cat:"modern", icon:"⚖️", name:"Scala", year:"2004",
+      url:"https://www.scala-lang.org/download/",
+      author:{ uk:"Мартін Одерські", ru:"Мартин Одерски", en:"Martin Odersky" },
+      desc:{ uk:"ООП + функційне програмування на JVM. Компактний код, типізація, популярна в big data (Spark).",
+             ru:"ООП + функциональное программирование на JVM. Компактный код, типизация, популярна в big data (Spark).",
+             en:"OOP + functional programming on the JVM. Concise code, typing, popular in big data (Spark)." }},
+    { id:"go", cat:"modern", icon:"🐹", name:"Go", year:"2009",
+      url:"https://go.dev/dl/",
+      author:{ uk:"Пайк, Томпсон, Гріземер (Google)", ru:"Пайк, Томпсон, Гризмер (Google)", en:"Pike, Thompson, Griesemer (Google)" },
+      desc:{ uk:"Простота, швидка компіляція, горутини. Ідеальна для хмарних сервісів, CLI, інфраструктури (Docker, Kubernetes).",
+             ru:"Простота, быстрая компиляция, горутины. Идеальна для облачных сервисов, CLI, инфраструктуры (Docker, Kubernetes).",
+             en:"Simplicity, fast compilation, goroutines. Ideal for cloud services, CLI tools and infrastructure (Docker, Kubernetes)." }},
+    { id:"rust", cat:"modern", icon:"🦀", name:"Rust", year:"2010/15",
+      url:"https://www.rust-lang.org/tools/install",
+      author:{ uk:"Грейдон Гоар / Mozilla → Rust Foundation", ru:"Грейдон Хоар / Mozilla → Rust Foundation", en:"Graydon Hoare / Mozilla → Rust Foundation" },
+      desc:{ uk:"Безпека пам’яті без збирача сміття. Ownership, zero-cost abstractions. Системне програмування, WASM, вбудовані системи.",
+             ru:"Безопасность памяти без сборщика мусора. Ownership, zero-cost abstractions. Системное программирование, WASM, встраиваемые системы.",
+             en:"Memory safety without a garbage collector. Ownership, zero-cost abstractions. Systems programming, WASM, embedded." }},
+    { id:"kotlin", cat:"modern", icon:"🅺", name:"Kotlin", year:"2011",
+      url:"https://kotlinlang.org/docs/getting-started.html",
+      author:{ uk:"JetBrains", ru:"JetBrains", en:"JetBrains" },
+      desc:{ uk:"Сучасна мова для JVM і Android (офіційна з 2017). Null-safety, стислість, сумісність з Java.",
+             ru:"Современный язык для JVM и Android (официальный с 2017). Null-safety, краткость, совместимость с Java.",
+             en:"Modern language for the JVM and Android (official since 2017). Null-safety, concision, Java interop." }},
+    { id:"typescript", cat:"modern", icon:"🔷", name:"TypeScript", year:"2012",
+      url:"https://www.typescriptlang.org/download",
+      author:{ uk:"Андерс Гейлсберг (Microsoft)", ru:"Андерс Хейлсберг (Microsoft)", en:"Anders Hejlsberg (Microsoft)" },
+      desc:{ uk:"JavaScript + статична типізація. Стандарт для великих фронтенд- і Node-проєктів.",
+             ru:"JavaScript + статическая типизация. Стандарт для крупных фронтенд- и Node-проектов.",
+             en:"JavaScript plus static typing. The standard for large frontend and Node projects." }},
+    { id:"swift", cat:"modern", icon:"🐦", name:"Swift", year:"2014",
+      url:"https://www.swift.org/download/",
+      author:{ uk:"Apple (Кріс Латтнер та ін.)", ru:"Apple (Крис Латтнер и др.)", en:"Apple (Chris Lattner et al.)" },
+      desc:{ uk:"Сучасна мова для Apple-платформ. Безпека, швидкість, зручний синтаксис. Заміна Objective-C.",
+             ru:"Современный язык для платформ Apple. Безопасность, скорость, удобный синтаксис. Замена Objective-C.",
+             en:"Modern language for Apple platforms. Safety, speed, pleasant syntax. Successor to Objective-C." }},
+    { id:"zig", cat:"modern", icon:"⚡", name:"Zig", year:"2016",
+      url:"https://ziglang.org/download/",
+      author:{ uk:"Ендрю Келлі", ru:"Эндрю Келли", en:"Andrew Kelley" },
+      desc:{ uk:"Мова системного рівня як альтернатива C: явне керування пам’яттю, крос-компіляція, простота.",
+             ru:"Язык системного уровня как альтернатива C: явное управление памятью, кросс-компиляция, простота.",
+             en:"Systems language as a C alternative: explicit memory control, cross-compilation, simplicity." }}
+];
+
+const overview = {
+    uk: {
+        title: "Історія виникнення і розвитку мов програмування",
+        body: `
+<p>Мови програмування пройшли шлях від машинних кодів і асемблера до потужних високорівневих і спеціалізованих мов. Кожна епоха відповідала на обмеження попередньої: складність, надійність, продуктивність розробника, масштаби систем і вебу.</p>
+
+<h3>До «високого рівня»</h3>
+<p>У 1940–50-х програмісти писали <strong>машинний код</strong> і <strong>асемблер</strong>. Перші спроби абстракції — Plankalkül (Конрад Цузе), Autocode. Переломним став <strong>Fortran (1957)</strong>: можна було описувати формули, а компілятор перетворював їх у код машини.</p>
+
+<h3>1950–1960-ті: фундамент</h3>
+<p><strong>Lisp</strong> відкрив функційне і символьне програмування (ШІ). <strong>ALGOL</strong> задав синтаксичну традицію блоків і областей видимості. <strong>COBOL</strong> став мовою бізнесу. <strong>BASIC</strong> демократизував навчання. <strong>Simula</strong> започаткувала об’єктно-орієнтований підхід.</p>
+
+<h3>1970-ті: системи і структури</h3>
+<p><strong>C</strong> і Unix змінили світ системного ПЗ. <strong>Pascal</strong> закріпив структуроване програмування в освіті. <strong>Smalltalk</strong> розвинув ООП і GUI. <strong>SQL</strong> став мовою даних. <strong>Prolog</strong> — логічного програмування.</p>
+
+<h3>1980-ті: ООП і скрипти</h3>
+<p><strong>C++</strong> додав класи до C. <strong>Ada</strong> — надійність для критичних систем. <strong>Objective-C</strong> пов’язав C зі Smalltalk. <strong>Perl</strong> став «клеєм» для тексту і раннього вебу. <strong>Erlang</strong> — модель акторів для відмовостійкості.</p>
+
+<h3>1990-ті: вибух вебу і універсальних мов</h3>
+<p><strong>Python</strong> — простота і читабельність. <strong>Java</strong> — «write once, run anywhere». <strong>JavaScript</strong> — мова браузера, а згодом і сервера. <strong>PHP</strong> і <strong>Ruby</strong> прискорили веб-розробку. <strong>Haskell</strong> вплинув на ідеї типізації і чистоти функцій.</p>
+
+<h3>2000-ні — сьогодні</h3>
+<p><strong>C#</strong> і .NET, <strong>Go</strong> для хмари, <strong>Rust</strong> для безпечної системної розробки, <strong>TypeScript</strong> для великих JS-проєктів, <strong>Kotlin</strong> і <strong>Swift</strong> для мобільних платформ. Зростає інтерес до безпеки пам’яті, конкурентності, WASM і мов для ШІ/даних.</p>
+
+<h3>Як користуватися сторінкою</h3>
+<p>Оберіть епоху в меню. Картки містять рік, авторів і короткий опис ролі мови в історії.</p>
+`
+    },
+    ru: {
+        title: "История возникновения и развития языков программирования",
+        body: `
+<p>Языки программирования прошли путь от машинных кодов и ассемблера до мощных высокоуровневых и специализированных языков. Каждая эпоха отвечала на ограничения предыдущей: сложность, надёжность, продуктивность разработчика, масштабы систем и веба.</p>
+
+<h3>До «высокого уровня»</h3>
+<p>В 1940–50-х программисты писали <strong>машинный код</strong> и <strong>ассемблер</strong>. Первые попытки абстракции — Plankalkül (Конрад Цузе), Autocode. Переломным стал <strong>Fortran (1957)</strong>: можно было описывать формулы, а компилятор превращал их в код машины.</p>
+
+<h3>1950–1960-е: фундамент</h3>
+<p><strong>Lisp</strong> открыл функциональное и символьное программирование (ИИ). <strong>ALGOL</strong> задал синтаксическую традицию блоков и областей видимости. <strong>COBOL</strong> стал языком бизнеса. <strong>BASIC</strong> демократизировал обучение. <strong>Simula</strong> положила начало объектно-ориентированному подходу.</p>
+
+<h3>1970-е: системы и структуры</h3>
+<p><strong>C</strong> и Unix изменили мир системного ПО. <strong>Pascal</strong> закрепил структурированное программирование в образовании. <strong>Smalltalk</strong> развил ООП и GUI. <strong>SQL</strong> стал языком данных. <strong>Prolog</strong> — логического программирования.</p>
+
+<h3>1980-е: ООП и скрипты</h3>
+<p><strong>C++</strong> добавил классы к C. <strong>Ada</strong> — надёжность для критических систем. <strong>Objective-C</strong> связал C со Smalltalk. <strong>Perl</strong> стал «клеем» для текста и раннего веба. <strong>Erlang</strong> — модель акторов для отказоустойчивости.</p>
+
+<h3>1990-е: взрыв веба и универсальных языков</h3>
+<p><strong>Python</strong> — простота и читаемость. <strong>Java</strong> — «write once, run anywhere». <strong>JavaScript</strong> — язык браузера, а затем и сервера. <strong>PHP</strong> и <strong>Ruby</strong> ускорили веб-разработку. <strong>Haskell</strong> повлиял на идеи типизации и чистоты функций.</p>
+
+<h3>2000-е — сегодня</h3>
+<p><strong>C#</strong> и .NET, <strong>Go</strong> для облака, <strong>Rust</strong> для безопасной системной разработки, <strong>TypeScript</strong> для крупных JS-проектов, <strong>Kotlin</strong> и <strong>Swift</strong> для мобильных платформ. Растёт интерес к безопасности памяти, конкурентности, WASM и языкам для ИИ/данных.</p>
+
+<h3>Как пользоваться страницей</h3>
+<p>Выберите эпоху в меню. Карточки содержат год, авторов и краткое описание роли языка в истории.</p>
+`
+    },
+    en: {
+        title: "History of the origin and development of programming languages",
+        body: `
+<p>Programming languages evolved from machine code and assembly to powerful high-level and specialized languages. Each era responded to the limits of the previous one: complexity, reliability, developer productivity, scale of systems and the web.</p>
+
+<h3>Before “high level”</h3>
+<p>In the 1940s–50s programmers wrote <strong>machine code</strong> and <strong>assembly</strong>. Early abstractions included Plankalkül (Konrad Zuse) and Autocode. The turning point was <strong>Fortran (1957)</strong>: you could write formulas and the compiler produced machine code.</p>
+
+<h3>1950s–1960s: foundations</h3>
+<p><strong>Lisp</strong> opened functional and symbolic programming (AI). <strong>ALGOL</strong> set the syntactic tradition of blocks and scoping. <strong>COBOL</strong> became the language of business. <strong>BASIC</strong> democratized learning. <strong>Simula</strong> started the object-oriented approach.</p>
+
+<h3>1970s: systems and structure</h3>
+<p><strong>C</strong> and Unix reshaped systems software. <strong>Pascal</strong> cemented structured programming in education. <strong>Smalltalk</strong> advanced OOP and GUIs. <strong>SQL</strong> became the language of data. <strong>Prolog</strong> represented logic programming.</p>
+
+<h3>1980s: OOP and scripting</h3>
+<p><strong>C++</strong> added classes to C. <strong>Ada</strong> targeted reliable critical systems. <strong>Objective-C</strong> combined C with Smalltalk messaging. <strong>Perl</strong> was the “glue” for text and the early web. <strong>Erlang</strong> brought the actor model for fault tolerance.</p>
+
+<h3>1990s: the web and general-purpose languages</h3>
+<p><strong>Python</strong> emphasized simplicity and readability. <strong>Java</strong> promised “write once, run anywhere”. <strong>JavaScript</strong> became the language of the browser — and later the server. <strong>PHP</strong> and <strong>Ruby</strong> accelerated web development. <strong>Haskell</strong> influenced typing and pure functional ideas.</p>
+
+<h3>2000s — today</h3>
+<p><strong>C#</strong> and .NET, <strong>Go</strong> for the cloud, <strong>Rust</strong> for safe systems work, <strong>TypeScript</strong> for large JS codebases, <strong>Kotlin</strong> and <strong>Swift</strong> for mobile platforms. Growing focus on memory safety, concurrency, WASM and languages for AI and data.</p>
+
+<h3>How to use this page</h3>
+<p>Pick an era in the menu. Cards show year, authors and a short note on the language’s role in history.</p>
+`
+    }
+};
+
+
+const whatIsLang = {
+    uk: {
+        title: "Що таке мова програмування і навіщо вона потрібна?",
+        body: `
+<p><strong>Мова програмування</strong> — формальна система запису інструкцій для комп’ютера (або іншої обчислювальної системи). Вона задає синтаксис (як писати) і семантику (що означає написане), щоб людина могла описати алгоритм, а транслятор (компілятор або інтерпретатор) перетворив його на дії машини.</p>
+
+<h3>Навіщо потрібні мови програмування</h3>
+<ul>
+<li><strong>Абстракція</strong> — не писати нулі й одиниці вручну, а оперувати змінними, функціями, структурами даних.</li>
+<li><strong>Зрозумілість</strong> — код читають люди: колеги, майбутній ви, інструменти аналізу.</li>
+<li><strong>Портативність</strong> — один і той самий текст програми можна перенести на іншу архітектуру (за наявності компілятора/рантайму).</li>
+<li><strong>Продуктивність розробки</strong> — бібліотеки, типи, інструменти зменшують кількість помилок і прискорюють роботу.</li>
+<li><strong>Виразність</strong> — різні мови краще підходять до різних задач (системи, веб, дані, паралелізм, вбудовані пристрої).</li>
+</ul>
+
+<h3>Як виконується програма</h3>
+<ul>
+<li><strong>Компіляція</strong> — код перетворюється на машинний (або байт-код) заздалегідь (C, C++, Rust, Go, Java → JVM).</li>
+<li><strong>Інтерпретація</strong> — код виконується «на льоту» (класичний BASIC, багато скриптових мов).</li>
+<li><strong>Гібрид</strong> — компіляція в байт-код + віртуальна машина або JIT (Java, C#, JavaScript у сучасних рушіях).</li>
+</ul>
+
+<h3>Парадигми (способи мислення)</h3>
+<ul>
+<li><strong>Імперативна</strong> — послідовність команд, що змінюють стан (C, Pascal).</li>
+<li><strong>Об’єктно-орієнтована</strong> — об’єкти, класи, повідомлення (Smalltalk, Java, C#).</li>
+<li><strong>Функційна</strong> — функції без побічних ефектів, композиція (Haskell, частини Lisp, F#).</li>
+<li><strong>Логічна</strong> — факти і правила (Prolog).</li>
+<li><strong>Мультипарадигмальна</strong> — поєднання підходів (Python, Scala, Rust, JavaScript).</li>
+</ul>
+
+<h3>Рівні абстракції</h3>
+<p>Від <strong>машинного коду</strong> й <strong>асемблера</strong> (близько до процесора) до <strong>високорівневих</strong> мов (близько до задачі людини) і <strong>предметно-орієнтованих</strong> (SQL, HTML/CSS як мови розмітки, мови для ШІ-пайплайнів).</p>
+
+<p>Мова — інструмент. Вибір залежить від задачі, команди, екосистеми та вимог до надійності й швидкодії. Історичний огляд на цій сторінці показує, як ці інструменти змінювались десятиліттями.</p>
+`
+    },
+    ru: {
+        title: "Что такое язык программирования и зачем он нужен?",
+        body: `
+<p><strong>Язык программирования</strong> — формальная система записи инструкций для компьютера (или другой вычислительной системы). Он задаёт синтаксис (как писать) и семантику (что означает написанное), чтобы человек мог описать алгоритм, а транслятор (компилятор или интерпретатор) превратил его в действия машины.</p>
+
+<h3>Зачем нужны языки программирования</h3>
+<ul>
+<li><strong>Абстракция</strong> — не писать нули и единицы вручную, а работать с переменными, функциями, структурами данных.</li>
+<li><strong>Понятность</strong> — код читают люди: коллеги, будущий вы, инструменты анализа.</li>
+<li><strong>Портативность</strong> — один и тот же текст программы можно перенести на другую архитектуру (при наличии компилятора/рантайма).</li>
+<li><strong>Продуктивность разработки</strong> — библиотеки, типы, инструменты снижают число ошибок и ускоряют работу.</li>
+<li><strong>Выразительность</strong> — разные языки лучше подходят к разным задачам (системы, веб, данные, параллелизм, встраиваемые устройства).</li>
+</ul>
+
+<h3>Как выполняется программа</h3>
+<ul>
+<li><strong>Компиляция</strong> — код заранее превращается в машинный (или байт-код) (C, C++, Rust, Go, Java → JVM).</li>
+<li><strong>Интерпретация</strong> — код выполняется «на лету» (классический BASIC, многие скриптовые языки).</li>
+<li><strong>Гибрид</strong> — компиляция в байт-код + виртуальная машина или JIT (Java, C#, JavaScript в современных движках).</li>
+</ul>
+
+<h3>Парадигмы (способы мышления)</h3>
+<ul>
+<li><strong>Императивная</strong> — последовательность команд, меняющих состояние (C, Pascal).</li>
+<li><strong>Объектно-ориентированная</strong> — объекты, классы, сообщения (Smalltalk, Java, C#).</li>
+<li><strong>Функциональная</strong> — функции без побочных эффектов, композиция (Haskell, части Lisp, F#).</li>
+<li><strong>Логическая</strong> — факты и правила (Prolog).</li>
+<li><strong>Мультипарадигмальная</strong> — сочетание подходов (Python, Scala, Rust, JavaScript).</li>
+</ul>
+
+<h3>Уровни абстракции</h3>
+<p>От <strong>машинного кода</strong> и <strong>ассемблера</strong> (близко к процессору) до <strong>высокоуровневых</strong> языков (близко к задаче человека) и <strong>предметно-ориентированных</strong> (SQL, HTML/CSS как языки разметки, языки для ИИ-пайплайнов).</p>
+
+<p>Язык — инструмент. Выбор зависит от задачи, команды, экосистемы и требований к надёжности и скорости. Исторический обзор на этой странице показывает, как эти инструменты менялись десятилетиями.</p>
+`
+    },
+    en: {
+        title: "What is a programming language and why do we need it?",
+        body: `
+<p>A <strong>programming language</strong> is a formal system for writing instructions for a computer (or other computing system). It defines syntax (how to write) and semantics (what the writing means), so a human can describe an algorithm and a translator (compiler or interpreter) can turn it into machine actions.</p>
+
+<h3>Why programming languages exist</h3>
+<ul>
+<li><strong>Abstraction</strong> — avoid writing zeros and ones by hand; work with variables, functions and data structures.</li>
+<li><strong>Readability</strong> — code is read by people: teammates, future you, analysis tools.</li>
+<li><strong>Portability</strong> — the same program text can target another architecture (given a compiler/runtime).</li>
+<li><strong>Developer productivity</strong> — libraries, types and tooling reduce bugs and speed up work.</li>
+<li><strong>Expressiveness</strong> — different languages fit different jobs (systems, web, data, concurrency, embedded devices).</li>
+</ul>
+
+<h3>How a program runs</h3>
+<ul>
+<li><strong>Compilation</strong> — code is turned into machine code (or bytecode) ahead of time (C, C++, Rust, Go, Java → JVM).</li>
+<li><strong>Interpretation</strong> — code is executed “on the fly” (classic BASIC, many scripting languages).</li>
+<li><strong>Hybrid</strong> — compile to bytecode plus a VM or JIT (Java, C#, modern JavaScript engines).</li>
+</ul>
+
+<h3>Paradigms (ways of thinking)</h3>
+<ul>
+<li><strong>Imperative</strong> — sequences of commands that change state (C, Pascal).</li>
+<li><strong>Object-oriented</strong> — objects, classes, messages (Smalltalk, Java, C#).</li>
+<li><strong>Functional</strong> — functions without side effects, composition (Haskell, parts of Lisp, F#).</li>
+<li><strong>Logic</strong> — facts and rules (Prolog).</li>
+<li><strong>Multi-paradigm</strong> — mixtures of the above (Python, Scala, Rust, JavaScript).</li>
+</ul>
+
+<h3>Levels of abstraction</h3>
+<p>From <strong>machine code</strong> and <strong>assembly</strong> (close to the CPU) to <strong>high-level</strong> languages (close to the human problem) and <strong>domain-specific</strong> languages (SQL, markup languages, AI pipeline DSLs).</p>
+
+<p>A language is a tool. The choice depends on the problem, the team, the ecosystem and reliability/performance needs. The historical overview on this page shows how those tools evolved over decades.</p>
+`
+    }
+};
+
+const futureAI = {
+    uk: {
+        title: "Прогноз: мови програмування майбутнього і зв’язок із ШІ",
+        body: `
+<p>Мови не зникають раптово — вони зміщуються в ніші. Але ШІ вже змінює <em>як</em> ми пишемо код і <em>які</em> мови виграють.</p>
+
+<h3>Тенденції найближчих років</h3>
+<ul>
+<li><strong>ШІ як співавтор</strong> — GitHub Copilot, Cursor, Cody та подібні інструменти генерують і пояснюють код. Вимагається не «запам’ятати синтаксис», а чітко ставити задачу, перевіряти й інтегрувати результат.</li>
+<li><strong>Безпека пам’яті</strong> — Rust і подібні підходи (і ідеї ownership) впливають на C/C++-екосистему; очікується більше «безпечних за замовчуванням» мов і діалектів.</li>
+<li><strong>Мови для інфраструктури й хмари</strong> — Go, Rust, Zig залишаться сильними там, де важливі швидкість, передбачуваність і просте розгортання.</li>
+<li><strong>TypeScript і типізований веб</strong> — великий фронтенд і full-stack навряд чи відмовиться від статичної типізації поверх JavaScript.</li>
+<li><strong>Python у ШІ та даних</strong> — домінування в ML/DS збережеться завдяки екосистемі (NumPy, PyTorch, JAX), навіть якщо «гарячі» прототипи з’являтимуться іншими мовами.</li>
+<li><strong>DSL і низькокодові шари</strong> — більше предметних мов і візуальних/декларативних інструментів «над» універсальними мовами, часто з генерацією коду ШІ.</li>
+</ul>
+
+<h3>Як ШІ змінює мови</h3>
+<ul>
+<li><strong>Генерація коду</strong> — LLM пишуть функції, тести, рефакторинг; мови з хорошою документацією і передбачуваним синтаксисом «дружать» з моделями краще.</li>
+<li><strong>Нові цикли розробки</strong> — від промпту до PR: людська роль зміщується до архітектури, рев’ю та доменної експертизи.</li>
+<li><strong>Мови «для агентів»</strong> — експерименти з мовами/рантаймами, зручними для автономних агентів (інструменти, пісочниці, політики безпеки).</li>
+<li><strong>Диференційоване / тензорне програмування</strong> — стеки на кшталт JAX, Mojo та дослідницькі мови зближують чисельні обчислення й моделі ШІ.</li>
+</ul>
+
+<h3>Що навряд чи зникне</h3>
+<p>C і C++ у системному шарі, SQL у даних, JavaScript/TypeScript у браузері, Java/C# у корпоративному секторі, Python у науці про дані — скоріше еволюціонуватимуть, ніж зникнуть. Нові мови частіше <strong>доповнюють</strong> екосистему, ніж повністю замінюють старі.</p>
+
+<h3>Практична порада</h3>
+<p>Варто знати одну-дві універсальні мови глибоко (наприклад Python + TypeScript або Rust + Go) і розуміти парадигми. ШІ прискорює написання коду, але не замінює розуміння алгоритмів, архітектури та обмежень платформи.</p>
+`
+    },
+    ru: {
+        title: "Прогноз: языки программирования будущего и связь с ИИ",
+        body: `
+<p>Языки не исчезают внезапно — они смещаются в ниши. Но ИИ уже меняет <em>как</em> мы пишем код и <em>какие</em> языки выигрывают.</p>
+
+<h3>Тенденции ближайших лет</h3>
+<ul>
+<li><strong>ИИ как соавтор</strong> — GitHub Copilot, Cursor, Cody и аналоги генерируют и объясняют код. Нужно не «запомнить синтаксис», а чётко ставить задачу, проверять и интегрировать результат.</li>
+<li><strong>Безопасность памяти</strong> — Rust и похожие подходы (ownership) влияют на экосистему C/C++; ожидается больше «безопасных по умолчанию» языков и диалектов.</li>
+<li><strong>Языки для инфраструктуры и облака</strong> — Go, Rust, Zig останутся сильными там, где важны скорость, предсказуемость и простое развёртывание.</li>
+<li><strong>TypeScript и типизированный веб</strong> — крупный фронтенд и full-stack вряд ли откажется от статической типизации поверх JavaScript.</li>
+<li><strong>Python в ИИ и данных</strong> — доминирование в ML/DS сохранится благодаря экосистеме (NumPy, PyTorch, JAX), даже если «горячие» прототипы появятся на других языках.</li>
+<li><strong>DSL и low-code слои</strong> — больше предметных языков и визуальных/декларативных инструментов «над» универсальными языками, часто с генерацией кода ИИ.</li>
+</ul>
+
+<h3>Как ИИ меняет языки</h3>
+<ul>
+<li><strong>Генерация кода</strong> — LLM пишут функции, тесты, рефакторинг; языки с хорошей документацией и предсказуемым синтаксисом лучше «дружат» с моделями.</li>
+<li><strong>Новые циклы разработки</strong> — от промпта до PR: роль человека смещается к архитектуре, ревью и доменной экспертизе.</li>
+<li><strong>Языки «для агентов»</strong> — эксперименты с языками/рантаймами, удобными для автономных агентов (инструменты, песочницы, политики безопасности).</li>
+<li><strong>Дифференцируемое / тензорное программирование</strong> — стеки вроде JAX, Mojo и исследовательские языки сближают численные вычисления и модели ИИ.</li>
+</ul>
+
+<h3>Что вряд ли исчезнет</h3>
+<p>C и C++ в системном слое, SQL в данных, JavaScript/TypeScript в браузере, Java/C# в корпоративном секторе, Python в data science — скорее будут эволюционировать, чем исчезнут. Новые языки чаще <strong>дополняют</strong> экосистему, чем полностью заменяют старые.</p>
+
+<h3>Практический совет</h3>
+<p>Стоит знать один-два универсальных языка глубоко (например Python + TypeScript или Rust + Go) и понимать парадигмы. ИИ ускоряет написание кода, но не заменяет понимание алгоритмов, архитектуры и ограничений платформы.</p>
+`
+    },
+    en: {
+        title: "Forecast: future programming languages and their link to AI",
+        body: `
+<p>Languages rarely vanish overnight — they shift into niches. But AI is already changing <em>how</em> we write code and <em>which</em> languages gain ground.</p>
+
+<h3>Near-term trends</h3>
+<ul>
+<li><strong>AI as co-author</strong> — GitHub Copilot, Cursor, Cody and similar tools generate and explain code. The skill shifts from “memorize syntax” to stating the problem clearly, reviewing and integrating the result.</li>
+<li><strong>Memory safety</strong> — Rust and ownership-style ideas influence the C/C++ world; more “safe by default” languages and dialects are likely.</li>
+<li><strong>Infrastructure and cloud languages</strong> — Go, Rust and Zig stay strong where speed, predictability and simple deployment matter.</li>
+<li><strong>TypeScript and the typed web</strong> — large frontend and full-stack codebases are unlikely to drop static typing on top of JavaScript.</li>
+<li><strong>Python in AI and data</strong> — dominance in ML/DS will continue thanks to the ecosystem (NumPy, PyTorch, JAX), even if hot prototypes appear in other languages.</li>
+<li><strong>DSLs and low-code layers</strong> — more domain-specific and visual/declarative tools “above” general-purpose languages, often with AI-generated code underneath.</li>
+</ul>
+
+<h3>How AI changes languages</h3>
+<ul>
+<li><strong>Code generation</strong> — LLMs write functions, tests and refactors; languages with good docs and predictable syntax work better with models.</li>
+<li><strong>New development loops</strong> — from prompt to PR: human focus moves to architecture, review and domain expertise.</li>
+<li><strong>Languages “for agents”</strong> — experiments with languages/runtimes suited to autonomous agents (tools, sandboxes, security policies).</li>
+<li><strong>Differentiable / tensor programming</strong> — stacks like JAX, Mojo and research languages bring numerical computing closer to AI models.</li>
+</ul>
+
+<h3>What is unlikely to disappear</h3>
+<p>C and C++ in systems, SQL for data, JavaScript/TypeScript in the browser, Java/C# in enterprise, Python in data science — will evolve more than vanish. New languages more often <strong>complement</strong> the ecosystem than fully replace the old ones.</p>
+
+<h3>Practical advice</h3>
+<p>Learn one or two general-purpose languages deeply (e.g. Python + TypeScript, or Rust + Go) and understand paradigms. AI speeds up writing code; it does not replace understanding algorithms, architecture and platform limits.</p>
+`
+    }
+};
+
+const ui = {
+    uk: {
+        title: "Історія мов програмування",
+        pageTitle: "📜 Історія мов програмування",
+        home: "Головна сторінка",
+        searchPlaceholder: "Пошук мови...",
+        all: "Усі епохи",
+        about: "📖 Огляд історії",
+        whatis: "💡 Що таке мова програмування?",
+        future: "🤖 Майбутнє і ШІ",
+        author: "Автори / походження",
+        open: "Сайт / Завантаження →",
+        noResults: "Нічого не знайдено. Спробуйте інший запит.",
+        footer: "📜 Історія мов програмування | 2026 | Код вільний для редагування"
+    },
+    ru: {
+        title: "История языков программирования",
+        pageTitle: "📜 История языков программирования",
+        home: "Главная страница",
+        searchPlaceholder: "Поиск языка...",
+        all: "Все эпохи",
+        about: "📖 Обзор истории",
+        whatis: "💡 Что такое язык программирования?",
+        future: "🤖 Будущее и ИИ",
+        author: "Авторы / происхождение",
+        open: "Сайт / Загрузка →",
+        noResults: "Ничего не найдено. Попробуйте другой запрос.",
+        footer: "📜 История языков программирования | 2026 | Код свободен для редактирования"
+    },
+    en: {
+        title: "History of Programming Languages",
+        pageTitle: "📜 History of Programming Languages",
+        home: "Home page",
+        searchPlaceholder: "Search language...",
+        all: "All eras",
+        about: "📖 History overview",
+        whatis: "💡 What is a programming language?",
+        future: "🤖 Future & AI",
+        author: "Authors / origin",
+        open: "Website / Download →",
+        noResults: "Nothing found. Try a different query.",
+        footer: "📜 History of Programming Languages | 2026 | Code is free to edit"
+    }
+};
+
+let currentLang = localStorage.getItem('lang-hist-pl') || 'uk';
+let activeCategory = 'about';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang-hist-pl', lang);
+    document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+    ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+    document.title = ui[lang].title;
+    document.getElementById('home-link').textContent = ui[lang].home;
+    document.getElementById('page-title').textContent = ui[lang].pageTitle;
+    renderFilters();
+    render();
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const cur = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+function renderFilters() {
+    const container = document.getElementById('filters');
+    let html = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+    html += `<button class="filter-btn ${activeCategory==='whatis'?'active':''}" onclick="setCat('whatis')">${ui[currentLang].whatis}</button>`;
+    html += `<button class="filter-btn ${activeCategory==='about'?'active':''}" onclick="setCat('about')">${ui[currentLang].about}</button>`;
+    for (const [key, val] of Object.entries(categories)) {
+        html += `<button class="filter-btn ${activeCategory===key?'active':''}" onclick="setCat('${key}')">${val[currentLang]}</button>`;
+    }
+    html += `<button class="filter-btn ${activeCategory==='future'?'active':''}" onclick="setCat('future')">${ui[currentLang].future}</button>`;
+    container.innerHTML = html;
+}
+
+function setCat(cat) {
+    activeCategory = cat;
+    renderFilters();
+    render();
+}
+
+function render() {
+    const main = document.getElementById('main');
+
+    if (activeCategory === 'about' || activeCategory === 'whatis' || activeCategory === 'future') {
+        const src = activeCategory === 'whatis' ? whatIsLang : (activeCategory === 'future' ? futureAI : overview);
+        const o = src[currentLang];
+        main.innerHTML = `<div class="intro"><h2>${o.title}</h2>${o.body}</div>`;
+        document.getElementById('footer').textContent = ui[currentLang].footer;
+        return;
+    }
+
+    let html = '';
+    const catsToShow = activeCategory === 'all' ? Object.keys(categories) : [activeCategory];
+
+    catsToShow.forEach(catKey => {
+        const items = languages.filter(L => L.cat === catKey);
+        if (items.length === 0) return;
+        html += `<div class="section-title">${categories[catKey][currentLang]}</div><div class="grid">`;
+        items.forEach(L => {
+            html += `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">${L.icon}</div>
+                        <div>
+                            <div class="card-title">${L.name}</div>
+                            <span class="card-year">${L.year}</span>
+                        </div>
+                    </div>
+                    <div class="card-desc">${L.desc[currentLang]}</div>
+                    <div class="card-meta">
+                        <strong>${ui[currentLang].author}</strong>
+                        ${L.author[currentLang]}
+                    </div>
+                    ${L.url ? `<a href="${L.url}" target="_blank" rel="noopener" class="card-link">${ui[currentLang].open}</a>` : ''}
+                </div>`;
+        });
+        html += `</div>`;
+    });
+
+    if (html === '') html = `<div class="no-results">${ui[currentLang].noResults}</div>`;
+    main.innerHTML = html;
+    document.getElementById('footer').textContent = ui[currentLang].footer;
+}
+
+setLang(currentLang);
+</script>
+</body>
+</html>

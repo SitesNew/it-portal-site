@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS Directory — Довідник операційних систем</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #00e5b0;
+            --accent-2: #7c3aed;
+            --accent-3: #ff9f43;
+            --gradient: linear-gradient(135deg, #00e5b0, #7c3aed);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1.2rem 5%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .brand {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .brand span { font-weight: 400; font-size: 0.9rem; color: var(--text-muted); -webkit-text-fill-color: var(--text-muted); }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #000; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .search-wrap {
+            max-width: 1200px; margin: 1.5rem auto 0; padding: 0 5%;
+        }
+        .search-box {
+            width: 100%; padding: 0.9rem 1.2rem; border-radius: var(--radius);
+            border: 1px solid rgba(255,255,255,0.08); background: var(--bg);
+            color: var(--text); font-size: 1rem; outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-box:focus { border-color: var(--accent); }
+        [data-theme="light"] .search-box { border-color: rgba(0,0,0,0.1); }
+        .search-box::placeholder { color: var(--text-muted); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #000; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(0,229,176,0.2);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.7rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; flex-shrink: 0;
+        }
+        .card-title {
+            font-weight: 700; font-size: 1.05rem;
+        }
+        .card-tag {
+            font-size: 0.7rem; color: var(--accent-2);
+            background: rgba(124,58,237,0.1);
+            padding: 0.15rem 0.5rem; border-radius: 1rem;
+            display: inline-block; margin-top: 0.2rem;
+        }
+        .card-section {
+            margin-top: 0.7rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .card-section strong {
+            color: var(--text);
+            display: block;
+            margin-bottom: 0.15rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.5; margin-bottom: 0.3rem;
+        }
+        .arch-tags {
+            display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.3rem;
+        }
+        .arch-tag {
+            background: rgba(0,229,176,0.1); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600;
+        }
+        .card-link {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            color: var(--accent); text-decoration: none;
+            font-weight: 600; font-size: 0.85rem;
+            transition: gap 0.2s; margin-top: 0.8rem;
+        }
+        .card-link:hover { gap: 0.7rem; }
+        .card-link::after { content: "→"; }
+
+        .license-free { color: #00e5b0; }
+        .license-paid { color: #ff9f43; }
+        .license-mix { color: #7c3aed; }
+
+        .no-results {
+            text-align: center; color: var(--text-muted);
+            padding: 3rem; font-size: 1.1rem; grid-column: 1 / -1;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .brand span { display: block; margin-top: 0.2rem; }
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-hover); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<header>
+<a href="index.html" class="home-link" target="_self"><span data-uk="Головна сторінка" data-ru="Главная страница" data-en="Home page">Головна сторінка</span></a> 
+ <div class="header-top">
+        <div class="brand">🖥️ OS Directory <span>— Довідник операційних систем</span></div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()">🌓</button>
+        </div>
+    </div>
+    <div class="search-wrap">
+        <input type="text" class="search-box" id="search" placeholder="Пошук ОС..." oninput="render()">
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+
+<footer id="footer"></footer>
+
+<script>
+// ===================== ДАНІ =====================
+const categories = {
+    desktop: { uk: "🖥️ Настільні ОС", ru: "🖥️ Настольные ОС", en: "🖥️ Desktop OS" },
+    server:  { uk: "🖧 Серверні ОС",   ru: "🖧 Серверные ОС",   en: "🖧 Server OS" },
+    mobile:  { uk: "📱 Мобільні ОС",   ru: "📱 Мобильные ОС",   en: "📱 Mobile OS" },
+    other:   { uk: "⚙️ Інші / Спеціальні", ru: "⚙️ Другие / Специальные", en: "⚙️ Other / Specialized" }
+};
+
+const osList = [
+    // === НАСТІЛЬНІ ===
+    { id:"win11", cat:"desktop", icon:"🪟", name:"Windows 11",
+      url:"https://www.microsoft.com/windows/windows-11",
+      desc:{ uk:"Сучасна ОС від Microsoft з оновленим інтерфейсом, підтримкою віджетів, Snap Layouts та інтеграцією AI (Copilot).",
+             ru:"Современная ОС от Microsoft с обновлённым интерфейсом, поддержкой виджетов, Snap Layouts и интеграцией AI (Copilot).",
+             en:"Modern Microsoft OS with refreshed UI, widgets, Snap Layouts and AI integration (Copilot)." },
+      features:{ uk:"Підтримка Android-додатків, DirectStorage, Auto HDR, віртуальні робочі столи, Microsoft Store, Xbox Game Bar.",
+                ru:"Поддержка Android-приложений, DirectStorage, Auto HDR, виртуальные рабочие столы, Microsoft Store, Xbox Game Bar.",
+                en:"Android app support, DirectStorage, Auto HDR, virtual desktops, Microsoft Store, Xbox Game Bar." },
+      license:{ uk:"Платна (попередні версії — безкоштовне оновлення)", ru:"Платная (для предыдущих версий — бесплатное обновление)", en:"Paid (free upgrade from previous versions)" },
+      arch:["x86_64","ARM64"] },
+
+    { id:"win10", cat:"desktop", icon:"🪟", name:"Windows 10",
+      url:"https://www.microsoft.com/windows/windows-10",
+      desc:{ uk:"Надійна ОС від Microsoft з класичним меню Пуск. Підтримка оновлень безпеки триватиме до жовтня 2025.",
+             ru:"Надёжная ОС от Microsoft с классическим меню Пуск. Поддержка обновлений безопасности продлится до октября 2025.",
+             en:"Reliable Microsoft OS with classic Start menu. Security updates supported until October 2025." },
+      features:{ uk:"Cortana, Windows Hello, BitLocker, віртуальні робочі столи, DirectX 12, WSL.",
+                ru:"Cortana, Windows Hello, BitLocker, виртуальные рабочие столы, DirectX 12, WSL.",
+                en:"Cortana, Windows Hello, BitLocker, virtual desktops, DirectX 12, WSL." },
+      license:{ uk:"Платна", ru:"Платная", en:"Paid" },
+      arch:["x86_64","ARM64"] },
+
+    { id:"macos", cat:"desktop", icon:"🍎", name:"macOS Sequoia",
+      url:"https://www.apple.com/macos",
+      desc:{ uk:"Операційна система для комп'ютерів Apple. Відома стабільністю, інтеграцією з екосистемою та продуктивністю.",
+             ru:"Операционная система для компьютеров Apple. Известна стабильностью, интеграцией с экосистемой и продуктивностью.",
+             en:"Operating system for Apple computers. Known for stability, ecosystem integration and productivity." },
+      features:{ uk:"Apple Intelligence, Continuity, Handoff, Time Machine, Spotlight, вбудований Xcode, оптимізація під Apple Silicon.",
+                ru:"Apple Intelligence, Continuity, Handoff, Time Machine, Spotlight, встроенный Xcode, оптимизация под Apple Silicon.",
+                en:"Apple Intelligence, Continuity, Handoff, Time Machine, Spotlight, built-in Xcode, optimized for Apple Silicon." },
+      license:{ uk:"Безкоштовна (при купівлі обладнання Apple)", ru:"Бесплатная (при покупке оборудования Apple)", en:"Free (with Apple hardware purchase)" },
+      arch:["ARM64 (Apple Silicon)","x86_64 (Intel)"] },
+
+    { id:"ubuntu", cat:"desktop", icon:"🟠", name:"Ubuntu",
+      url:"https://ubuntu.com/download",
+      desc:{ uk:"Найпопулярніший дистрибутив Linux. Дружній до новачків, з великою спільнотою та довгостроковою підтримкою LTS.",
+             ru:"Самый популярный дистрибутив Linux. Дружелюбен к новичкам, с большим сообществом и долгосрочной поддержкой LTS.",
+             en:"The most popular Linux distribution. Beginner-friendly, large community and long-term LTS support." },
+      features:{ uk:"GNOME-стільниця, Snap-пакети, великий репозиторій ПЗ, WSL, серверна та десктопна версії, хмарні інструменти.",
+                ru:"GNOME-стол, Snap-пакеты, большой репозиторий ПО, WSL, серверная и десктопная версии, облачные инструменты.",
+                en:"GNOME desktop, Snap packages, large software repository, WSL, server and desktop editions, cloud tools." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64","RISC-V"] },
+
+    { id:"debian", cat:"desktop", icon:"🔴", name:"Debian",
+      url:"https://www.debian.org/distrib/",
+      desc:{ uk:"Один із найстаріших і найстабільніших дистрибутивів Linux. Основа для Ubuntu, Mint та інших систем.",
+             ru:"Один из старейших и самых стабильных дистрибутивов Linux. Основа для Ubuntu, Mint и других систем.",
+             en:"One of the oldest and most stable Linux distributions. Foundation for Ubuntu, Mint and others." },
+      features:{ uk:"Виняткова стабільність, понад 59000 пакетів, три гілки (Stable, Testing, Unstable), systemd, APT.",
+                ru:"Исключительная стабильность, более 59000 пакетов, три ветки (Stable, Testing, Unstable), systemd, APT.",
+                en:"Exceptional stability, over 59000 packages, three branches (Stable, Testing, Unstable), systemd, APT." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64","ARMhf","i386","RISC-V","ppc64el"] },
+
+    { id:"fedora", cat:"desktop", icon:"🔵", name:"Fedora",
+      url:"https://getfedora.org",
+      desc:{ uk:"Сучасний дистрибутив від Red Hat з новітніми технологіями. Тестовий полігон для RHEL.",
+             ru:"Современный дистрибутив от Red Hat с новейшими технологиями. Полигон для тестирования RHEL.",
+             en:"Modern distribution by Red Hat with cutting-edge technologies. Testing ground for RHEL." },
+      features:{ uk:"Wayland за замовчуванням, Flatpak, Podman, Toolbox, Silverblue (immutable), GNOME/KDE/Xfce.",
+                ru:"Wayland по умолчанию, Flatpak, Podman, Toolbox, Silverblue (immutable), GNOME/KDE/Xfce.",
+                en:"Wayland by default, Flatpak, Podman, Toolbox, Silverblue (immutable), GNOME/KDE/Xfce." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64"] },
+
+    { id:"arch", cat:"desktop", icon:"🏹", name:"Arch Linux",
+      url:"https://archlinux.org/download/",
+      desc:{ uk:"Мінімалістичний дистрибутив для досвідчених користувачів. Філософія KISS — «роби все сам».",
+             ru:"Минималистичный дистрибутив для опытных пользователей. Философия KISS — «делай всё сам».",
+             en:"Minimalist distribution for advanced users. KISS philosophy — 'do it yourself'." },
+      features:{ uk:"Rolling release, AUR (репозиторій користувачів), Pacman, повний контроль над системою, мінімум зайвого.",
+                ru:"Rolling release, AUR (репозиторий пользователей), Pacman, полный контроль над системой, минимум лишнего.",
+                en:"Rolling release, AUR (user repository), Pacman, full system control, minimal bloat." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64"] },
+
+    { id:"mint", cat:"desktop", icon:"🌿", name:"Linux Mint",
+      url:"https://linuxmint.com/download.php",
+      desc:{ uk:"Дружній дистрибутив на базі Ubuntu/Debian. Чудова альтернатива Windows для початківців.",
+             ru:"Дружелюбный дистрибутив на базе Ubuntu/Debian. Отличная альтернатива Windows для начинающих.",
+             en:"Friendly distribution based on Ubuntu/Debian. Great Windows alternative for beginners." },
+      features:{ uk:"Cinnamon/MATE/Xfce, вбудовані медіакодеки, менеджер оновлень, Timeshift (бекапи), підтримка Flatpak.",
+                ru:"Cinnamon/MATE/Xfce, встроенные медиакодеки, менеджер обновлений, Timeshift (бэкапы), поддержка Flatpak.",
+                en:"Cinnamon/MATE/Xfce, built-in media codecs, update manager, Timeshift (backups), Flatpak support." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64"] },
+
+    { id:"manjaro", cat:"desktop", icon:"⛰", name:"Manjaro",
+      url:"https://manjaro.org/download/",
+      desc:{ uk:"Дружня версія Arch Linux з автоматичним налаштуванням. Rolling release без складнощів.",
+             ru:"Дружелюбная версия Arch Linux с автоматической настройкой. Rolling release без сложностей.",
+             en:"User-friendly Arch Linux with automatic setup. Rolling release without the complexity." },
+      features:{ uk:"Calamares-інсталятор, Pamac (менеджер ПЗ), підтримка AUR, ядра в реальному часі, геймерські опції.",
+                ru:"Calamares-установщик, Pamac (менеджер ПО), поддержка AUR, ядра в реальном времени, игровые опции.",
+                en:"Calamares installer, Pamac (package manager), AUR support, real-time kernels, gaming options." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64"] },
+
+    { id:"popos", cat:"desktop", icon:"🚀", name:"Pop!_OS",
+      url:"https://pop.system76.com",
+      desc:{ uk:"Дистрибутив від System76 на базі Ubuntu. Оптимізований для творчості, програмування та ігор.",
+             ru:"Дистрибутив от System76 на базе Ubuntu. Оптимизирован для творчества, программирования и игр.",
+             en:"Distribution by System76 based on Ubuntu. Optimized for creativity, programming and gaming." },
+      features:{ uk:"Cosmic Desktop (Rust), автоматичне перемикання GPU, tiling-вікна, підтримка NVIDIA/AMD, Flatpak.",
+                ru:"Cosmic Desktop (Rust), автоматическое переключение GPU, tiling-окна, поддержка NVIDIA/AMD, Flatpak.",
+                en:"Cosmic Desktop (Rust), automatic GPU switching, tiling windows, NVIDIA/AMD support, Flatpak." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64"] },
+
+    { id:"zorin", cat:"desktop", icon:"🅉", name:"Zorin OS",
+      url:"https://zorin.com/os/download/",
+      desc:{ uk:"Ubuntu-based дистрибутив, стилізований під Windows/macOS. Ідеальний для міграції з Windows.",
+             ru:"Дистрибутив на базе Ubuntu, стилизованный под Windows/macOS. Идеален для миграции с Windows.",
+             en:"Ubuntu-based distribution styled like Windows/macOS. Ideal for migrating from Windows." },
+      features:{ uk:"Zorin Appearance (зміна макету), Zorin Connect (синхронізація з Android), Core/Pro/Lite редакції.",
+                ru:"Zorin Appearance (смена макета), Zorin Connect (синхронизация с Android), редакции Core/Pro/Lite.",
+                en:"Zorin Appearance (layout change), Zorin Connect (Android sync), Core/Pro/Lite editions." },
+      license:{ uk:"Core — безкоштовна, Pro — платна", ru:"Core — бесплатная, Pro — платная", en:"Core free, Pro paid" },
+      arch:["x86_64"] },
+
+    { id:"elementary", cat:"desktop", icon:"🎀", name:"Elementary OS",
+      url:"https://elementary.io",
+      desc:{ uk:"Елегантна ОС з власним Pantheon-оточенням, натхненним macOS. Фокус на красі та простоті.",
+             ru:"Элегантная ОС с собственным окружением Pantheon, вдохновлённым macOS. Фокус на красоте и простоте.",
+             en:"Elegant OS with its own Pantheon desktop inspired by macOS. Focus on beauty and simplicity." },
+      features:{ uk:"Pantheon Desktop, AppCenter, фокус на конфіденційності, pay-what-you-want модель, Flatpak.",
+                ru:"Pantheon Desktop, AppCenter, фокус на конфиденциальности, pay-what-you-want модель, Flatpak.",
+                en:"Pantheon Desktop, AppCenter, privacy focus, pay-what-you-want model, Flatpak." },
+      license:{ uk:"Pay-what-you-want", ru:"Pay-what-you-want", en:"Pay-what-you-want" },
+      arch:["x86_64"] },
+
+    { id:"opensuse", cat:"desktop", icon:"🦎", name:"openSUSE",
+      url:"https://www.opensuse.org",
+      desc:{ uk:"Стабільний дистрибутив від SUSE. Дві гілки: Leap (стабільна) та Tumbleweed (rolling).",
+             ru:"Стабильный дистрибутив от SUSE. Две ветки: Leap (стабильная) и Tumbleweed (rolling).",
+             en:"Stable distribution by SUSE. Two branches: Leap (stable) and Tumbleweed (rolling)." },
+      features:{ uk:"YaST (центр керування), OBS (білд-сервіс), Snapper (знімки Btrfs), KDE Plasma за замовчуванням.",
+                ru:"YaST (центр управления), OBS (билд-сервис), Snapper (снимки Btrfs), KDE Plasma по умолчанию.",
+                en:"YaST control center, OBS build service, Snapper (Btrfs snapshots), KDE Plasma by default." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64","ppc64le"] },
+
+    { id:"reactos", cat:"desktop", icon:"⚛", name:"ReactOS",
+      url:"https://reactos.org",
+      desc:{ uk:"Вільна ОС, сумісна з Windows NT. Мета — повна заміна Windows без зміни знайомого інтерфейсу.",
+             ru:"Свободная ОС, совместимая с Windows NT. Цель — полная замена Windows без изменения привычного интерфейса.",
+             en:"Free OS compatible with Windows NT. Goal — complete Windows replacement without changing the familiar UI." },
+      features:{ uk:"Запуск Windows-додатків і драйверів, класичний Explorer-інтерфейс, легка система, open source.",
+                ru:"Запуск Windows-приложений и драйверов, классический Explorer-интерфейс, лёгкая система, open source.",
+                en:"Runs Windows apps and drivers, classic Explorer UI, lightweight system, open source." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_32","x86_64"] },
+
+    // === СЕРВЕРНІ ===
+    { id:"rhel", cat:"server", icon:"🎩", name:"Red Hat Enterprise Linux",
+      url:"https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux",
+      desc:{ uk:"Комерційний серверний дистрибутив для підприємств. Підтримка, сертифікація та довгострокові оновлення.",
+             ru:"Коммерческий серверный дистрибутив для предприятий. Поддержка, сертификация и долгосрочные обновления.",
+             en:"Commercial enterprise server distribution. Support, certification and long-term updates." },
+      features:{ uk:"SELinux, Satellite, Ansible, OpenShift, підтримка до 10+ років, сертифікація апаратного та ПЗ.",
+                ru:"SELinux, Satellite, Ansible, OpenShift, поддержка до 10+ лет, сертификация железа и ПО.",
+                en:"SELinux, Satellite, Ansible, OpenShift, 10+ year support, hardware and software certification." },
+      license:{ uk:"Платна (підписка)", ru:"Платная (подписка)", en:"Paid (subscription)" },
+      arch:["x86_64","ARM64","IBM Z","IBM Power"] },
+
+    { id:"almalinux", cat:"server", icon:"🟤", name:"AlmaLinux",
+      url:"https://almalinux.org",
+      desc:{ uk:"Безкоштовна заміна CentOS, 1:1 сумісна з RHEL. Підтримується спільнотою та CloudLinux.",
+             ru:"Бесплатная замена CentOS, 1:1 совместимая с RHEL. Поддерживается сообществом и CloudLinux.",
+             en:"Free CentOS replacement, 1:1 compatible with RHEL. Supported by community and CloudLinux." },
+      features:{ uk:"Повна бінарна сумісність із RHEL, EPEL, підтримка до 2032+, міграція з CentOS однією командою.",
+                ru:"Полная бинарная совместимость с RHEL, EPEL, поддержка до 2032+, миграция с CentOS одной командой.",
+                en:"Full binary compatibility with RHEL, EPEL, support until 2032+, migrate from CentOS in one command." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64","IBM Z","IBM Power"] },
+
+    { id:"rocky", cat:"server", icon:"⛰", name:"Rocky Linux",
+      url:"https://rockylinux.org",
+      desc:{ uk:"Ще одна безкоштовна заміна CentOS від засновника CentOS. Повна сумісність із RHEL.",
+             ru:"Ещё одна бесплатная замена CentOS от основателя CentOS. Полная совместимость с RHEL.",
+             en:"Another free CentOS replacement by the founder of CentOS. Fully compatible with RHEL." },
+      features:{ uk:"Bug-for-bug сумісність, SecureBoot, підтримка хмарних платформ, мінімальна та повна інсталяція.",
+                ru:"Bug-for-bug совместимость, SecureBoot, поддержка облачных платформ, минимальная и полная установка.",
+                en:"Bug-for-bug compatibility, SecureBoot, cloud platform support, minimal and full installation." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64","IBM Z","IBM Power"] },
+
+    { id:"ubuntu-server", cat:"server", icon:"🟠", name:"Ubuntu Server",
+      url:"https://ubuntu.com/download/server",
+      desc:{ uk:"Серверна версія Ubuntu. Лідер у хмарних середовищах та контейнеризації.",
+             ru:"Серверная версия Ubuntu. Лидер в облачных средах и контейнеризации.",
+             en:"Server edition of Ubuntu. Leader in cloud environments and containerization." },
+      features:{ uk:"LXD, MicroK8s, Juju, MAAS, Ceph, OpenStack, підтримка до 10 років (Pro), автоматичні бекапи.",
+                ru:"LXD, MicroK8s, Juju, MAAS, Ceph, OpenStack, поддержка до 10 лет (Pro), автоматические бэкапы.",
+                en:"LXD, MicroK8s, Juju, MAAS, Ceph, OpenStack, up to 10 year support (Pro), automated backups." },
+      license:{ uk:"Безкоштовна / Pro — платна", ru:"Бесплатная / Pro — платная", en:"Free / Pro paid" },
+      arch:["x86_64","ARM64","IBM Z","RISC-V"] },
+
+    { id:"debian-server", cat:"server", icon:"🔴", name:"Debian GNU/Linux (Server)",
+      url:"https://www.debian.org/distrib/netinst",
+      desc:{ uk:"Серверна версія Debian. Вибір для тих, хто цінує стабільність понад усе.",
+             ru:"Серверная версия Debian. Выбор для тех, кто ценит стабильность превыше всего.",
+             en:"Server edition of Debian. The choice for those who value stability above all." },
+      features:{ uk:"Мінімальна установка, 59000+ пакетів, без реклами та телеметрії, підтримка безпеки до 5 років.",
+                ru:"Минимальная установка, 59000+ пакетов, без рекламы и телеметрии, поддержка безопасности до 5 лет.",
+                en:"Minimal install, 59000+ packages, no ads or telemetry, security support up to 5 years." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64","ARMhf","i386","RISC-V","ppc64el"] },
+
+    { id:"freebsd", cat:"server", icon:"😈", name:"FreeBSD",
+      url:"https://www.freebsd.org/where/",
+      desc:{ uk:"Unix-подібна ОС з відкритим кодом. Відома продуктивністю мережевого стека та ZFS.",
+             ru:"Unix-подобная ОС с открытым кодом. Известна производительностью сетевого стека и ZFS.",
+             en:"Open source Unix-like OS. Known for network stack performance and ZFS." },
+      features:{ uk:"ZFS, Jails (контейнери), Ports Collection, DTrace, pf (файрвол), чудова документація, стабільність.",
+                ru:"ZFS, Jails (контейнеры), Ports Collection, DTrace, pf (файрвол), отличная документация, стабильность.",
+                en:"ZFS, Jails (containers), Ports Collection, DTrace, pf firewall, excellent docs, stability." },
+      license:{ uk:"Безкоштовна (BSD)", ru:"Бесплатная (BSD)", en:"Free (BSD)" },
+      arch:["x86_64","ARM64","ARMv7","RISC-V","ppc64"] },
+
+    { id:"proxmox", cat:"server", icon:"🖧", name:"Proxmox VE",
+      url:"https://www.proxmox.com/en/downloads",
+      desc:{ uk:"Відкрита платформа віртуалізації. Об'єднує KVM (віртуальні машини) та LXC (контейнери).",
+             ru:"Открытая платформа виртуализации. Объединяет KVM (виртуальные машины) и LXC (контейнеры).",
+             en:"Open source virtualization platform. Combines KVM (VMs) and LXC (containers)." },
+      features:{ uk:"Веб-інтерфейс керування, кластеризація, резервне копіювання, Ceph, HA, live-миграція ВМ.",
+                ru:"Веб-интерфейс управления, кластеризация, резервное копирование, Ceph, HA, live-миграция ВМ.",
+                en:"Web management interface, clustering, backup, Ceph, HA, live VM migration." },
+      license:{ uk:"Безкоштовна / Підписка на підтримку", ru:"Бесплатная / Подписка на поддержку", en:"Free / Support subscription" },
+      arch:["x86_64","ARM64"] },
+
+    { id:"vmware", cat:"server", icon:"☁", name:"VMware ESXi",
+      url:"https://support.broadcom.com/security-advisory/security-advisory-detail.html?securit-advisory-id=SA00001",
+      desc:{ uk:"Гіпервізор типу 1 для дата-центрів. Лідер корпоративної віртуалізації (тепер Broadcom).",
+             ru:"Гипервизор типа 1 для дата-центров. Лидер корпоративной виртуализации (теперь Broadcom).",
+             en:"Type 1 hypervisor for data centers. Leader in enterprise virtualization (now Broadcom)." },
+      features:{ uk:"vMotion, DRS, HA, vSAN, NSX, інтеграція з vCenter, підтримка великих кластерів.",
+                ru:"vMotion, DRS, HA, vSAN, NSX, интеграция с vCenter, поддержка больших кластеров.",
+                en:"vMotion, DRS, HA, vSAN, NSX, vCenter integration, large cluster support." },
+      license:{ uk:"Платна (підписка Broadcom)", ru:"Платная (подписка Broadcom)", en:"Paid (Broadcom subscription)" },
+      arch:["x86_64"] },
+
+    // === МОБІЛЬНІ ===
+    { id:"android", cat:"mobile", icon:"🤖", name:"Android",
+      url:"https://www.android.com",
+      desc:{ uk:"Найпопулярніша мобільна ОС у світі від Google. Відкрита платформа з великою екосистемою додатків.",
+             ru:"Самая популярная мобильная ОС в мире от Google. Открытая платформа с большой экосистемой приложений.",
+             en:"The world's most popular mobile OS by Google. Open platform with a vast app ecosystem." },
+      features:{ uk:"Google Play, Kotlin, Jetpack Compose, підтримка різних виробників, кастомні ROM, Android Auto.",
+                ru:"Google Play, Kotlin, Jetpack Compose, поддержка разных производителей, кастомные ROM, Android Auto.",
+                en:"Google Play, Kotlin, Jetpack Compose, multi-vendor support, custom ROMs, Android Auto." },
+      license:{ uk:"Open Source (AOSP) + Google сервіси", ru:"Open Source (AOSP) + Google сервисы", en:"Open Source (AOSP) + Google services" },
+      arch:["ARM64","ARMv7","x86_64"] },
+
+    { id:"ios", cat:"mobile", icon:"📱", name:"iOS",
+      url:"https://www.apple.com/ios",
+      desc:{ uk:"Мобільна ОС для iPhone від Apple. Відома плавністю, безпекою та інтеграцією з екосистемою.",
+             ru:"Мобильная ОС для iPhone от Apple. Известна плавностью, безопасностью и интеграцией с экосистемой.",
+             en:"Mobile OS for iPhone by Apple. Known for smoothness, security and ecosystem integration." },
+      features:{ uk:"Face ID, Apple Intelligence, iMessage, AirDrop, Focus, Widgets, App Tracking Transparency, SwiftUI.",
+                ru:"Face ID, Apple Intelligence, iMessage, AirDrop, Focus, Widgets, App Tracking Transparency, SwiftUI.",
+                en:"Face ID, Apple Intelligence, iMessage, AirDrop, Focus, Widgets, App Tracking Transparency, SwiftUI." },
+      license:{ uk:"Безкоштовна (тільки для Apple)", ru:"Бесплатная (только для Apple)", en:"Free (Apple hardware only)" },
+      arch:["ARM64 (Apple Silicon)"] },
+
+    { id:"ipados", cat:"mobile", icon:"📲", name:"iPadOS",
+      url:"https://www.apple.com/ipados",
+      desc:{ uk:"ОС для iPad на базі iOS з оптимізацією під великий екран, мультизадачність та Apple Pencil.",
+             ru:"ОС для iPad на базе iOS с оптимизацией под большой экран, многозадачность и Apple Pencil.",
+             en:"OS for iPad based on iOS, optimized for large screen, multitasking and Apple Pencil." },
+      features:{ uk:"Stage Manager, Split View, Slide Over, підтримка зовнішніх дисплеїв, Procreate, Final Cut для iPad.",
+                ru:"Stage Manager, Split View, Slide Over, поддержка внешних дисплеев, Procreate, Final Cut для iPad.",
+                en:"Stage Manager, Split View, Slide Over, external display support, Procreate, Final Cut for iPad." },
+      license:{ uk:"Безкоштовна (тільки для iPad)", ru:"Бесплатная (только для iPad)", en:"Free (iPad only)" },
+      arch:["ARM64 (Apple Silicon)"] },
+
+    { id:"kaios", cat:"mobile", icon:"🍌", name:"KaiOS",
+      url:"https://www.kaiostech.com",
+      desc:{ uk:"Легка ОС для кнопкових телефонів на базі Firefox OS. Підтримка 4G, WhatsApp, YouTube, Google Assistant.",
+             ru:"Лёгкая ОС для кнопочных телефонов на базе Firefox OS. Поддержка 4G, WhatsApp, YouTube, Google Assistant.",
+             en:"Lightweight OS for feature phones based on Firefox OS. Supports 4G, WhatsApp, YouTube, Google Assistant." },
+      features:{ uk:"HTML5-додатки, магазин KaiStore, GPS, Wi-Fi, Bluetooth, підтримка JioPhone та Nokia.",
+                ru:"HTML5-приложения, магазин KaiStore, GPS, Wi-Fi, Bluetooth, поддержка JioPhone и Nokia.",
+                en:"HTML5 apps, KaiStore, GPS, Wi-Fi, Bluetooth, supports JioPhone and Nokia devices." },
+      license:{ uk:"Пропрієтарна / GPL", ru:"Проприетарная / GPL", en:"Proprietary / GPL" },
+      arch:["ARMv7","ARM64"] },
+
+    // === ІНШІ / СПЕЦІАЛЬНІ ===
+    { id:"chromeos", cat:"other", icon:"🌐", name:"Chrome OS / ChromeOS Flex",
+      url:"https://www.google.com/chromeos",
+      desc:{ uk:"Легка ОС від Google для Chromebook. ChromeOS Flex дозволяє встановити її на старі ПК та Mac.",
+             ru:"Лёгкая ОС от Google для Chromebook. ChromeOS Flex позволяет установить её на старые ПК и Mac.",
+             en:"Lightweight OS by Google for Chromebooks. ChromeOS Flex allows installing it on old PCs and Macs." },
+      features:{ uk:"Швидке завантаження, інтеграція з Google Workspace, Linux-контейнер, Android-додатки, хмарне сховище.",
+                ru:"Быстрая загрузка, интеграция с Google Workspace, Linux-контейнер, Android-приложения, облачное хранилище.",
+                en:"Fast boot, Google Workspace integration, Linux container, Android apps, cloud storage." },
+      license:{ uk:"Безкоштовна (ChromeOS Flex)", ru:"Бесплатная (ChromeOS Flex)", en:"Free (ChromeOS Flex)" },
+      arch:["x86_64","ARM64"] },
+
+    { id:"kali", cat:"other", icon:"🔒", name:"Kali Linux",
+      url:"https://www.kali.org/get-kali/",
+      desc:{ uk:"Дистрибутив для тестування на проникнення та аудиту безпеки. Містить 600+ інструментів.",
+             ru:"Дистрибутив для тестирования на проникновение и аудита безопасности. Содержит 600+ инструментов.",
+             en:"Distribution for penetration testing and security auditing. Contains 600+ tools." },
+      features:{ uk:"Metasploit, Nmap, Wireshark, Aircrack-ng, John the Ripper, підтримка ARM, live-режим, forensic mode.",
+                ru:"Metasploit, Nmap, Wireshark, Aircrack-ng, John the Ripper, поддержка ARM, live-режим, forensic mode.",
+                en:"Metasploit, Nmap, Wireshark, Aircrack-ng, John the Ripper, ARM support, live mode, forensic mode." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64","ARMhf"] },
+
+    { id:"tails", cat:"other", icon:"🕵", name:"Tails",
+      url:"https://tails.net",
+      desc:{ uk:"Live-ОС для анонімності та приватності. Завантажується з USB і не залишає слідів на комп'ютері.",
+             ru:"Live-ОС для анонимности и приватности. Загружается с USB и не оставляет следов на компьютере.",
+             en:"Live OS for anonymity and privacy. Boots from USB and leaves no trace on the computer." },
+      features:{ uk:"Tor за замовчуванням, шифрування persistence, вбудовані криптозасоби, amnesic mode, onion circuits.",
+                ru:"Tor по умолчанию, шифрование persistence, встроенные криптосредства, amnesic mode, onion circuits.",
+                en:"Tor by default, encrypted persistence, built-in crypto tools, amnesic mode, onion circuits." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64"] },
+
+    { id:"raspbian", cat:"other", icon:"🍓", name:"Raspberry Pi OS",
+      url:"https://www.raspberrypi.com/software/",
+      desc:{ uk:"Офіційна ОС для одноплатників Raspberry Pi. Оптимізована для навчання, IoT та медіацентрів.",
+             ru:"Официальная ОС для одноплатников Raspberry Pi. Оптимизирована для обучения, IoT и медиацентров.",
+             en:"Official OS for Raspberry Pi single-board computers. Optimized for education, IoT and media centers." },
+      features:{ uk:"GPIO-програмування, Minecraft Pi, Mathematica, VNC, камера, HATs, Pi-hole, RetroPie, Home Assistant.",
+                ru:"GPIO-программирование, Minecraft Pi, Mathematica, VNC, камера, HATs, Pi-hole, RetroPie, Home Assistant.",
+                en:"GPIO programming, Minecraft Pi, Mathematica, VNC, camera, HATs, Pi-hole, RetroPie, Home Assistant." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["ARM64","ARMhf"] },
+
+    { id:"haiku", cat:"other", icon:"🎵", name:"Haiku",
+      url:"https://www.haiku-os.org/get-haiku",
+      desc:{ uk:"Сучасна реінкарнація BeOS. Легка, швидка ОС з інноваційним файловим менеджером Tracker.",
+             ru:"Современная реинкарнация BeOS. Лёгкая, быстрая ОС с инновационным файловым менеджером Tracker.",
+             en:"Modern reincarnation of BeOS. Lightweight, fast OS with innovative Tracker file manager." },
+      features:{ uk:"WebPositive браузер, нативна багатопоточність, персональні атрибути файлів, швидке завантаження, POSIX.",
+                ru:"WebPositive браузер, нативная многопоточность, персональные атрибуты файлов, быстрая загрузка, POSIX.",
+                en:"WebPositive browser, native multithreading, personal file attributes, fast boot, POSIX." },
+      license:{ uk:"Безкоштовна (MIT)", ru:"Бесплатная (MIT)", en:"Free (MIT)" },
+      arch:["x86_64","x86_32"] },
+
+    { id:"menuetos", cat:"other", icon:"💿", name:"MenuetOS / KolibriOS",
+      url:"http://www.menuetos.net",
+      desc:{ uk:"Мініатюрна ОС, написана повністю на асемблері. Займає лише 1 дискету (1.44 МБ) і має GUI.",
+             ru:"Миниатюрная ОС, написанная полностью на ассемблере. Занимает всего 1 дискету (1.44 МБ) и имеет GUI.",
+             en:"Tiny OS written entirely in assembly. Fits on a single floppy disk (1.44 MB) and has a GUI." },
+      features:{ uk:"TCP/IP стек, HTTP/FTP клієнт, MP3-програвач, 3D-демо, повністю на асемблері x86, реальний час.",
+                ru:"TCP/IP стек, HTTP/FTP клиент, MP3-плеер, 3D-демо, полностью на ассемблере x86, реальное время.",
+                en:"TCP/IP stack, HTTP/FTP client, MP3 player, 3D demo, fully x86 assembly, real-time." },
+      license:{ uk:"Безкоштовна (GPL)", ru:"Бесплатная (GPL)", en:"Free (GPL)" },
+      arch:["x86_32"] }
+];
+
+// ===================== ЛОКАЛІЗАЦІЯ =====================
+const ui = {
+    uk: {
+        title: "OS Directory — Довідник операційних систем",
+        searchPlaceholder: "Пошук ОС...",
+        all: "Усі категорії",
+        open: "Завантажити / Сайт →",
+        noResults: "Нічого не знайдено. Спробуйте інший запит.",
+        footer: "🖥️ Універсальний довідник ОС | 2026 | Код вільний для редагування",
+        purpose: "Призначення",
+        features: "Можливості",
+        license: "Ліцензія",
+        arch: "Архітектура"
+    },
+    ru: {
+        title: "OS Directory — Справочник операционных систем",
+        searchPlaceholder: "Поиск ОС...",
+        all: "Все категории",
+        open: "Скачать / Сайт →",
+        noResults: "Ничего не найдено. Попробуйте другой запрос.",
+        footer: "🖥️ Универсальный справочник ОС | 2026 | Код свободен для редактирования",
+        purpose: "Назначение",
+        features: "Возможности",
+        license: "Лицензия",
+        arch: "Архитектура"
+    },
+    en: {
+        title: "OS Directory — Operating Systems Catalog",
+        searchPlaceholder: "Search OS...",
+        all: "All Categories",
+        open: "Download / Website →",
+        noResults: "Nothing found. Try a different query.",
+        footer: "🖥️ Universal OS Directory | 2026 | Code is free to edit",
+        purpose: "Purpose",
+        features: "Features",
+        license: "License",
+        arch: "Architecture"
+    }
+};
+
+let currentLang = localStorage.getItem('os-dir-lang') || 'uk';
+let activeCategory = 'all';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('os-dir-lang', lang);
+    document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+    ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+    document.getElementById('search').placeholder = ui[lang].searchPlaceholder;
+    document.title = ui[lang].title;
+    renderFilters();
+    render();
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const cur = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+function renderFilters() {
+    const container = document.getElementById('filters');
+    let html = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+    for (const [key, val] of Object.entries(categories)) {
+        html += `<button class="filter-btn ${activeCategory===key?'active':''}" onclick="setCat('${key}')">${val[currentLang]}</button>`;
+    }
+    container.innerHTML = html;
+}
+
+function setCat(cat) {
+    activeCategory = cat;
+    renderFilters();
+    render();
+}
+
+function getLicenseClass(lic) {
+    const l = lic.toLowerCase();
+    if (l.includes('безкоштовна') || l.includes('бесплатная') || l.includes('free') || l.includes('open source') || l.includes('bsd') || l.includes('mit') || l.includes('gpl')) return 'license-free';
+    if (l.includes('платна') || l.includes('платная') || l.includes('paid')) return 'license-paid';
+    return 'license-mix';
+}
+
+function render() {
+    const query = document.getElementById('search').value.toLowerCase();
+    const main = document.getElementById('main');
+    let html = '';
+
+    const catsToShow = activeCategory === 'all' ? Object.keys(categories) : [activeCategory];
+
+    catsToShow.forEach(catKey => {
+        const catOS = osList.filter(o => {
+            if (o.cat !== catKey) return false;
+            if (!query) return true;
+            return o.name.toLowerCase().includes(query) || o.desc[currentLang].toLowerCase().includes(query);
+        });
+
+        if (catOS.length === 0) return;
+
+        html += `<div class="section-title">${categories[catKey][currentLang]}</div>`;
+        html += `<div class="grid">`;
+        catOS.forEach(o => {
+            const licClass = getLicenseClass(o.license[currentLang]);
+            html += `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">${o.icon}</div>
+                        <div>
+                            <div class="card-title">${o.name}</div>
+                        </div>
+                    </div>
+                    <div class="card-desc">${o.desc[currentLang]}</div>
+                    
+                    <div class="card-section">
+                        <strong>${ui[currentLang].features}</strong>
+                        ${o.features[currentLang]}
+                    </div>
+                    
+                    <div class="card-section">
+                        <strong>${ui[currentLang].license}</strong>
+                        <span class="${licClass}">${o.license[currentLang]}</span>
+                    </div>
+                    
+                    <div class="card-section">
+                        <strong>${ui[currentLang].arch}</strong>
+                        <div class="arch-tags">
+                            ${o.arch.map(a => `<span class="arch-tag">${a}</span>`).join('')}
+                        </div>
+                    </div>
+                    
+                    <a href="${o.url}" target="_blank" class="card-link">${ui[currentLang].open}</a>
+                </div>
+            `;
+        });
+        html += `</div>`;
+    });
+
+    if (html === '') {
+        html = `<div class="no-results">${ui[currentLang].noResults}</div>`;
+    }
+
+    main.innerHTML = html;
+    document.getElementById('footer').textContent = ui[currentLang].footer;
+}
+
+// Init
+setLang(currentLang);
+</script>
+</body>
+</html>

@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Основи програмної інженерії / Життєвий цикл ПЗ (SDLC) — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">🛠️ Основи програмної інженерії / SDLC</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try {
+            return localStorage.getItem(key) || fallback;
+        } catch (e) {
+            return fallback;
+        }
+    }
+    function safeSet(key, value) {
+        try {
+            localStorage.setItem(key, value);
+        } catch (e) {}
+    }
+
+    const categories = {
+        overview: {
+            uk: "📋 Огляд SDLC та програмної інженерії",
+            ru: "📋 Обзор SDLC и программной инженерии",
+            en: "📋 SDLC & Software Engineering Overview"
+        },
+        analysis: {
+            uk: "📝 Аналіз вимог",
+            ru: "📝 Анализ требований",
+            en: "📝 Requirements Analysis"
+        },
+        design: {
+            uk: "🏗️ Проектування",
+            ru: "🏗️ Проектирование",
+            en: "🏗️ Design"
+        },
+        implementation: {
+            uk: "💻 Кодування та реалізація",
+            ru: "💻 Кодирование и реализация",
+            en: "💻 Implementation & Coding"
+        },
+        testing: {
+            uk: "🧪 Тестування",
+            ru: "🧪 Тестирование",
+            en: "🧪 Testing"
+        },
+        maintenance: {
+            uk: "🔧 Супровід та підтримка",
+            ru: "🔧 Сопровождение и поддержка",
+            en: "🔧 Maintenance & Support"
+        }
+    };
+
+    const items = [
+        {
+            cat: "overview",
+            icon: "🔄",
+            name: {
+                uk: "Життєвий цикл програмного забезпечення",
+                ru: "Жизненный цикл программного обеспечения",
+                en: "Software Development Life Cycle"
+            },
+            desc: {
+                uk: "Структурований процес створення, розгортання та підтримки програмного забезпечення. Включає послідовні або ітеративні етапи — від ідеї до виведення системи з експлуатації.",
+                ru: "Структурированный процесс создания, развертывания и поддержки программного обеспечения. Охватывает последовательные или итеративные этапы — от идеи до вывода системы из эксплуатации.",
+                en: "A structured process of creating, deploying and maintaining software. It covers sequential or iterative stages — from the initial idea to system retirement."
+            },
+            traits: {
+                uk: "Етапи, Моделі розробки, Ітеративність, Документування, Керування ризиками",
+                ru: "Этапы, Модели разработки, Итеративность, Документирование, Управление рисками",
+                en: "Phases, Development models, Iteration, Documentation, Risk management"
+            },
+            spec: {
+                uk: "Мета — передбачувана якість і контрольовані ризики",
+                ru: "Цель — предсказуемое качество и контролируемые риски",
+                en: "Goal — predictable quality and controlled risks"
+            },
+            links: [
+                { name: "ISO/IEC 12207", url: "https://www.iso.org/standard/63712.html" },
+                { name: "SDLC (Wikipedia)", url: "https://en.wikipedia.org/wiki/Systems_development_life_cycle" }
+            ]
+        },
+        {
+            cat: "overview",
+            icon: "🎓",
+            name: {
+                uk: "Програмна інженерія",
+                ru: "Программная инженерия",
+                en: "Software Engineering"
+            },
+            desc: {
+                uk: "Дисципліна, яка застосовує інженерні принципи до розробки програмного забезпечення: системний підхід, управління якістю, оцінка вартості та ризиків, стандартизація процесів.",
+                ru: "Дисциплина, применяющая инженерные принципы к разработке программного обеспечения: системный подход, управление качеством, оценка стоимости и рисков, стандартизация процессов.",
+                en: "A discipline that applies engineering principles to software development: systematic approach, quality management, cost and risk estimation, and process standardization."
+            },
+            traits: {
+                uk: "Звід знань SWEBOK, Процеси, Якість, Метрики, Професійна етика",
+                ru: "Свод знаний SWEBOK, Процессы, Качество, Метрики, Профессиональная этика",
+                en: "SWEBOK, Processes, Quality, Metrics, Professional ethics"
+            },
+            spec: {
+                uk: "Базовий стандарт — SWEBOK",
+                ru: "Базовый стандарт — SWEBOK",
+                en: "Core standard — SWEBOK"
+            },
+            links: [
+                { name: "SWEBOK", url: "https://www.computer.org/education/bodies-of-knowledge/software-engineering" },
+                { name: "IEEE Computer Society", url: "https://www.computer.org" },
+                { name: "ACM Code of Ethics", url: "https://www.acm.org/code-of-ethics" }
+            ]
+        },
+        {
+            cat: "analysis",
+            icon: "📋",
+            name: {
+                uk: "Збір та аналіз вимог",
+                ru: "Сбор и анализ требований",
+                en: "Requirements elicitation and analysis"
+            },
+            desc: {
+                uk: "Процес виявлення, документування, аналізу та узгодження потреб зацікавлених сторін. Саме на цьому етапі формується основа для подальшого проектування та оцінки успіху системи.",
+                ru: "Процесс выявления, документирования, анализа и согласования потребностей заинтересованных сторон. На этом этапе формируется основа для дальнейшего проектирования и оценки успеха системы.",
+                en: "The process of discovering, documenting, analyzing and agreeing on stakeholder needs. This stage forms the foundation for design and for evaluating system success."
+            },
+            traits: {
+                uk: "Функціональні вимоги, Нефункціональні вимоги, Сценарії використання, Історії користувача, Інтерв’ю, Воркшопи",
+                ru: "Функциональные требования, Нефункциональные требования, Сценарии использования, Пользовательские истории, Интервью, Воркшопы",
+                en: "Functional requirements, Non-functional requirements, Use cases, User stories, Interviews, Workshops"
+            },
+            spec: {
+                uk: "Головне — повнота, несуперечливість і перевірюваність",
+                ru: "Главное — полнота, непротиворечивость и проверяемость",
+                en: "Key qualities — completeness, consistency and verifiability"
+            },
+            links: [
+                { name: "BABOK (IIBA)", url: "https://www.iiba.org/babok-guide/" },
+                { name: "Jira / Confluence", url: "https://www.atlassian.com" },
+                { name: "Azure DevOps", url: "https://azure.microsoft.com/en-us/products/devops/boards" }
+            ]
+        },
+        {
+            cat: "analysis",
+            icon: "📐",
+            name: {
+                uk: "Моделювання вимог і специфікації",
+                ru: "Моделирование требований и спецификации",
+                en: "Requirements modeling and specifications"
+            },
+            desc: {
+                uk: "Створення моделей (діаграми UML, BPMN, ER) та документів вимог (специфікація вимог до ПЗ) для однозначного розуміння того, що має робити система.",
+                ru: "Создание моделей (диаграммы UML, BPMN, ER) и документов требований (спецификация требований к ПО) для однозначного понимания того, что должна делать система.",
+                en: "Creating models (UML, BPMN, ER diagrams) and requirements documents (Software Requirements Specification) so that everyone shares the same understanding of what the system must do."
+            },
+            traits: {
+                uk: "Специфікація вимог, Діаграми UML, Прототипи, Матриця трасування",
+                ru: "Спецификация требований, Диаграммы UML, Прототипы, Матрица трассировки",
+                en: "Requirements specification, UML diagrams, Prototypes, Traceability matrix"
+            },
+            spec: {
+                uk: "Основний документ — специфікація вимог до ПЗ",
+                ru: "Основной документ — спецификация требований к ПО",
+                en: "Main document — Software Requirements Specification"
+            },
+            links: [
+                { name: "UML Diagrams", url: "https://www.uml-diagrams.org" },
+                { name: "PlantUML", url: "https://plantuml.com" },
+                { name: "diagrams.net", url: "https://app.diagrams.net" }
+            ]
+        },
+        {
+            cat: "design",
+            icon: "🏛️",
+            name: {
+                uk: "Архітектурне проектування",
+                ru: "Архитектурное проектирование",
+                en: "Architectural design"
+            },
+            desc: {
+                uk: "Визначення високорівневої структури системи: основні компоненти, способи їх взаємодії, стилі архітектури (моноліт, мікросервіси, шари) та нефункціональні обмеження.",
+                ru: "Определение высокоуровневой структуры системы: основные компоненты, способы их взаимодействия, стили архитектуры (монолит, микросервисы, слои) и нефункциональные ограничения.",
+                en: "Defining the high-level structure of the system: main components, how they interact, architectural styles (monolith, microservices, layered) and non-functional constraints."
+            },
+            traits: {
+                uk: "Стилі архітектури, Модель C4, Рішення з архітектури, Масштабованість, Безпека на етапі проектування",
+                ru: "Стили архитектуры, Модель C4, Архитектурные решения, Масштабируемость, Безопасность на этапе проектирования",
+                en: "Architecture styles, C4 model, Architecture decisions, Scalability, Security by design"
+            },
+            spec: {
+                uk: "Рекомендований підхід — фіксувати архітектурні рішення",
+                ru: "Рекомендуемый подход — фиксировать архитектурные решения",
+                en: "Recommended practice — record architecture decisions"
+            },
+            links: [
+                { name: "C4 Model", url: "https://c4model.com" },
+                { name: "arc42", url: "https://arc42.org" },
+                { name: "Azure Architecture", url: "https://learn.microsoft.com/en-us/azure/architecture/" }
+            ]
+        },
+        {
+            cat: "design",
+            icon: "🧩",
+            name: {
+                uk: "Детальне проектування",
+                ru: "Детальное проектирование",
+                en: "Detailed design"
+            },
+            desc: {
+                uk: "Розробка детальних моделей класів, послідовностей, станів та інтерфейсів. Підготовка до написання коду з урахуванням принципів простоти, повторного використання та зрозумілості.",
+                ru: "Разработка детальных моделей классов, последовательностей, состояний и интерфейсов. Подготовка к написанию кода с учетом принципов простоты, повторного использования и понятности.",
+                en: "Developing detailed class, sequence, state and interface models. Preparing for coding while following principles of simplicity, reuse and clarity."
+            },
+            traits: {
+                uk: "Діаграми класів, Діаграми послідовностей, Шаблони проектування, Принципи SOLID, Проектування інтерфейсів",
+                ru: "Диаграммы классов, Диаграммы последовательностей, Шаблоны проектирования, Принципы SOLID, Проектирование интерфейсов",
+                en: "Class diagrams, Sequence diagrams, Design patterns, SOLID principles, Interface design"
+            },
+            spec: {
+                uk: "Ключові принципи — SOLID та шаблони проектування",
+                ru: "Ключевые принципы — SOLID и шаблоны проектирования",
+                en: "Key principles — SOLID and design patterns"
+            },
+            links: [
+                { name: "Refactoring.Guru", url: "https://refactoring.guru" },
+                { name: "Lucidchart", url: "https://www.lucidchart.com" },
+                { name: "Enterprise Architect", url: "https://sparxsystems.com" }
+            ]
+        },
+        {
+            cat: "implementation",
+            icon: "⌨️",
+            name: {
+                uk: "Кодування та розробка",
+                ru: "Кодирование и разработка",
+                en: "Coding and development"
+            },
+            desc: {
+                uk: "Перетворення проектних рішень у вихідний код. Використання стандартів написання коду, перевірки коду колегами, парного програмування та сучасних практик чистоти коду.",
+                ru: "Преобразование проектных решений в исходный код. Использование стандартов написания кода, проверки кода коллегами, парного программирования и современных практик чистоты кода.",
+                en: "Translating design decisions into source code. Applying coding standards, peer code reviews, pair programming and modern clean-code practices."
+            },
+            traits: {
+                uk: "Стандарти коду, Перевірка коду, Розробка через тестування, Чистий код, Контроль версій",
+                ru: "Стандарты кода, Проверка кода, Разработка через тестирование, Чистый код, Контроль версий",
+                en: "Coding standards, Code review, Test-driven development, Clean code, Version control"
+            },
+            spec: {
+                uk: "Важлива практика — безперервна інтеграція",
+                ru: "Важная практика — непрерывная интеграция",
+                en: "Important practice — continuous integration"
+            },
+            links: [
+                { name: "Git / GitHub", url: "https://github.com" },
+                { name: "Clean Code", url: "https://github.com/ryanmcdermott/clean-code-javascript" },
+                { name: "SonarQube", url: "https://www.sonarsource.com/products/sonarqube/" }
+            ]
+        },
+        {
+            cat: "implementation",
+            icon: "📦",
+            name: {
+                uk: "Збірка, доставка та розгортання",
+                ru: "Сборка, доставка и развертывание",
+                en: "Build, delivery and deployment"
+            },
+            desc: {
+                uk: "Автоматизація збірки, тестування та доставки програмного забезпечення. Конвеєри безперервної інтеграції та доставки забезпечують швидкий і надійний випуск змін у різні середовища.",
+                ru: "Автоматизация сборки, тестирования и доставки программного обеспечения. Конвейеры непрерывной интеграции и доставки обеспечивают быстрый и надежный выпуск изменений в разные среды.",
+                en: "Automation of building, testing and delivering software. Continuous integration and delivery pipelines enable fast and reliable release of changes into different environments."
+            },
+            traits: {
+                uk: "Автоматизація збірки, Конвеєри доставки, Контейнери, Інфраструктура як код",
+                ru: "Автоматизация сборки, Конвейеры доставки, Контейнеры, Инфраструктура как код",
+                en: "Build automation, Delivery pipelines, Containers, Infrastructure as code"
+            },
+            spec: {
+                uk: "Мета — швидка та безпечна доставка цінності",
+                ru: "Цель — быстрая и безопасная доставка ценности",
+                en: "Goal — fast and safe delivery of value"
+            },
+            links: [
+                { name: "Jenkins", url: "https://www.jenkins.io" },
+                { name: "GitHub Actions", url: "https://github.com/features/actions" },
+                { name: "GitLab CI/CD", url: "https://docs.gitlab.com/ee/ci/" }
+            ]
+        },
+        {
+            cat: "testing",
+            icon: "🔬",
+            name: {
+                uk: "Рівні та види тестування",
+                ru: "Уровни и виды тестирования",
+                en: "Testing levels and types"
+            },
+            desc: {
+                uk: "Перевірка програмного забезпечення на відповідність вимогам. Охоплює модульне, інтеграційне, системне та приймальне тестування, а також функціональні, нефункціональні та регресійні перевірки.",
+                ru: "Проверка программного обеспечения на соответствие требованиям. Охватывает модульное, интеграционное, системное и приемочное тестирование, а также функциональные, нефункциональные и регрессионные проверки.",
+                en: "Checking that software meets its requirements. Covers unit, integration, system and acceptance testing, as well as functional, non-functional and regression checks."
+            },
+            traits: {
+                uk: "Модульне тестування, Інтеграційне тестування, Системне тестування, Приймальне тестування, Регресія, Продуктивність",
+                ru: "Модульное тестирование, Интеграционное тестирование, Системное тестирование, Приемочное тестирование, Регрессия, Производительность",
+                en: "Unit testing, Integration testing, System testing, Acceptance testing, Regression, Performance"
+            },
+            spec: {
+                uk: "Принцип — тестувати якомога раніше",
+                ru: "Принцип — тестировать как можно раньше",
+                en: "Principle — test as early as possible"
+            },
+            links: [
+                { name: "ISTQB", url: "https://www.istqb.org" },
+                { name: "JUnit", url: "https://junit.org" },
+                { name: "Selenium", url: "https://www.selenium.dev" }
+            ]
+        },
+        {
+            cat: "testing",
+            icon: "✅",
+            name: {
+                uk: "Автоматизація тестування та якість",
+                ru: "Автоматизация тестирования и качество",
+                en: "Test automation and quality"
+            },
+            desc: {
+                uk: "Використання інструментів для автоматичного виконання тестів, вимірювання покриття коду, статичного аналізу та забезпечення якості протягом усього життєвого циклу.",
+                ru: "Использование инструментов для автоматического выполнения тестов, измерения покрытия кода, статического анализа и обеспечения качества на протяжении всего жизненного цикла.",
+                en: "Using tools for automatic test execution, code coverage measurement, static analysis and quality assurance throughout the entire life cycle."
+            },
+            traits: {
+                uk: "Автоматизація тестів, Покриття коду, Статичний аналіз, Забезпечення якості",
+                ru: "Автоматизация тестов, Покрытие кода, Статический анализ, Обеспечение качества",
+                en: "Test automation, Code coverage, Static analysis, Quality assurance"
+            },
+            spec: {
+                uk: "Мета — висока якість при менших ручних зусиллях",
+                ru: "Цель — высокое качество при меньших ручных усилиях",
+                en: "Goal — high quality with less manual effort"
+            },
+            links: [
+                { name: "Cypress", url: "https://www.cypress.io" },
+                { name: "Playwright", url: "https://playwright.dev" },
+                { name: "SonarQube", url: "https://www.sonarsource.com" }
+            ]
+        },
+        {
+            cat: "maintenance",
+            icon: "🛠️",
+            name: {
+                uk: "Супровід програмного забезпечення",
+                ru: "Сопровождение программного обеспечения",
+                en: "Software maintenance"
+            },
+            desc: {
+                uk: "Робота після введення системи в експлуатацію: виправлення помилок, адаптація до змін середовища, удосконалення функцій та підтримка стабільної роботи.",
+                ru: "Работа после ввода системы в эксплуатацию: исправление ошибок, адаптация к изменениям среды, улучшение функций и поддержка стабильной работы.",
+                en: "Work after the system goes live: fixing defects, adapting to environmental changes, improving functionality and keeping the system running stably."
+            },
+            traits: {
+                uk: "Виправлення помилок, Адаптація, Удосконалення, Профілактика, Облік змін",
+                ru: "Исправление ошибок, Адаптация, Улучшение, Профилактика, Учет изменений",
+                en: "Corrective, Adaptive, Perfective, Preventive, Change tracking"
+            },
+            spec: {
+                uk: "Чотири основні види супроводу",
+                ru: "Четыре основных вида сопровождения",
+                en: "Four main types of maintenance"
+            },
+            links: [
+                { name: "ITIL", url: "https://www.axelos.com/certifications/itil-service-management" },
+                { name: "Jira Service Management", url: "https://www.atlassian.com/software/jira/service-management" },
+                { name: "Sentry", url: "https://sentry.io" }
+            ]
+        },
+        {
+            cat: "maintenance",
+            icon: "📊",
+            name: {
+                uk: "Моніторинг, розвиток і виведення з експлуатації",
+                ru: "Мониторинг, развитие и вывод из эксплуатации",
+                en: "Monitoring, evolution and retirement"
+            },
+            desc: {
+                uk: "Постійний контроль роботи системи, збір показників, планування оновлень і модернізації, а також кероване виведення програмного забезпечення з експлуатації в кінці життєвого циклу.",
+                ru: "Постоянный контроль работы системы, сбор показателей, планирование обновлений и модернизации, а также управляемый вывод программного обеспечения из эксплуатации в конце жизненного цикла.",
+                en: "Continuous monitoring of the system, collecting metrics, planning upgrades and modernization, and controlled retirement of the software at the end of its life cycle."
+            },
+            traits: {
+                uk: "Моніторинг, Журнали, Метрики, Спостережуваність, Технічний борг, Виведення з експлуатації",
+                ru: "Мониторинг, Журналы, Метрики, Наблюдаемость, Технический долг, Вывод из эксплуатации",
+                en: "Monitoring, Logging, Metrics, Observability, Technical debt, Decommissioning"
+            },
+            spec: {
+                uk: "Важливо — спостеріганість і робота з технічним боргом",
+                ru: "Важно — наблюдаемость и работа с техническим долгом",
+                en: "Important — observability and managing technical debt"
+            },
+            links: [
+                { name: "Prometheus", url: "https://prometheus.io" },
+                { name: "OpenTelemetry", url: "https://opentelemetry.io" },
+                { name: "Datadog", url: "https://www.datadoghq.com" }
+            ]
+        }
+    ];
+
+    const ui = {
+        uk: {
+            title: "Основи програмної інженерії / Життєвий цикл ПЗ (SDLC) — Довідник",
+            pageTitle: "🛠️ Основи програмної інженерії / SDLC",
+            home: "Головна сторінка",
+            all: "Усі етапи",
+            traits: "Ключові елементи та поняття",
+            mfgText: "Корисні інструменти та ресурси:",
+            noResults: "Нічого не знайдено.",
+            footer: "🛠️ Основи програмної інженерії | SDLC | Довідник 2026",
+            introTitle: "Що таке життєвий цикл ПЗ і навіщо він потрібен?",
+            intro1: "Життєвий цикл програмного забезпечення — це структурований підхід до створення, запуску та підтримки програмних продуктів. Він ділить складний процес розробки на зрозумілі етапи: аналіз вимог, проектування, кодування, тестування та супровід.",
+            intro2: "Програмна інженерія застосовує інженерні принципи до цих етапів, щоб забезпечити передбачувану якість, контрольовані ризики, зрозумілі витрати та можливість подальшого розвитку. Розуміння цього процесу допомагає командам краще планувати роботу, зменшувати кількість помилок і швидше приносити користь бізнесу та користувачам."
+        },
+        ru: {
+            title: "Основы программной инженерии / Жизненный цикл ПО (SDLC) — Справочник",
+            pageTitle: "🛠️ Основы программной инженерии / SDLC",
+            home: "Главная страница",
+            all: "Все этапы",
+            traits: "Ключевые элементы и понятия",
+            mfgText: "Полезные инструменты и ресурсы:",
+            noResults: "Ничего не найдено.",
+            footer: "🛠️ Основы программной инженерии | SDLC | Справочник 2026",
+            introTitle: "Что такое жизненный цикл ПО и зачем он нужен?",
+            intro1: "Жизненный цикл программного обеспечения — это структурированный подход к созданию, запуску и поддержке программных продуктов. Он делит сложный процесс разработки на понятные этапы: анализ требований, проектирование, кодирование, тестирование и сопровождение.",
+            intro2: "Программная инженерия применяет инженерные принципы к этим этапам, чтобы обеспечить предсказуемое качество, контролируемые риски, понятные затраты и возможность дальнейшего развития. Понимание этого процесса помогает командам лучше планировать работу, снижать количество ошибок и быстрее приносить пользу бизнесу и пользователям."
+        },
+        en: {
+            title: "Software Engineering Fundamentals / Software Development Life Cycle — Guide",
+            pageTitle: "🛠️ Software Engineering / SDLC",
+            home: "Home page",
+            all: "All stages",
+            traits: "Key concepts and elements",
+            mfgText: "Useful tools and resources:",
+            noResults: "Nothing found.",
+            footer: "🛠️ Software Engineering Fundamentals | SDLC | Guide 2026",
+            introTitle: "What is the software life cycle and why does it matter?",
+            intro1: "The software development life cycle is a structured approach to creating, launching and maintaining software products. It breaks the complex development process into clear stages: requirements analysis, design, coding, testing and maintenance.",
+            intro2: "Software engineering applies engineering principles to these stages to deliver predictable quality, controlled risks, understandable costs and room for future growth. Understanding this process helps teams plan work better, reduce defects and deliver value to the business and users faster."
+        }
+    };
+
+    let currentLang = safeGet("lang-sdlc", "uk");
+    let activeCategory = "all";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-sdlc", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + "</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) { return e.cat === catKey; });
+            if (!list.length) return;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        main.innerHTML = html || ('<div class="no-results">' + ui[currentLang].noResults + "</div>");
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Розробка ігор (Game Development) — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+        .intro a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .intro a:hover { text-decoration: underline; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">🎮 Розробка ігор (Game Development)</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    const categories = {
+        foundations: {
+            uk: "📘 Основи геймдеву",
+            ru: "📘 Основы геймдева",
+            en: "📘 Game Dev Foundations"
+        },
+        engines: {
+            uk: "⚙️ Рушії та технології",
+            ru: "⚙️ Движки и технологии",
+            en: "⚙️ Engines & Technologies"
+        },
+        roles: {
+            uk: "👥 Ролі в команді",
+            ru: "👥 Роли в команде",
+            en: "👥 Team Roles"
+        },
+        pipeline: {
+            uk: "🎬 Процес і пайплайн",
+            ru: "🎬 Процесс и пайплайн",
+            en: "🎬 Process & Pipeline"
+        },
+        business: {
+            uk: "💼 Індустрія та бізнес",
+            ru: "💼 Индустрия и бизнес",
+            en: "💼 Industry & Business"
+        }
+    };
+
+    const items = [
+        {
+            cat: "foundations",
+            icon: "🎮",
+            name: {
+                uk: "Що таке розробка ігор",
+                ru: "Что такое разработка игр",
+                en: "What is Game Development"
+            },
+            desc: {
+                uk: "Створення інтерактивних розважальних програм: геймплей, графіка, звук, сюжет, баланс. Поєднує програмування, дизайн, мистецтво та продакшен. Від інді-проектів однієї людини до AAA-студій з сотнями спеціалістів.",
+                ru: "Создание интерактивных развлекательных программ: геймплей, графика, звук, сюжет, баланс. Сочетает программирование, дизайн, искусство и продакшен. От инди-проектов одного человека до AAA-студий с сотнями специалистов.",
+                en: "Creating interactive entertainment: gameplay, graphics, audio, story, balance. Combines programming, design, art and production. From one-person indie projects to AAA studios with hundreds of specialists."
+            },
+            traits: {
+                uk: "Геймплей, Інтерактивність, Мультидисциплінарність, Креатив + техніка",
+                ru: "Геймплей, Интерактивность, Мультидисциплинарность, Креатив + техника",
+                en: "Gameplay, Interactivity, Multidisciplinary, Creative + tech"
+            },
+            spec: {
+                uk: "Гра — це досвід, а не лише код",
+                ru: "Игра — это опыт, а не только код",
+                en: "A game is an experience, not only code"
+            },
+            links: [
+                { name: "Огляд ігор (довідник)", url: "https://sitesnew.github.io/obzorigr/" },
+                { name: "GDC", url: "https://gdconf.com" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "🕹️",
+            name: {
+                uk: "Жанри ігор",
+                ru: "Жанры игр",
+                en: "Game Genres"
+            },
+            desc: {
+                uk: "Action, Adventure, RPG, Strategy, Simulation, Sports, Puzzle, Horror, Platformer, FPS/TPS, MOBA, Battle Royale, Casual, Idle та гібриди. Жанр визначає очікування гравця, механіки та часто — інструменти розробки.",
+                ru: "Action, Adventure, RPG, Strategy, Simulation, Sports, Puzzle, Horror, Platformer, FPS/TPS, MOBA, Battle Royale, Casual, Idle и гибриды. Жанр определяет ожидания игрока, механики и часто — инструменты разработки.",
+                en: "Action, Adventure, RPG, Strategy, Simulation, Sports, Puzzle, Horror, Platformer, FPS/TPS, MOBA, Battle Royale, Casual, Idle and hybrids. Genre shapes player expectations, mechanics and often the tools used."
+            },
+            traits: {
+                uk: "Action, RPG, Strategy, Simulation, FPS, Indie genres",
+                ru: "Action, RPG, Strategy, Simulation, FPS, Indie genres",
+                en: "Action, RPG, Strategy, Simulation, FPS, Indie genres"
+            },
+            spec: {
+                uk: "Знати жанр = розуміти «контракт» з гравцем",
+                ru: "Знать жанр = понимать «контракт» с игроком",
+                en: "Knowing the genre means understanding the “contract” with the player"
+            },
+            links: [
+                { name: "Огляд ігор", url: "https://sitesnew.github.io/obzorigr/" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "📜",
+            name: {
+                uk: "Коротка історія індустрії",
+                ru: "Краткая история индустрии",
+                en: "Brief Industry History"
+            },
+            desc: {
+                uk: "Від Tennis for Two і Spacewar! через аркади, Atari, NES, 3D-революцію (Doom, PlayStation), онлайн і MMORPG до інді, мобільних ігор, live-service та VR. Технології й бізнес-моделі змінювались разом із аудиторією.",
+                ru: "От Tennis for Two и Spacewar! через аркады, Atari, NES, 3D-революцию (Doom, PlayStation), онлайн и MMORPG до инди, мобильных игр, live-service и VR. Технологии и бизнес-модели менялись вместе с аудиторией.",
+                en: "From Tennis for Two and Spacewar! through arcades, Atari, NES, the 3D revolution (Doom, PlayStation), online and MMORPGs to indie, mobile, live-service and VR. Technology and business models evolved with the audience."
+            },
+            traits: {
+                uk: "Аркади, Консолі, 3D, Online, Indie, Mobile, Live-service",
+                ru: "Аркады, Консоли, 3D, Online, Indie, Mobile, Live-service",
+                en: "Arcades, Consoles, 3D, Online, Indie, Mobile, Live-service"
+            },
+            spec: {
+                uk: "Історія допомагає не винаходити велосипед",
+                ru: "История помогает не изобретать велосипед",
+                en: "History helps avoid reinventing the wheel"
+            },
+            links: [
+                { name: "Історія ігор (огляд)", url: "https://sitesnew.github.io/obzorigr/ki_ist.html" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "🧩",
+            name: {
+                uk: "Геймдизайн: механіка, динаміка, естетика",
+                ru: "Геймдизайн: механика, динамика, эстетика",
+                en: "Game Design: Mechanics, Dynamics, Aesthetics"
+            },
+            desc: {
+                uk: "MDA-фреймворк: Mechanics (правила) → Dynamics (поведінка в грі) → Aesthetics (емоції гравця). Core loop, баланс, прогресія, навчання гравця (onboarding), реиграбельність — основа «цікавості».",
+                ru: "MDA-фреймворк: Mechanics (правила) → Dynamics (поведение в игре) → Aesthetics (эмоции игрока). Core loop, баланс, прогрессия, обучение игрока (onboarding), реиграбельность — основа «интересности».",
+                en: "MDA framework: Mechanics (rules) → Dynamics (in-game behavior) → Aesthetics (player emotions). Core loop, balance, progression, player onboarding, replayability — the foundation of “fun”."
+            },
+            traits: {
+                uk: "MDA, Core loop, Баланс, Прогресія, Onboarding",
+                ru: "MDA, Core loop, Баланс, Прогрессия, Onboarding",
+                en: "MDA, Core loop, Balance, Progression, Onboarding"
+            },
+            spec: {
+                uk: "Спочатку досвід гравця, потім фічі",
+                ru: "Сначала опыт игрока, потом фичи",
+                en: "Player experience first, features second"
+            },
+            links: [
+                { name: "MDA framework", url: "https://users.cs.northwestern.edu/~hunicke/MDA.pdf" }
+            ]
+        },
+        {
+            cat: "engines",
+            icon: "🔷",
+            name: {
+                uk: "Unity",
+                ru: "Unity",
+                en: "Unity"
+            },
+            desc: {
+                uk: "Один з найпопулярніших рушіїв: C#, компонентний підхід, сильна підтримка 2D і мобільних, Asset Store, великий community. Підходить для інді, мобільних, VR і багатьох жанрів. Підписка / runtime fee — важливі бізнес-умови.",
+                ru: "Один из самых популярных движков: C#, компонентный подход, сильная поддержка 2D и мобильных, Asset Store, большое community. Подходит для инди, мобильных, VR и многих жанров. Подписка / runtime fee — важные бизнес-условия.",
+                en: "One of the most popular engines: C#, component-based, strong 2D and mobile support, Asset Store, large community. Fits indie, mobile, VR and many genres. Subscription / runtime fee are important business terms."
+            },
+            traits: {
+                uk: "C#, 2D/3D, Mobile, Asset Store, Cross-platform",
+                ru: "C#, 2D/3D, Mobile, Asset Store, Cross-platform",
+                en: "C#, 2D/3D, Mobile, Asset Store, Cross-platform"
+            },
+            spec: {
+                uk: "Швидкий старт і величезна екосистема",
+                ru: "Быстрый старт и огромная экосистема",
+                en: "Fast start and a huge ecosystem"
+            },
+            links: [
+                { name: "Unity", url: "https://unity.com" },
+                { name: "Unity Learn", url: "https://learn.unity.com" }
+            ]
+        },
+        {
+            cat: "engines",
+            icon: "🔶",
+            name: {
+                uk: "Unreal Engine",
+                ru: "Unreal Engine",
+                en: "Unreal Engine"
+            },
+            desc: {
+                uk: "Потужний рушій від Epic: C++ і Blueprints, кінематографічна графіка, Nanite, Lumen. Сильний у AAA, реалізмі, архітектурній візуалізації. Royalty-модель після певного доходу.",
+                ru: "Мощный движок от Epic: C++ и Blueprints, кинематографическая графика, Nanite, Lumen. Силен в AAA, реализме, архитектурной визуализации. Royalty-модель после определенного дохода.",
+                en: "Powerful engine from Epic: C++ and Blueprints, cinematic graphics, Nanite, Lumen. Strong for AAA, realism, architectural visualization. Royalty model after a revenue threshold."
+            },
+            traits: {
+                uk: "C++, Blueprints, AAA, Графіка, Nanite/Lumen",
+                ru: "C++, Blueprints, AAA, Графика, Nanite/Lumen",
+                en: "C++, Blueprints, AAA, Graphics, Nanite/Lumen"
+            },
+            spec: {
+                uk: "Максимальна якість зображення «з коробки»",
+                ru: "Максимальное качество изображения «из коробки»",
+                en: "Top-tier visuals out of the box"
+            },
+            links: [
+                { name: "Unreal Engine", url: "https://www.unrealengine.com" },
+                { name: "Unreal Learning", url: "https://dev.epicgames.com/community/unreal-engine/learning" }
+            ]
+        },
+        {
+            cat: "engines",
+            icon: "🟢",
+            name: {
+                uk: "Godot та інші рушії",
+                ru: "Godot и другие движки",
+                en: "Godot and Other Engines"
+            },
+            desc: {
+                uk: "Godot — open-source, легкий, GDScript/C#, зручний для 2D і інді. Також: GameMaker, Construct, RPG Maker, власні рушії (особливо в великих студіях). Вибір залежить від жанру, команди та бюджету.",
+                ru: "Godot — open-source, легкий, GDScript/C#, удобен для 2D и инди. Также: GameMaker, Construct, RPG Maker, собственные движки (особенно в крупных студиях). Выбор зависит от жанра, команды и бюджета.",
+                en: "Godot is open-source, lightweight, GDScript/C#, convenient for 2D and indie. Also: GameMaker, Construct, RPG Maker, custom engines (especially in large studios). Choice depends on genre, team and budget."
+            },
+            traits: {
+                uk: "Godot, Open-source, GDScript, GameMaker, Custom engines",
+                ru: "Godot, Open-source, GDScript, GameMaker, Custom engines",
+                en: "Godot, Open-source, GDScript, GameMaker, Custom engines"
+            },
+            spec: {
+                uk: "Не завжди потрібен «найпотужніший» рушій",
+                ru: "Не всегда нужен «самый мощный» движок",
+                en: "You don’t always need the “most powerful” engine"
+            },
+            links: [
+                { name: "Godot", url: "https://godotengine.org" },
+                { name: "GameMaker", url: "https://gamemaker.io" }
+            ]
+        },
+        {
+            cat: "engines",
+            icon: "📐",
+            name: {
+                uk: "Графіка, фізика, аудіо, мережа",
+                ru: "Графика, физика, аудио, сеть",
+                en: "Graphics, Physics, Audio, Networking"
+            },
+            desc: {
+                uk: "Рендеринг (forward/deferred, PBR), фізика (колізії, rigid body), аудіо (просторовий звук, middleware), мережа (клієнт-сервер, rollback, реплікація). Кожна підсистема — окрема глибока експертиза.",
+                ru: "Рендеринг (forward/deferred, PBR), физика (коллизии, rigid body), аудио (пространственный звук, middleware), сеть (клиент-сервер, rollback, репликация). Каждая подсистема — отдельная глубокая экспертиза.",
+                en: "Rendering (forward/deferred, PBR), physics (collisions, rigid body), audio (spatial sound, middleware), networking (client-server, rollback, replication). Each subsystem is a deep specialty of its own."
+            },
+            traits: {
+                uk: "PBR, Physics, Spatial audio, Netcode, Оптимізація",
+                ru: "PBR, Physics, Spatial audio, Netcode, Оптимизация",
+                en: "PBR, Physics, Spatial audio, Netcode, Optimization"
+            },
+            spec: {
+                uk: "Оптимізація часто важливіша за «красиві ефекти»",
+                ru: "Оптимизация часто важнее «красивых эффектов»",
+                en: "Optimization often matters more than “pretty effects”"
+            },
+            links: [
+                { name: "GPU Gems / learning", url: "https://developer.nvidia.com/gpugems/gpugems/contributors" }
+            ]
+        },
+        {
+            cat: "roles",
+            icon: "🎯",
+            name: {
+                uk: "Game Designer",
+                ru: "Game Designer",
+                en: "Game Designer"
+            },
+            desc: {
+                uk: "Правила, системи, баланс, рівні, економіка гри, документація (GDD). Не обов’язково програміст — але розуміння можливостей техніки критичне. Системний і левел-дизайн часто розділяють.",
+                ru: "Правила, системы, баланс, уровни, экономика игры, документация (GDD). Не обязательно программист — но понимание возможностей техники критично. Системный и левел-дизайн часто разделяют.",
+                en: "Rules, systems, balance, levels, game economy, documentation (GDD). Not necessarily a programmer — but understanding technical constraints is critical. Systems and level design are often split."
+            },
+            traits: {
+                uk: "GDD, Баланс, Системи, Рівні, Економіка",
+                ru: "GDD, Баланс, Системы, Уровни, Экономика",
+                en: "GDD, Balance, Systems, Levels, Economy"
+            },
+            spec: {
+                uk: "Дизайнер відповідає за «чи цікаво грати»",
+                ru: "Дизайнер отвечает за «интересно ли играть»",
+                en: "The designer is responsible for “is it fun to play”"
+            },
+            links: [
+                { name: "Game Design resources", url: "https://www.gamedeveloper.com" }
+            ]
+        },
+        {
+            cat: "roles",
+            icon: "💻",
+            name: {
+                uk: "Game Programmer",
+                ru: "Game Programmer",
+                en: "Game Programmer"
+            },
+            desc: {
+                uk: "Геймплей, AI, UI, інструменти, графіка, мережа, оптимізація. Спеціалізації: gameplay, engine, graphics, network, tools. C++, C#, інколи Rust; знання рушія обов’язкове.",
+                ru: "Геймплей, AI, UI, инструменты, графика, сеть, оптимизация. Специализации: gameplay, engine, graphics, network, tools. C++, C#, иногда Rust; знание движка обязательно.",
+                en: "Gameplay, AI, UI, tools, graphics, networking, optimization. Specializations: gameplay, engine, graphics, network, tools. C++, C#, sometimes Rust; engine knowledge is required."
+            },
+            traits: {
+                uk: "Gameplay code, Engine, AI, Netcode, Оптимізація",
+                ru: "Gameplay code, Engine, AI, Netcode, Оптимизация",
+                en: "Gameplay code, Engine, AI, Netcode, Optimization"
+            },
+            spec: {
+                uk: "Код має «відчуватись» добре в руках гравця",
+                ru: "Код должен «чувствоваться» хорошо в руках игрока",
+                en: "Code must “feel” good in the player’s hands"
+            },
+            links: [
+                { name: "Game programming patterns", url: "https://gameprogrammingpatterns.com" }
+            ]
+        },
+        {
+            cat: "roles",
+            icon: "🎨",
+            name: {
+                uk: "Art: 2D, 3D, Animation, VFX, UI",
+                ru: "Art: 2D, 3D, Animation, VFX, UI",
+                en: "Art: 2D, 3D, Animation, VFX, UI"
+            },
+            desc: {
+                uk: "Концепт-арт, моделі, текстури, риггінг, анімація, VFX, UI/UX у грі. Стиль (реалізм, stylized, pixel) визначає пайплайн і інструменти (Blender, Maya, Substance, Spine, Aseprite).",
+                ru: "Концепт-арт, модели, текстуры, риггинг, анимация, VFX, UI/UX в игре. Стиль (реализм, stylized, pixel) определяет пайплайн и инструменты (Blender, Maya, Substance, Spine, Aseprite).",
+                en: "Concept art, models, textures, rigging, animation, VFX, in-game UI/UX. Style (realism, stylized, pixel) defines the pipeline and tools (Blender, Maya, Substance, Spine, Aseprite)."
+            },
+            traits: {
+                uk: "3D/2D, Animation, VFX, UI, Стиль, Пайплайн",
+                ru: "3D/2D, Animation, VFX, UI, Стиль, Пайплайн",
+                en: "3D/2D, Animation, VFX, UI, Style, Pipeline"
+            },
+            spec: {
+                uk: "Візуал продає гру з першого скриншота",
+                ru: "Визуал продает игру с первого скриншота",
+                en: "Visuals sell the game from the first screenshot"
+            },
+            links: [
+                { name: "Blender", url: "https://www.blender.org" }
+            ]
+        },
+        {
+            cat: "roles",
+            icon: "🔊",
+            name: {
+                uk: "Audio: музика, SFX, voice",
+                ru: "Audio: музыка, SFX, voice",
+                en: "Audio: Music, SFX, Voice"
+            },
+            desc: {
+                uk: "Саундтрек, звукові ефекти, діалоги, адаптивний звук (залежно від стану гри). Middleware: FMOD, Wwise. Аудіо сильно впливає на атмосферу і «відчуття» геймплею.",
+                ru: "Саундтрек, звуковые эффекты, диалоги, адаптивный звук (в зависимости от состояния игры). Middleware: FMOD, Wwise. Аудио сильно влияет на атмосферу и «ощущение» геймплея.",
+                en: "Soundtrack, sound effects, dialogue, adaptive audio (depending on game state). Middleware: FMOD, Wwise. Audio strongly shapes atmosphere and gameplay “feel”."
+            },
+            traits: {
+                uk: "SFX, Music, FMOD/Wwise, Adaptive audio, Atmosphere",
+                ru: "SFX, Music, FMOD/Wwise, Adaptive audio, Atmosphere",
+                en: "SFX, Music, FMOD/Wwise, Adaptive audio, Atmosphere"
+            },
+            spec: {
+                uk: "Без звуку гра часто «мертва»",
+                ru: "Без звука игра часто «мертва»",
+                en: "Without sound a game often feels “dead”"
+            },
+            links: [
+                { name: "FMOD", url: "https://www.fmod.com" },
+                { name: "Wwise", url: "https://www.audiokinetic.com/en/products/wwise/" }
+            ]
+        },
+        {
+            cat: "roles",
+            icon: "📋",
+            name: {
+                uk: "Producer, QA, Community",
+                ru: "Producer, QA, Community",
+                en: "Producer, QA, Community"
+            },
+            desc: {
+                uk: "Producer — розклад, бюджет, координація. QA — тестування геймплею, сумісності, балансу, регресії. Community / LiveOps — гравці після релізу, івенти, підтримка, мета-баланс.",
+                ru: "Producer — расписание, бюджет, координация. QA — тестирование геймплея, совместимости, баланса, регрессии. Community / LiveOps — игроки после релиза, ивенты, поддержка, мета-баланс.",
+                en: "Producer — schedule, budget, coordination. QA — testing gameplay, compatibility, balance, regression. Community / LiveOps — players after release, events, support, meta balance."
+            },
+            traits: {
+                uk: "Production, QA, LiveOps, Community, Підтримка",
+                ru: "Production, QA, LiveOps, Community, Поддержка",
+                en: "Production, QA, LiveOps, Community, Support"
+            },
+            spec: {
+                uk: "Реліз — не кінець, а початок життя гри",
+                ru: "Релиз — не конец, а начало жизни игры",
+                en: "Release is not the end, but the start of the game’s life"
+            },
+            links: [
+                { name: "IGDA", url: "https://igda.org" }
+            ]
+        },
+        {
+            cat: "pipeline",
+            icon: "📝",
+            name: {
+                uk: "Препродакшен: ідея, GDD, прототип",
+                ru: "Препродакшен: идея, GDD, прототип",
+                en: "Pre-production: Idea, GDD, Prototype"
+            },
+            desc: {
+                uk: "Концепт, цільова аудиторія, унікальна механічна «гачок», Game Design Document, вертикальний зріз (vertical slice), прототип для перевірки «чи це взагалі весело». Багато ідей вмирають саме тут — і це нормально.",
+                ru: "Концепт, целевая аудитория, уникальный механический «крючок», Game Design Document, вертикальный срез (vertical slice), прототип для проверки «весело ли это вообще». Многие идеи умирают именно здесь — и это нормально.",
+                en: "Concept, target audience, unique mechanical “hook”, Game Design Document, vertical slice, prototype to test “is this even fun”. Many ideas die here — and that is fine."
+            },
+            traits: {
+                uk: "GDD, Прототип, Vertical slice, Scope, Ризики",
+                ru: "GDD, Прототип, Vertical slice, Scope, Риски",
+                en: "GDD, Prototype, Vertical slice, Scope, Risks"
+            },
+            spec: {
+                uk: "Краще вбити слабку ідею рано",
+                ru: "Лучше убить слабую идею рано",
+                en: "Better to kill a weak idea early"
+            },
+            links: [
+                { name: "GDD templates", url: "https://www.gamedeveloper.com" }
+            ]
+        },
+        {
+            cat: "pipeline",
+            icon: "🏭",
+            name: {
+                uk: "Продакшен і ітерації",
+                ru: "Продакшен и итерации",
+                en: "Production and Iteration"
+            },
+            desc: {
+                uk: "Повний контент: рівні, персонажі, системи. Регулярні playtest, баланс, оптимізація, інтеграція. Agile/Scrum адаптовані під геймдев; milestone’и (alpha, beta, content lock).",
+                ru: "Полный контент: уровни, персонажи, системы. Регулярные playtest, баланс, оптимизация, интеграция. Agile/Scrum адаптированы под геймдев; milestone’ы (alpha, beta, content lock).",
+                en: "Full content: levels, characters, systems. Regular playtests, balance, optimization, integration. Agile/Scrum adapted for game dev; milestones (alpha, beta, content lock)."
+            },
+            traits: {
+                uk: "Playtest, Milestones, Alpha/Beta, Content lock, Ітерації",
+                ru: "Playtest, Milestones, Alpha/Beta, Content lock, Итерации",
+                en: "Playtest, Milestones, Alpha/Beta, Content lock, Iteration"
+            },
+            spec: {
+                uk: "Гра «збирається» в playtest’ах, не в документах",
+                ru: "Игра «собирается» в playtest’ах, не в документах",
+                en: "The game comes together in playtests, not in documents"
+            },
+            links: []
+        },
+        {
+            cat: "pipeline",
+            icon: "🚀",
+            name: {
+                uk: "Реліз, платформи, сертифікація",
+                ru: "Релиз, платформы, сертификация",
+                en: "Release, Platforms, Certification"
+            },
+            desc: {
+                uk: "PC (Steam, Epic), консолі (сертифікація Sony/Microsoft/Nintendo), мобільні (App Store, Google Play). Вимоги до продуктивності, збережень, досягнень, локалізації. Store pages, трейлери, преса.",
+                ru: "PC (Steam, Epic), консоли (сертификация Sony/Microsoft/Nintendo), мобильные (App Store, Google Play). Требования к производительности, сохранениям, достижениям, локализации. Store pages, трейлеры, пресса.",
+                en: "PC (Steam, Epic), consoles (Sony/Microsoft/Nintendo certification), mobile (App Store, Google Play). Requirements for performance, saves, achievements, localization. Store pages, trailers, press."
+            },
+            traits: {
+                uk: "Steam, Consoles, Certification, Store page, Локалізація",
+                ru: "Steam, Consoles, Certification, Store page, Локализация",
+                en: "Steam, Consoles, Certification, Store page, Localization"
+            },
+            spec: {
+                uk: "Платформа диктує частину технічних рішень",
+                ru: "Платформа диктует часть технических решений",
+                en: "The platform dictates part of the technical choices"
+            },
+            links: [
+                { name: "Steamworks", url: "https://partner.steamgames.com" }
+            ]
+        },
+        {
+            cat: "business",
+            icon: "🏠",
+            name: {
+                uk: "Indie vs AAA",
+                ru: "Indie vs AAA",
+                en: "Indie vs AAA"
+            },
+            desc: {
+                uk: "Indie — малі команди або соло, свобода, ризик, часто інновації. AAA — великі бюджети, маркетинг, поліровка, менший ризик експерименту. Mid-core / AA — проміжний сегмент. Бізнес-модель і scope мають відповідати розміру команди.",
+                ru: "Indie — малые команды или соло, свобода, риск, часто инновации. AAA — большие бюджеты, маркетинг, полировка, меньший риск эксперимента. Mid-core / AA — промежуточный сегмент. Бизнес-модель и scope должны соответствовать размеру команды.",
+                en: "Indie — small teams or solo, freedom, risk, often innovation. AAA — large budgets, marketing, polish, less room to experiment. Mid-core / AA — the middle segment. Business model and scope must match team size."
+            },
+            traits: {
+                uk: "Indie, AAA, Scope, Бюджет, Ризик",
+                ru: "Indie, AAA, Scope, Бюджет, Риск",
+                en: "Indie, AAA, Scope, Budget, Risk"
+            },
+            spec: {
+                uk: "Scope — головний ворог інді",
+                ru: "Scope — главный враг инди",
+                en: "Scope is the indie’s main enemy"
+            },
+            links: [
+                { name: "Indie resources", url: "https://www.gamedeveloper.com" }
+            ]
+        },
+        {
+            cat: "business",
+            icon: "💰",
+            name: {
+                uk: "Монетизація та бізнес-моделі",
+                ru: "Монетизация и бизнес-модели",
+                en: "Monetization and Business Models"
+            },
+            desc: {
+                uk: "Premium (разова покупка), Free-to-play + IAP, battle pass, підписки, DLC, реклама. Етика монетизації (pay-to-win, loot boxes) — постійна дискусія. Live-service змінює фокус на довготривалу підтримку.",
+                ru: "Premium (разовая покупка), Free-to-play + IAP, battle pass, подписки, DLC, реклама. Этика монетизации (pay-to-win, loot boxes) — постоянная дискуссия. Live-service меняет фокус на долгосрочную поддержку.",
+                en: "Premium (one-time purchase), Free-to-play + IAP, battle pass, subscriptions, DLC, ads. Monetization ethics (pay-to-win, loot boxes) remain debated. Live-service shifts focus to long-term support."
+            },
+            traits: {
+                uk: "Premium, F2P, Battle pass, DLC, Live-service",
+                ru: "Premium, F2P, Battle pass, DLC, Live-service",
+                en: "Premium, F2P, Battle pass, DLC, Live-service"
+            },
+            spec: {
+                uk: "Монетизація має відповідати досвіду, а не ламати його",
+                ru: "Монетизация должна соответствовать опыту, а не ломать его",
+                en: "Monetization should fit the experience, not break it"
+            },
+            links: []
+        },
+        {
+            cat: "business",
+            icon: "📣",
+            name: {
+                uk: "Маркетинг, спільнота, wishlist",
+                ru: "Маркетинг, сообщество, wishlist",
+                en: "Marketing, Community, Wishlists"
+            },
+            desc: {
+                uk: "Steam wishlist, трейлери, преса, інфлюенсери, демо, early access. Спільнота формується до релізу. Для інді маркетинг часто недооцінюють — і це одна з головних причин провалу.",
+                ru: "Steam wishlist, трейлеры, пресса, инфлюенсеры, демо, early access. Сообщество формируется до релиза. Для инди маркетинг часто недооценивают — и это одна из главных причин провала.",
+                en: "Steam wishlists, trailers, press, influencers, demos, early access. Community forms before release. Indies often underestimate marketing — a major reason for failure."
+            },
+            traits: {
+                uk: "Wishlist, Trailer, Demo, Community, Early access",
+                ru: "Wishlist, Trailer, Demo, Community, Early access",
+                en: "Wishlist, Trailer, Demo, Community, Early access"
+            },
+            spec: {
+                uk: "Хороша гра без видимості майже не існує",
+                ru: "Хорошая игра без видимости почти не существует",
+                en: "A good game with no visibility barely exists"
+            },
+            links: [
+                { name: "Steam Next Fest", url: "https://store.steampowered.com/sale/nextfest" }
+            ]
+        },
+        {
+            cat: "business",
+            icon: "⚠️",
+            name: {
+                uk: "Виклики: crunch, здоров’я, етика",
+                ru: "Вызовы: crunch, здоровье, этика",
+                en: "Challenges: Crunch, Health, Ethics"
+            },
+            desc: {
+                uk: "Crunch (перепрацювання перед релізом), вигорання, нестабільність інді-доходу, етика лутбоксів і монетизації дітей. Індустрія повільно рухається до здорових практик, але проблеми залишаються системними.",
+                ru: "Crunch (переработки перед релизом), выгорание, нестабильность инди-дохода, этика лутбоксов и монетизации детей. Индустрия медленно движется к здоровым практикам, но проблемы остаются системными.",
+                en: "Crunch (overwork before release), burnout, unstable indie income, ethics of loot boxes and monetizing children. The industry is slowly moving toward healthier practices, but problems remain systemic."
+            },
+            traits: {
+                uk: "Crunch, Burnout, Етика, Сталість, Культура студії",
+                ru: "Crunch, Burnout, Этика, Устойчивость, Культура студии",
+                en: "Crunch, Burnout, Ethics, Sustainability, Studio culture"
+            },
+            spec: {
+                uk: "Гра не варта зруйнованого здоров’я команди",
+                ru: "Игра не стоит разрушенного здоровья команды",
+                en: "No game is worth destroying the team’s health"
+            },
+            links: [
+                { name: "IGDA", url: "https://igda.org" }
+            ]
+        }
+    ];
+
+    const ui = {
+        uk: {
+            title: "Розробка ігор (Game Development) — Довідник",
+            pageTitle: "🎮 Розробка ігор (Game Development)",
+            home: "Головна сторінка",
+            all: "Усі розділи",
+            traits: "Ключові елементи та поняття",
+            mfgText: "Корисні ресурси:",
+            noResults: "Нічого не знайдено.",
+            footer: "🎮 Розробка ігор (Game Development) | Довідник 2026",
+            introTitle: "Що таке розробка ігор?",
+            intro1: "Game Development — це створення відеоігор: від ідеї та геймдизайну до програмування, графіки, звуку, тестування й релізу. Це одна з найтехнічніших і водночас найкреативніших галузей ІТ, де поєднуються код, мистецтво та психологія гравця.",
+            intro2: "На цій сторінці — огляд основ, рушіїв, ролей у команді, пайплайну розробки та бізнес-аспектів. Для огляду самих ігор і їхньої історії дивіться також: "
+        },
+        ru: {
+            title: "Разработка игр (Game Development) — Справочник",
+            pageTitle: "🎮 Разработка игр (Game Development)",
+            home: "Главная страница",
+            all: "Все разделы",
+            traits: "Ключевые элементы и понятия",
+            mfgText: "Полезные ресурсы:",
+            noResults: "Ничего не найдено.",
+            footer: "🎮 Разработка игр (Game Development) | Справочник 2026",
+            introTitle: "Что такое разработка игр?",
+            intro1: "Game Development — это создание видеоигр: от идеи и геймдизайна до программирования, графики, звука, тестирования и релиза. Это одна из самых технических и одновременно самых креативных отраслей ИТ, где сочетаются код, искусство и психология игрока.",
+            intro2: "На этой странице — обзор основ, движков, ролей в команде, пайплайна разработки и бизнес-аспектов. Для обзора самих игр и их истории смотрите также: "
+        },
+        en: {
+            title: "Game Development — Guide",
+            pageTitle: "🎮 Game Development",
+            home: "Home page",
+            all: "All sections",
+            traits: "Key concepts and elements",
+            mfgText: "Useful resources:",
+            noResults: "Nothing found.",
+            footer: "🎮 Game Development | Guide 2026",
+            introTitle: "What is Game Development?",
+            intro1: "Game Development is the creation of video games: from idea and game design to programming, art, audio, testing and release. It is one of the most technical and at the same time most creative areas of IT, combining code, art and player psychology.",
+            intro2: "This page covers foundations, engines, team roles, the development pipeline and business aspects. For an overview of games themselves and their history, see also: "
+        }
+    };
+
+    let currentLang = safeGet("lang-gamedev", "uk");
+    let activeCategory = "all";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-gamedev", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        const reviewLink = '<a href="https://sitesnew.github.io/obzorigr/" target="_blank" rel="noopener">sitesnew.github.io/obzorigr</a>';
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + reviewLink + ".</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) { return e.cat === catKey; });
+            if (!list.length) return;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        main.innerHTML = html || ('<div class="no-results">' + ui[currentLang].noResults + "</div>");
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

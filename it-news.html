@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рух та новини ІТ — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher { display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px; }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main { max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem; }
+        
+        /* Інформаційний блок */
+        .info-box {
+            background: var(--card);
+            border: 1px solid rgba(39, 174, 96, 0.3);
+            border-left: 4px solid var(--accent);
+            border-radius: 0.8rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .info-title {
+            font-size: 1.1rem; font-weight: 700; color: var(--accent);
+            margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;
+        }
+        .info-text {
+            font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;
+        }
+        .info-text strong { color: var(--text); }
+
+        .section-title { font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-source {
+            font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+            color: var(--accent-2); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.3rem;
+        }
+        .card-title {
+            font-weight: 700; font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--text);
+            text-decoration: none; display: block;
+        }
+        .card-title:hover { color: var(--accent); }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0 1rem; flex: 1;
+            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .card-footer {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.75rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 0.8rem; margin-top: 0.5rem;
+        }
+        [data-theme="light"] .card-footer { border-color: rgba(0,0,0,0.06); }
+        .read-more {
+            color: var(--accent); text-decoration: none; font-weight: 600;
+        }
+        .read-more:hover { text-decoration: underline; }
+
+        .loader {
+            text-align: center; padding: 3rem; color: var(--text-muted); font-size: 1.1rem;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">📰 Рух та новини ІТ</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main">
+    <!-- Інформаційний блок -->
+    <div class="info-box">
+        <div class="info-title" id="info-title">💡 Як працює ця сторінка?</div>
+        <div class="info-text" id="info-text"></div>
+    </div>
+
+    <div class="loader" id="loader">⏳ Завантаження свіжих новин...</div>
+    <div class="grid" id="news-grid" style="display:none;"></div>
+</main>
+
+<footer id="footer"></footer>
+
+<script>
+const feeds = [
+    { cat: "world", icon: "🌍", source: "The Verge", url: "https://www.theverge.com/rss/index.xml", limit: 5 },
+    { cat: "world", icon: "🌐", source: "TechCrunch", url: "https://techcrunch.com/feed/", limit: 4 },
+    { cat: "dev", icon: "👨‍💻", source: "Hacker News", url: "https://news.ycombinator.com/rss", limit: 5 },
+    { cat: "cyber", icon: "🔒", source: "The Hacker News", url: "https://feeds.feedburner.com/TheHackersNews", limit: 4 },
+    { cat: "ukraine", icon: "🇺🇦", source: "AIN.UA", url: "https://ain.ua/feed/", limit: 5 }
+];
+
+const categories = {
+    world: { uk: "🌍 Світові ІТ-новини", ru: "🌍 Мировые ИТ-новости", en: "🌍 Global IT News" },
+    dev: { uk: "👨‍💻 Розробка та Startups", ru: "👨‍💻 Разработка и Startups", en: "👨‍💻 Dev & Startups" },
+    cyber: { uk: "🔒 Кібербезпека", ru: "🔒 Кибербезопасность", en: "🔒 Cybersecurity" },
+    ukraine: { uk: "🇺🇦 ІТ в Україні", ru: "🇺🇦 ИТ в Украине", en: "🇺🇦 IT in Ukraine" }
+};
+
+const ui = {
+    uk: {
+        title: "Рух та новини ІТ — Довідник",
+        pageTitle: "📰 Рух та новини ІТ",
+        home: "Головна сторінка",
+        all: "Усі новини",
+        readMore: "Читати далі",
+        loading: "⏳ Завантаження свіжих новин...",
+        error: "Помилка завантаження. Спробуйте оновити сторінку пізніше.",
+        footer: "📰 Рух та новини ІТ | Автоматизована стрічка 2025",
+        info_title: "💡 Як працює ця сторінка?",
+        info_text: "Ця сторінка автоматично збирає найсвіжіші новини з провідних світових та українських ІТ-ресурсів (The Verge, TechCrunch, AIN.UA та ін.) за допомогою технології <strong>RSS-стрічок</strong>. Новини оновлюються в реальному часі щодня, щойно ви відкриваєте сторінку. <strong>Зверніть увагу:</strong> тексти новин відображаються мовами оригінальних джерел (українською або англійською). Використовуйте фільтри вище, щоб обрати потрібну категорію."
+    },
+    ru: {
+        title: "Движение и новости ИТ — Справочник",
+        pageTitle: "📰 Движение и новости ИТ",
+        home: "Главная страница",
+        all: "Все новости",
+        readMore: "Читать далее",
+        loading: "⏳ Загрузка свежих новостей...",
+        error: "Ошибка загрузки. Попробуйте обновить страницу позже.",
+        footer: "📰 Движение и новости ИТ | Автоматизированная лента 2025",
+        info_title: "💡 Как работает эта страница?",
+        info_text: "Эта страница автоматически собирает самые свежие новости с ведущих мировых и украинских ИТ-ресурсов (The Verge, TechCrunch, AIN.UA и др.) с помощью технологии <strong>RSS-лент</strong>. Новости обновляются в реальном времени ежедневно, как только вы открываете страницу. <strong>Обратите внимание:</strong> тексты новостей отображаются на языках оригинальных источников (украинском или английском). Используйте фильтры выше, чтобы выбрать нужную категорию."
+    },
+    en: {
+        title: "IT Movement & News — Guide",
+        pageTitle: "📰 IT Movement & News",
+        home: "Home page",
+        all: "All News",
+        readMore: "Read more",
+        loading: "⏳ Loading fresh news...",
+        error: "Loading error. Please try refreshing the page later.",
+        footer: "📰 IT Movement & News | Automated Feed 2025",
+        info_title: "💡 How does this page work?",
+        info_text: "This page automatically gathers the latest news from leading global and Ukrainian IT resources (The Verge, TechCrunch, AIN.UA, etc.) using <strong>RSS feed</strong> technology. News is updated in real-time every time you open the page. <strong>Please note:</strong> news texts are displayed in the original languages of the sources (Ukrainian or English). Use the filters above to select a specific category."
+    }
+};
+
+let currentLang = localStorage.getItem('lang-news') || 'uk';
+let activeCategory = 'all';
+let allNewsItems = [];
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang-news', lang);
+    document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+    ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+    document.title = ui[lang].title;
+    document.getElementById('home-link').textContent = ui[lang].home;
+    document.getElementById('page-title').textContent = ui[lang].pageTitle;
+    document.getElementById('loader').textContent = ui[lang].loading;
+    
+    // Оновлення інфо-блоку
+    document.getElementById('info-title').textContent = ui[lang].info_title;
+    document.getElementById('info-text').innerHTML = ui[lang].info_text;
+    
+    renderFilters();
+    render();
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const cur = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+function renderFilters() {
+    const c = document.getElementById('filters');
+    let h = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+    for (const [k,v] of Object.entries(categories)) {
+        h += `<button class="filter-btn ${activeCategory===k?'active':''}" onclick="setCat('${k}')">${v[currentLang]}</button>`;
+    }
+    c.innerHTML = h;
+}
+
+function setCat(cat) {
+    activeCategory = cat;
+    renderFilters();
+    render();
+}
+
+async function fetchNews() {
+    const promises = feeds.map(feed => {
+        const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`;
+        return fetch(apiUrl)
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    return data.items.slice(0, feed.limit).map(item => ({
+                        cat: feed.cat,
+                        icon: feed.icon,
+                        source: feed.source,
+                        title: item.title,
+                        link: item.link,
+                        pubDate: new Date(item.pubDate),
+                        desc: item.content.replace(/<[^>]*>?/gm, '').substring(0, 150) + '...'
+                    }));
+                }
+                return [];
+            })
+            .catch(() => []);
+    });
+
+    try {
+        const results = await Promise.all(promises);
+        allNewsItems = results.flat().sort((a, b) => b.pubDate - a.pubDate);
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('news-grid').style.display = 'grid';
+        render();
+    } catch (error) {
+        document.getElementById('loader').textContent = ui[currentLang].error;
+    }
+}
+
+function render() {
+    const grid = document.getElementById('news-grid');
+    let html = '';
+    const items = (activeCategory === 'all') ? allNewsItems : allNewsItems.filter(e => e.cat === activeCategory);
+
+    if (activeCategory === 'all') {
+        for (const [catKey, catVal] of Object.entries(categories)) {
+            const list = items.filter(e => e.cat === catKey);
+            if (!list.length) continue;
+            html += `<div class="section-title">${catVal[currentLang]}</div>`;
+            list.forEach(e => { html += createCardHtml(e); });
+        }
+    } else {
+        html += `<div class="section-title">${categories[activeCategory][currentLang]}</div>`;
+        items.forEach(e => { html += createCardHtml(e); });
+    }
+
+    grid.innerHTML = html;
+    document.getElementById('footer').textContent = ui[currentLang].footer;
+}
+
+function createCardHtml(e) {
+    const dateStr = e.pubDate.toLocaleDateString(currentLang === 'uk' ? 'uk-UA' : (currentLang === 'ru' ? 'ru-RU' : 'en-US'), {
+        day: 'numeric', month: 'long', year: 'numeric'
+    });
+    
+    return `
+        <div class="card">
+            <div class="card-source">${e.icon} ${e.source}</div>
+            <a href="${e.link}" target="_blank" rel="noopener" class="card-title">${e.title}</a>
+            <div class="card-desc">${e.desc}</div>
+            <div class="card-footer">
+                <span>📅 ${dateStr}</span>
+                <a href="${e.link}" target="_blank" rel="noopener" class="read-more">${ui[currentLang].readMore} →</a>
+            </div>
+        </div>`;
+} 
+
+setLang(currentLang);
+fetchNews();
+</script>
+</body>
+</html>

@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Історія обчислювальної техніки</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #00e5b0;
+            --accent-2: #7c3aed;
+            --accent-3: #ff9f43;
+            --gradient: linear-gradient(135deg, #00e5b0, #7c3aed);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #000; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #000; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(0,229,176,0.2);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-year {
+            font-size: 0.75rem; color: var(--accent-2);
+            background: rgba(124,58,237,0.12);
+            padding: 0.15rem 0.5rem; border-radius: 1rem;
+            display: inline-block; margin-top: 0.15rem;
+        }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.6rem 0 0.4rem; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.4rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .card-link {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            color: var(--accent); text-decoration: none;
+            font-weight: 600; font-size: 0.85rem;
+            margin-top: 0.75rem; transition: gap 0.2s;
+        }
+        .card-link:hover { gap: 0.7rem; }
+        .card-link::after { content: "→"; }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.6rem 1.8rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.35rem; margin-bottom: 0.8rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro h3 {
+            font-size: 1.05rem; margin: 1.25rem 0 0.45rem; color: var(--accent);
+        }
+        .intro p { margin-bottom: 0.7rem; }
+        .intro ul { margin: 0.4rem 0 0.8rem 1.25rem; }
+        .intro li { margin-bottom: 0.35rem; }
+        .intro strong { color: var(--text); }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.05rem; }
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-hover); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">🖥️ Історія обчислювальної техніки</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+const categories = {
+    mech:    { uk: "Доелектронна ера", ru: "Доэлектронная эра", en: "Pre-electronic era" },
+    early:   { uk: "1940–1950-ті", ru: "1940–1950-е", en: "1940s–1950s" },
+    main:    { uk: "Мейнфрейми 1960–70-ті", ru: "Мейнфреймы 1960–70-е", en: "Mainframes 1960s–70s" },
+    micro:   { uk: "Мікропроцесори і ПК", ru: "Микропроцессоры и ПК", en: "Microprocessors & PCs" },
+    net:     { uk: "Мережі та інтернет", ru: "Сети и интернет", en: "Networks & Internet" },
+    modern:  { uk: "Мобільна і хмарна ера", ru: "Мобильная и облачная эра", en: "Mobile & cloud era" }
+};
+
+const items = [
+    // Pre-electronic
+    { id:"abacus", cat:"mech", icon:"🧮", name:"Абак / рахівниця", year:"~2700 до н.е.",
+      place:{ uk:"Месопотамія, пізніше Китай, Європа", ru:"Месопотамия, позже Китай, Европа", en:"Mesopotamia, later China, Europe" },
+      desc:{ uk:"Один із найдавніших обчислювальних інструментів: намистини на стержнях для арифметики. Використовувався тисячоліттями в торгівлі та навчанні.",
+             ru:"Один из древнейших вычислительных инструментов: бусины на стержнях для арифметики. Использовался тысячелетиями в торговле и обучении.",
+             en:"One of the oldest computing tools: beads on rods for arithmetic. Used for millennia in trade and education." },
+      url:"https://en.wikipedia.org/wiki/Abacus" },
+    { id:"napier", cat:"mech", icon:"🪵", name:"Кісточки Непера", year:"1617",
+      place:{ uk:"Шотландія (Джон Непер)", ru:"Шотландия (Джон Непер)", en:"Scotland (John Napier)" },
+      desc:{ uk:"Набір стрижнів для множення й ділення. Спростив складні розрахунки задовго до механічних калькуляторів.",
+             ru:"Набор стержней для умножения и деления. Упростил сложные расчёты задолго до механических калькуляторов.",
+             en:"Rods for multiplication and division. Simplified complex calculations long before mechanical calculators." },
+      url:"https://en.wikipedia.org/wiki/Napier%27s_bones" },
+    { id:"pascaline", cat:"mech", icon:"⚙️", name:"Паскаліна", year:"1642",
+      place:{ uk:"Франція (Блез Паскаль)", ru:"Франция (Блез Паскаль)", en:"France (Blaise Pascal)" },
+      desc:{ uk:"Механічний арифмометр для додавання й віднімання. Один із перших успішних калькуляторів у Європі.",
+             ru:"Механический арифмометр для сложения и вычитания. Один из первых успешных калькуляторов в Европе.",
+             en:"Mechanical calculator for addition and subtraction. One of the first successful calculators in Europe." },
+      url:"https://en.wikipedia.org/wiki/Pascal%27s_calculator" },
+    { id:"leibniz", cat:"mech", icon:"🔧", name:"Машина Лейбніца", year:"1673",
+      place:{ uk:"Німеччина (Готфрід Лейбніц)", ru:"Германия (Готфрид Лейбниц)", en:"Germany (Gottfried Leibniz)" },
+      desc:{ uk:"Калькулятор, що виконував усі чотири дії. Ідея двійкової системи Лейбніца вплинула на сучасні комп’ютери.",
+             ru:"Калькулятор, выполнявший все четыре действия. Идея двоичной системы Лейбница повлияла на современные компьютеры.",
+             en:"Calculator performing all four arithmetic operations. Leibniz’s binary ideas influenced modern computers." },
+      url:"https://en.wikipedia.org/wiki/Stepped_reckoner" },
+    { id:"babbage", cat:"mech", icon:"🏛️", name:"Аналітична машина Беббіджа", year:"1837 (проєкт)",
+      place:{ uk:"Велика Британія (Чарльз Беббідж, Ада Лавлейс)", ru:"Великобритания (Чарльз Бэббидж, Ада Лавлейс)", en:"UK (Charles Babbage, Ada Lovelace)" },
+      desc:{ uk:"Проєкт універсальної програмованої механічної машини. Ада Лавлейс описала алгоритми — її вважають першим програмістом.",
+             ru:"Проект универсальной программируемой механической машины. Ада Лавлейс описала алгоритмы — её считают первым программистом.",
+             en:"Design for a universal programmable mechanical computer. Ada Lovelace wrote algorithms — often called the first programmer." },
+      url:"https://en.wikipedia.org/wiki/Analytical_Engine" },
+    { id:"hollerith", cat:"mech", icon:"📇", name:"Табулятор Холлеріта", year:"1890",
+      place:{ uk:"США (Герман Холлеріт)", ru:"США (Герман Холлерит)", en:"USA (Herman Hollerith)" },
+      desc:{ uk:"Обробка перфокарт для перепису населення США. Компанія Холлеріта стала основою IBM.",
+             ru:"Обработка перфокарт для переписи населения США. Компания Холлерита стала основой IBM.",
+             en:"Punched-card processing for the US census. Hollerith’s company became the foundation of IBM." },
+      url:"https://en.wikipedia.org/wiki/Herman_Hollerith" },
+
+    // 1940-50s
+    { id:"zenuse", cat:"early", icon:"🇩🇪", name:"Z3 (Конрад Цузе)", year:"1941",
+      place:{ uk:"Німеччина", ru:"Германия", en:"Germany" },
+      desc:{ uk:"Перший програмований комп’ютер на реле з двійковою арифметикою і плаваючою комою. Руйнування війни затримали вплив.",
+             ru:"Первый программируемый компьютер на реле с двоичной арифметикой и плавающей запятой. Война задержала влияние.",
+             en:"First programmable relay computer with binary arithmetic and floating point. War delayed its impact." },
+      url:"https://en.wikipedia.org/wiki/Z3_(computer)" },
+    { id:"colossus", cat:"early", icon:"🔐", name:"Colossus", year:"1943–44",
+      place:{ uk:"Велика Британія (Bletchley Park)", ru:"Великобритания (Bletchley Park)", en:"UK (Bletchley Park)" },
+      desc:{ uk:"Електронна машина для розкриття шифрів Lorenz під час Другої світової. Один із перших великих цифрових комп’ютерів.",
+             ru:"Электронная машина для вскрытия шифров Lorenz во время Второй мировой. Один из первых крупных цифровых компьютеров.",
+             en:"Electronic machine for breaking Lorenz ciphers in WWII. One of the first large digital computers." },
+      url:"https://en.wikipedia.org/wiki/Colossus_computer" },
+    { id:"eniac", cat:"early", icon:"💡", name:"ENIAC", year:"1945",
+      place:{ uk:"США (Мурська школа, Пенсильванія)", ru:"США (школа Мура, Пенсильвания)", en:"USA (Moore School, Pennsylvania)" },
+      desc:{ uk:"Перший великий загальнопризначений електронний цифровий комп’ютер. Лампи, програмування перемикачами і кабелями.",
+             ru:"Первый крупный универсальный электронный цифровой компьютер. Лампы, программирование переключателями и кабелями.",
+             en:"First large general-purpose electronic digital computer. Vacuum tubes; programmed with switches and cables." },
+      url:"https://en.wikipedia.org/wiki/ENIAC" },
+    { id:"manchester", cat:"early", icon:"🧠", name:"Manchester Baby / EDSAC", year:"1948–49",
+      place:{ uk:"Велика Британія", ru:"Великобритания", en:"UK" },
+      desc:{ uk:"Baby — перша машина з програмою в електронній пам’яті (stored-program). EDSAC — практичний комп’ютер для науки.",
+             ru:"Baby — первая машина с программой в электронной памяти (stored-program). EDSAC — практический компьютер для науки.",
+             en:"Baby — first stored-program electronic computer. EDSAC — a practical machine for scientific work." },
+      url:"https://en.wikipedia.org/wiki/Manchester_Baby" },
+    { id:"univac", cat:"early", icon:"📺", name:"UNIVAC I", year:"1951",
+      place:{ uk:"США (Eckert–Mauchly / Remington Rand)", ru:"США (Eckert–Mauchly / Remington Rand)", en:"USA (Eckert–Mauchly / Remington Rand)" },
+      desc:{ uk:"Перший комерційний комп’ютер у США. Передбачив результат виборів 1952 року — символ нової ери обчислень.",
+             ru:"Первый коммерческий компьютер в США. Предсказал итог выборов 1952 года — символ новой эры вычислений.",
+             en:"First commercial computer in the US. Predicted the 1952 election outcome — a symbol of the new computing era." },
+      url:"https://en.wikipedia.org/wiki/UNIVAC_I" },
+    { id:"ibm701", cat:"early", icon:"🏢", name:"IBM 701 / 650", year:"1952–54",
+      place:{ uk:"США (IBM)", ru:"США (IBM)", en:"USA (IBM)" },
+      desc:{ uk:"Серія машин, що закріпила IBM на ринку наукових і бізнес-обчислень. Початок домінування «великої синьої».",
+             ru:"Серия машин, закрепившая IBM на рынке научных и бизнес-вычислений. Начало доминирования «большой синей».",
+             en:"Machines that cemented IBM in scientific and business computing. The rise of “Big Blue”." },
+      url:"https://en.wikipedia.org/wiki/IBM_701" },
+
+    // Mainframes
+    { id:"ibm360", cat:"main", icon:"🔷", name:"IBM System/360", year:"1964",
+      place:{ uk:"США (IBM)", ru:"США (IBM)", en:"USA (IBM)" },
+      desc:{ uk:"Сімейство сумісних мейнфреймів. Одна архітектура — від малого до великого. Стандарт корпоративних обчислень на десятиліття.",
+             ru:"Семейство совместимых мейнфреймов. Одна архитектура — от малого до большого. Стандарт корпоративных вычислений на десятилетия.",
+             en:"Family of compatible mainframes. One architecture from small to large. Corporate computing standard for decades." },
+      url:"https://en.wikipedia.org/wiki/IBM_System/360" },
+    { id:"pdp", cat:"main", icon:"🖥️", name:"PDP-8 / PDP-11 (DEC)", year:"1965 / 1970",
+      place:{ uk:"США (Digital Equipment Corporation)", ru:"США (Digital Equipment Corporation)", en:"USA (Digital Equipment Corporation)" },
+      desc:{ uk:"Міні-комп’ютери: дешевші й доступніші за мейнфрейми. PDP-11 вплинув на Unix і архітектуру багатьох систем.",
+             ru:"Мини-компьютеры: дешевле и доступнее мейнфреймов. PDP-11 повлиял на Unix и архитектуру многих систем.",
+             en:"Minicomputers: cheaper and more accessible than mainframes. PDP-11 influenced Unix and many system designs." },
+      url:"https://en.wikipedia.org/wiki/PDP-11" },
+    { id:"cdc", cat:"main", icon:"🚀", name:"CDC 6600", year:"1964",
+      place:{ uk:"США (Seymour Cray / CDC)", ru:"США (Сеймур Крэй / CDC)", en:"USA (Seymour Cray / CDC)" },
+      desc:{ uk:"Один із перших суперкомп’ютерів. Рекордна продуктивність для наукових розрахунків 1960-х.",
+             ru:"Один из первых суперкомпьютеров. Рекордная производительность для научных расчётов 1960-х.",
+             en:"One of the first supercomputers. Record performance for 1960s scientific computing." },
+      url:"https://en.wikipedia.org/wiki/CDC_6600" },
+    { id:"apollo", cat:"main", icon:"🌙", name:"Apollo Guidance Computer", year:"1966–69",
+      place:{ uk:"США (MIT / NASA)", ru:"США (MIT / NASA)", en:"USA (MIT / NASA)" },
+      desc:{ uk:"Бортовий комп’ютер місій Apollo. Інтегральні схеми, реального часу — довів надійність цифрової техніки в космосі.",
+             ru:"Бортовой компьютер миссий Apollo. Интегральные схемы, реальное время — доказал надёжность цифровой техники в космосе.",
+             en:"On-board computer for Apollo missions. Integrated circuits, real-time control — proved digital reliability in space." },
+      url:"https://en.wikipedia.org/wiki/Apollo_Guidance_Computer" },
+
+    // Micro & PC
+    { id:"intel4004", cat:"micro", icon:"🔬", name:"Intel 4004", year:"1971",
+      place:{ uk:"США (Intel)", ru:"США (Intel)", en:"USA (Intel)" },
+      desc:{ uk:"Перший комерційний мікропроцесор на одному кристалі. Початок ери «комп’ютера на чипі».",
+             ru:"Первый коммерческий микропроцессор на одном кристалле. Начало эры «компьютера на чипе».",
+             en:"First commercial single-chip microprocessor. Dawn of the “computer on a chip” era." },
+      url:"https://en.wikipedia.org/wiki/Intel_4004" },
+    { id:"altair", cat:"micro", icon:"📦", name:"Altair 8800", year:"1975",
+      place:{ uk:"США (MITS)", ru:"США (MITS)", en:"USA (MITS)" },
+      desc:{ uk:"Набір для любителів на Intel 8080. Надихнув Білла Гейтса і Пола Аллена (Microsoft BASIC) і хвилю домашніх комп’ютерів.",
+             ru:"Набор для любителей на Intel 8080. Вдохновил Билла Гейтса и Пола Аллена (Microsoft BASIC) и волну домашних компьютеров.",
+             en:"Hobbyist kit based on the Intel 8080. Inspired Bill Gates and Paul Allen (Microsoft BASIC) and the home-computer wave." },
+      url:"https://en.wikipedia.org/wiki/Altair_8800" },
+    { id:"apple2", cat:"micro", icon:"🍎", name:"Apple II", year:"1977",
+      place:{ uk:"США (Apple)", ru:"США (Apple)", en:"USA (Apple)" },
+      desc:{ uk:"Один із перших масових персональних комп’ютерів з кольоровою графікою. Символ ранньої ПК-культури.",
+             ru:"Один из первых массовых персональных компьютеров с цветной графикой. Символ ранней ПК-культуры.",
+             en:"One of the first mass-market personal computers with color graphics. Symbol of early PC culture." },
+      url:"https://en.wikipedia.org/wiki/Apple_II" },
+    { id:"ibm_pc", cat:"micro", icon:"💻", name:"IBM PC", year:"1981",
+      place:{ uk:"США (IBM)", ru:"США (IBM)", en:"USA (IBM)" },
+      desc:{ uk:"Відкрита архітектура + MS-DOS → стандарт індустрії. Клони зробили ПК масовим явищем у бізнесі й вдома.",
+             ru:"Открытая архитектура + MS-DOS → стандарт индустрии. Клоны сделали ПК массовым явлением в бизнесе и дома.",
+             en:"Open architecture + MS-DOS → industry standard. Clones made the PC mass-market in business and homes." },
+      url:"https://en.wikipedia.org/wiki/IBM_Personal_Computer" },
+    { id:"mac", cat:"micro", icon:"🖥️", name:"Apple Macintosh", year:"1984",
+      place:{ uk:"США (Apple)", ru:"США (Apple)", en:"USA (Apple)" },
+      desc:{ uk:"Масовий комп’ютер з графічним інтерфейсом і мишею. Зробив GUI зрозумілим широкій аудиторії.",
+             ru:"Массовый компьютер с графическим интерфейсом и мышью. Сделал GUI понятным широкой аудитории.",
+             en:"Mass-market computer with a graphical interface and mouse. Made the GUI accessible to a wide audience." },
+      url:"https://en.wikipedia.org/wiki/Macintosh" },
+    { id:"x86", cat:"micro", icon:"⚡", name:"Архітектура x86", year:"1978→",
+      place:{ uk:"Intel / AMD та ін.", ru:"Intel / AMD и др.", en:"Intel / AMD and others" },
+      desc:{ uk:"Лінія процесорів від 8086 до сучасних Core/Ryzen. Основа більшості ПК і серверів десятиліттями.",
+             ru:"Линия процессоров от 8086 до современных Core/Ryzen. Основа большинства ПК и серверов десятилетиями.",
+             en:"Processor line from the 8086 to modern Core/Ryzen. Foundation of most PCs and servers for decades." },
+      url:"https://en.wikipedia.org/wiki/X86" },
+
+    // Networks
+    { id:"arpanet", cat:"net", icon:"🌐", name:"ARPANET", year:"1969",
+      place:{ uk:"США (ARPA)", ru:"США (ARPA)", en:"USA (ARPA)" },
+      desc:{ uk:"Перша велика мережа з пакетною комутацією. Зародок інтернету: перший вузол — UCLA.",
+             ru:"Первая крупная сеть с пакетной коммутацией. Зародыш интернета: первый узел — UCLA.",
+             en:"First major packet-switched network. Seed of the Internet; first node at UCLA." },
+      url:"https://en.wikipedia.org/wiki/ARPANET" },
+    { id:"tcpip", cat:"net", icon:"📡", name:"TCP/IP", year:"1983",
+      place:{ uk:"Vint Cerf, Bob Kahn та спільнота", ru:"Винт Серф, Боб Кан и сообщество", en:"Vint Cerf, Bob Kahn and community" },
+      desc:{ uk:"Стек протоколів, що став мовою інтернету. 1 січня 1983 — «день прапора» переходу ARPANET на TCP/IP.",
+             ru:"Стек протоколов, ставший языком интернета. 1 января 1983 — «день флага» перехода ARPANET на TCP/IP.",
+             en:"Protocol suite that became the language of the Internet. 1 January 1983 — ARPANET’s flag day switch to TCP/IP." },
+      url:"https://en.wikipedia.org/wiki/Internet_protocol_suite" },
+    { id:"www", cat:"net", icon:"🔗", name:"World Wide Web", year:"1989–91",
+      place:{ uk:"CERN (Тім Бернерс-Лі)", ru:"CERN (Тим Бернерс-Ли)", en:"CERN (Tim Berners-Lee)" },
+      desc:{ uk:"HTTP, HTML, URL — веб як гіпертекст поверх інтернету. Зробив мережу доступною мільярдам людей.",
+             ru:"HTTP, HTML, URL — веб как гипертекст поверх интернета. Сделал сеть доступной миллиардам людей.",
+             en:"HTTP, HTML, URL — the Web as hypertext on top of the Internet. Made the network usable by billions." },
+      url:"https://en.wikipedia.org/wiki/World_Wide_Web" },
+    { id:"browser", cat:"net", icon:"🌍", name:"Mosaic / Netscape", year:"1993–94",
+      place:{ uk:"NCSA / Netscape", ru:"NCSA / Netscape", en:"NCSA / Netscape" },
+      desc:{ uk:"Графічні браузери відкрили веб «звичайним» користувачам. Початок інтернет-буму 1990-х.",
+             ru:"Графические браузеры открыли веб «обычным» пользователям. Начало интернет-бума 1990-х.",
+             en:"Graphical browsers opened the Web to ordinary users. Start of the 1990s internet boom." },
+      url:"https://en.wikipedia.org/wiki/Mosaic_(web_browser)" },
+
+    // Modern
+    { id:"smartphone", cat:"modern", icon:"📱", name:"Смартфон (iPhone та ера)", year:"2007→",
+      place:{ uk:"Apple, Google/Android та ін.", ru:"Apple, Google/Android и др.", en:"Apple, Google/Android and others" },
+      desc:{ uk:"Комп’ютер у кишені: сенсор, завжди онлайн, магазини додатків. Змінив комунікації, медіа й розробку ПЗ.",
+             ru:"Компьютер в кармане: сенсор, всегда онлайн, магазины приложений. Изменил коммуникации, медиа и разработку ПО.",
+             en:"A computer in your pocket: touch, always online, app stores. Transformed communication, media and software." },
+      url:"https://en.wikipedia.org/wiki/Smartphone" },
+    { id:"cloud", cat:"modern", icon:"☁️", name:"Хмарні обчислення", year:"~2006→",
+      place:{ uk:"AWS, Azure, GCP та ін.", ru:"AWS, Azure, GCP и др.", en:"AWS, Azure, GCP and others" },
+      desc:{ uk:"Оренда обчислень і сховища замість власних серверів. Масштаб, DevOps, глобальні сервіси.",
+             ru:"Аренда вычислений и хранилища вместо своих серверов. Масштаб, DevOps, глобальные сервисы.",
+             en:"Renting compute and storage instead of owning servers. Scale, DevOps, global services." },
+      url:"https://en.wikipedia.org/wiki/Cloud_computing" },
+    { id:"gpu_ai", cat:"modern", icon:"🎮", name:"GPU і прискорювачі ШІ", year:"2010-ті→",
+      place:{ uk:"NVIDIA, AMD, Google TPU тощо", ru:"NVIDIA, AMD, Google TPU и др.", en:"NVIDIA, AMD, Google TPU, etc." },
+      desc:{ uk:"Графічні процесори й спеціалізовані чипи зробили навчання великих нейромереж практичним. Основа сучасної хвилі ШІ.",
+             ru:"Графические процессоры и спецчипы сделали обучение больших нейросетей практичным. Основа современной волны ИИ.",
+             en:"GPUs and specialized chips made training large neural nets practical. Foundation of the modern AI wave." },
+      url:"https://en.wikipedia.org/wiki/Graphics_processing_unit" },
+    { id:"quantum", cat:"modern", icon:"⚛️", name:"Квантові обчислення (експеримент)", year:"2010-ті→",
+      place:{ uk:"IBM, Google, IonQ та дослідницькі центри", ru:"IBM, Google, IonQ и исследовательские центры", en:"IBM, Google, IonQ and research labs" },
+      desc:{ uk:"Кубити й квантові алгоритми для окремих класів задач. Поки на ранній стадії, але стратегічний напрям досліджень.",
+             ru:"Кубиты и квантовые алгоритмы для отдельных классов задач. Пока на ранней стадии, но стратегическое направление.",
+             en:"Qubits and quantum algorithms for specific problem classes. Still early, but a strategic research direction." },
+      url:"https://en.wikipedia.org/wiki/Quantum_computing" }
+];
+
+const overview = {
+    uk: {
+        title: "Історія обчислювальної техніки — короткий огляд",
+        body: `
+<p>Обчислювальна техніка — від абака до смартфона й хмарних дата-центрів — це історія того, як людство вчилося <strong>автоматизувати рахунок, логіку й обробку інформації</strong>.</p>
+<h3>Великі хвилі</h3>
+<ul>
+<li><strong>Механіка</strong> — абак, арифмометри, проєкти Беббіджа.</li>
+<li><strong>Електроніка на лампах і реле</strong> — Colossus, ENIAC, перші stored-program машини.</li>
+<li><strong>Транзистори й інтегральні схеми</strong> — мейнфрейми, міні-комп’ютери, надійність і серійність.</li>
+<li><strong>Мікропроцесор</strong> — персональний комп’ютер у кожен дім і офіс.</li>
+<li><strong>Мережі</strong> — ARPANET → інтернет → веб.</li>
+<li><strong>Мобільність і хмара</strong> — смартфони, оренда обчислень, глобальні сервіси.</li>
+<li><strong>Прискорювачі ШІ</strong> — GPU/TPU і нова хвиля інтелектуальних систем.</li>
+</ul>
+<p>Оберіть епоху в меню для перегляду деталей.</p>
+`
+    },
+    ru: {
+        title: "История вычислительной техники — краткий обзор",
+        body: `
+<p>Вычислительная техника — от абака до смартфона и облачных дата-центров — это история того, как человечество училось <strong>автоматизировать счёт, логику и обработку информации</strong>.</p>
+<h3>Большие волны</h3>
+<ul>
+<li><strong>Механика</strong> — абак, арифмометры, проекты Бэббиджа.</li>
+<li><strong>Электроника на лампах и реле</strong> — Colossus, ENIAC, первые stored-program машины.</li>
+<li><strong>Транзисторы и интегральные схемы</strong> — мейнфреймы, мини-компьютеры, надёжность и серийность.</li>
+<li><strong>Микропроцессор</strong> — персональный компьютер в каждый дом и офис.</li>
+<li><strong>Сети</strong> — ARPANET → интернет → веб.</li>
+<li><strong>Мобильность и облако</strong> — смартфоны, аренда вычислений, глобальные сервисы.</li>
+<li><strong>Ускорители ИИ</strong> — GPU/TPU и новая волна интеллектуальных систем.</li>
+</ul>
+<p>Выберите эпоху в меню для просмотра деталей.</p>
+`
+    },
+    en: {
+        title: "History of computing — a short overview",
+        body: `
+<p>Computing — from the abacus to smartphones and cloud data centres — is the story of how humanity learned to <strong>automate calculation, logic and information processing</strong>.</p>
+<h3>Major waves</h3>
+<ul>
+<li><strong>Mechanics</strong> — abacus, calculators, Babbage’s designs.</li>
+<li><strong>Electronics with tubes and relays</strong> — Colossus, ENIAC, first stored-program machines.</li>
+<li><strong>Transistors and integrated circuits</strong> — mainframes, minicomputers, reliability and mass production.</li>
+<li><strong>The microprocessor</strong> — a personal computer in every home and office.</li>
+<li><strong>Networks</strong> — ARPANET → Internet → Web.</li>
+<li><strong>Mobile and cloud</strong> — smartphones, rented compute, global services.</li>
+<li><strong>AI accelerators</strong> — GPUs/TPUs and a new wave of intelligent systems.</li>
+</ul>
+<p>Pick an era in the menu to view details.</p>
+`
+    }
+};
+
+const whatIs = {
+    uk: {
+        title: "Що таке обчислювальна техніка?",
+        body: `
+<p><strong>Обчислювальна техніка</strong> — сукупність пристроїв і систем, призначених для автоматичної обробки інформації: введення, зберігання, перетворення за алгоритмом і виведення результату.</p>
+<h3>Основні складові</h3>
+<ul>
+<li><strong>Апаратне забезпечення (hardware)</strong> — процесор, пам’ять, носії, периферія, мережеві пристрої.</li>
+<li><strong>Програмне забезпечення (software)</strong> — ОС, мови, застосунки, драйвери.</li>
+<li><strong>Дані та алгоритми</strong> — те, що обробляється і за якими правилами.</li>
+</ul>
+<h3>Навіщо це потрібно</h3>
+<p>Прискорити розрахунки, керувати складними системами, зберігати й шукати інформацію, спілкуватися на відстані, моделювати явища, створювати медіа й інтелектуальні сервіси. Від бухгалтерії й науки до смартфона в кишені — усе спирається на цю лінію винаходів.</p>
+`
+    },
+    ru: {
+        title: "Что такое вычислительная техника?",
+        body: `
+<p><strong>Вычислительная техника</strong> — совокупность устройств и систем для автоматической обработки информации: ввода, хранения, преобразования по алгоритму и вывода результата.</p>
+<h3>Основные составляющие</h3>
+<ul>
+<li><strong>Аппаратное обеспечение (hardware)</strong> — процессор, память, носители, периферия, сетевые устройства.</li>
+<li><strong>Программное обеспечение (software)</strong> — ОС, языки, приложения, драйверы.</li>
+<li><strong>Данные и алгоритмы</strong> — то, что обрабатывается и по каким правилам.</li>
+</ul>
+<h3>Зачем это нужно</h3>
+<p>Ускорить расчёты, управлять сложными системами, хранить и искать информацию, общаться на расстоянии, моделировать явления, создавать медиа и интеллектуальные сервисы. От бухгалтерии и науки до смартфона в кармане — всё опирается на эту линию изобретений.</p>
+`
+    },
+    en: {
+        title: "What is computing technology?",
+        body: `
+<p><strong>Computing technology</strong> is the set of devices and systems for automatic information processing: input, storage, transformation by algorithm, and output of results.</p>
+<h3>Main parts</h3>
+<ul>
+<li><strong>Hardware</strong> — processor, memory, storage, peripherals, networking.</li>
+<li><strong>Software</strong> — operating systems, languages, applications, drivers.</li>
+<li><strong>Data and algorithms</strong> — what is processed and by which rules.</li>
+</ul>
+<h3>Why it matters</h3>
+<p>Faster calculation, control of complex systems, storing and finding information, remote communication, simulation, media and intelligent services. From accounting and science to the phone in your pocket — all rest on this line of inventions.</p>
+`
+    }
+};
+
+const future = {
+    uk: {
+        title: "Сучасність і горизонт: куди рухається техніка",
+        body: `
+<ul>
+<li><strong>Спеціалізовані чипи</strong> — NPU, TPU, FPGA для ШІ й енергоефективності.</li>
+<li><strong>Крайні (edge) обчислення</strong> — обробка ближче до датчиків і користувача, менше затримок.</li>
+<li><strong>Квантові експерименти</strong> — поки ніша, але стратегічні інвестиції.</li>
+<li><strong>Відкрите апаратне</strong> — RISC-V та відкриті ISA як альтернатива закритим архітектурам.</li>
+<li><strong>Сталий розвиток</strong> — енергоспоживання дата-центрів і життєвий цикл пристроїв стають критичними темами.</li>
+</ul>
+<p>Історія показує: кожне покоління техніки робить обчислення <em>дешевшими, меншими й ближчими до людини</em>. Наступний крок — ще тісніша інтеграція з ШІ та фізичним світом.</p>
+`
+    },
+    ru: {
+        title: "Современность и горизонт: куда движется техника",
+        body: `
+<ul>
+<li><strong>Специализированные чипы</strong> — NPU, TPU, FPGA для ИИ и энергоэффективности.</li>
+<li><strong>Граничные (edge) вычисления</strong> — обработка ближе к датчикам и пользователю, меньше задержек.</li>
+<li><strong>Квантовые эксперименты</strong> — пока ниша, но стратегические инвестиции.</li>
+<li><strong>Открытое железо</strong> — RISC-V и открытые ISA как альтернатива закрытым архитектурам.</li>
+<li><strong>Устойчивое развитие</strong> — энергопотребление дата-центров и жизненный цикл устройств становятся критическими темами.</li>
+</ul>
+<p>История показывает: каждое поколение техники делает вычисления <em>дешевле, меньше и ближе к человеку</em>. Следующий шаг — ещё более тесная интеграция с ИИ и физическим миром.</p>
+`
+    },
+    en: {
+        title: "Today and the horizon: where hardware is heading",
+        body: `
+<ul>
+<li><strong>Specialized chips</strong> — NPUs, TPUs, FPGAs for AI and energy efficiency.</li>
+<li><strong>Edge computing</strong> — processing closer to sensors and users, lower latency.</li>
+<li><strong>Quantum experiments</strong> — still a niche, but strategic investment continues.</li>
+<li><strong>Open hardware</strong> — RISC-V and open ISAs as alternatives to closed architectures.</li>
+<li><strong>Sustainability</strong> — data-centre energy use and device life cycles are critical topics.</li>
+</ul>
+<p>History shows each generation of technology makes computing <em>cheaper, smaller and closer to people</em>. The next step is tighter integration with AI and the physical world.</p>
+`
+    }
+};
+
+const ui = {
+    uk: {
+        title: "Історія обчислювальної техніки",
+        pageTitle: "🖥️ Історія обчислювальної техніки",
+        home: "Головна сторінка",
+        all: "Усі епохи",
+        whatis: "💡 Що таке обчислювальна техніка?",
+        about: "📖 Огляд історії",
+        future: "🔮 Сучасність і горизонт",
+        place: "Місце / хто",
+        open: "Джерело →",
+        footer: "🖥️ Історія обчислювальної техніки | 2026 | Код вільний для редагування"
+    },
+    ru: {
+        title: "История вычислительной техники",
+        pageTitle: "🖥️ История вычислительной техники",
+        home: "Главная страница",
+        all: "Все эпохи",
+        whatis: "💡 Что такое вычислительная техника?",
+        about: "📖 Обзор истории",
+        future: "🔮 Современность и горизонт",
+        place: "Место / кто",
+        open: "Источник →",
+        footer: "🖥️ История вычислительной техники | 2026 | Код свободен для редактирования"
+    },
+    en: {
+        title: "History of Computing",
+        pageTitle: "🖥️ History of Computing",
+        home: "Home page",
+        all: "All eras",
+        whatis: "💡 What is computing technology?",
+        about: "📖 History overview",
+        future: "🔮 Today & horizon",
+        place: "Place / who",
+        open: "Source →",
+        footer: "🖥️ History of Computing | 2026 | Code is free to edit"
+    }
+};
+
+let currentLang = localStorage.getItem('lang-hist-comp') || 'uk';
+let activeCategory = 'about';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang-hist-comp', lang);
+    document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+    ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+    document.title = ui[lang].title;
+    document.getElementById('home-link').textContent = ui[lang].home;
+    document.getElementById('page-title').textContent = ui[lang].pageTitle;
+    renderFilters();
+    render();
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const cur = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+function renderFilters() {
+    const container = document.getElementById('filters');
+    let html = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+    html += `<button class="filter-btn ${activeCategory==='whatis'?'active':''}" onclick="setCat('whatis')">${ui[currentLang].whatis}</button>`;
+    html += `<button class="filter-btn ${activeCategory==='about'?'active':''}" onclick="setCat('about')">${ui[currentLang].about}</button>`;
+    for (const [key, val] of Object.entries(categories)) {
+        html += `<button class="filter-btn ${activeCategory===key?'active':''}" onclick="setCat('${key}')">${val[currentLang]}</button>`;
+    }
+    html += `<button class="filter-btn ${activeCategory==='future'?'active':''}" onclick="setCat('future')">${ui[currentLang].future}</button>`;
+    container.innerHTML = html;
+}
+
+function setCat(cat) {
+    activeCategory = cat;
+    renderFilters();
+    render();
+}
+
+function render() {
+    const main = document.getElementById('main');
+
+    if (activeCategory === 'about' || activeCategory === 'whatis' || activeCategory === 'future') {
+        const src = activeCategory === 'whatis' ? whatIs : (activeCategory === 'future' ? future : overview);
+        const o = src[currentLang];
+        main.innerHTML = `<div class="intro"><h2>${o.title}</h2>${o.body}</div>`;
+        document.getElementById('footer').textContent = ui[currentLang].footer;
+        return;
+    }
+
+    let html = '';
+    const catsToShow = (activeCategory === 'all')
+        ? Object.keys(categories)
+        : [activeCategory];
+
+    catsToShow.forEach(catKey => {
+        const list = items.filter(it => it.cat === catKey);
+        if (list.length === 0) return;
+        html += `<div class="section-title">${categories[catKey][currentLang]}</div><div class="grid">`;
+        list.forEach(it => {
+            html += `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">${it.icon}</div>
+                        <div>
+                            <div class="card-title">${it.name}</div>
+                            <span class="card-year">${it.year}</span>
+                        </div>
+                    </div>
+                    <div class="card-desc">${it.desc[currentLang]}</div>
+                    <div class="card-meta">
+                        <strong>${ui[currentLang].place}</strong>
+                        ${it.place[currentLang]}
+                    </div>
+                    ${it.url ? `<a href="${it.url}" target="_blank" rel="noopener" class="card-link">${ui[currentLang].open}</a>` : ''}
+                </div>`;
+        });
+        html += `</div>`;
+    });
+
+    main.innerHTML = html;
+    document.getElementById('footer').textContent = ui[currentLang].footer;
+}
+
+setLang(currentLang);
+</script>
+</body>
+</html>

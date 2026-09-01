@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO-інструменти — довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #00e5b0;
+            --accent-2: #7c3aed;
+            --accent-3: #ff9f43;
+            --gradient: linear-gradient(135deg, #00e5b0, #7c3aed);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #000; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #000; border-color: var(--accent);
+        }
+        main { max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem; }
+        .section-title { font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(0,229,176,0.2);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .price-tag {
+            font-size: 0.72rem; color: var(--accent-3);
+            background: rgba(255,159,67,0.12);
+            padding: 0.15rem 0.5rem; border-radius: 1rem;
+            display: inline-block; margin-top: 0.2rem;
+        }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(124,58,237,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .card-link {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            color: var(--accent); text-decoration: none;
+            font-weight: 600; font-size: 0.85rem;
+            margin-top: 0.75rem; transition: gap 0.2s;
+        }
+        .card-link:hover { gap: 0.7rem; }
+        .card-link::after { content: "→"; }
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.6rem 1.8rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.35rem; margin-bottom: 0.8rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro h3 {
+            font-size: 1.05rem; margin: 1.25rem 0 0.45rem; color: var(--accent);
+        }
+        .intro p { margin-bottom: 0.7rem; }
+        .intro ul, .intro ol { margin: 0.4rem 0 0.8rem 1.25rem; }
+        .intro li { margin-bottom: 0.4rem; }
+        .intro strong { color: var(--text); }
+        .intro code {
+            background: var(--surface-hover);
+            padding: 0.1rem 0.4rem;
+            border-radius: 0.35rem;
+            font-size: 0.88em;
+            color: var(--accent);
+        }
+        .tip {
+            border-left: 3px solid var(--accent);
+            padding: 0.6rem 0.9rem;
+            margin: 0.8rem 0;
+            background: rgba(0,229,176,0.06);
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        .no-results {
+            text-align: center; color: var(--text-muted);
+            padding: 3rem; font-size: 1.1rem; grid-column: 1 / -1;
+        }
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-hover); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">📈 SEO-інструменти</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+const categories = {
+    free:     { uk: "🆓 Безкоштовний мінімум", ru: "🆓 Бесплатный минимум", en: "🆓 Free essentials" },
+    suite:    { uk: "🧰 Комбайни (all-in-one)", ru: "🧰 Комбайны (all-in-one)", en: "🧰 All-in-one suites" },
+    technical:{ uk: "🔧 Технічний SEO / краулери", ru: "🔧 Технический SEO / краулеры", en: "🔧 Technical SEO / crawlers" },
+    broken:   { uk: "🔗 Биті посилання", ru: "🔗 Битые ссылки", en: "🔗 Broken links" },
+    keywords: { uk: "🔑 Ключові слова", ru: "🔑 Ключевые слова", en: "🔑 Keywords" },
+    content:  { uk: "✍️ Контент і on-page", ru: "✍️ Контент и on-page", en: "✍️ Content & on-page" },
+    links:    { uk: "📎 Беклінки", ru: "📎 Бэклинки", en: "📎 Backlinks" },
+    rank:     { uk: "📊 Позиції (rank tracking)", ru: "📊 Позиции (rank tracking)", en: "📊 Rank tracking" },
+    local:    { uk: "📍 Локальне SEO", ru: "📍 Локальное SEO", en: "📍 Local SEO" }
+};
+
+const tools = [
+    // FREE
+    { id:"gsc", cat:"free", icon:"🔎", name:"Google Search Console",
+      url:"https://search.google.com/search-console", price:{uk:"Безкоштовно",ru:"Бесплатно",en:"Free"},
+      desc:{ uk:"Офіційні дані Google: запити, кліки, індексація, помилки покриття, Core Web Vitals, карта сайту. Обов’язковий інструмент для будь-якого сайту.",
+             ru:"Официальные данные Google: запросы, клики, индексация, ошибки покрытия, Core Web Vitals, карта сайта. Обязательный инструмент.",
+             en:"Official Google data: queries, clicks, indexing, coverage errors, Core Web Vitals, sitemaps. Essential for every site." },
+      tags:{ uk:"індексація, запити, CWV", ru:"индексация, запросы, CWV", en:"indexing, queries, CWV" } },
+    { id:"ga4", cat:"free", icon:"📉", name:"Google Analytics 4",
+      url:"https://analytics.google.com", price:{uk:"Безкоштовно",ru:"Бесплатно",en:"Free"},
+      desc:{ uk:"Трафік, поведінка користувачів, конверсії, джерела. Працює в парі з Search Console.",
+             ru:"Трафик, поведение пользователей, конверсии, источники. Работает в паре с Search Console.",
+             en:"Traffic, user behaviour, conversions, sources. Pairs with Search Console." },
+      tags:{ uk:"трафік, конверсії", ru:"трафик, конверсии", en:"traffic, conversions" } },
+    { id:"bingwmt", cat:"free", icon:"🟦", name:"Bing Webmaster Tools",
+      url:"https://www.bing.com/webmasters", price:{uk:"Безкоштовно",ru:"Бесплатно",en:"Free"},
+      desc:{ uk:"Аналог GSC для Bing: індексація, запити, звіт про зворотні посилання, інструменти перевірки URL.",
+             ru:"Аналог GSC для Bing: индексация, запросы, отчёт об обратных ссылках, проверка URL.",
+             en:"GSC counterpart for Bing: indexing, queries, backlink report, URL inspection." },
+      tags:{ uk:"Bing, індексація", ru:"Bing, индексация", en:"Bing, indexing" } },
+    { id:"psi", cat:"free", icon:"⚡", name:"PageSpeed Insights",
+      url:"https://pagespeed.web.dev", price:{uk:"Безкоштовно",ru:"Бесплатно",en:"Free"},
+      desc:{ uk:"Швидкість сторінки та Core Web Vitals (LCP, INP, CLS) за даними лабораторії та поля Chrome.",
+             ru:"Скорость страницы и Core Web Vitals (LCP, INP, CLS) по лабораторным и полевым данным Chrome.",
+             en:"Page speed and Core Web Vitals (LCP, INP, CLS) from lab and Chrome field data." },
+      tags:{ uk:"швидкість, CWV", ru:"скорость, CWV", en:"speed, CWV" } },
+    { id:"gkp", cat:"free", icon:"📋", name:"Google Keyword Planner",
+      url:"https://ads.google.com/home/tools/keyword-planner/", price:{uk:"Безкоштовно*",ru:"Бесплатно*",en:"Free*"},
+      desc:{ uk:"Орієнтовні обсяги пошуку та ідеї ключів від Google Ads. Потрібен акаунт Google Ads (*не обов’язково запускати рекламу).",
+             ru:"Ориентировочные объёмы поиска и идеи ключей от Google Ads. Нужен аккаунт Google Ads.",
+             en:"Approximate search volumes and keyword ideas from Google Ads. Needs a Google Ads account." },
+      tags:{ uk:"обсяги, ідеї ключів", ru:"объёмы, идеи ключей", en:"volumes, keyword ideas" } },
+
+    // SUITES
+    { id:"semrush", cat:"suite", icon:"🟠", name:"Semrush",
+      url:"https://www.semrush.com", price:{uk:"від ~$140/міс",ru:"от ~$140/мес",en:"from ~$140/mo"},
+      desc:{ uk:"Найширший комбайн: ключові слова, аудит сайту, позиції, беклінки, контент, конкуренти, PPC. Зручно агентствам.",
+             ru:"Самый широкий комбайн: ключевые слова, аудит сайта, позиции, бэклинки, контент, конкуренты, PPC.",
+             en:"Broadest suite: keywords, site audit, rankings, backlinks, content, competitors, PPC. Strong for agencies." },
+      tags:{ uk:"all-in-one, аудит, ключі", ru:"all-in-one, аудит, ключи", en:"all-in-one, audit, keywords" } },
+    { id:"ahrefs", cat:"suite", icon:"🅰️", name:"Ahrefs",
+      url:"https://ahrefs.com", price:{uk:"від ~$129/міс",ru:"от ~$129/мес",en:"from ~$129/mo"},
+      desc:{ uk:"Сильний індекс беклінків і ключових слів, Site Audit, Content Gap, Rank Tracker. Часто №1 для аналізу посилань і конкурентів.",
+             ru:"Сильный индекс бэклинков и ключевых слов, Site Audit, Content Gap, Rank Tracker.",
+             en:"Leading backlink & keyword index, Site Audit, Content Gap, Rank Tracker. Often #1 for links and competitors." },
+      tags:{ uk:"беклінки, ключі, аудит", ru:"бэклинки, ключи, аудит", en:"backlinks, keywords, audit" } },
+    { id:"moz", cat:"suite", icon:"🦎", name:"Moz Pro",
+      url:"https://moz.com/products/pro", price:{uk:"від ~$49/міс",ru:"от ~$49/мес",en:"from ~$49/mo"},
+      desc:{ uk:"Keyword Explorer, Domain Authority, Link Explorer, аудит. Простіший вхід для команд, що починають системне SEO.",
+             ru:"Keyword Explorer, Domain Authority, Link Explorer, аудит. Проще для команд, начинающих системное SEO.",
+             en:"Keyword Explorer, Domain Authority, Link Explorer, audits. Approachable for teams starting structured SEO." },
+      tags:{ uk:"DA, ключі, посилання", ru:"DA, ключи, ссылки", en:"DA, keywords, links" } },
+    { id:"seranking", cat:"suite", icon:"📈", name:"SE Ranking",
+      url:"https://seranking.com", price:{uk:"від ~$50–65/міс",ru:"от ~$50–65/мес",en:"from ~$50–65/mo"},
+      desc:{ uk:"Гнучкий комбайн із добрим rank tracking, аудитом і white-label звітами. Часто обирають за співвідношення ціна/функції.",
+             ru:"Гибкий комбайн с хорошим rank tracking, аудитом и white-label отчётами.",
+             en:"Flexible suite with solid rank tracking, audits and white-label reports. Strong value for money." },
+      tags:{ uk:"позиції, аудит, звіти", ru:"позиции, аудит, отчёты", en:"rankings, audit, reports" } },
+
+    // TECHNICAL
+    { id:"screaming", cat:"technical", icon:"🐸", name:"Screaming Frog SEO Spider",
+      url:"https://www.screamingfrog.co.uk/seo-spider/", price:{uk:"Free / ~£200/рік",ru:"Free / ~£200/год",en:"Free / ~£200/yr"},
+      desc:{ uk:"Настільний краулер №1: статуси, редиректи, title/description, canonical, hreflang, биті посилання, кастомні витяжки. Безкоштовно до 500 URL.",
+             ru:"Настольный краулер №1: статусы, редиректы, title/description, canonical, hreflang, битые ссылки. Бесплатно до 500 URL.",
+             en:"Desktop crawler #1: statuses, redirects, titles, canonicals, hreflang, broken links. Free up to 500 URLs." },
+      tags:{ uk:"краул, техніка, биті URL", ru:"краул, техника, битые URL", en:"crawl, technical, broken URLs" } },
+    { id:"sitebulb", cat:"technical", icon:"💡", name:"Sitebulb",
+      url:"https://sitebulb.com", price:{uk:"Платний (ліцензія)",ru:"Платный (лицензия)",en:"Paid (license)"},
+      desc:{ uk:"Краулер із наочними звітами й підказками «що виправити». Зручний для презентацій клієнтам.",
+             ru:"Краулер с наглядными отчётами и подсказками «что исправить». Удобен для презентаций клиентам.",
+             en:"Crawler with clear reports and fix hints. Handy for client presentations." },
+      tags:{ uk:"аудит, звіти", ru:"аудит, отчёты", en:"audit, reports" } },
+
+    // BROKEN LINKS
+    { id:"sf_broken", cat:"broken", icon:"🐸", name:"Screaming Frog (биті посилання)",
+      url:"https://www.screamingfrog.co.uk/seo-spider/", price:{uk:"Free / Pro",ru:"Free / Pro",en:"Free / Pro"},
+      desc:{ uk:"Під час краулу показує внутрішні й зовнішні посилання з кодами 4xx/5xx, редиректи-ланцюжки. Найнадійніший спосіб для всього сайту.",
+             ru:"При крауле показывает внутренние и внешние ссылки с кодами 4xx/5xx, цепочки редиректов. Самый надёжный способ для всего сайта.",
+             en:"Crawl finds internal/external 4xx/5xx links and redirect chains. Most reliable full-site approach." },
+      tags:{ uk:"4xx, 5xx, редиректи", ru:"4xx, 5xx, редиректы", en:"4xx, 5xx, redirects" } },
+    { id:"deadlinkchecker", cat:"broken", icon:"🪦", name:"Dead Link Checker",
+      url:"https://www.deadlinkchecker.com", price:{uk:"Безкоштовно (ліміти)",ru:"Бесплатно (лимиты)",en:"Free (limits)"},
+      desc:{ uk:"Онлайн-перевірка битих посилань на сторінці або сайті. Зручно для швидкої разової перевірки без встановлення програм.",
+             ru:"Онлайн-проверка битых ссылок на странице или сайте. Удобно для разовой проверки без установки программ.",
+             en:"Online broken-link check for a page or site. Handy for one-off checks without installing software." },
+      tags:{ uk:"онлайн, швидко", ru:"онлайн, быстро", en:"online, quick" } },
+    { id:"brokenlinkcheck", cat:"broken", icon:"🔍", name:"Broken Link Checker (online)",
+      url:"https://www.brokenlinkcheck.com", price:{uk:"Безкоштовно (ліміти)",ru:"Бесплатно (лимиты)",en:"Free (limits)"},
+      desc:{ uk:"Веб-сервіс для сканування сайту на мертві посилання. Підходить для невеликих сайтів і точкових перевірок.",
+             ru:"Веб-сервис для сканирования сайта на мёртвые ссылки. Подходит для небольших сайтов.",
+             en:"Web service to scan a site for dead links. Fine for small sites and spot checks." },
+      tags:{ uk:"онлайн-сканер", ru:"онлайн-сканер", en:"online scanner" } },
+    { id:"drlinkcheck", cat:"broken", icon:"🩺", name:"Dr. Link Check",
+      url:"https://www.drlinkcheck.com", price:{uk:"Free / платні плани",ru:"Free / платные планы",en:"Free / paid plans"},
+      desc:{ uk:"Перевірка битих посилань, редиректів, звіт на email за розкладом. Є безкоштовний рівень для малих сайтів.",
+             ru:"Проверка битых ссылок, редиректов, отчёт на email по расписанию. Есть бесплатный уровень.",
+             en:"Broken links, redirects, scheduled email reports. Free tier for small sites." },
+      tags:{ uk:"розклад, email-звіти", ru:"расписание, email-отчёты", en:"schedule, email reports" } },
+    { id:"wplc", cat:"broken", icon:"🧩", name:"Broken Link Checker (WordPress)",
+      url:"https://wordpress.org/plugins/broken-link-checker/", price:{uk:"Плагін WP (free)",ru:"Плагин WP (free)",en:"WP plugin (free)"},
+      desc:{ uk:"Плагін WordPress: моніторить пости й сторінки, знаходить биті внутрішні/зовнішні посилання прямо в адмінці.",
+             ru:"Плагин WordPress: мониторит посты и страницы, находит битые ссылки прямо в админке.",
+             en:"WordPress plugin: monitors posts/pages and finds broken internal/external links in the admin." },
+      tags:{ uk:"WordPress, моніторинг", ru:"WordPress, мониторинг", en:"WordPress, monitoring" } },
+    { id:"ahrefs_broken", cat:"broken", icon:"🅰️", name:"Ahrefs / Semrush Site Audit",
+      url:"https://ahrefs.com", price:{uk:"У складі підписки",ru:"В составе подписки",en:"Included in suite"},
+      desc:{ uk:"У аудиті сайту комбайнів є звіти про биті посилання (внутрішні й на ваш сайт іззовні). Зручно, якщо вже платите за Ahrefs/Semrush.",
+             ru:"В аудите сайта комбайнов есть отчёты о битых ссылках (внутренних и на ваш сайт снаружи).",
+             en:"Suite site audits report broken internal links and broken links pointing to you — handy if you already subscribe." },
+      tags:{ uk:"аудит, внутрішні/зовнішні", ru:"аудит, внутренние/внешние", en:"audit, internal/external" } },
+
+    // KEYWORDS
+    { id:"ahrefs_kw", cat:"keywords", icon:"🔑", name:"Ahrefs Keywords Explorer",
+      url:"https://ahrefs.com/keywords-explorer", price:{uk:"У складі Ahrefs",ru:"В составе Ahrefs",en:"In Ahrefs"},
+      desc:{ uk:"Обсяги, складність, кліки, батьківські теми, питання. Один із найточніших комерційних індексів ключів.",
+             ru:"Объёмы, сложность, клики, родительские темы, вопросы.",
+             en:"Volumes, difficulty, clicks, parent topics, questions. Among the strongest commercial keyword indexes." },
+      tags:{ uk:"обсяг, KD, SERP", ru:"объём, KD, SERP", en:"volume, KD, SERP" } },
+    { id:"semrush_kw", cat:"keywords", icon:"🔑", name:"Semrush Keyword Magic Tool",
+      url:"https://www.semrush.com", price:{uk:"У складі Semrush",ru:"В составе Semrush",en:"In Semrush"},
+      desc:{ uk:"Величезні групи ключів, інтент, SERP-аналіз, питання. Зручно будувати семантичне ядро.",
+             ru:"Огромные группы ключей, интент, SERP-анализ, вопросы.",
+             en:"Huge keyword groups, intent, SERP analysis, questions. Strong for building topic clusters." },
+      tags:{ uk:"семантика, інтент", ru:"семантика, интент", en:"semantics, intent" } },
+    { id:"alsoasked", cat:"keywords", icon:"❓", name:"AlsoAsked / AnswerThePublic",
+      url:"https://alsoasked.com", price:{uk:"Free / платні",ru:"Free / платные",en:"Free / paid"},
+      desc:{ uk:"Питання користувачів («People Also Ask» тощо). Корисно для структури статей і FAQ.",
+             ru:"Вопросы пользователей («People Also Ask»). Полезно для структуры статей и FAQ.",
+             en:"User questions (People Also Ask style). Great for article outlines and FAQs." },
+      tags:{ uk:"питання, long-tail", ru:"вопросы, long-tail", en:"questions, long-tail" } },
+
+    // CONTENT
+    { id:"surfer", cat:"content", icon:"🏄", name:"Surfer SEO",
+      url:"https://surferseo.com", price:{uk:"від ~$99/міс",ru:"от ~$99/мес",en:"from ~$99/mo"},
+      desc:{ uk:"Оптимізація тексту під запит: структура, терміни, довжина, порівняння з топом видачі. Редактор і аудит сторінок.",
+             ru:"Оптимизация текста под запрос: структура, термины, длина, сравнение с топом выдачи.",
+             en:"On-page content optimization vs top results: structure, terms, length. Editor and page audit." },
+      tags:{ uk:"контент-score, SERP", ru:"контент-score, SERP", en:"content score, SERP" } },
+    { id:"rankmath", cat:"content", icon:"🧮", name:"Rank Math",
+      url:"https://rankmath.com", price:{uk:"Free / Pro",ru:"Free / Pro",en:"Free / Pro"},
+      desc:{ uk:"SEO-плагін WordPress: title/description, schema, sitemap, редиректи, аналітика. Потужна безкоштовна версія.",
+             ru:"SEO-плагин WordPress: title/description, schema, sitemap, редиректы. Мощная бесплатная версия.",
+             en:"WordPress SEO plugin: titles, schema, sitemap, redirects, analytics. Strong free tier." },
+      tags:{ uk:"WordPress, schema", ru:"WordPress, schema", en:"WordPress, schema" } },
+    { id:"yoast", cat:"content", icon:"Yo", name:"Yoast SEO",
+      url:"https://yoast.com", price:{uk:"Free / Premium",ru:"Free / Premium",en:"Free / Premium"},
+      desc:{ uk:"Класичний SEO-плагін WordPress: читабельність, ключі в тексті, schema, XML sitemap.",
+             ru:"Классический SEO-плагин WordPress: читаемость, ключи в тексте, schema, XML sitemap.",
+             en:"Classic WordPress SEO plugin: readability, focus keyphrase, schema, XML sitemaps." },
+      tags:{ uk:"WordPress, on-page", ru:"WordPress, on-page", en:"WordPress, on-page" } },
+
+    // BACKLINKS
+    { id:"ahrefs_links", cat:"links", icon:"🔗", name:"Ahrefs Site Explorer",
+      url:"https://ahrefs.com", price:{uk:"У складі Ahrefs",ru:"В составе Ahrefs",en:"In Ahrefs"},
+      desc:{ uk:"Хто посилається на сайт, які анкори, втрачені посилання, топ-сторінки за трафіком. Еталон для link building.",
+             ru:"Кто ссылается на сайт, анкоры, потерянные ссылки, топ-страницы. Эталон для link building.",
+             en:"Who links to a site, anchors, lost links, top pages. Gold standard for link building research." },
+      tags:{ uk:"донори, анкори", ru:"доноры, анкоры", en:"referring domains, anchors" } },
+    { id:"majestic", cat:"links", icon:"maj", name:"Majestic",
+      url:"https://majestic.com", price:{uk:"Платний",ru:"Платный",en:"Paid"},
+      desc:{ uk:"Історичний індекс посилань, Trust Flow / Citation Flow. Корисно як друга думка поруч із Ahrefs/Semrush.",
+             ru:"Исторический индекс ссылок, Trust Flow / Citation Flow. Вторая точка зрения рядом с Ahrefs/Semrush.",
+             en:"Historical link index, Trust Flow / Citation Flow. Useful second opinion beside Ahrefs/Semrush." },
+      tags:{ uk:"Trust Flow, історія", ru:"Trust Flow, история", en:"Trust Flow, history" } },
+
+    // RANK
+    { id:"accuranker", cat:"rank", icon:"🎯", name:"AccuRanker",
+      url:"https://www.accuranker.com", price:{uk:"Платний",ru:"Платный",en:"Paid"},
+      desc:{ uk:"Спеціалізований трекер позицій: швидкі оновлення, локації, share of voice. Для агентств із великими списками ключів.",
+             ru:"Специализированный трекер позиций: быстрые обновления, локации, share of voice.",
+             en:"Dedicated rank tracker: fast updates, locations, share of voice. Built for large keyword lists." },
+      tags:{ uk:"позиції, SoV", ru:"позиции, SoV", en:"rankings, SoV" } },
+    { id:"suite_rank", cat:"rank", icon:"📊", name:"Semrush / Ahrefs / SE Ranking Rank Tracker",
+      url:"https://seranking.com", price:{uk:"У складі підписок",ru:"В составе подписок",en:"In suites"},
+      desc:{ uk:"Вбудований трекінг у комбайнах. Достатньо більшості команд, якщо не потрібні тисячі ключів щодня.",
+             ru:"Встроенный трекинг в комбайнах. Хватает большинству команд.",
+             en:"Built-in tracking in suites. Enough for most teams unless you track thousands of keywords daily." },
+      tags:{ uk:"щоденні позиції", ru:"ежедневные позиции", en:"daily ranks" } },
+
+    // LOCAL
+    { id:"gbp", cat:"local", icon:"📍", name:"Google Business Profile",
+      url:"https://business.google.com", price:{uk:"Безкоштовно",ru:"Бесплатно",en:"Free"},
+      desc:{ uk:"Картка бізнесу в Google: карта, відгуки, години роботи, пости. Основа локального SEO.",
+             ru:"Карточка бизнеса в Google: карта, отзывы, часы работы, посты. Основа локального SEO.",
+             en:"Business listing on Google: map, reviews, hours, posts. Foundation of local SEO." },
+      tags:{ uk:"карти, відгуки", ru:"карты, отзывы", en:"maps, reviews" } },
+    { id:"brightlocal", cat:"local", icon:"🌟", name:"BrightLocal",
+      url:"https://www.brightlocal.com", price:{uk:"Платний",ru:"Платный",en:"Paid"},
+      desc:{ uk:"Локальні позиції, цитування (citations), аудит відгуків, white-label звіти для агентств.",
+             ru:"Локальные позиции, цитирования (citations), аудит отзывов, white-label отчёты.",
+             en:"Local rankings, citations, review audit, white-label reports for agencies." },
+      tags:{ uk:"citations, local rank", ru:"citations, local rank", en:"citations, local rank" } }
+];
+
+const content = {
+    whatis: {
+        uk: {
+            title: "Що таке SEO-інструменти і навіщо вони",
+            body: `
+<p><strong>SEO-інструменти</strong> — програми й сервіси, які допомагають досліджувати пошуковий попит, знаходити технічні помилки на сайті, відстежувати позиції, аналізувати посилання й конкурентів.</p>
+<p>Вони <em>не замінюють</em> стратегію й якісний контент, але економлять час і дають дані замість здогадок.</p>
+<h3>Основні групи</h3>
+<ul>
+<li><strong>Дані від пошуковика</strong> — Search Console, Bing Webmaster (як вас бачить Google/Bing).</li>
+<li><strong>Дослідження</strong> — ключові слова, конкуренти, контент-прогалини.</li>
+<li><strong>Техніка</strong> — краулери, швидкість, індексація, <strong>биті посилання</strong>.</li>
+<li><strong>Посилання</strong> — хто цитує сайт, які донори.</li>
+<li><strong>Позиції</strong> — rank tracking у динаміці.</li>
+<li><strong>Контент / CMS</strong> — підказки on-page, плагіни WordPress.</li>
+</ul>
+<div class="tip">Починайте з <strong>Google Search Console + Analytics + (за потреби) Screaming Frog</strong>. Платні комбайни підключайте, коли вже є регулярна робота з ключами, посиланнями чи клієнтами.</div>
+`
+        },
+        ru: {
+            title: "Что такое SEO-инструменты и зачем они",
+            body: `
+<p><strong>SEO-инструменты</strong> — программы и сервисы для исследования спроса, технических ошибок, позиций, ссылок и конкурентов.</p>
+<p>Они <em>не заменяют</em> стратегию и качественный контент, но экономят время и дают данные вместо догадок.</p>
+<h3>Основные группы</h3>
+<ul>
+<li><strong>Данные от поисковика</strong> — Search Console, Bing Webmaster.</li>
+<li><strong>Исследование</strong> — ключевые слова, конкуренты, контент-пробелы.</li>
+<li><strong>Техника</strong> — краулеры, скорость, индексация, <strong>битые ссылки</strong>.</li>
+<li><strong>Ссылки</strong> — кто цитирует сайт.</li>
+<li><strong>Позиции</strong> — rank tracking.</li>
+<li><strong>Контент / CMS</strong> — on-page подсказки, плагины WordPress.</li>
+</ul>
+<div class="tip">Начинайте с <strong>Google Search Console + Analytics + (при необходимости) Screaming Frog</strong>.</div>
+`
+        },
+        en: {
+            title: "What SEO tools are and why use them",
+            body: `
+<p><strong>SEO tools</strong> help research demand, find technical issues, track rankings, analyse links and competitors.</p>
+<p>They do <em>not</em> replace strategy and good content — they save time and replace guesswork with data.</p>
+<h3>Main groups</h3>
+<ul>
+<li><strong>Search engine data</strong> — Search Console, Bing Webmaster.</li>
+<li><strong>Research</strong> — keywords, competitors, content gaps.</li>
+<li><strong>Technical</strong> — crawlers, speed, indexing, <strong>broken links</strong>.</li>
+<li><strong>Links</strong> — who cites the site.</li>
+<li><strong>Rankings</strong> — rank tracking over time.</li>
+<li><strong>Content / CMS</strong> — on-page helpers, WordPress plugins.</li>
+</ul>
+<div class="tip">Start with <strong>Google Search Console + Analytics + (if needed) Screaming Frog</strong>. Add paid suites when keyword, link or client work is regular.</div>
+`
+        }
+    },
+    broken: {
+        uk: {
+            title: "Биті посилання: навіщо перевіряти і чим",
+            body: `
+<p><strong>Бите (мертве) посилання</strong> веде на сторінку з помилкою (часто 404) або недоступний ресурс. Користувач отримує тупик, пошуковик — сигнал про погану якість догляду за сайтом.</p>
+<h3>Що перевіряти</h3>
+<ul>
+<li><strong>Внутрішні</strong> — меню, текст, футер, картки товарів (псують навігацію й краул).</li>
+<li><strong>Зовнішні</strong> — посилання з ваших статей на інші сайти (гірший UX; інколи — втрачений «ваги»-контекст).</li>
+<li><strong>Вхідні на вас</strong> — коли інші сайти посилаються на ваші видалені URL (варто зробити 301 на актуальну сторінку).</li>
+</ul>
+<h3>Чим шукати</h3>
+<ul>
+<li><strong>Screaming Frog</strong> — повний краул, коди відповіді, ланцюжки редиректів (найкраще для всього сайту).</li>
+<li><strong>Онлайн-сервіси</strong> (Dead Link Checker, Broken Link Check, Dr. Link Check) — швидко для невеликих сайтів.</li>
+<li><strong>Плагін WordPress Broken Link Checker</strong> — постійний моніторинг у адмінці.</li>
+<li><strong>Аудит Ahrefs / Semrush</strong> — якщо вже є підписка.</li>
+<li><strong>Search Console</strong> — не повний сканер битих, але показує помилки покриття й «не знайдено» по URL, які Google вже бачив.</li>
+</ul>
+<div class="tip"><strong>Практика:</strong> після великих змін структури сайту завжди робіть краул (Frog або аудит комбайна). Биті внутрішні посилання виправляйте в першу чергу; для важливих старих URL налаштуйте редиректи 301.</div>
+`
+        },
+        ru: {
+            title: "Битые ссылки: зачем проверять и чем",
+            body: `
+<p><strong>Битая (мёртвая) ссылка</strong> ведёт на страницу с ошибкой (часто 404). Пользователь получает тупик, поисковик — сигнал о слабом уходе за сайтом.</p>
+<h3>Что проверять</h3>
+<ul>
+<li><strong>Внутренние</strong> — меню, текст, футер (портят навигацию и обход).</li>
+<li><strong>Внешние</strong> — ссылки с ваших статей на другие сайты.</li>
+<li><strong>Входящие на вас</strong> — когда другие ссылаются на ваши удалённые URL (нужен 301).</li>
+</ul>
+<h3>Чем искать</h3>
+<ul>
+<li><strong>Screaming Frog</strong> — полный краул и коды ответа.</li>
+<li><strong>Онлайн-сервисы</strong> — Dead Link Checker, Broken Link Check, Dr. Link Check.</li>
+<li><strong>Плагин WordPress Broken Link Checker</strong>.</li>
+<li><strong>Аудит Ahrefs / Semrush</strong>.</li>
+<li><strong>Search Console</strong> — ошибки покрытия по уже известным Google URL.</li>
+</ul>
+<div class="tip">После смены структуры сайта всегда делайте краул. Внутренние битые — в первую очередь; для старых важных URL — 301.</div>
+`
+        },
+        en: {
+            title: "Broken links: why check and with what",
+            body: `
+<p>A <strong>broken (dead) link</strong> points to an error page (often 404) or an unreachable resource. Users hit a dead end; search engines see poor site maintenance.</p>
+<h3>What to check</h3>
+<ul>
+<li><strong>Internal</strong> — menus, body text, footer (hurts navigation and crawling).</li>
+<li><strong>Outbound</strong> — links from your pages to other sites.</li>
+<li><strong>Inbound to you</strong> — others linking to your deleted URLs (use 301s to live pages).</li>
+</ul>
+<h3>What to use</h3>
+<ul>
+<li><strong>Screaming Frog</strong> — full crawl and status codes (best for the whole site).</li>
+<li><strong>Online checkers</strong> — Dead Link Checker, Broken Link Check, Dr. Link Check.</li>
+<li><strong>WordPress Broken Link Checker</strong> plugin.</li>
+<li><strong>Ahrefs / Semrush site audit</strong> if you already subscribe.</li>
+<li><strong>Search Console</strong> — coverage errors for URLs Google already knows (not a full link scanner).</li>
+</ul>
+<div class="tip">After big site-structure changes, always recrawl. Fix internal broken links first; 301 important old URLs.</div>
+`
+        }
+    },
+    choose: {
+        uk: {
+            title: "Як обрати стек інструментів",
+            body: `
+<ol>
+<li><strong>Сайт підключений до Google Search Console і Analytics?</strong> Якщо ні — зробіть це сьогодні.</li>
+<li><strong>Потрібен разовий технічний аудит?</strong> Screaming Frog (безкоштовно до 500 URL) або онлайн-перевірка битих посилань.</li>
+<li><strong>Регулярна робота з ключами й конкурентами?</strong> Один комбайн: Ahrefs <em>або</em> Semrush (дублювати обидва дорого й не завжди потрібно).</li>
+<li><strong>Багато клієнтів / звітів?</strong> SE Ranking або Semrush з white-label.</li>
+<li><strong>Лише WordPress-блог?</strong> Rank Math або Yoast + GSC часто достатньо на старті.</li>
+<li><strong>Локальний бізнес?</strong> Google Business Profile обов’язково; за потреби BrightLocal.</li>
+</ol>
+<p>Не купуйте «все підряд». Краще стабільно користуватися 2–3 інструментами, ніж мати 10 підписок «про всяк випадок».</p>
+`
+        },
+        ru: {
+            title: "Как выбрать стек инструментов",
+            body: `
+<ol>
+<li><strong>Search Console и Analytics подключены?</strong> Если нет — сделайте это сразу.</li>
+<li><strong>Разовый техаудит?</strong> Screaming Frog или онлайн-проверка битых ссылок.</li>
+<li><strong>Регулярные ключи и конкуренты?</strong> Один комбайн: Ahrefs <em>или</em> Semrush.</li>
+<li><strong>Много клиентов / отчётов?</strong> SE Ranking или Semrush с white-label.</li>
+<li><strong>Только WordPress-блог?</strong> Rank Math или Yoast + GSC на старте.</li>
+<li><strong>Локальный бизнес?</strong> Google Business Profile; при необходимости BrightLocal.</li>
+</ol>
+<p>Лучше стабильно использовать 2–3 инструмента, чем 10 подписок «на всякий случай».</p>
+`
+        },
+        en: {
+            title: "How to choose a tool stack",
+            body: `
+<ol>
+<li><strong>Search Console and Analytics connected?</strong> If not, do that first.</li>
+<li><strong>One-off technical audit?</strong> Screaming Frog or an online broken-link checker.</li>
+<li><strong>Ongoing keywords and competitors?</strong> One suite: Ahrefs <em>or</em> Semrush.</li>
+<li><strong>Many clients / reports?</strong> SE Ranking or Semrush with white-label.</li>
+<li><strong>WordPress blog only?</strong> Rank Math or Yoast + GSC is often enough at the start.</li>
+<li><strong>Local business?</strong> Google Business Profile; BrightLocal if needed.</li>
+</ol>
+<p>Don’t buy everything. Better to use 2–3 tools well than hold 10 unused subscriptions.</p>
+`
+        }
+    }
+};
+
+const ui = {
+    uk: {
+        title: "SEO-інструменти — довідник",
+        pageTitle: "📈 SEO-інструменти",
+        home: "Головна сторінка",
+        all: "Усі інструменти",
+        whatis: "💡 Що таке SEO-інструменти?",
+        brokenGuide: "🔗 Про биті посилання",
+        choose: "🧭 Як обрати стек",
+        open: "Сайт →",
+        for: "Для чого",
+        noResults: "Нічого не знайдено.",
+        footer: "📈 SEO-інструменти | 2026 | Код вільний для редагування"
+    },
+    ru: {
+        title: "SEO-инструменты — справочник",
+        pageTitle: "📈 SEO-инструменты",
+        home: "Главная страница",
+        all: "Все инструменты",
+        whatis: "💡 Что такое SEO-инструменты?",
+        brokenGuide: "🔗 О битых ссылках",
+        choose: "🧭 Как выбрать стек",
+        open: "Сайт →",
+        for: "Для чего",
+        noResults: "Ничего не найдено.",
+        footer: "📈 SEO-инструменты | 2026 | Код свободен для редактирования"
+    },
+    en: {
+        title: "SEO tools — directory",
+        pageTitle: "📈 SEO tools",
+        home: "Home page",
+        all: "All tools",
+        whatis: "💡 What are SEO tools?",
+        brokenGuide: "🔗 About broken links",
+        choose: "🧭 How to choose a stack",
+        open: "Website →",
+        for: "Best for",
+        noResults: "Nothing found.",
+        footer: "📈 SEO tools | 2026 | Code is free to edit"
+    }
+};
+
+let currentLang = localStorage.getItem('lang-seo-tools') || 'uk';
+let activeCategory = 'whatis';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang-seo-tools', lang);
+    document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+    ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+    document.title = ui[lang].title;
+    document.getElementById('home-link').textContent = ui[lang].home;
+    document.getElementById('page-title').textContent = ui[lang].pageTitle;
+    renderFilters();
+    render();
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const cur = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+function renderFilters() {
+    const c = document.getElementById('filters');
+    let h = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+    h += `<button class="filter-btn ${activeCategory==='whatis'?'active':''}" onclick="setCat('whatis')">${ui[currentLang].whatis}</button>`;
+    h += `<button class="filter-btn ${activeCategory==='brokenGuide'?'active':''}" onclick="setCat('brokenGuide')">${ui[currentLang].brokenGuide}</button>`;
+    h += `<button class="filter-btn ${activeCategory==='choose'?'active':''}" onclick="setCat('choose')">${ui[currentLang].choose}</button>`;
+    for (const [k,v] of Object.entries(categories)) {
+        h += `<button class="filter-btn ${activeCategory===k?'active':''}" onclick="setCat('${k}')">${v[currentLang]}</button>`;
+    }
+    c.innerHTML = h;
+}
+
+function setCat(cat) {
+    activeCategory = cat;
+    renderFilters();
+    render();
+}
+
+function render() {
+    const main = document.getElementById('main');
+
+    const guideMap = { whatis: 'whatis', brokenGuide: 'broken', choose: 'choose' };
+    if (guideMap[activeCategory]) {
+        const o = content[guideMap[activeCategory]][currentLang];
+        main.innerHTML = `<div class="intro"><h2>${o.title}</h2>${o.body}</div>`;
+        document.getElementById('footer').textContent = ui[currentLang].footer;
+        return;
+    }
+
+    let html = '';
+    const cats = (activeCategory === 'all')
+        ? Object.keys(categories)
+        : [activeCategory];
+
+    cats.forEach(catKey => {
+        const list = tools.filter(t => t.cat === catKey);
+        if (!list.length) return;
+        html += `<div class="section-title">${categories[catKey][currentLang]}</div><div class="grid">`;
+        list.forEach(t => {
+            const tags = t.tags[currentLang].split(',').map(x => `<span class="tag">${x.trim()}</span>`).join('');
+            html += `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">${t.icon}</div>
+                        <div>
+                            <div class="card-title">${t.name}</div>
+                            <span class="price-tag">${t.price[currentLang]}</span>
+                        </div>
+                    </div>
+                    <div class="card-desc">${t.desc[currentLang]}</div>
+                    <div class="card-meta">
+                        <strong>${ui[currentLang].for}</strong>
+                        <div style="margin-top:0.25rem">${tags}</div>
+                    </div>
+                    <a href="${t.url}" target="_blank" rel="noopener" class="card-link">${ui[currentLang].open}</a>
+                </div>`;
+        });
+        html += `</div>`;
+    });
+
+    if (!html) html = `<div class="no-results">${ui[currentLang].noResults}</div>`;
+    main.innerHTML = html;
+    document.getElementById('footer').textContent = ui[currentLang].footer;
+}
+
+setLang(currentLang);
+</script>
+</body>
+</html>

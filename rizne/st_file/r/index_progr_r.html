@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProgLang Directory — Довідник мов програмування (не веб)</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #00e5b0;
+            --accent-2: #7c3aed;
+            --accent-3: #ff9f43;
+            --gradient: linear-gradient(135deg, #00e5b0, #7c3aed);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1.2rem 5%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .brand {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .brand span { font-weight: 400; font-size: 0.9rem; color: var(--text-muted); -webkit-text-fill-color: var(--text-muted); }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #000; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .search-wrap {
+            max-width: 1200px; margin: 1.5rem auto 0; padding: 0 5%;
+        }
+        .search-box {
+            width: 100%; padding: 0.9rem 1.2rem; border-radius: var(--radius);
+            border: 1px solid rgba(255,255,255,0.08); background: var(--bg);
+            color: var(--text); font-size: 1rem; outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-box:focus { border-color: var(--accent); }
+        [data-theme="light"] .search-box { border-color: rgba(0,0,0,0.1); }
+        .search-box::placeholder { color: var(--text-muted); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #000; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(0,229,176,0.2);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.7rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; flex-shrink: 0;
+        }
+        .card-title {
+            font-weight: 700; font-size: 1.05rem;
+        }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.5; margin-bottom: 0.3rem;
+        }
+        .card-section {
+            margin-top: 0.7rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .card-section strong {
+            color: var(--text);
+            display: block;
+            margin-bottom: 0.15rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(124,58,237,0.1); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin-top: 0.2rem;
+        }
+        .usage-tag {
+            display: inline-block;
+            background: rgba(0,229,176,0.1); color: var(--accent);
+            padding: 0.2rem 0.6rem; border-radius: 0.5rem;
+            font-size: 0.78rem; font-weight: 600; margin: 0.15rem 0.15rem 0 0;
+        }
+        .card-link {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            color: var(--accent); text-decoration: none;
+            font-weight: 600; font-size: 0.85rem;
+            transition: gap 0.2s; margin-top: 0.8rem;
+        }
+        .card-link:hover { gap: 0.7rem; }
+        .card-link::after { content: "→"; }
+
+        .no-results {
+            text-align: center; color: var(--text-muted);
+            padding: 3rem; font-size: 1.1rem; grid-column: 1 / -1;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .brand span { display: block; margin-top: 0.2rem; }
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-hover); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand">💻 ProgLang Directory <span>— Довідник мов програмування (не веб)</span></div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()">🌓</button>
+        </div>
+    </div>
+    <div class="search-wrap">
+        <input type="text" class="search-box" id="search" placeholder="Пошук мов..." oninput="render()">
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+
+<footer id="footer"></footer>
+
+<script>
+// ===================== ДАНІ =====================
+const categories = {
+    systems:    { uk: "⚙️ Системне програмування", ru: "⚙️ Системное программирование", en: "⚙️ Systems Programming" },
+    gamedev:    { uk: "🎮 Ігрова розробка",       ru: "🎮 Игровая разработка",         en: "🎮 Game Development" },
+    datascience:{ uk: "📊 Наука та дані",          ru: "📊 Наука и данные",             en: "📊 Data Science" },
+    functional: { uk: "λ Функціональне",           ru: "λ Функциональное",              en: "λ Functional" },
+    scripting:  { uk: "🤖 Скрипти та Shell",       ru: "🤖 Скрипты и Shell",            en: "🤖 Scripting & Shell" },
+    blockchain: { uk: "⛓ Blockchain",              ru: "⛓ Blockchain",                  en: "⛓ Blockchain" },
+    legacy:     { uk: "🏛 Legacy / Enterprise",     ru: "🏛 Legacy / Enterprise",         en: "🏛 Legacy / Enterprise" },
+    niche:      { uk: "🧪 Спеціальні / Нішеві",    ru: "🧪 Специальные / Нишевые",      en: "🧪 Specialized / Niche" }
+};
+
+const langList = [
+    // === SYSTEMS ===
+    { id:"c", cat:"systems", icon:"🇨", name:"C",
+      url:"https://en.cppreference.com/w/c",
+      desc:{ uk:"Мати всіх сучасних мов. Використовується для ОС, embedded систем, драйверів та високопродуктивних додатків.",
+             ru:"Мать всех современных языков. Используется для ОС, embedded систем, драйверов и высокопроизводительных приложений.",
+             en:"The mother of all modern languages. Used for OS, embedded systems, drivers and high-performance applications." },
+      features:{ uk:"Низькорівневий доступ до пам'яті, переносимість, компіляція в машинний код, мінімальна runtime-залежність, POSIX.",
+                ru:"Низкоуровневый доступ к памяти, переносимость, компиляция в машинный код, минимальная runtime-зависимость, POSIX.",
+                en:"Low-level memory access, portability, compilation to machine code, minimal runtime dependency, POSIX." },
+      paradigm:{ uk:"Імперативна, процедурна, структурна", ru:"Императивный, процедурный, структурный", en:"Imperative, procedural, structured" },
+      usage: "Linux kernel, Embedded, Microcontrollers, GCC, SQLite, Redis" },
+
+    { id:"zig", cat:"systems", icon:"⚡", name:"Zig",
+      url:"https://ziglang.org",
+      desc:{ uk:"Сучасна системна мова. Альтернатива C з безпекою пам'яті, комптайм-обчисленнями та простою кроскомпіляцією.",
+             ru:"Современный системный язык. Альтернатива C с безопасностью памяти, комптайм-вычислениями и простой кросс-компиляцией.",
+             en:"Modern systems language. C alternative with memory safety, compile-time computation and easy cross-compilation." },
+      features:{ uk:"Комптайм-обчислення, вбудований пакетний менеджер, кроскомпіляція, C-інтероп, безпека пам'яті (optional).",
+                ru:"Комптайм-вычисления, встроенный пакетный менеджер, кросс-компиляция, C-интероп, безопасность памяти (опционально).",
+                en:"Compile-time computation, built-in package manager, cross-compilation, C interop, memory safety (optional)." },
+      paradigm:{ uk:"Імперативна, процедурна, функціональна", ru:"Императивный, процедурный, функциональный", en:"Imperative, procedural, functional" },
+      usage: "System tools, Game engines, Embedded, Compilers, Bun (частково)" },
+
+    { id:"nim", cat:"systems", icon:"👑", name:"Nim",
+      url:"https://nim-lang.org",
+      desc:{ uk:"Мова з Python-подібним синтаксисом, що компілюється в C/C++/JS. Швидка, виразна та метапрограмована.",
+             ru:"Язык с Python-подобным синтаксисом, компилируемый в C/C++/JS. Быстрый, выразительный и метапрограммируемый.",
+             en:"Language with Python-like syntax compiling to C/C++/JS. Fast, expressive and metaprogrammable." },
+      features:{ uk:"Макроси, AST manipulation, ARC/ORC збирач сміття, кроскомпіляція, C/JS бекенди, пакетний менеджер Nimble.",
+                ru:"Макросы, AST manipulation, ARC/ORC сборщик мусора, кросс-компиляция, C/JS бэкенды, пакетный менеджер Nimble.",
+                en:"Macros, AST manipulation, ARC/ORC garbage collector, cross-compilation, C/JS backends, Nimble package manager." },
+      paradigm:{ uk:"Мультипарадигмальна (імперативна, ООП, функціональна, метапрограмна)", ru:"Мультипарадигмальный (императивный, ООП, функциональный, метапрограммный)", en:"Multi-paradigm (imperative, OOP, functional, metaprogramming)" },
+      usage: "System tools, Game dev, WebAssembly, Compilers, Automation" },
+
+    { id:"d", cat:"systems", icon:"🔩", name:"D",
+      url:"https://dlang.org",
+      desc:{ uk:"Системна мова, що поєднує продуктивність C/C++ з зручністю сучасних мов. Від Walter Bright.",
+             ru:"Системный язык, сочетающий производительность C/C++ с удобством современных языков. От Walter Bright.",
+             en:"Systems language combining C/C++ performance with modern language convenience. By Walter Bright." },
+      features:{ uk:"Сборка сміття (optional), CTFE, шаблони, ranges, безпека пам'яті (SafeD), C-інтероп, vibe.d.",
+                ru:"Сборка мусора (опционально), CTFE, шаблоны, ranges, безопасность памяти (SafeD), C-интероп, vibe.d.",
+                en:"Garbage collection (optional), CTFE, templates, ranges, memory safety (SafeD), C interop, vibe.d." },
+      paradigm:{ uk:"Мультипарадигмальна (ООП, функціональна, імперативна)", ru:"Мультипарадигмальный (ООП, функциональный, императивный)", en:"Multi-paradigm (OOP, functional, imperative)" },
+      usage: "System tools, Game engines, Finance, Compilers" },
+
+    { id:"ada", cat:"systems", icon:"🛡", name:"Ada",
+      url:"https://www.adacore.com/community",
+      desc:{ uk:"Мова для критичних систем (авіація, космос, оборона). Строга типізація та вбудована підтримка паралелізму.",
+             ru:"Язык для критичных систем (авиация, космос, оборона). Строгая типизация и встроенная поддержка параллелизма.",
+             en:"Language for critical systems (aviation, space, defense). Strong typing and built-in concurrency support." },
+      features:{ uk:"Contracts (SPARK), Ravenscar profile (real-time), tasking, strong typing, range types, certified компілятори.",
+                ru:"Contracts (SPARK), Ravenscar profile (real-time), tasking, строгая типизация, range types, сертифицированные компиляторы.",
+                en:"Contracts (SPARK), Ravenscar profile (real-time), tasking, strong typing, range types, certified compilers." },
+      paradigm:{ uk:"Структурна, об'єктно-орієнтована, паралельна", ru:"Структурный, объектно-ориентированный, параллельный", en:"Structured, object-oriented, concurrent" },
+      usage: "Avionics (Boeing, Airbus), Space (ESA), Military, Automotive (AUTOSAR)" },
+
+    { id:"fortran", cat:"systems", icon:"🔢", name:"Fortran",
+      url:"https://fortran-lang.org",
+      desc:{ uk:"Найстаріша мова високого рівня (1957). Досі лідер у наукових обчисленнях, фізиці та інженерії.",
+             ru:"Старейший язык высокого уровня (1957). До сих пор лидер в научных вычислениях, физике и инженерии.",
+             en:"The oldest high-level language (1957). Still a leader in scientific computing, physics and engineering." },
+      features:{ uk:"Array programming, parallel constructs (coarrays), SIMD, BLAS/LAPACK інтеграція, high-performance numerical computing.",
+                ru:"Array programming, parallel constructs (coarrays), SIMD, интеграция BLAS/LAPACK, высокопроизводительные численные вычисления.",
+                en:"Array programming, parallel constructs (coarrays), SIMD, BLAS/LAPACK integration, high-performance numerical computing." },
+      paradigm:{ uk:"Імперативна, процедурна, об'єктно-орієнтована", ru:"Императивный, процедурный, объектно-ориентированный", en:"Imperative, procedural, object-oriented" },
+      usage: "Climate modeling, Physics (CERN), Aerospace, Computational chemistry" },
+
+    { id:"cobol", cat:"systems", icon:"📇", name:"COBOL",
+      url:"https://gnucobol.sourceforge.io/",
+      desc:{ uk:"Мова для бізнес-додатків. Понад 40% банківських систем світу досі працюють на COBOL.",
+             ru:"Язык для бизнес-приложений. Более 40% банковских систем мира до сих пор работают на COBOL.",
+             en:"Business application language. Over 40% of the world's banking systems still run on COBOL." },
+      features:{ uk:"Фіксована точність decimal arithmetic, English-like syntax, файлові операції, підтримка mainframe, GnuCOBOL.",
+                ru:"Фиксированная точность decimal arithmetic, English-like syntax, файловые операции, поддержка мейнфреймов, GnuCOBOL.",
+                en:"Fixed-point decimal arithmetic, English-like syntax, file operations, mainframe support, GnuCOBOL." },
+      paradigm:{ uk:"Імперативна, процедурна", ru:"Императивный, процедурный", en:"Imperative, procedural" },
+      usage: "Banking, Insurance, Government, Payroll systems, Mainframes" },
+
+    { id:"asm", cat:"systems", icon:"🔧", name:"Assembly",
+      url:"https://www.nasm.us/",
+      desc:{ uk:"Низькорівнева мова, що відповідає машинним інструкціям. Прямий контроль над процесором та пам'яттю.",
+             ru:"Низкоуровневый язык, соответствующий машинным инструкциям. Прямой контроль над процессором и памятью.",
+             en:"Low-level language corresponding to machine instructions. Direct control over CPU and memory." },
+      features:{ uk:"Регістрові операції, пряме керування пам'яттю, оптимізація за розміром/швидкістю, інтеграція з C, bootloaders.",
+                ru:"Регистровые операции, прямое управление памятью, оптимизация по размеру/скорости, интеграция с C, bootloaders.",
+                en:"Register operations, direct memory management, size/speed optimization, C integration, bootloaders." },
+      paradigm:{ uk:"Імперативна, низькорівнева", ru:"Императивный, низкоуровневый", en:"Imperative, low-level" },
+      usage: "OS kernels, Embedded, Reverse engineering, Drivers, Bootloaders" },
+
+    // === GAMEDEV ===
+    { id:"lua", cat:"gamedev", icon:"🌙", name:"Lua",
+      url:"https://www.lua.org",
+      desc:{ uk:"Легка вбудована скриптова мова. Популярна як мова сценаріїв у іграх та embedded системах.",
+             ru:"Лёгкий встраиваемый скриптовый язык. Популярен как язык сценариев в играх и embedded системах.",
+             en:"Lightweight embeddable scripting language. Popular as a scripting language in games and embedded systems." },
+      features:{ uk:"Мінімальний runtime (~200KB), coroutines, C API, tables (універсальна структура), JIT (LuaJIT), легке вбудовування.",
+                ru:"Минимальный runtime (~200KB), coroutines, C API, tables (универсальная структура), JIT (LuaJIT), лёгкое встраивание.",
+                en:"Minimal runtime (~200KB), coroutines, C API, tables (universal structure), JIT (LuaJIT), easy embedding." },
+      paradigm:{ uk:"Мультипарадигмальна (скриптова, імперативна, функціональна)", ru:"Мультипарадигмальный (скриптовый, императивный, функциональный)", en:"Multi-paradigm (scripting, imperative, functional)" },
+      usage: "WoW, Roblox, Redis, Nginx, Adobe Lightroom, Angry Birds" },
+
+    { id:"gdscript", cat:"gamedev", icon:"🎮", name:"GDScript",
+      url:"https://godotengine.org",
+      desc:{ uk:"Мова сценаріїв для движка Godot. Python-подібний синтаксис з оптимізацією під ігровий цикл.",
+             ru:"Язык сценариев для движка Godot. Python-подобный синтаксис с оптимизацией под игровой цикл.",
+             en:"Scripting language for Godot engine. Python-like syntax optimized for the game loop." },
+      features:{ uk:"Тісна інтеграція з Godot, signals, node-based architecture, optional typing, вбудований редактор, C# альтернатива.",
+                ru:"Тесная интеграция с Godot, signals, node-based architecture, optional typing, встроенный редактор, C# альтернатива.",
+                en:"Tight Godot integration, signals, node-based architecture, optional typing, built-in editor, C# alternative." },
+      paradigm:{ uk:"Об'єктно-орієнтована, імперативна", ru:"Объектно-ориентированный, императивный", en:"Object-oriented, imperative" },
+      usage: "Indie games, 2D/3D games, Godot Engine projects, Education" },
+
+    { id:"haxe", cat:"gamedev", icon:"🔷", name:"Haxe",
+      url:"https://haxe.org",
+      desc:{ uk:"Мова, що компілюється в багато цілей (C++, JS, Python, Java, C#, Lua, HashLink). Для кросплатформних ігор.",
+             ru:"Язык, компилируемый во множество целей (C++, JS, Python, Java, C#, Lua, HashLink). Для кроссплатформенных игр.",
+             en:"Language compiling to many targets (C++, JS, Python, Java, C#, Lua, HashLink). For cross-platform games." },
+      features:{ uk:"Мультицільова компіляція, макроси, type inference, dead code elimination, HaxeFlixel, OpenFL, Heaps.io.",
+                ru:"Мультитаргетная компиляция, макросы, type inference, dead code elimination, HaxeFlixel, OpenFL, Heaps.io.",
+                en:"Multi-target compilation, macros, type inference, dead code elimination, HaxeFlixel, OpenFL, Heaps.io." },
+      paradigm:{ uk:"Об'єктно-орієнтована, функціональна, імперативна", ru:"Объектно-ориентированный, функциональный, императивный", en:"Object-oriented, functional, imperative" },
+      usage: "Cross-platform games, Mobile games, Tools, Compilers" },
+
+    // === DATA SCIENCE ===
+    { id:"r", cat:"datascience", icon:"📊", name:"R",
+      url:"https://www.r-project.org",
+      desc:{ uk:"Мова для статистичних обчислень та візуалізації даних. Стандарт у академічній науці та біоінформатиці.",
+             ru:"Язык для статистических вычислений и визуализации данных. Стандарт в академической науке и биоинформатике.",
+             en:"Language for statistical computing and data visualization. Standard in academic science and bioinformatics." },
+      features:{ uk:"Vectorized operations, ggplot2, dplyr, CRAN (18000+ пакетів), RStudio, Shiny (веб-додатки), Bioconductor.",
+                ru:"Vectorized operations, ggplot2, dplyr, CRAN (18000+ пакетов), RStudio, Shiny (веб-приложения), Bioconductor.",
+                en:"Vectorized operations, ggplot2, dplyr, CRAN (18000+ packages), RStudio, Shiny (web apps), Bioconductor." },
+      paradigm:{ uk:"Функціональна, об'єктно-орієнтована, імперативна", ru:"Функциональный, объектно-ориентированный, императивный", en:"Functional, object-oriented, imperative" },
+      usage: "Bioinformatics, Statistics, Finance, Data visualization, Academic research" },
+
+    { id:"julia", cat:"datascience", icon:"🔬", name:"Julia",
+      url:"https://julialang.org",
+      desc:{ uk:"Високопродуктивна мова для технічних обчислень. Поєднує простоту Python зі швидкістю C.",
+             ru:"Высокопроизводительный язык для технических вычислений. Сочетает простоту Python со скоростью C.",
+             en:"High-performance language for technical computing. Combines Python's simplicity with C's speed." },
+      features:{ uk:"JIT-компіляція (LLVM), multiple dispatch, parallel computing, метапрограмування, Pluto notebooks.",
+                ru:"JIT-компиляция (LLVM), multiple dispatch, parallel computing, метапрограммирование, Pluto notebooks.",
+                en:"JIT compilation (LLVM), multiple dispatch, parallel computing, metaprogramming, Pluto notebooks." },
+      paradigm:{ uk:"Мультипарадигмальна (функціональна, імперативна, об'єктно-орієнтована)", ru:"Мультипарадигмальный (функциональный, императивный, объектно-ориентированный)", en:"Multi-paradigm (functional, imperative, object-oriented)" },
+      usage: "Scientific computing, Machine learning, Physics, Finance, Data science" },
+
+    { id:"matlab", cat:"datascience", icon:"🟠", name:"MATLAB",
+      url:"https://www.mathworks.com/products/matlab.html",
+      desc:{ uk:"Комерційне середовище для чисельних обчислень та моделювання. Стандарт у інженерії та університетах.",
+             ru:"Коммерческая среда для численных вычислений и моделирования. Стандарт в инженерии и университетах.",
+             en:"Commercial environment for numerical computing and simulation. Standard in engineering and universities." },
+      features:{ uk:"Simulink, matrix operations, toolboxes (180+), visualization, code generation (C/HDL), parallel computing, App Designer.",
+                ru:"Simulink, matrix operations, toolboxes (180+), visualization, code generation (C/HDL), parallel computing, App Designer.",
+                en:"Simulink, matrix operations, toolboxes (180+), visualization, code generation (C/HDL), parallel computing, App Designer." },
+      paradigm:{ uk:"Імперативна, функціональна, об'єктно-орієнтована", ru:"Императивный, функциональный, объектно-ориентированный", en:"Imperative, functional, object-oriented" },
+      usage: "Engineering, Signal processing, Control systems, Robotics, Education" },
+
+    { id:"wolfram", cat:"datascience", icon:"🧮", name:"Wolfram Language",
+      url:"https://www.wolfram.com/language/",
+      desc:{ uk:"Мова від створювача Mathematica. Символьні обчислення, знання-орієнтоване програмування та AI.",
+             ru:"Язык от создателя Mathematica. Символьные вычисления, знание-ориентированное программирование и ИИ.",
+             en:"Language from the creator of Mathematica. Symbolic computation, knowledge-based programming and AI." },
+      features:{ uk:"Символьна математика, вбудована база знань, natural language input, Wolfram Alpha інтеграція, notebooks, хмара.",
+                ru:"Символьная математика, встроенная база знаний, natural language input, Wolfram Alpha интеграция, notebooks, облако.",
+                en:"Symbolic math, built-in knowledge base, natural language input, Wolfram Alpha integration, notebooks, cloud." },
+      paradigm:{ uk:"Функціональна, правило-орієнтована, шаблонна", ru:"Функциональный, правило-ориентированный, шаблонный", en:"Functional, rule-based, pattern-based" },
+      usage: "Mathematics, Physics research, AI (Wolfram), Education, Prototyping" },
+
+    // === FUNCTIONAL ===
+    { id:"haskell", cat:"functional", icon:"λ", name:"Haskell",
+      url:"https://www.haskell.org",
+      desc:{ uk:"Чисто функціональна мова з лінивими обчисленнями. Вплинула на дизайн багатьох сучасних мов.",
+             ru:"Чисто функциональный язык с ленивыми вычислениями. Оказал влияние на дизайн многих современных языков.",
+             en:"Purely functional language with lazy evaluation. Influenced the design of many modern languages." },
+      features:{ uk:"Strong static typing, type inference, monads, lazy evaluation, GHC, Hackage, STM (software transactional memory).",
+                ru:"Strong static typing, type inference, monads, lazy evaluation, GHC, Hackage, STM (software transactional memory).",
+                en:"Strong static typing, type inference, monads, lazy evaluation, GHC compiler, Hackage, STM." },
+      paradigm:{ uk:"Функціональна, чиста, лінива", ru:"Функциональный, чистый, ленивый", en:"Functional, pure, lazy" },
+      usage: "Compilers (GHC), Finance (Jane Street), Formal verification, Blockchain (Cardano), Academia" },
+
+    { id:"erlang", cat:"functional", icon:"📡", name:"Erlang",
+      url:"https://www.erlang.org",
+      desc:{ uk:"Мова для розподілених, відмовостійких систем від Ericsson. BEAM VM — основа Elixir.",
+             ru:"Язык для распределённых, отказоустойчивых систем от Ericsson. BEAM VM — основа Elixir.",
+             en:"Language for distributed, fault-tolerant systems by Ericsson. BEAM VM is the foundation of Elixir." },
+      features:{ uk:"Акторна модель, hot code swapping, pattern matching, OTP, supervisor trees, lightweight processes, висока доступність.",
+                ru:"Акторная модель, hot code swapping, pattern matching, OTP, supervisor trees, lightweight processes, высокая доступность.",
+                en:"Actor model, hot code swapping, pattern matching, OTP, supervisor trees, lightweight processes, high availability." },
+      paradigm:{ uk:"Функціональна, конкурентна, розподілена", ru:"Функциональный, конкурентный, распределённый", en:"Functional, concurrent, distributed" },
+      usage: "Telecom (Ericsson), WhatsApp, RabbitMQ, Cisco, Banking" },
+
+    { id:"lisp", cat:"functional", icon:"🌿", name:"Common Lisp",
+      url:"https://common-lisp.net/",
+      desc:{ uk:"Діалект Lisp з багатими можливостями. Макроси, інтерактивна розробка та динамічна типізація.",
+             ru:"Диалект Lisp с богатыми возможностями. Макросы, интерактивная разработка и динамическая типизация.",
+             en:"Dialect of Lisp with rich capabilities. Macros, interactive development and dynamic typing." },
+      features:{ uk:"CLOS (об'єктна система), макроси, REPL, condition system, MOP, image-based development, SBCL, Quicklisp.",
+                ru:"CLOS (объектная система), макросы, REPL, condition system, MOP, image-based development, SBCL, Quicklisp.",
+                en:"CLOS (object system), macros, REPL, condition system, MOP, image-based development, SBCL, Quicklisp." },
+      paradigm:{ uk:"Функціональна, об'єктно-орієнтована, метапрограмна", ru:"Функциональный, объектно-ориентированный, метапрограммный", en:"Functional, object-oriented, metaprogramming" },
+      usage: "AI research (історично), CAD (AutoCAD), Music composition, Rapid prototyping" },
+
+    { id:"scheme", cat:"functional", icon:"🔮", name:"Scheme",
+      url:"https://www.scheme.org/",
+      desc:{ uk:"Мінімалістичний діалект Lisp для навчання та досліджень. Вплинув на стандарти та сучасні мови.",
+             ru:"Минималистичный диалект Lisp для обучения и исследований. Оказал влияние на стандарты и современные языки.",
+             en:"Minimalist Lisp dialect for education and research. Influenced standards and modern languages." },
+      features:{ uk:"Lexical scoping, first-class continuations, tail-call optimization, hygienic macros, R7RS стандарт, minimal core.",
+                ru:"Lexical scoping, first-class continuations, tail-call optimization, hygienic macros, R7RS стандарт, minimal core.",
+                en:"Lexical scoping, first-class continuations, tail-call optimization, hygienic macros, R7RS standard, minimal core." },
+      paradigm:{ uk:"Функціональна, метапрограмна", ru:"Функциональный, метапрограммный", en:"Functional, metaprogramming" },
+      usage: "Education (SICP), Research, Language design, Embedded scripting (Guile)" },
+
+    { id:"ocaml", cat:"functional", icon:"🐫", name:"OCaml",
+      url:"https://ocaml.org",
+      desc:{ uk:"Функціонально-імперативна мова з сильною типізацією. Використовується у компіляторах та фінансах.",
+             ru:"Функционально-императивный язык с сильной типизацией. Используется в компиляторах и финансах.",
+             en:"Functional-imperative language with strong typing. Used in compilers and finance." },
+      features:{ uk:"Algebraic data types, pattern matching, functor modules, garbage collection, BuckleScript (компіляція в JS), opam.",
+                ru:"Algebraic data types, pattern matching, functor modules, garbage collection, BuckleScript (компиляция в JS), opam.",
+                en:"Algebraic data types, pattern matching, functor modules, garbage collection, BuckleScript (compile to JS), opam." },
+      paradigm:{ uk:"Функціональна, об'єктно-орієнтована, імперативна", ru:"Функциональный, объектно-ориентированный, императивный", en:"Functional, object-oriented, imperative" },
+      usage: "Compilers (Rust, Flow), Finance (Jane Street), Formal methods, Systems programming" },
+
+    // === SCRIPTING ===
+    { id:"bash", cat:"scripting", icon:"🐚", name:"Bash",
+      url:"https://www.gnu.org/software/bash/",
+      desc:{ uk:"Стандартна оболонка Unix/Linux. Мова сценаріїв для автоматизації системного адміністрування.",
+             ru:"Стандартная оболочка Unix/Linux. Язык сценариев для автоматизации системного администрирования.",
+             en:"Standard Unix/Linux shell. Scripting language for system administration automation." },
+      features:{ uk:"Pipes, redirects, job control, regex, command substitution, arrays, functions, POSIX compatibility, .bashrc.",
+                ru:"Pipes, redirects, job control, regex, command substitution, arrays, functions, POSIX compatibility, .bashrc.",
+                en:"Pipes, redirects, job control, regex, command substitution, arrays, functions, POSIX compatibility, .bashrc." },
+      paradigm:{ uk:"Скриптова, імперативна", ru:"Скриптовый, императивный", en:"Scripting, imperative" },
+      usage: "DevOps, CI/CD, System administration, Automation, Docker entrypoints" },
+
+    { id:"powershell", cat:"scripting", icon:"🟦", name:"PowerShell",
+      url:"https://learn.microsoft.com/powershell/",
+      desc:{ uk:"Кросплатформна оболонка від Microsoft. Об'єктно-орієнтована, з потужним керуванням системами.",
+             ru:"Кроссплатформенная оболочка от Microsoft. Объектно-ориентированная, с мощным управлением системами.",
+             en:"Cross-platform shell by Microsoft. Object-oriented with powerful system management." },
+      features:{ uk:"Об'єктний pipeline, .NET інтеграція, remoting (WinRM/SSH), Desired State Configuration (DSC), модулі, кросплатформна.",
+                ru:"Объектный pipeline, .NET интеграция, remoting (WinRM/SSH), Desired State Configuration (DSC), модули, кроссплатформенный.",
+                en:"Object pipeline, .NET integration, remoting (WinRM/SSH), Desired State Configuration (DSC), modules, cross-platform." },
+      paradigm:{ uk:"Об'єктно-орієнтована, скриптова, імперативна", ru:"Объектно-ориентированный, скриптовый, императивный", en:"Object-oriented, scripting, imperative" },
+      usage: "Windows administration, Azure, Active Directory, DevOps, Cross-platform automation" },
+
+    { id:"tcl", cat:"scripting", icon:"🔧", name:"Tcl",
+      url:"https://www.tcl-lang.org/",
+      desc:{ uk:"Мова сценаріїв з простим синтаксисом. Популярна для тестування, GUI (Tk) та embedded.",
+             ru:"Язык сценариев с простым синтаксисом. Популярен для тестирования, GUI (Tk) и embedded.",
+             en:"Scripting language with simple syntax. Popular for testing, GUI (Tk) and embedded." },
+      features:{ uk:"Все є рядком, Tk GUI, expect (автоматизація TUI), вбудовування в C, Tcllib, cross-platform, regex.",
+                ru:"Всё есть строка, Tk GUI, expect (автоматизация TUI), встраивание в C, Tcllib, cross-platform, regex.",
+                en:"Everything is a string, Tk GUI, expect (TUI automation), C embedding, Tcllib, cross-platform, regex." },
+      paradigm:{ uk:"Скриптова, імперативна", ru:"Скриптовый, императивный", en:"Scripting, imperative" },
+      usage: "EDA tools (Cadence, Synopsys), Testing, Network equipment (Cisco), GUI (Tk)" },
+
+    { id:"awk", cat:"scripting", icon:"✂️", name:"AWK",
+      url:"https://www.gnu.org/software/gawk/",
+      desc:{ uk:"Мова обробки тексту за шаблонами. Невід'ємна частина Unix-екосистеми для звітів та логів.",
+             ru:"Язык обработки текста по шаблонам. Неотъемлемая часть Unix-экосистемы для отчётов и логов.",
+             en:"Text processing language by patterns. Integral part of the Unix ecosystem for reports and logs." },
+      features:{ uk:"Pattern-action pairs, field-based processing, regex, associative arrays, one-liners, вбудований в sh/awk/gawk.",
+                ru:"Pattern-action pairs, field-based processing, regex, associative arrays, one-liners, встроенный в sh/awk/gawk.",
+                en:"Pattern-action pairs, field-based processing, regex, associative arrays, one-liners, built into sh/awk/gawk." },
+      paradigm:{ uk:"Декларативна (шаблони), імперативна", ru:"Декларативный (шаблоны), императивный", en:"Declarative (patterns), imperative" },
+      usage: "Log analysis, Report generation, Data extraction, Bioinformatics (one-liners)" },
+
+    // === BLOCKCHAIN ===
+    { id:"solidity", cat:"blockchain", icon:"⛓", name:"Solidity",
+      url:"https://soliditylang.org/",
+      desc:{ uk:"Мова для написання смарт-контрактів на Ethereum. Статично типізована з наслідуванням та бібліотеками.",
+             ru:"Язык для написания смарт-контрактов на Ethereum. Статически типизированный с наследованием и библиотеками.",
+             en:"Language for writing smart contracts on Ethereum. Statically typed with inheritance and libraries." },
+      features:{ uk:"Смарт-контракти, EVM байткод, events, modifiers, inheritance, OpenZeppelin, Hardhat/Foundry, gas optimization.",
+                ru:"Смарт-контракты, EVM байткод, events, modifiers, inheritance, OpenZeppelin, Hardhat/Foundry, gas optimization.",
+                en:"Smart contracts, EVM bytecode, events, modifiers, inheritance, OpenZeppelin, Hardhat/Foundry, gas optimization." },
+      paradigm:{ uk:"Об'єктно-орієнтована, імперативна", ru:"Объектно-ориентированный, императивный", en:"Object-oriented, imperative" },
+      usage: "DeFi, NFT, DAO, Ethereum, Layer 2, Smart contract development" },
+
+    { id:"move", cat:"blockchain", icon:"📦", name:"Move",
+      url:"https://move-language.github.io/move/",
+      desc:{ uk:"Мова для безпечного керування цифровими активами. Розроблена для Diem (Meta), зараз у Aptos та Sui.",
+             ru:"Язык для безопасного управления цифровыми активами. Разработан для Diem (Meta), сейчас в Aptos и Sui.",
+             en:"Language for safe management of digital assets. Developed for Diem (Meta), now in Aptos and Sui." },
+      features:{ uk:"Resource-oriented programming, formal verification, bytecode verifier, parallel execution, asset safety, Move Prover.",
+                ru:"Resource-oriented programming, formal verification, bytecode verifier, parallel execution, asset safety, Move Prover.",
+                en:"Resource-oriented programming, formal verification, bytecode verifier, parallel execution, asset safety, Move Prover." },
+      paradigm:{ uk:"Імперативна, ресурсно-орієнтована", ru:"Императивный, ресурсно-ориентированный", en:"Imperative, resource-oriented" },
+      usage: "Aptos, Sui, Blockchain assets, DeFi, Smart contracts" },
+
+    { id:"vyper", cat:"blockchain", icon:"🐍", name:"Vyper",
+      url:"https://vyperlang.org/",
+      desc:{ uk:"Мова смарт-контрактів, орієнтована на безпеку та простоту. Python-подібний синтаксис для Ethereum.",
+             ru:"Язык смарт-контрактов, ориентированный на безопасность и простоту. Python-подобный синтаксис для Ethereum.",
+             en:"Smart contract language focused on security and simplicity. Python-like syntax for Ethereum." },
+      features:{ uk:"Перевірка переповнення, decimal fixed-point, no inheritance, no inline assembly, simplicity, auditability, EVM.",
+                ru:"Проверка переполнения, decimal fixed-point, no inheritance, no inline assembly, simplicity, auditability, EVM.",
+                en:"Overflow checking, decimal fixed-point, no inheritance, no inline assembly, simplicity, auditability, EVM." },
+      paradigm:{ uk:"Імперативна", ru:"Императивный", en:"Imperative" },
+      usage: "Ethereum smart contracts, Security-focused DeFi, Auditable contracts" },
+
+    // === LEGACY / ENTERPRISE ===
+    { id:"pascal", cat:"legacy", icon:"📐", name:"Pascal / Object Pascal",
+      url:"https://www.freepascal.org/",
+      desc:{ uk:"Класична навчальна мова, еволюціонувала в Object Pascal (Delphi). Досі використовується для десктопу.",
+             ru:"Классический учебный язык, эволюционировавший в Object Pascal (Delphi). До сих пор используется для десктопа.",
+             en:"Classic teaching language, evolved into Object Pascal (Delphi). Still used for desktop development." },
+      features:{ uk:"Strong typing, records, units, Delphi VCL/FMX, Free Pascal (FPC), Lazarus IDE, кросплатформна компіляція.",
+                ru:"Strong typing, records, units, Delphi VCL/FMX, Free Pascal (FPC), Lazarus IDE, кроссплатформенная компиляция.",
+                en:"Strong typing, records, units, Delphi VCL/FMX, Free Pascal (FPC), Lazarus IDE, cross-platform compilation." },
+      paradigm:{ uk:"Імперативна, процедурна, об'єктно-орієнтована", ru:"Императивный, процедурный, объектно-ориентированный", en:"Imperative, procedural, object-oriented" },
+      usage: "Desktop apps, Education, Legacy systems, Industrial automation, Embedded (some)" },
+
+    { id:"abap", cat:"legacy", icon:"🏢", name:"ABAP",
+      url:"https://community.sap.com/topics/abap",
+      desc:{ uk:"Мова для розробки додатків SAP. Використовується у великих корпораціях для ERP-систем.",
+             ru:"Язык для разработки приложений SAP. Используется в крупных корпорациях для ERP-систем.",
+             en:"Language for developing SAP applications. Used in large corporations for ERP systems." },
+      features:{ uk:"Open SQL, CDS views, RAP (Restful ABAP), ABAP Cloud, інтеграція з SAP HANA, класична та об'єктна парадигми.",
+                ru:"Open SQL, CDS views, RAP (Restful ABAP), ABAP Cloud, интеграция с SAP HANA, классическая и объектная парадигмы.",
+                en:"Open SQL, CDS views, RAP (Restful ABAP), ABAP Cloud, SAP HANA integration, classical and object-oriented paradigms." },
+      paradigm:{ uk:"Імперативна, об'єктно-орієнтована", ru:"Императивный, объектно-ориентированный", en:"Imperative, object-oriented" },
+      usage: "SAP ERP, CRM, S/4HANA, Enterprise resource planning, Large corporations" },
+
+    { id:"vbnet", cat:"legacy", icon:"🟪", name:"VB.NET",
+      url:"https://learn.microsoft.com/dotnet/visual-basic/",
+      desc:{ uk:"Мова для .NET з синтаксисом, схожим на класичний Visual Basic. Для Windows-додатків та корпоративних систем.",
+             ru:"Язык для .NET с синтаксисом, похожим на классический Visual Basic. Для Windows-приложений и корпоративных систем.",
+             en:"Language for .NET with syntax similar to classic Visual Basic. For Windows apps and enterprise systems." },
+      features:{ uk:"LINQ, async/await, .NET interop, Windows Forms, WPF, XML literals, Option Strict/Explicit, Roslyn.",
+                ru:"LINQ, async/await, .NET interop, Windows Forms, WPF, XML literals, Option Strict/Explicit, Roslyn.",
+                en:"LINQ, async/await, .NET interop, Windows Forms, WPF, XML literals, Option Strict/Explicit, Roslyn." },
+      paradigm:{ uk:"Об'єктно-орієнтована, імперативна, подійна", ru:"Объектно-ориентированный, императивный, событийный", en:"Object-oriented, imperative, event-driven" },
+      usage: "Windows desktop, Enterprise apps, Legacy migration, Office automation" },
+
+    { id:"apex", cat:"legacy", icon:"☁️", name:"Apex",
+      url:"https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_intro.htm",
+      desc:{ uk:"Мова програмування для платформи Salesforce. Схожа на Java, але оптимізована для хмарних CRM-додатків.",
+             ru:"Язык программирования для платформы Salesforce. Похож на Java, но оптимизирован для облачных CRM-приложений.",
+             en:"Programming language for the Salesforce platform. Similar to Java but optimized for cloud CRM applications." },
+      features:{ uk:"SOQL/SOSL, triggers, batch Apex, Visualforce, Lightning components, governor limits, test framework, sandbox.",
+                ru:"SOQL/SOSL, triggers, batch Apex, Visualforce, Lightning components, governor limits, test framework, sandbox.",
+                en:"SOQL/SOSL, triggers, batch Apex, Visualforce, Lightning components, governor limits, test framework, sandbox." },
+      paradigm:{ uk:"Об'єктно-орієнтована, імперативна", ru:"Объектно-ориентированный, императивный", en:"Object-oriented, imperative" },
+      usage: "Salesforce CRM, Cloud business apps, Enterprise automation, Marketing Cloud" },
+
+    // === NICHE ===
+    { id:"prolog", cat:"niche", icon:"🧠", name:"Prolog",
+      url:"https://www.swi-prolog.org/",
+      desc:{ uk:"Декларативна мова логічного програмування. Програми описують 'що' замість 'як'.",
+             ru:"Декларативный язык логического программирования. Программы описывают 'что' вместо 'как'.",
+             en:"Declarative logic programming language. Programs describe 'what' instead of 'how'." },
+      features:{ uk:"Unification, backtracking, constraint logic programming, definite clause grammars, SWI-Prolog, tabling, CHR.",
+                ru:"Unification, backtracking, constraint logic programming, definite clause grammars, SWI-Prolog, tabling, CHR.",
+                en:"Unification, backtracking, constraint logic programming, definite clause grammars, SWI-Prolog, tabling, CHR." },
+      paradigm:{ uk:"Логічна, декларативна", ru:"Логический, декларативный", en:"Logic, declarative" },
+      usage: "AI (історично), Expert systems, Natural language processing, Constraint solving, Semantic web" },
+
+    { id:"forth", cat:"niche", icon:"🔩", name:"Forth",
+      url:"https://gforth.org/",
+      desc:{ uk:"Мова з постфіксною нотацією (стекова). Компактна та ефективна для embedded та промислового контролю.",
+             ru:"Язык с постфиксной нотацией (стековый). Компактный и эффективный для embedded и промышленного контроля.",
+             en:"Language with postfix notation (stack-based). Compact and efficient for embedded and industrial control." },
+      features:{ uk:"Stack-based execution, extensible syntax (words), інтерактивний компілятор, мінімальний розмір, direct hardware access.",
+                ru:"Stack-based execution, extensible syntax (words), интерактивный компилятор, минимальный размер, direct hardware access.",
+                en:"Stack-based execution, extensible syntax (words), interactive compiler, minimal size, direct hardware access." },
+      paradigm:{ uk:"Конкатенативна, процедурна, стекова", ru:"Конкатенативный, процедурный, стековый", en:"Concatenative, procedural, stack-based" },
+      usage: "Embedded systems, Boot loaders, Industrial control, Space (NASA), Amateur radio" },
+
+    { id:"apl", cat:"niche", icon:"🔣", name:"APL",
+      url:"https://aplwiki.com/",
+      desc:{ uk:"Мова з незвичними символами для масивних обчислень. Надзвичайно стислий синтаксис для математики.",
+             ru:"Язык с необычными символами для массивных вычислений. Чрезвычайно сжатый синтаксис для математики.",
+             en:"Language with unusual symbols for array computing. Extremely terse syntax for mathematics." },
+      features:{ uk:"Iverson notation, array operations, tacit programming, glyphs/special symbols, Dyalog APL, J (нащадок), kdb+/Q.",
+                ru:"Iverson notation, array operations, tacit programming, glyphs/special symbols, Dyalog APL, J (наследник), kdb+/Q.",
+                en:"Iverson notation, array operations, tacit programming, glyphs/special symbols, Dyalog APL, J (descendant), kdb+/Q." },
+      paradigm:{ uk:"Функціональна, масивна", ru:"Функциональный, массивный", en:"Functional, array" },
+      usage: "Finance (trading), Actuarial science, Mathematics, Data analysis, Research" },
+
+    { id:"crystal", cat:"niche", icon:"💎", name:"Crystal",
+      url:"https://crystal-lang.org/",
+      desc:{ uk:"Мова з синтаксисом, схожим на Ruby, але зі статичною типізацією та компіляцією. Швидка та елегантна.",
+             ru:"Язык с синтаксисом, похожим на Ruby, но со статической типизацией и компиляцией. Быстрый и элегантный.",
+             en:"Language with Ruby-like syntax but static typing and compilation. Fast and elegant." },
+      features:{ uk:"Type inference, macros, concurrency (fibers), C bindings, LLVM backend, null-safety, shards (пакети), Ruby-подібний синтаксис.",
+                ru:"Type inference, macros, concurrency (fibers), C bindings, LLVM backend, null-safety, shards (пакеты), Ruby-подобный синтаксис.",
+                en:"Type inference, macros, concurrency (fibers), C bindings, LLVM backend, null-safety, shards (packages), Ruby-like syntax." },
+      paradigm:{ uk:"Об'єктно-орієнтована, функціональна, імперативна", ru:"Объектно-ориентированный, функциональный, императивный", en:"Object-oriented, functional, imperative" },
+      usage: "Web servers (Kemal), System tools, CLI apps, API services" },
+
+    { id:"q", cat:"niche", icon:"📈", name:"Q / kdb+",
+      url:"https://code.kx.com/q/",
+      desc:{ uk:"Мова для аналізу часових рядів та великих даних у фінансах. Використовується у high-frequency trading.",
+             ru:"Язык для анализа временных рядов и больших данных в финансах. Используется в high-frequency trading.",
+             en:"Language for time-series analysis and big data in finance. Used in high-frequency trading." },
+      features:{ uk:"Вбудована БД kdb+, APL-подібний синтаксис, табличні дані, qSQL, k (нижчий рівень), швидкість, мінімальний розмір.",
+                ru:"Встроенная БД kdb+, APL-подобный синтаксис, табличные данные, qSQL, k (нижний уровень), скорость, минимальный размер.",
+                en:"Built-in kdb+ database, APL-like syntax, tabular data, qSQL, k (lower level), speed, minimal footprint." },
+      paradigm:{ uk:"Функціональна, масивна, векторна", ru:"Функциональный, массивный, векторный", en:"Functional, array, vector" },
+      usage: "High-frequency trading, Investment banks, Risk analysis, Time-series databases" },
+
+    { id:"labview", cat:"niche", icon:"🔬", name:"LabVIEW (G)",
+      url:"https://www.ni.com/labview/",
+      desc:{ uk:"Графічна мова програмування (G) для інженерії та наукових приладів. Програми = блок-схеми.",
+             ru:"Графический язык программирования (G) для инженерии и научных приборов. Программы = блок-схемы.",
+             en:"Graphical programming language (G) for engineering and scientific instruments. Programs = block diagrams." },
+      features:{ uk:"Dataflow programming, VI (Virtual Instruments), DAQ інтеграція, real-time модуль, FPGA compilation, NXG/WebVIs.",
+                ru:"Dataflow programming, VI (Virtual Instruments), DAQ интеграция, real-time модуль, FPGA compilation, NXG/WebVIs.",
+                en:"Dataflow programming, VI (Virtual Instruments), DAQ integration, real-time module, FPGA compilation, NXG/WebVIs." },
+      paradigm:{ uk:"Візуальна, потокова (dataflow), паралельна", ru:"Визуальный, потоковый (dataflow), параллельный", en:"Visual, dataflow, parallel" },
+      usage: "Test & measurement, Industrial automation, Robotics, Research labs, Hardware control" }
+];
+
+// ===================== ЛОКАЛІЗАЦІЯ =====================
+const ui = {
+    uk: {
+        title: "ProgLang Directory — Довідник мов програмування",
+        searchPlaceholder: "Пошук мов...",
+        all: "Усі категорії",
+        open: "Офіційний сайт →",
+        noResults: "Нічого не знайдено. Спробуйте інший запит.",
+        footer: "💻 Довідник мов програмування (не веб) | 2026 | Код вільний для редагування",
+        features: "Особливості",
+        paradigm: "Парадигма",
+        usage: "Сфери застосування"
+    },
+    ru: {
+        title: "ProgLang Directory — Справочник языков программирования",
+        searchPlaceholder: "Поиск языков...",
+        all: "Все категории",
+        open: "Официальный сайт →",
+        noResults: "Ничего не найдено. Попробуйте другой запрос.",
+        footer: "💻 Справочник языков программирования (не веб) | 2026 | Код свободен для редактирования",
+        features: "Особенности",
+        paradigm: "Парадигма",
+        usage: "Сферы применения"
+    },
+    en: {
+        title: "ProgLang Directory — Programming Languages Catalog",
+        searchPlaceholder: "Search languages...",
+        all: "All Categories",
+        open: "Official Website →",
+        noResults: "Nothing found. Try a different query.",
+        footer: "💻 Non-web Programming Languages Directory | 2026 | Code is free to edit",
+        features: "Features",
+        paradigm: "Paradigm",
+        usage: "Usage Areas"
+    }
+};
+
+let currentLang = localStorage.getItem('proglang-dir-lang') || 'uk';
+let activeCategory = 'all';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('proglang-dir-lang', lang);
+    document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+    ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+    document.getElementById('search').placeholder = ui[lang].searchPlaceholder;
+    document.title = ui[lang].title;
+    renderFilters();
+    render();
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const cur = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+function renderFilters() {
+    const container = document.getElementById('filters');
+    let html = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+    for (const [key, val] of Object.entries(categories)) {
+        html += `<button class="filter-btn ${activeCategory===key?'active':''}" onclick="setCat('${key}')">${val[currentLang]}</button>`;
+    }
+    container.innerHTML = html;
+}
+
+function setCat(cat) {
+    activeCategory = cat;
+    renderFilters();
+    render();
+}
+
+function render() {
+    const query = document.getElementById('search').value.toLowerCase();
+    const main = document.getElementById('main');
+    let html = '';
+
+    const catsToShow = activeCategory === 'all' ? Object.keys(categories) : [activeCategory];
+
+    catsToShow.forEach(catKey => {
+        const catItems = langList.filter(l => {
+            if (l.cat !== catKey) return false;
+            if (!query) return true;
+            return l.name.toLowerCase().includes(query) || l.desc[currentLang].toLowerCase().includes(query);
+        });
+
+        if (catItems.length === 0) return;
+
+        html += `<div class="section-title">${categories[catKey][currentLang]}</div>`;
+        html += `<div class="grid">`;
+        catItems.forEach(l => {
+            const usageTags = l.usage.split(',').map(u => `<span class="usage-tag">${u.trim()}</span>`).join('');
+            html += `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">${l.icon}</div>
+                        <div>
+                            <div class="card-title">${l.name}</div>
+                        </div>
+                    </div>
+                    <div class="card-desc">${l.desc[currentLang]}</div>
+                    
+                    <div class="card-section">
+                        <strong>${ui[currentLang].features}</strong>
+                        ${l.features[currentLang]}
+                    </div>
+                    
+                    <div class="card-section">
+                        <strong>${ui[currentLang].paradigm}</strong>
+                        <div class="tag">${l.paradigm[currentLang]}</div>
+                    </div>
+                    
+                    <div class="card-section">
+                        <strong>${ui[currentLang].usage}</strong>
+                        <div style="margin-top:0.3rem">${usageTags}</div>
+                    </div>
+                    
+                    <a href="${l.url}" target="_blank" class="card-link">${ui[currentLang].open}</a>
+                </div>
+            `;
+        });
+        html += `</div>`;
+    });
+
+    if (html === '') {
+        html = `<div class="no-results">${ui[currentLang].noResults}</div>`;
+    }
+
+    main.innerHTML = html;
+    document.getElementById('footer').textContent = ui[currentLang].footer;
+}
+
+// Init
+setLang(currentLang);
+</script>
+</body>
+</html>

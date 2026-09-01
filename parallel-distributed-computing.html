@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Паралельні та розподілені обчислення — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">⚡ Паралельні та розподілені обчислення</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    const categories = {
+        foundations: {
+            uk: "📘 Основи паралелізму",
+            ru: "📘 Основы параллелизма",
+            en: "📘 Parallelism Foundations"
+        },
+        models: {
+            uk: "🧠 Моделі та архітектури",
+            ru: "🧠 Модели и архитектуры",
+            en: "🧠 Models & Architectures"
+        },
+        distributed: {
+            uk: "🌐 Розподілені системи",
+            ru: "🌐 Распределенные системы",
+            en: "🌐 Distributed Systems"
+        },
+        tech: {
+            uk: "🛠️ Технології та фреймворки",
+            ru: "🛠️ Технологии и фреймворки",
+            en: "🛠️ Technologies & Frameworks"
+        },
+        practice: {
+            uk: "📈 Практика та виклики",
+            ru: "📈 Практика и вызовы",
+            en: "📈 Practice & Challenges"
+        }
+    };
+
+    const items = [
+        {
+            cat: "foundations",
+            icon: "⚡",
+            name: {
+                uk: "Навіщо потрібні паралельні обчислення",
+                ru: "Зачем нужны параллельные вычисления",
+                en: "Why Parallel Computing"
+            },
+            desc: {
+                uk: "Один процесор досягає фізичних меж (тепло, частота). Паралелізм дозволяє розв’язувати задачі швидше, обробляти більші обсяги даних і ефективніше використовувати сучасні багатоядерні та багатомашинні системи.",
+                ru: "Один процессор достигает физических пределов (тепло, частота). Параллелизм позволяет решать задачи быстрее, обрабатывать большие объемы данных и эффективнее использовать современные многоядерные и многомашинные системы.",
+                en: "A single processor hits physical limits (heat, frequency). Parallelism lets us solve problems faster, process larger data volumes and use modern multi-core and multi-machine systems more efficiently."
+            },
+            traits: {
+                uk: "Швидкість, Масштаб, Багатоядерність, Великі дані, Ефективність",
+                ru: "Скорость, Масштаб, Многоядерность, Большие данные, Эффективность",
+                en: "Speed, Scale, Multi-core, Big data, Efficiency"
+            },
+            spec: {
+                uk: "Майбутнє обчислень — паралельне",
+                ru: "Будущее вычислений — параллельное",
+                en: "The future of computing is parallel"
+            },
+            links: [
+                { name: "Parallel Computing overview", url: "https://en.wikipedia.org/wiki/Parallel_computing" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "📊",
+            name: {
+                uk: "Закон Амдала та закон Густафсона",
+                ru: "Закон Амдала и закон Густафсона",
+                en: "Amdahl’s and Gustafson’s Laws"
+            },
+            desc: {
+                uk: "Закон Амдала: прискорення обмежене часткою послідовного коду. Закон Густафсона: при збільшенні обсягу задачі паралельна частка зростає — масштабування має сенс. Обидва допомагають оцінювати реальну вигоду від паралелізму.",
+                ru: "Закон Амдала: ускорение ограничено долей последовательного кода. Закон Густафсона: при увеличении объема задачи параллельная доля растет — масштабирование имеет смысл. Оба помогают оценивать реальную выгоду от параллелизма.",
+                en: "Amdahl’s law: speedup is limited by the sequential fraction. Gustafson’s law: as problem size grows, the parallel fraction grows — scaling makes sense. Both help estimate the real benefit of parallelism."
+            },
+            traits: {
+                uk: "Прискорення, Послідовна частка, Масштабування, Обмеження",
+                ru: "Ускорение, Последовательная доля, Масштабирование, Ограничения",
+                en: "Speedup, Sequential fraction, Scaling, Limits"
+            },
+            spec: {
+                uk: "Не весь код можна розпаралелити однаково добре",
+                ru: "Не весь код можно распараллелить одинаково хорошо",
+                en: "Not all code parallelizes equally well"
+            },
+            links: [
+                { name: "Amdahl's Law", url: "https://en.wikipedia.org/wiki/Amdahl%27s_law" },
+                { name: "Gustafson's Law", url: "https://en.wikipedia.org/wiki/Gustafson%27s_law" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "🔀",
+            name: {
+                uk: "Паралелізм vs конкурентність",
+                ru: "Параллелизм vs конкурентность",
+                en: "Parallelism vs Concurrency"
+            },
+            desc: {
+                uk: "Паралелізм — одночасне виконання на кількох ядрах/вузлах (для швидкості). Конкурентність — структурування програми так, щоб завдання могли просуватися незалежно (навіть на одному ядрі). Часто використовуються разом.",
+                ru: "Параллелизм — одновременное выполнение на нескольких ядрах/узлах (для скорости). Конкурентность — структурирование программы так, чтобы задачи могли продвигаться независимо (даже на одном ядре). Часто используются вместе.",
+                en: "Parallelism is simultaneous execution on multiple cores/nodes (for speed). Concurrency is structuring a program so tasks can progress independently (even on one core). Often used together."
+            },
+            traits: {
+                uk: "Паралелізм, Конкурентність, Потоки, Асинхронність, Задачі",
+                ru: "Параллелизм, Конкурентность, Потоки, Асинхронность, Задачи",
+                en: "Parallelism, Concurrency, Threads, Asynchrony, Tasks"
+            },
+            spec: {
+                uk: "Різні цілі, різні інструменти",
+                ru: "Разные цели, разные инструменты",
+                en: "Different goals, different tools"
+            },
+            links: [
+                { name: "Concurrency is not Parallelism (Rob Pike)", url: "https://go.dev/blog/concurrency-is-not-parallelism" }
+            ]
+        },
+        {
+            cat: "models",
+            icon: "🧠",
+            name: {
+                uk: "Спільна пам’ять (Shared Memory)",
+                ru: "Общая память (Shared Memory)",
+                en: "Shared Memory"
+            },
+            desc: {
+                uk: "Потоки або процеси мають доступ до однієї адресної пам’яті. Зручно програмувати, але потрібна синхронізація (м’ютекси, семафори, атомарні операції), щоб уникнути гонок даних. Типово — багатоядерні CPU.",
+                ru: "Потоки или процессы имеют доступ к одной адресной памяти. Удобно программировать, но нужна синхронизация (мьютексы, семафоры, атомарные операции), чтобы избежать гонок данных. Типично — многоядерные CPU.",
+                en: "Threads or processes share the same address space. Easy to program, but synchronization (mutexes, semaphores, atomics) is needed to avoid data races. Typical for multi-core CPUs."
+            },
+            traits: {
+                uk: "Потоки, М’ютекси, Атоміки, Гонки даних, OpenMP",
+                ru: "Потоки, Мьютексы, Атомики, Гонки данных, OpenMP",
+                en: "Threads, Mutexes, Atomics, Data races, OpenMP"
+            },
+            spec: {
+                uk: "Простота доступу vs складність синхронізації",
+                ru: "Простота доступа vs сложность синхронизации",
+                en: "Easy access vs hard synchronization"
+            },
+            links: [
+                { name: "OpenMP", url: "https://www.openmp.org" }
+            ]
+        },
+        {
+            cat: "models",
+            icon: "📡",
+            name: {
+                uk: "Розподілена пам’ять (Distributed Memory)",
+                ru: "Распределенная память (Distributed Memory)",
+                en: "Distributed Memory"
+            },
+            desc: {
+                uk: "Кожен вузол має власну пам’ять; обмін даними — через повідомлення (message passing). Масштабується на кластери й суперкомп’ютери. Складніше програмувати, але немає жорстких обмежень спільної пам’яті.",
+                ru: "Каждый узел имеет свою память; обмен данными — через сообщения (message passing). Масштабируется на кластеры и суперкомпьютеры. Сложнее программировать, но нет жестких ограничений общей памяти.",
+                en: "Each node has its own memory; data is exchanged via messages. Scales to clusters and supercomputers. Harder to program, but without the limits of shared memory."
+            },
+            traits: {
+                uk: "MPI, Повідомлення, Кластери, Масштаб, Вузли",
+                ru: "MPI, Сообщения, Кластеры, Масштаб, Узлы",
+                en: "MPI, Messages, Clusters, Scale, Nodes"
+            },
+            spec: {
+                uk: "Основа HPC і великих кластерів",
+                ru: "Основа HPC и больших кластеров",
+                en: "Foundation of HPC and large clusters"
+            },
+            links: [
+                { name: "MPI Forum", url: "https://www.mpi-forum.org" },
+                { name: "Open MPI", url: "https://www.open-mpi.org" }
+            ]
+        },
+        {
+            cat: "models",
+            icon: "🖥️",
+            name: {
+                uk: "GPU та гетерогенні обчислення",
+                ru: "GPU и гетерогенные вычисления",
+                en: "GPU and Heterogeneous Computing"
+            },
+            desc: {
+                uk: "GPU мають тисячі простих ядер — ідеально для data-parallel задач (графіки, ML, симуляції). CUDA, OpenCL, ROCm, SYCL дозволяють використовувати GPU разом із CPU. Гетерогенність — ключ до сучасного HPC і AI.",
+                ru: "GPU имеют тысячи простых ядер — идеально для data-parallel задач (графика, ML, симуляции). CUDA, OpenCL, ROCm, SYCL позволяют использовать GPU вместе с CPU. Гетерогенность — ключ к современному HPC и AI.",
+                en: "GPUs have thousands of simple cores — ideal for data-parallel tasks (graphics, ML, simulations). CUDA, OpenCL, ROCm, SYCL enable using GPUs together with CPUs. Heterogeneity is key to modern HPC and AI."
+            },
+            traits: {
+                uk: "CUDA, OpenCL, SYCL, GPU, Data-parallel, AI/HPC",
+                ru: "CUDA, OpenCL, SYCL, GPU, Data-parallel, AI/HPC",
+                en: "CUDA, OpenCL, SYCL, GPU, Data-parallel, AI/HPC"
+            },
+            spec: {
+                uk: "GPU змінили ландшафт обчислень",
+                ru: "GPU изменили ландшафт вычислений",
+                en: "GPUs changed the computing landscape"
+            },
+            links: [
+                { name: "CUDA", url: "https://developer.nvidia.com/cuda-zone" },
+                { name: "OpenCL", url: "https://www.khronos.org/opencl/" },
+                { name: "SYCL", url: "https://www.khronos.org/sycl/" }
+            ]
+        },
+        {
+            cat: "distributed",
+            icon: "🌐",
+            name: {
+                uk: "Що таке розподілена система",
+                ru: "Что такое распределенная система",
+                en: "What is a Distributed System"
+            },
+            desc: {
+                uk: "Система з кількох незалежних вузлів, які виглядають для користувача як єдина. Вузли спілкуються мережею, можуть відмовляти, мати різний час. Класичні виклики: узгодженість, доступність, стійкість до відмов.",
+                ru: "Система из нескольких независимых узлов, выглядящих для пользователя как единая. Узлы общаются по сети, могут отказывать, иметь разное время. Классические вызовы: согласованность, доступность, устойчивость к отказам.",
+                en: "A system of independent nodes that appear as one to the user. Nodes communicate over the network, can fail, and have different clocks. Classic challenges: consistency, availability, fault tolerance."
+            },
+            traits: {
+                uk: "Вузли, Мережа, Відмови, Узгодженість, Прозорість",
+                ru: "Узлы, Сеть, Отказы, Согласованность, Прозрачность",
+                en: "Nodes, Network, Failures, Consistency, Transparency"
+            },
+            spec: {
+                uk: "Мережа — ненадійна, вузли — ненадійні",
+                ru: "Сеть — ненадежна, узлы — ненадежны",
+                en: "The network is unreliable, nodes are unreliable"
+            },
+            links: [
+                { name: "Distributed Systems (Tanenbaum)", url: "https://www.distributed-systems.net" }
+            ]
+        },
+        {
+            cat: "distributed",
+            icon: "⚖️",
+            name: {
+                uk: "CAP-теорема та узгодженість",
+                ru: "CAP-теорема и согласованность",
+                en: "CAP Theorem and Consistency"
+            },
+            desc: {
+                uk: "У розподіленій системі при розриві мережі неможливо одночасно гарантувати Consistency і Availability. Системи обирають компроміси (CP, AP) і моделі узгодженості: strong, eventual, causal тощо.",
+                ru: "В распределенной системе при разрыве сети невозможно одновременно гарантировать Consistency и Availability. Системы выбирают компромиссы (CP, AP) и модели согласованности: strong, eventual, causal и т.д.",
+                en: "In a distributed system, under network partition you cannot guarantee both Consistency and Availability. Systems choose trade-offs (CP, AP) and consistency models: strong, eventual, causal, etc."
+            },
+            traits: {
+                uk: "CAP, Consistency, Availability, Partition, Eventual consistency",
+                ru: "CAP, Consistency, Availability, Partition, Eventual consistency",
+                en: "CAP, Consistency, Availability, Partition, Eventual consistency"
+            },
+            spec: {
+                uk: "Немає «безкоштовної» узгодженості при відмовах",
+                ru: "Нет «бесплатной» согласованности при отказах",
+                en: "No “free” consistency under failures"
+            },
+            links: [
+                { name: "CAP Theorem", url: "https://en.wikipedia.org/wiki/CAP_theorem" },
+                { name: "Consistency models", url: "https://jepsen.io/consistency" }
+            ]
+        },
+        {
+            cat: "distributed",
+            icon: "🗳️",
+            name: {
+                uk: "Консенсус і реплікація",
+                ru: "Консенсус и репликация",
+                en: "Consensus and Replication"
+            },
+            desc: {
+                uk: "Алгоритми консенсусу (Paxos, Raft) дозволяють вузлам домовитися про значення навіть при відмовах. Реплікація підвищує доступність і надійність. Основа для розподілених БД, координаторів і блокчейнів.",
+                ru: "Алгоритмы консенсуса (Paxos, Raft) позволяют узлам договориться о значении даже при отказах. Репликация повышает доступность и надежность. Основа для распределенных БД, координаторов и блокчейнов.",
+                en: "Consensus algorithms (Paxos, Raft) let nodes agree on a value even under failures. Replication improves availability and reliability. Foundation for distributed DBs, coordinators and blockchains."
+            },
+            traits: {
+                uk: "Raft, Paxos, Реплікація, Кворум, Лідер",
+                ru: "Raft, Paxos, Репликация, Кворум, Лидер",
+                en: "Raft, Paxos, Replication, Quorum, Leader"
+            },
+            spec: {
+                uk: "Консенсус — «серце» надійних розподілених систем",
+                ru: "Консенсус — «сердце» надежных распределенных систем",
+                en: "Consensus is the “heart” of reliable distributed systems"
+            },
+            links: [
+                { name: "Raft", url: "https://raft.github.io" },
+                { name: "Paxos Made Simple", url: "https://lamport.azurewebsites.net/pubs/paxos-simple.pdf" }
+            ]
+        },
+        {
+            cat: "tech",
+            icon: "📬",
+            name: {
+                uk: "MPI — Message Passing Interface",
+                ru: "MPI — Message Passing Interface",
+                en: "MPI — Message Passing Interface"
+            },
+            desc: {
+                uk: "Стандарт для обміну повідомленнями в HPC. Дозволяє запускати програми на тисячах вузлів. Реалізації: Open MPI, MPICH, Intel MPI. Основа суперкомп’ютерних обчислень.",
+                ru: "Стандарт для обмена сообщениями в HPC. Позволяет запускать программы на тысячах узлов. Реализации: Open MPI, MPICH, Intel MPI. Основа суперкомпьютерных вычислений.",
+                en: "The standard for message passing in HPC. Enables running programs on thousands of nodes. Implementations: Open MPI, MPICH, Intel MPI. Foundation of supercomputing."
+            },
+            traits: {
+                uk: "Send/Recv, Collective, Communicator, HPC, Кластери",
+                ru: "Send/Recv, Collective, Communicator, HPC, Кластеры",
+                en: "Send/Recv, Collective, Communicator, HPC, Clusters"
+            },
+            spec: {
+                uk: "Де-факто стандарт паралельного HPC",
+                ru: "Де-факто стандарт параллельного HPC",
+                en: "De-facto standard of parallel HPC"
+            },
+            links: [
+                { name: "Open MPI", url: "https://www.open-mpi.org" },
+                { name: "MPI Tutorial", url: "https://mpitutorial.com" }
+            ]
+        },
+        {
+            cat: "tech",
+            icon: "🧵",
+            name: {
+                uk: "OpenMP, потоки та task-моделі",
+                ru: "OpenMP, потоки и task-модели",
+                en: "OpenMP, Threads and Task Models"
+            },
+            desc: {
+                uk: "OpenMP — директиви для паралелізму зі спільною пам’яттю (C/C++/Fortran). Сучасні мови пропонують structured concurrency, async/await, actors (Akka, Erlang), goroutines — різні моделі організації паралельної роботи.",
+                ru: "OpenMP — директивы для параллелизма с общей памятью (C/C++/Fortran). Современные языки предлагают structured concurrency, async/await, actors (Akka, Erlang), goroutines — разные модели организации параллельной работы.",
+                en: "OpenMP provides directives for shared-memory parallelism (C/C++/Fortran). Modern languages offer structured concurrency, async/await, actors (Akka, Erlang), goroutines — different models for organizing parallel work."
+            },
+            traits: {
+                uk: "OpenMP, Threads, async/await, Actors, Goroutines",
+                ru: "OpenMP, Threads, async/await, Actors, Goroutines",
+                en: "OpenMP, Threads, async/await, Actors, Goroutines"
+            },
+            spec: {
+                uk: "Модель має відповідати задачі",
+                ru: "Модель должна соответствовать задаче",
+                en: "The model must fit the problem"
+            },
+            links: [
+                { name: "OpenMP", url: "https://www.openmp.org" },
+                { name: "Structured Concurrency", url: "https://en.wikipedia.org/wiki/Structured_concurrency" }
+            ]
+        },
+        {
+            cat: "tech",
+            icon: "🔥",
+            name: {
+                uk: "Розподілена обробка даних (Spark, Dask, Ray)",
+                ru: "Распределенная обработка данных (Spark, Dask, Ray)",
+                en: "Distributed Data Processing (Spark, Dask, Ray)"
+            },
+            desc: {
+                uk: "Apache Spark — стандарт batch/streaming обробки великих даних. Dask — паралельний Python. Ray — розподілені обчислення і ML. MapReduce-парадигма лежить в основі багатьох систем.",
+                ru: "Apache Spark — стандарт batch/streaming обработки больших данных. Dask — параллельный Python. Ray — распределенные вычисления и ML. Парадигма MapReduce лежит в основе многих систем.",
+                en: "Apache Spark is the standard for batch/streaming big data. Dask is parallel Python. Ray is for distributed compute and ML. The MapReduce paradigm underpins many systems."
+            },
+            traits: {
+                uk: "Spark, Dask, Ray, MapReduce, DataFrame, Розподіл",
+                ru: "Spark, Dask, Ray, MapReduce, DataFrame, Распределение",
+                en: "Spark, Dask, Ray, MapReduce, DataFrame, Distribution"
+            },
+            spec: {
+                uk: "Дані «розкидані» — обчислення йдуть за даними",
+                ru: "Данные «разбросаны» — вычисления идут за данными",
+                en: "Data is scattered — computation follows the data"
+            },
+            links: [
+                { name: "Apache Spark", url: "https://spark.apache.org" },
+                { name: "Dask", url: "https://www.dask.org" },
+                { name: "Ray", url: "https://www.ray.io" }
+            ]
+        },
+        {
+            cat: "tech",
+            icon: "☁️",
+            name: {
+                uk: "Хмарні та оркестровані обчислення",
+                ru: "Облачные и оркестрированные вычисления",
+                en: "Cloud and Orchestrated Computing"
+            },
+            desc: {
+                uk: "Kubernetes, serverless, batch-сервіси хмар (AWS Batch, Google Batch) дозволяють запускати паралельні та розподілені завдання без власного кластера. Оркестрація стає частиною обчислювального стеку.",
+                ru: "Kubernetes, serverless, batch-сервисы облаков (AWS Batch, Google Batch) позволяют запускать параллельные и распределенные задачи без собственного кластера. Оркестрация становится частью вычислительного стека.",
+                en: "Kubernetes, serverless, cloud batch services (AWS Batch, Google Batch) let you run parallel and distributed jobs without owning a cluster. Orchestration becomes part of the compute stack."
+            },
+            traits: {
+                uk: "Kubernetes, Serverless, Batch, Автомасштабування, Хмара",
+                ru: "Kubernetes, Serverless, Batch, Автомасштабирование, Облако",
+                en: "Kubernetes, Serverless, Batch, Autoscaling, Cloud"
+            },
+            spec: {
+                uk: "Інфраструктура як код і еластичність",
+                ru: "Инфраструктура как код и эластичность",
+                en: "Infrastructure as code and elasticity"
+            },
+            links: [
+                { name: "Kubernetes", url: "https://kubernetes.io" },
+                { name: "AWS Batch", url: "https://aws.amazon.com/batch/" }
+            ]
+        },
+        {
+            cat: "practice",
+            icon: "🐛",
+            name: {
+                uk: "Типові проблеми паралельних програм",
+                ru: "Типичные проблемы параллельных программ",
+                en: "Typical Parallel Programming Issues"
+            },
+            desc: {
+                uk: "Гонки даних, взаємні блокування (deadlock), голодування, недетермінізм, false sharing, накладні витрати на синхронізацію. Відлагодження паралельного коду значно складніше за послідовний.",
+                ru: "Гонки данных, взаимные блокировки (deadlock), голодание, недетерминизм, false sharing, накладные расходы на синхронизацию. Отладка параллельного кода значительно сложнее последовательного.",
+                en: "Data races, deadlocks, starvation, non-determinism, false sharing, synchronization overhead. Debugging parallel code is much harder than sequential code."
+            },
+            traits: {
+                uk: "Race conditions, Deadlock, Nondeterminism, Overhead, Відлагодження",
+                ru: "Race conditions, Deadlock, Nondeterminism, Overhead, Отладка",
+                en: "Race conditions, Deadlock, Nondeterminism, Overhead, Debugging"
+            },
+            spec: {
+                uk: "Паралелізм додає цілий клас помилок",
+                ru: "Параллелизм добавляет целый класс ошибок",
+                en: "Parallelism adds a whole class of bugs"
+            },
+            links: [
+                { name: "Race conditions", url: "https://en.wikipedia.org/wiki/Race_condition" }
+            ]
+        },
+        {
+            cat: "practice",
+            icon: "📐",
+            name: {
+                uk: "Проєктування паралельних алгоритмів",
+                ru: "Проектирование параллельных алгоритмов",
+                en: "Designing Parallel Algorithms"
+            },
+            desc: {
+                uk: "Декомпозиція задачі (дані / задачі), балансування навантаження, мінімізація комунікацій, locality. Патерни: map, reduce, pipeline, divide-and-conquer, parallel for. Від алгоритму залежить, чи буде прискорення.",
+                ru: "Декомпозиция задачи (данные / задачи), балансировка нагрузки, минимизация коммуникаций, locality. Паттерны: map, reduce, pipeline, divide-and-conquer, parallel for. От алгоритма зависит, будет ли ускорение.",
+                en: "Problem decomposition (data / tasks), load balancing, minimizing communication, locality. Patterns: map, reduce, pipeline, divide-and-conquer, parallel for. The algorithm determines whether you get speedup."
+            },
+            traits: {
+                uk: "Декомпозиція, Load balancing, Locality, Патерни, Комунікації",
+                ru: "Декомпозиция, Load balancing, Locality, Паттерны, Коммуникации",
+                en: "Decomposition, Load balancing, Locality, Patterns, Communication"
+            },
+            spec: {
+                uk: "Спочатку алгоритм, потім код",
+                ru: "Сначала алгоритм, потом код",
+                en: "Algorithm first, then code"
+            },
+            links: [
+                { name: "Patterns for Parallel Programming", url: "https://www.oreilly.com/library/view/patterns-for-parallel/0322288115/" }
+            ]
+        },
+        {
+            cat: "practice",
+            icon: "🚀",
+            name: {
+                uk: "Сфери застосування",
+                ru: "Сферы применения",
+                en: "Application Domains"
+            },
+            desc: {
+                uk: "Наукові симуляції, прогнозування погоди, геноміка, машинне навчання, графіка та рендеринг, фінанси, пошук і рекомендації, блокчейн, real-time аналітика. Паралелізм і розподіленість — основа сучасних великих систем.",
+                ru: "Научные симуляции, прогноз погоды, геномика, машинное обучение, графика и рендеринг, финансы, поиск и рекомендации, блокчейн, real-time аналитика. Параллелизм и распределенность — основа современных больших систем.",
+                en: "Scientific simulations, weather forecasting, genomics, machine learning, graphics and rendering, finance, search and recommendations, blockchain, real-time analytics. Parallelism and distribution underpin modern large systems."
+            },
+            traits: {
+                uk: "HPC, ML, Симуляції, Аналітика, Графіка, Фінанси",
+                ru: "HPC, ML, Симуляции, Аналитика, Графика, Финансы",
+                en: "HPC, ML, Simulations, Analytics, Graphics, Finance"
+            },
+            spec: {
+                uk: "Майже кожна велика система — розподілена",
+                ru: "Почти каждая большая система — распределенная",
+                en: "Almost every large system is distributed"
+            },
+            links: [
+                { name: "TOP500", url: "https://www.top500.org" }
+            ]
+        }
+    ];
+
+    const ui = {
+        uk: {
+            title: "Паралельні та розподілені обчислення — Довідник",
+            pageTitle: "⚡ Паралельні та розподілені обчислення",
+            home: "Головна сторінка",
+            all: "Усі розділи",
+            traits: "Ключові елементи та поняття",
+            mfgText: "Корисні ресурси:",
+            noResults: "Нічого не знайдено.",
+            footer: "⚡ Паралельні та розподілені обчислення | Довідник 2026",
+            introTitle: "Що таке паралельні та розподілені обчислення?",
+            intro1: "Паралельні обчислення — це одночасне виконання частин задачі на кількох ядрах, процесорах або прискорювачах (GPU). Розподілені обчислення — виконання на кількох незалежних машинах, з’єднаних мережею. Разом вони дозволяють масштабувати швидкість і обсяги даних далеко за межі одного комп’ютера.",
+            intro2: "Ці дисципліни охоплюють моделі пам’яті, алгоритми, консенсус, фреймворки (MPI, OpenMP, Spark, CUDA) і типові виклики: синхронізацію, відмови, узгодженість. Розуміння основ допомагає будувати швидкі та надійні системи."
+        },
+        ru: {
+            title: "Параллельные и распределенные вычисления — Справочник",
+            pageTitle: "⚡ Параллельные и распределенные вычисления",
+            home: "Главная страница",
+            all: "Все разделы",
+            traits: "Ключевые элементы и понятия",
+            mfgText: "Полезные ресурсы:",
+            noResults: "Ничего не найдено.",
+            footer: "⚡ Параллельные и распределенные вычисления | Справочник 2026",
+            introTitle: "Что такое параллельные и распределенные вычисления?",
+            intro1: "Параллельные вычисления — это одновременное выполнение частей задачи на нескольких ядрах, процессорах или ускорителях (GPU). Распределенные вычисления — выполнение на нескольких независимых машинах, соединенных сетью. Вместе они позволяют масштабировать скорость и объемы данных далеко за пределы одного компьютера.",
+            intro2: "Эти дисциплины охватывают модели памяти, алгоритмы, консенсус, фреймворки (MPI, OpenMP, Spark, CUDA) и типичные вызовы: синхронизацию, отказы, согласованность. Понимание основ помогает строить быстрые и надежные системы."
+        },
+        en: {
+            title: "Parallel and Distributed Computing — Guide",
+            pageTitle: "⚡ Parallel & Distributed Computing",
+            home: "Home page",
+            all: "All sections",
+            traits: "Key concepts and elements",
+            mfgText: "Useful resources:",
+            noResults: "Nothing found.",
+            footer: "⚡ Parallel and Distributed Computing | Guide 2026",
+            introTitle: "What are Parallel and Distributed Computing?",
+            intro1: "Parallel computing is the simultaneous execution of parts of a problem on multiple cores, processors or accelerators (GPUs). Distributed computing is execution on multiple independent machines connected by a network. Together they scale speed and data volume far beyond a single computer.",
+            intro2: "These fields cover memory models, algorithms, consensus, frameworks (MPI, OpenMP, Spark, CUDA) and typical challenges: synchronization, failures, consistency. Understanding the basics helps build fast and reliable systems."
+        }
+    };
+
+    let currentLang = safeGet("lang-parallel", "uk");
+    let activeCategory = "all";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-parallel", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + "</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) { return e.cat === catKey; });
+            if (!list.length) return;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        main.innerHTML = html || ('<div class="no-results">' + ui[currentLang].noResults + "</div>");
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

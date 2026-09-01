@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пошукові системи — довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #00e5b0;
+            --accent-2: #7c3aed;
+            --accent-3: #ff9f43;
+            --gradient: linear-gradient(135deg, #00e5b0, #7c3aed);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #000; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #000; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(0,229,176,0.2);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(124,58,237,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .card-link {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            color: var(--accent); text-decoration: none;
+            font-weight: 600; font-size: 0.85rem;
+            margin-top: 0.75rem; transition: gap 0.2s;
+        }
+        .card-link:hover { gap: 0.7rem; }
+        .card-link::after { content: "→"; }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.6rem 1.8rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.35rem; margin-bottom: 0.8rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro h3 {
+            font-size: 1.05rem; margin: 1.25rem 0 0.45rem; color: var(--accent);
+        }
+        .intro p { margin-bottom: 0.7rem; }
+        .intro ul, .intro ol { margin: 0.4rem 0 0.8rem 1.25rem; }
+        .intro li { margin-bottom: 0.4rem; }
+        .intro strong { color: var(--text); }
+        .intro code {
+            background: var(--surface-hover);
+            padding: 0.1rem 0.4rem;
+            border-radius: 0.35rem;
+            font-size: 0.88em;
+            color: var(--accent);
+        }
+        .tip {
+            border-left: 3px solid var(--accent);
+            padding: 0.6rem 0.9rem;
+            margin: 0.8rem 0;
+            background: rgba(0,229,176,0.06);
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        .no-results {
+            text-align: center; color: var(--text-muted);
+            padding: 3rem; font-size: 1.1rem; grid-column: 1 / -1;
+        }
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-hover); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">🔍 Пошукові системи</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+const categories = {
+    global:  { uk: "🌍 Глобальні", ru: "🌍 Глобальные", en: "🌍 Global" },
+    regional:{ uk: "🗺️ Регіональні", ru: "🗺️ Региональные", en: "🗺️ Regional" },
+    privacy: { uk: "🔒 Приватність", ru: "🔒 Приватность", en: "🔒 Privacy" },
+    special: { uk: "🎯 Спеціалізовані", ru: "🎯 Специализированные", en: "🎯 Specialized" }
+};
+
+const engines = [
+    { id:"google", cat:"global", icon:"🔵", name:"Google",
+      url:"https://www.google.com",
+      desc:{ uk:"Найпопулярніша пошукова система світу. Потужний алгоритм ранжування, Knowledge Graph, AI-огляди, інтеграція з Maps, YouTube, Scholar.",
+             ru:"Самая популярная поисковая система мира. Мощный алгоритм ранжирования, Knowledge Graph, AI-обзоры, интеграция с Maps, YouTube, Scholar.",
+             en:"The world’s most used search engine. Strong ranking, Knowledge Graph, AI overviews, Maps, YouTube, Scholar." },
+      traits:{ uk:"Універсальний пошук, зображення, новини, відео, академія", ru:"Универсальный поиск, изображения, новости, видео, академия", en:"Web, images, news, video, scholar" } },
+    { id:"bing", cat:"global", icon:"🟦", name:"Microsoft Bing",
+      url:"https://www.bing.com",
+      desc:{ uk:"Пошук Microsoft з інтеграцією ChatGPT (Copilot). Добре працює з зображеннями та новинами; використовується в Windows і Edge.",
+             ru:"Поиск Microsoft с интеграцией ChatGPT (Copilot). Хорошо работает с изображениями и новостями; используется в Windows и Edge.",
+             en:"Microsoft search with ChatGPT (Copilot). Strong on images and news; used in Windows and Edge." },
+      traits:{ uk:"Copilot, зображення, новини, нагороди Rewards", ru:"Copilot, изображения, новости, Rewards", en:"Copilot, images, news, Rewards" } },
+    { id:"yahoo", cat:"global", icon:"🟣", name:"Yahoo Search",
+      url:"https://search.yahoo.com",
+      desc:{ uk:"Класичний портал; пошук часто базується на технологіях Bing. Зручний для новин і пошти Yahoo.",
+             ru:"Классический портал; поиск часто на технологиях Bing. Удобен для новостей и почты Yahoo.",
+             en:"Classic portal; search often powered by Bing. Handy with Yahoo news and mail." },
+      traits:{ uk:"Новини, фінанси, портал", ru:"Новости, финансы, портал", en:"News, finance, portal" } },
+    { id:"yandex", cat:"regional", icon:"🔴", name:"Яндекс",
+      url:"https://yandex.ru",
+      desc:{ uk:"Лідер у багатьох країнах СНД. Сильний локальний пошук, карти, переклад, нейромережі Alice / YandexGPT.",
+             ru:"Лидер во многих странах СНГ. Сильный локальный поиск, карты, перевод, нейросети Alice / YandexGPT.",
+             en:"Leader in many CIS countries. Strong local search, maps, translation, Alice / YandexGPT." },
+      traits:{ uk:"Локальний веб, карти, погода, переклад", ru:"Локальный веб, карты, погода, перевод", en:"Local web, maps, weather, translate" } },
+    { id:"baidu", cat:"regional", icon:"🐻", name:"Baidu",
+      url:"https://www.baidu.com",
+      desc:{ uk:"Домінуючий пошук у Китаї. Орієнтований на китайську мову, Baidu Baike, карти та сервіси Baidu.",
+             ru:"Доминирующий поиск в Китае. Ориентирован на китайский язык, Baidu Baike, карты и сервисы Baidu.",
+             en:"Dominant search in China. Tuned for Chinese language, Baike, maps and Baidu services." },
+      traits:{ uk:"Китайський веб, Baike, карти", ru:"Китайский веб, Baike, карты", en:"Chinese web, Baike, maps" } },
+    { id:"naver", cat:"regional", icon:"🟢", name:"Naver",
+      url:"https://www.naver.com",
+      desc:{ uk:"Провідний пошук і портал у Південній Кореї. Сильний у локальному контенті, блогах і сервісах.",
+             ru:"Ведущий поиск и портал в Южной Корее. Силён в локальном контенте, блогах и сервисах.",
+             en:"Leading search and portal in South Korea. Strong on local content, blogs and services." },
+      traits:{ uk:"Корейський веб, блоги, новини", ru:"Корейский веб, блоги, новости", en:"Korean web, blogs, news" } },
+    { id:"duckduckgo", cat:"privacy", icon:"🦆", name:"DuckDuckGo",
+      url:"https://duckduckgo.com",
+      desc:{ uk:"Пошук із акцентом на приватність: не відстежує користувачів для персоналізації реклами. Bang-команди (!w, !g тощо).",
+             ru:"Поиск с акцентом на приватность: не отслеживает пользователей для персонализации рекламы. Bang-команды (!w, !g и т.д.).",
+             en:"Privacy-focused search: no tracking for ad personalization. Bang commands (!w, !g, etc.)." },
+      traits:{ uk:"Без трекінгу, !bangs, простий інтерфейс", ru:"Без трекинга, !bangs, простой интерфейс", en:"No tracking, !bangs, simple UI" } },
+    { id:"startpage", cat:"privacy", icon:"🛡️", name:"Startpage",
+      url:"https://www.startpage.com",
+      desc:{ uk:"Показує результати Google без передачі вашої особи Google. Proxy для відкриття сторінок анонімно.",
+             ru:"Показывает результаты Google без передачи вашей личности Google. Proxy для анонимного открытия страниц.",
+             en:"Google-quality results without handing your identity to Google. Anonymous page proxy." },
+      traits:{ uk:"Анонімні результати Google, proxy", ru:"Анонимные результаты Google, proxy", en:"Anonymous Google results, proxy" } },
+    { id:"brave", cat:"privacy", icon:"🦁", name:"Brave Search",
+      url:"https://search.brave.com",
+      desc:{ uk:"Власний індекс Brave. Опція незалежного пошуку без великих трекерів; інтеграція з браузером Brave.",
+             ru:"Собственный индекс Brave. Независимый поиск без крупных трекеров; интеграция с браузером Brave.",
+             en:"Brave’s own index. Independent search without big trackers; integrates with Brave browser." },
+      traits:{ uk:"Власний індекс, Goggles, приватність", ru:"Собственный индекс, Goggles, приватность", en:"Own index, Goggles, privacy" } },
+    { id:"ecosia", cat:"privacy", icon:"🌳", name:"Ecosia",
+      url:"https://www.ecosia.org",
+      desc:{ uk:"Пошук, прибуток від якого йде на посадку дерев. Часто використовує Bing; прозорий звіт про екологію.",
+             ru:"Поиск, прибыль от которого идёт на посадку деревьев. Часто использует Bing; прозрачный эко-отчёт.",
+             en:"Search that funds tree planting. Often powered by Bing; transparent eco reporting." },
+      traits:{ uk:"Екологія, дерева, Bing-результати", ru:"Экология, деревья, результаты Bing", en:"Trees, eco impact, Bing results" } },
+    { id:"scholar", cat:"special", icon:"🎓", name:"Google Scholar",
+      url:"https://scholar.google.com",
+      desc:{ uk:"Академічний пошук: статті, цитування, PDF. Незамінний для науки, дипломів і літературного огляду.",
+             ru:"Академический поиск: статьи, цитирования, PDF. Незаменим для науки, дипломов и обзора литературы.",
+             en:"Academic search: papers, citations, PDFs. Essential for research and literature reviews." },
+      traits:{ uk:"Статті, цитати, профілі авторів", ru:"Статьи, цитаты, профили авторов", en:"Papers, citations, author profiles" } },
+    { id:"wolfram", cat:"special", icon:"📐", name:"WolframAlpha",
+      url:"https://www.wolframalpha.com",
+      desc:{ uk:"«Обчислювальна енциклопедія»: формули, графіки, факти, одиниці. Не пошук сторінок, а відповіді з розрахунками.",
+             ru:"«Вычислительная энциклопедия»: формулы, графики, факты, единицы. Не поиск страниц, а ответы с расчётами.",
+             en:"Computational knowledge: formulas, plots, facts, units. Answers with calculation, not just page links." },
+      traits:{ uk:"Математика, дані, розрахунки", ru:"Математика, данные, расчёты", en:"Math, data, computation" } },
+    { id:"archive", cat:"special", icon:"📚", name:"Internet Archive / Wayback",
+      url:"https://archive.org",
+      desc:{ uk:"Збережені копії сайтів у часі. Корисно, коли сторінка зникла або змінилася; величезна бібліотека медіа.",
+             ru:"Сохранённые копии сайтов во времени. Полезно, когда страница исчезла или изменилась; огромная медиатека.",
+             en:"Saved snapshots of sites over time. Useful when pages vanish or change; huge media library." },
+      traits:{ uk:"Архів вебу, книги, відео", ru:"Архив веба, книги, видео", en:"Web archive, books, video" } },
+    { id:"github_search", cat:"special", icon:"🐙", name:"GitHub Search / code search",
+      url:"https://github.com/search",
+      desc:{ uk:"Пошук коду, репозиторіїв, issues. Для розробників — знайти приклади, бібліотеки, CVE-патчі.",
+             ru:"Поиск кода, репозиториев, issues. Для разработчиков — примеры, библиотеки, CVE-патчи.",
+             en:"Code, repos and issues search. For developers: examples, libraries, CVE fixes." },
+      traits:{ uk:"Код, репо, open source", ru:"Код, репо, open source", en:"Code, repos, open source" } }
+];
+
+const content = {
+    whatis: {
+        uk: {
+            title: "Що таке пошукова система?",
+            body: `
+<p><strong>Пошукова система</strong> — сервіс, який за вашим запитом знаходить релевантні сторінки, файли чи відповіді в інтернеті (або у власній базі) і показує їх у зручному списку.</p>
+<h3>Як це працює (спрощено)</h3>
+<ol>
+<li><strong>Обхід (crawling)</strong> — роботи ходять по посиланнях і завантажують сторінки.</li>
+<li><strong>Індексація</strong> — текст і метадані кладуть у величезний пошуковий індекс.</li>
+<li><strong>Ранжування</strong> — за запитом алгоритм обирає й упорядковує результати (релевантність, якість, свіжість, локація, персоналізація).</li>
+<li><strong>Видача</strong> — заголовки, сніпети, інколи прямі відповіді, карти, товари, AI-огляд.</li>
+</ol>
+<p>Якість результату залежить і від системи, і від <strong>того, як ви сформулюєте запит</strong>. Нижче — практичний гайд.</p>
+`
+        },
+        ru: {
+            title: "Что такое поисковая система?",
+            body: `
+<p><strong>Поисковая система</strong> — сервис, который по вашему запросу находит релевантные страницы, файлы или ответы в интернете (или в своей базе) и показывает их удобным списком.</p>
+<h3>Как это работает (упрощённо)</h3>
+<ol>
+<li><strong>Обход (crawling)</strong> — роботы ходят по ссылкам и загружают страницы.</li>
+<li><strong>Индексация</strong> — текст и метаданные кладут в огромный поисковый индекс.</li>
+<li><strong>Ранжирование</strong> — по запросу алгоритм выбирает и упорядочивает результаты.</li>
+<li><strong>Выдача</strong> — заголовки, сниппеты, иногда прямые ответы, карты, товары, AI-обзор.</li>
+</ol>
+<p>Качество результата зависит и от системы, и от <strong>того, как вы сформулируете запрос</strong>.</p>
+`
+        },
+        en: {
+            title: "What is a search engine?",
+            body: `
+<p>A <strong>search engine</strong> finds relevant pages, files or answers on the web (or in its own database) for your query and shows them in a ranked list.</p>
+<h3>How it works (simplified)</h3>
+<ol>
+<li><strong>Crawling</strong> — bots follow links and fetch pages.</li>
+<li><strong>Indexing</strong> — text and metadata go into a huge index.</li>
+<li><strong>Ranking</strong> — an algorithm orders results by relevance, quality, freshness, location, personalization.</li>
+<li><strong>Results</strong> — titles, snippets, sometimes direct answers, maps, products, AI overviews.</li>
+</ol>
+<p>Result quality depends on the engine <em>and</em> on <strong>how you write the query</strong>.</p>
+`
+        }
+    },
+    howto: {
+        uk: {
+            title: "Як правильно шукати: формулювання запиту",
+            body: `
+<p>Пошуковик — не телепат. Чим точніше й структурованіше запит, тим краща видача.</p>
+
+<h3>Базові прийоми</h3>
+<ul>
+<li><strong>Ключові слова, не цілі речення «як у розмові»</strong> — краще <code>погода Київ завтра</code>, ніж «яка буде погода в Києві завтра будь ласка».</li>
+<li><strong>Уточнюйте</strong> — додайте рік, місто, мову, формат: <code>звіт IPCC 2023 pdf</code>.</li>
+<li><strong>Лапки</strong> — точна фраза: <code>"штучний інтелект"</code>.</li>
+<li><strong>Мінус</strong> — виключити слово: <code>python -змія</code> (мова, не тварина).</li>
+<li><strong>site:</strong> — лише на сайті: <code>site:wikipedia.org квантовий комп'ютер</code>.</li>
+<li><strong>filetype:</strong> — тип файлу: <code>filetype:pdf машинне навчання</code>.</li>
+<li><strong>OR / |</strong> — альтернативи: <code>НОТАРИУС OR нотаріус Київ</code>.</li>
+<li><strong>*</strong> — підстановка: <code>"кращий * для початківців"</code>.</li>
+</ul>
+
+<div class="tip"><strong>Порада:</strong> якщо видача «не та» — змініть 1–2 слова, додайте контекст (мова, країна, рік) або використайте іншу систему (наприклад Scholar для статей).</div>
+
+<h3>Оператори Google / Bing (часто працюють і в інших)</h3>
+<ul>
+<li><code>intitle:</code> — слово в заголовку сторінки</li>
+<li><code>inurl:</code> — слово в адресі</li>
+<li><code>before:</code> / <code>after:</code> — обмеження за датою (Google)</li>
+<li><code>related:</code> — схожі сайти</li>
+<li><code>cache:</code> — збережена копія (де підтримується)</li>
+</ul>
+
+<h3>Типові помилки</h3>
+<ul>
+<li>Занадто загальний запит («авто», «кредит») — отримаєте рекламу й поверхню.</li>
+<li>Орфографічні помилки без потреби (системи виправляють, але не завжди).</li>
+<li>Пошук цілою цитатою з помилкою — краще ключові фрагменти.</li>
+<li>Ігнорування мови інтерфейсу й регіону — увімкніть потрібну країну/мову в налаштуваннях.</li>
+</ul>
+`
+        },
+        ru: {
+            title: "Как правильно искать: формулировка запроса",
+            body: `
+<p>Поисковик — не телепат. Чем точнее и структурированнее запрос, тем лучше выдача.</p>
+<h3>Базовые приёмы</h3>
+<ul>
+<li><strong>Ключевые слова, не целые разговорные фразы</strong> — лучше <code>погода Киев завтра</code>.</li>
+<li><strong>Уточняйте</strong> — год, город, язык, формат: <code>отчёт IPCC 2023 pdf</code>.</li>
+<li><strong>Кавычки</strong> — точная фраза: <code>"искусственный интеллект"</code>.</li>
+<li><strong>Минус</strong> — исключить слово: <code>python -змея</code>.</li>
+<li><strong>site:</strong> — только на сайте: <code>site:wikipedia.org квантовый компьютер</code>.</li>
+<li><strong>filetype:</strong> — тип файла: <code>filetype:pdf машинное обучение</code>.</li>
+<li><strong>OR</strong> — альтернативы.</li>
+<li><strong>*</strong> — подстановка слова.</li>
+</ul>
+<div class="tip"><strong>Совет:</strong> если выдача «не та» — смените 1–2 слова, добавьте контекст или другую систему (Scholar для статей).</div>
+<h3>Операторы</h3>
+<ul>
+<li><code>intitle:</code>, <code>inurl:</code>, <code>before:</code>/<code>after:</code>, <code>related:</code>, <code>cache:</code></li>
+</ul>
+<h3>Типичные ошибки</h3>
+<ul>
+<li>Слишком общий запрос — реклама и «поверхность».</li>
+<li>Поиск целой цитаты с ошибкой.</li>
+<li>Игнор языка и региона в настройках.</li>
+</ul>
+`
+        },
+        en: {
+            title: "How to search well: writing the query",
+            body: `
+<p>A search engine is not a mind-reader. Clearer, structured queries get better results.</p>
+<h3>Basics</h3>
+<ul>
+<li><strong>Keywords, not full chatty sentences</strong> — prefer <code>weather Kyiv tomorrow</code>.</li>
+<li><strong>Add context</strong> — year, place, language, format: <code>IPCC report 2023 pdf</code>.</li>
+<li><strong>Quotes</strong> — exact phrase: <code>"artificial intelligence"</code>.</li>
+<li><strong>Minus</strong> — exclude a word: <code>python -snake</code>.</li>
+<li><strong>site:</strong> — only on a site: <code>site:wikipedia.org quantum computer</code>.</li>
+<li><strong>filetype:</strong> — file type: <code>filetype:pdf machine learning</code>.</li>
+<li><strong>OR</strong> — alternatives; <strong>*</strong> — wildcard.</li>
+</ul>
+<div class="tip"><strong>Tip:</strong> if results miss the mark, change 1–2 words, add context, or switch engine (e.g. Scholar for papers).</div>
+<h3>Operators</h3>
+<ul>
+<li><code>intitle:</code>, <code>inurl:</code>, <code>before:</code>/<code>after:</code>, <code>related:</code>, <code>cache:</code></li>
+</ul>
+<h3>Common mistakes</h3>
+<ul>
+<li>Overly broad queries → ads and shallow pages.</li>
+<li>Exact quotes with typos.</li>
+<li>Ignoring language/region settings.</li>
+</ul>
+`
+        }
+    },
+    querytypes: {
+        uk: {
+            title: "Типи пошукових запитів",
+            body: `
+<p>У SEO й аналітиці запити класифікують за частотою, наміром і довжиною. Це допомагає і маркетологам, і звичайним користувачам розуміти, чого чекати від видачі.</p>
+
+<h3>За частотою (як часто шукають)</h3>
+<ul>
+<li><strong>Високочастотні (ВЧ)</strong> — дуже популярні: <code>погода</code>, <code>youtube</code>, <code>новини</code>. Велика конкуренція, багато реклами, загальні відповіді.</li>
+<li><strong>Середньочастотні (СЧ)</strong> — вужчі: <code>погода Київ</code>, <code>новини України сьогодні</code>.</li>
+<li><strong>Низькочастотні (НЧ)</strong> — рідкісні й точні: <code>заміна термопасти ноутбук Lenovo IdeaPad 5 15ITL05</code>. Менше шуму, часто краща відповідь для вашої задачі.</li>
+<li><strong>Мікро-НЧ / long-tail</strong> — довгі «хвости»: 4+ слова, дуже конкретні. Корисні, коли шукаєте інструкцію чи унікальну проблему.</li>
+</ul>
+
+<h3>За наміром (intent)</h3>
+<ul>
+<li><strong>Інформаційні</strong> — «що таке», «як працює», «чому»: знання, статті, відео.</li>
+<li><strong>Навігаційні</strong> — знайти конкретний сайт: <code>facebook login</code>, <code>приват24</code>.</li>
+<li><strong>Транзакційні / комерційні</strong> — купити, замовити, ціна: <code>купити SSD 1TB</code>, <code>готель Львів бронювання</code>.</li>
+<li><strong>Локальні</strong> — біля мене: <code>стоматолог поруч</code>, <code>аптека відкрито зараз</code>.</li>
+</ul>
+
+<h3>За формою</h3>
+<ul>
+<li><strong>Короткі</strong> (1–2 слова) vs <strong>довгі / розмовні</strong> (як питання до людини — усе частіше працюють завдяки AI-пошуку).</li>
+<li><strong>Брендові</strong> — назва компанії чи продукт.</li>
+<li><strong>Медіа</strong> — пошук картинок, відео, новин, карт окремими вкладками.</li>
+</ul>
+
+<div class="tip"><strong>Для якісного пошуку:</strong> почніть з точного НЧ-запиту. Якщо результатів мало — спрощуйте крок за кроком. Якщо занадто багато сміття — додавайте уточнення (рік, модель, «pdf», «офіційний»).</div>
+`
+        },
+        ru: {
+            title: "Типы поисковых запросов",
+            body: `
+<p>В SEO и аналитике запросы делят по частоте, намерению и длине.</p>
+<h3>По частоте</h3>
+<ul>
+<li><strong>Высокочастотные (ВЧ)</strong> — <code>погода</code>, <code>youtube</code>. Много рекламы, общие ответы.</li>
+<li><strong>Среднечастотные (СЧ)</strong> — <code>погода Киев</code>.</li>
+<li><strong>Низкочастотные (НЧ)</strong> — точные редкие фразы; часто лучший ответ на вашу задачу.</li>
+<li><strong>Long-tail</strong> — длинные «хвосты» из 4+ слов.</li>
+</ul>
+<h3>По намерению (intent)</h3>
+<ul>
+<li><strong>Информационные</strong> — «что такое», «как работает».</li>
+<li><strong>Навигационные</strong> — найти конкретный сайт.</li>
+<li><strong>Транзакционные / коммерческие</strong> — купить, цена, заказать.</li>
+<li><strong>Локальные</strong> — «рядом», «открыто сейчас».</li>
+</ul>
+<h3>По форме</h3>
+<ul>
+<li>Короткие vs длинные/разговорные; брендовые; медиа (картинки, видео, новости).</li>
+</ul>
+<div class="tip"><strong>Практика:</strong> начинайте с точного НЧ-запроса; если пусто — упрощайте; если шум — уточняйте.</div>
+`
+        },
+        en: {
+            title: "Types of search queries",
+            body: `
+<p>In SEO and analytics, queries are grouped by frequency, intent and length.</p>
+<h3>By frequency</h3>
+<ul>
+<li><strong>Head / high-frequency</strong> — <code>weather</code>, <code>youtube</code>. Competitive, lots of ads.</li>
+<li><strong>Mid-frequency</strong> — <code>weather Kyiv</code>.</li>
+<li><strong>Long-tail / low-frequency</strong> — rare, specific phrases; often the best answer for your task.</li>
+</ul>
+<h3>By intent</h3>
+<ul>
+<li><strong>Informational</strong> — learn something.</li>
+<li><strong>Navigational</strong> — reach a known site.</li>
+<li><strong>Transactional / commercial</strong> — buy, book, price.</li>
+<li><strong>Local</strong> — near me, open now.</li>
+</ul>
+<h3>By form</h3>
+<ul>
+<li>Short vs conversational; branded; media (images, video, news).</li>
+</ul>
+<div class="tip"><strong>Practice:</strong> start specific (long-tail); broaden if empty; narrow if noisy.</div>
+`
+        }
+    },
+    tips: {
+        uk: {
+            title: "Якісний пошук у інтернеті: шпаргалка",
+            body: `
+<p><strong>Що це таке?</strong> Це короткий список практичних порад — «шпаргалка» у звичному сенсі: не окремий інструмент і не кнопка в браузері, а <em>нагадування правил</em>, які варто тримати в голові (або відкривати на цій сторінці), коли шукаєте щось важливе в інтернеті.</p>
+<p><strong>Як користуватися:</strong> перед пошуком або коли видача «не та» — прогляньте пункти нижче й застосуйте те, що пасує до вашої задачі (уточнити регіон, змінити систему, перевірити джерело тощо). Разом із розділами «Як формулювати запит» і «Типи запитів» це повний мінімум навичок якісного пошуку.</p>
+
+<h3>Швидкий чеклист</h3>
+<ul>
+<li><strong>Уточнюйте мову й регіон</strong> у налаштуваннях пошуку — від цього сильно залежить видача.</li>
+<li><strong>Перевіряйте джерело</strong> — офіційний сайт, дата, автор; особливо для здоров’я, грошей і новин.</li>
+<li><strong>Кілька систем</strong> — Google + Scholar / DuckDuckGo / спеціалізований сервіс дають різну картину.</li>
+<li><strong>Зображення й відео</strong> — окремі вкладки; для скріншотів інтерфейсу інколи кращий пошук по картинці.</li>
+<li><strong>AI-відповіді</strong> (огляди в Google, Copilot у Bing) зручні для старту, але <em>перевіряйте</em> посилання — моделі помиляються.</li>
+<li><strong>Приватність</strong> — режим інкогніто не робить вас анонімним для сайту; для меншого трекінгу — DuckDuckGo, Startpage, Brave Search.</li>
+<li><strong>Архів</strong> — якщо сторінка зникла: <code>archive.org</code>.</li>
+<li><strong>Код і помилки</strong> — точний текст помилки в лапках + назва програми чи мови.</li>
+</ul>
+
+<div class="tip"><strong>Мета пошуку</strong> — не «знайти хоч щось», а <strong>отримати достатньо надійну відповідь за мінімум часу</strong>. Точний запит + критичне читання заголовків і сніпетів — уже половина успіху.</div>
+`
+        },
+        ru: {
+            title: "Качественный поиск в интернете: шпаргалка",
+            body: `
+<p><strong>Что это такое?</strong> Это короткий список практических советов — «шпаргалка» в обычном смысле: не отдельный инструмент и не кнопка в браузере, а <em>напоминание правил</em>, которые стоит держать в голове (или открывать на этой странице), когда ищете что-то важное в интернете.</p>
+<p><strong>Как пользоваться:</strong> перед поиском или когда выдача «не та» — просмотрите пункты ниже и примените то, что подходит к вашей задаче (уточнить регион, сменить систему, проверить источник и т.д.). Вместе с разделами «Как формулировать запрос» и «Типы запросов» это полный минимум навыков качественного поиска.</p>
+
+<h3>Быстрый чеклист</h3>
+<ul>
+<li><strong>Язык и регион</strong> в настройках поиска — от этого сильно зависит выдача.</li>
+<li><strong>Проверяйте источник</strong> — официальность, дата, автор; особенно для здоровья, денег и новостей.</li>
+<li><strong>Несколько систем</strong> — Google + Scholar / DuckDuckGo / узкий сервис дают разную картину.</li>
+<li><strong>Изображения и видео</strong> — отдельные вкладки; для скриншотов интерфейса иногда лучше поиск по картинке.</li>
+<li><strong>AI-ответы</strong> удобны для старта, но <em>проверяйте</em> ссылки — модели ошибаются.</li>
+<li><strong>Приватность</strong> — режим инкогнито не делает вас анонимным для сайта; меньше трекинга — DuckDuckGo, Startpage, Brave Search.</li>
+<li><strong>Архив</strong> — если страница исчезла: <code>archive.org</code>.</li>
+<li><strong>Код и ошибки</strong> — точный текст ошибки в кавычках + название программы или языка.</li>
+</ul>
+
+<div class="tip"><strong>Цель поиска</strong> — не «найти хоть что-то», а <strong>получить достаточно надёжный ответ за минимум времени</strong>. Точный запрос + критическое чтение заголовков и сниппетов — уже половина успеха.</div>
+`
+        },
+        en: {
+            title: "Quality web search: cheat sheet",
+            body: `
+<p><strong>What is this?</strong> A short list of practical tips — a “cheat sheet” in the everyday sense: not a separate tool or browser button, but a <em>reminder of habits</em> to keep in mind (or open on this page) when you search for something important on the web.</p>
+<p><strong>How to use it:</strong> before searching, or when results look wrong, scan the points below and apply what fits your task (set region, switch engine, check the source, etc.). Together with “How to write a query” and “Query types”, this is a solid minimum for effective searching.</p>
+
+<h3>Quick checklist</h3>
+<ul>
+<li><strong>Language and region</strong> in search settings — they strongly affect results.</li>
+<li><strong>Check the source</strong> — official site, date, author; especially for health, money and news.</li>
+<li><strong>Use more than one engine</strong> — Google + Scholar / DuckDuckGo / a niche service give different views.</li>
+<li><strong>Images and video</strong> — separate tabs; for UI screenshots, reverse image search can help.</li>
+<li><strong>AI answers</strong> are a useful start — but <em>verify</em> the links; models make mistakes.</li>
+<li><strong>Privacy</strong> — Incognito does not make you anonymous to websites; less tracking: DuckDuckGo, Startpage, Brave Search.</li>
+<li><strong>Archives</strong> — if a page vanished: <code>archive.org</code>.</li>
+<li><strong>Code/errors</strong> — exact error text in quotes + product or language name.</li>
+</ul>
+
+<div class="tip"><strong>Goal of search</strong> — not “find anything”, but a <strong>reliable enough answer in minimal time</strong>. A precise query + critical reading of titles and snippets is already half the work.</div>
+`
+        }
+    }
+};
+
+const ui = {
+    uk: {
+        title: "Пошукові системи — довідник",
+        pageTitle: "🔍 Пошукові системи",
+        home: "Головна сторінка",
+        all: "Усі системи",
+        whatis: "💡 Що таке пошукова система?",
+        howto: "✍️ Як формулювати запит",
+        querytypes: "📊 Типи запитів (ВЧ, НЧ…)",
+        tips: "⭐ Якісний пошук — шпаргалка",
+        open: "Відкрити →",
+        traits: "Сильні сторони",
+        noResults: "Нічого не знайдено.",
+        footer: "🔍 Пошукові системи | 2026 | Код вільний для редагування"
+    },
+    ru: {
+        title: "Поисковые системы — справочник",
+        pageTitle: "🔍 Поисковые системы",
+        home: "Главная страница",
+        all: "Все системы",
+        whatis: "💡 Что такое поисковая система?",
+        howto: "✍️ Как формулировать запрос",
+        querytypes: "📊 Типы запросов (ВЧ, НЧ…)",
+        tips: "⭐ Качественный поиск — шпаргалка",
+        open: "Открыть →",
+        traits: "Сильные стороны",
+        noResults: "Ничего не найдено.",
+        footer: "🔍 Поисковые системы | 2026 | Код свободен для редактирования"
+    },
+    en: {
+        title: "Search engines — guide",
+        pageTitle: "🔍 Search engines",
+        home: "Home page",
+        all: "All engines",
+        whatis: "💡 What is a search engine?",
+        howto: "✍️ How to write a query",
+        querytypes: "📊 Query types (head, long-tail…)",
+        tips: "⭐ Quality search cheat sheet",
+        open: "Open →",
+        traits: "Strengths",
+        noResults: "Nothing found.",
+        footer: "🔍 Search engines | 2026 | Code is free to edit"
+    }
+};
+
+let currentLang = localStorage.getItem('lang-search-eng') || 'uk';
+let activeCategory = 'whatis';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang-search-eng', lang);
+    document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+    ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+    document.title = ui[lang].title;
+    document.getElementById('home-link').textContent = ui[lang].home;
+    document.getElementById('page-title').textContent = ui[lang].pageTitle;
+    renderFilters();
+    render();
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const cur = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+function renderFilters() {
+    const c = document.getElementById('filters');
+    let h = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+    h += `<button class="filter-btn ${activeCategory==='whatis'?'active':''}" onclick="setCat('whatis')">${ui[currentLang].whatis}</button>`;
+    h += `<button class="filter-btn ${activeCategory==='howto'?'active':''}" onclick="setCat('howto')">${ui[currentLang].howto}</button>`;
+    h += `<button class="filter-btn ${activeCategory==='querytypes'?'active':''}" onclick="setCat('querytypes')">${ui[currentLang].querytypes}</button>`;
+    h += `<button class="filter-btn ${activeCategory==='tips'?'active':''}" onclick="setCat('tips')">${ui[currentLang].tips}</button>`;
+    for (const [k,v] of Object.entries(categories)) {
+        h += `<button class="filter-btn ${activeCategory===k?'active':''}" onclick="setCat('${k}')">${v[currentLang]}</button>`;
+    }
+    c.innerHTML = h;
+}
+
+function setCat(cat) {
+    activeCategory = cat;
+    renderFilters();
+    render();
+}
+
+function render() {
+    const main = document.getElementById('main');
+
+    if (['whatis','howto','querytypes','tips'].includes(activeCategory)) {
+        const o = content[activeCategory][currentLang];
+        main.innerHTML = `<div class="intro"><h2>${o.title}</h2>${o.body}</div>`;
+        document.getElementById('footer').textContent = ui[currentLang].footer;
+        return;
+    }
+
+    let html = '';
+    const cats = (activeCategory === 'all')
+        ? Object.keys(categories)
+        : [activeCategory];
+
+    cats.forEach(catKey => {
+        const list = engines.filter(e => e.cat === catKey);
+        if (!list.length) return;
+        html += `<div class="section-title">${categories[catKey][currentLang]}</div><div class="grid">`;
+        list.forEach(e => {
+            const tags = e.traits[currentLang].split(',').map(t => `<span class="tag">${t.trim()}</span>`).join('');
+            html += `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">${e.icon}</div>
+                        <div class="card-title">${e.name}</div>
+                    </div>
+                    <div class="card-desc">${e.desc[currentLang]}</div>
+                    <div class="card-meta">
+                        <strong>${ui[currentLang].traits}</strong>
+                        <div style="margin-top:0.25rem">${tags}</div>
+                    </div>
+                    <a href="${e.url}" target="_blank" rel="noopener" class="card-link">${ui[currentLang].open}</a>
+                </div>`;
+        });
+        html += `</div>`;
+    });
+
+    if (!html) html = `<div class="no-results">${ui[currentLang].noResults}</div>`;
+    main.innerHTML = html;
+    document.getElementById('footer').textContent = ui[currentLang].footer;
+}
+
+setLang(currentLang);
+</script>
+</body>
+</html>

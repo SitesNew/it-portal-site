@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Інтернет речей (IoT) — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">📡 Інтернет речей (IoT)</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    const categories = {
+        foundations: {
+            uk: "📘 Основи IoT",
+            ru: "📘 Основы IoT",
+            en: "📘 IoT Foundations"
+        },
+        connectivity: {
+            uk: "📶 Зв’язок і протоколи",
+            ru: "📶 Связь и протоколы",
+            en: "📶 Connectivity & Protocols"
+        },
+        platforms: {
+            uk: "☁️ Платформи та хмара",
+            ru: "☁️ Платформы и облако",
+            en: "☁️ Platforms & Cloud"
+        },
+        applications: {
+            uk: "🏭 Застосування",
+            ru: "🏭 Применения",
+            en: "🏭 Applications"
+        },
+        security: {
+            uk: "🔐 Безпека та виклики",
+            ru: "🔐 Безопасность и вызовы",
+            en: "🔐 Security & Challenges"
+        }
+    };
+
+    const items = [
+        {
+            cat: "foundations",
+            icon: "🌐",
+            name: {
+                uk: "Що таке Інтернет речей",
+                ru: "Что такое Интернет вещей",
+                en: "What is the Internet of Things"
+            },
+            desc: {
+                uk: "IoT — мережа фізичних пристроїв (датчики, актуатори, гаджети), підключених до інтернету, які збирають, обмінюються даними та можуть діяти автономно або за командою. Від розумного будинку до промислових заводів.",
+                ru: "IoT — сеть физических устройств (датчики, актуаторы, гаджеты), подключенных к интернету, которые собирают, обмениваются данными и могут действовать автономно или по команде. От умного дома до промышленных заводов.",
+                en: "IoT is a network of physical devices (sensors, actuators, gadgets) connected to the internet that collect, exchange data and can act autonomously or on command. From smart homes to industrial plants."
+            },
+            traits: {
+                uk: "Датчики, Актутори, Підключення, Дані, Автоматизація",
+                ru: "Датчики, Актуаторы, Подключение, Данные, Автоматизация",
+                en: "Sensors, Actuators, Connectivity, Data, Automation"
+            },
+            spec: {
+                uk: "Мільярди пристроїв уже «онлайн»",
+                ru: "Миллиарды устройств уже «онлайн»",
+                en: "Billions of devices are already “online”"
+            },
+            links: [
+                { name: "IoT Explained (IBM)", url: "https://www.ibm.com/topics/internet-of-things" },
+                { name: "IoT Analytics", url: "https://iot-analytics.com" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "🧱",
+            name: {
+                uk: "Архітектура IoT-систем",
+                ru: "Архитектура IoT-систем",
+                en: "IoT System Architecture"
+            },
+            desc: {
+                uk: "Типові шари: пристрої (edge) → шлюзи / edge computing → мережа → хмара / платформа → додатки та аналітика. Дані можуть оброблятися ближче до джерела (edge) або в центрі (cloud).",
+                ru: "Типичные слои: устройства (edge) → шлюзы / edge computing → сеть → облако / платформа → приложения и аналитика. Данные могут обрабатываться ближе к источнику (edge) или в центре (cloud).",
+                en: "Typical layers: devices (edge) → gateways / edge computing → network → cloud / platform → applications and analytics. Data can be processed closer to the source (edge) or in the center (cloud)."
+            },
+            traits: {
+                uk: "Edge, Gateway, Cloud, Дані, Шари архітектури",
+                ru: "Edge, Gateway, Cloud, Данные, Слои архитектуры",
+                en: "Edge, Gateway, Cloud, Data, Architecture layers"
+            },
+            spec: {
+                uk: "Edge зменшує затримку і трафік",
+                ru: "Edge снижает задержку и трафик",
+                en: "Edge reduces latency and traffic"
+            },
+            links: [
+                { name: "IoT Architecture Overview", url: "https://www.microsoft.com/en-us/internet-of-things/internet-of-things-architecture" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "📟",
+            name: {
+                uk: "Датчики, актуатори та мікроконтролери",
+                ru: "Датчики, актуаторы и микроконтроллеры",
+                en: "Sensors, Actuators and Microcontrollers"
+            },
+            desc: {
+                uk: "Датчики вимірюють світ (температура, вологість, рух, GPS). Актутори діють (реле, мотори, клапани). Мікроконтролери (ESP32, STM32, Arduino, Raspberry Pi) керують логікою на місці.",
+                ru: "Датчики измеряют мир (температура, влажность, движение, GPS). Актуаторы действуют (реле, моторы, клапаны). Микроконтроллеры (ESP32, STM32, Arduino, Raspberry Pi) управляют логикой на месте.",
+                en: "Sensors measure the world (temperature, humidity, motion, GPS). Actuators act (relays, motors, valves). Microcontrollers (ESP32, STM32, Arduino, Raspberry Pi) run local logic."
+            },
+            traits: {
+                uk: "ESP32, Arduino, STM32, Raspberry Pi, Датчики, Актутори",
+                ru: "ESP32, Arduino, STM32, Raspberry Pi, Датчики, Актуаторы",
+                en: "ESP32, Arduino, STM32, Raspberry Pi, Sensors, Actuators"
+            },
+            spec: {
+                uk: "Вибір «заліза» залежить від енергії, ціни та завдань",
+                ru: "Выбор «железа» зависит от энергии, цены и задач",
+                en: "Hardware choice depends on power, cost and tasks"
+            },
+            links: [
+                { name: "Arduino", url: "https://www.arduino.cc" },
+                { name: "ESP32", url: "https://www.espressif.com/en/products/socs/esp32" },
+                { name: "Raspberry Pi", url: "https://www.raspberrypi.com" }
+            ]
+        },
+        {
+            cat: "connectivity",
+            icon: "📡",
+            name: {
+                uk: "Протоколи короткої дальності",
+                ru: "Протоколы короткой дальности",
+                en: "Short-Range Protocols"
+            },
+            desc: {
+                uk: "Wi-Fi, Bluetooth / BLE, Zigbee, Z-Wave, Thread, NFC. Використовуються в розумному будинку, носимих пристроях і локальних мережах. Важливі енергоспоживання, дальність і сумісність.",
+                ru: "Wi-Fi, Bluetooth / BLE, Zigbee, Z-Wave, Thread, NFC. Используются в умном доме, носимых устройствах и локальных сетях. Важны энергопотребление, дальность и совместимость.",
+                en: "Wi-Fi, Bluetooth / BLE, Zigbee, Z-Wave, Thread, NFC. Used in smart home, wearables and local networks. Power consumption, range and interoperability matter."
+            },
+            traits: {
+                uk: "Wi-Fi, BLE, Zigbee, Thread, Z-Wave, Mesh",
+                ru: "Wi-Fi, BLE, Zigbee, Thread, Z-Wave, Mesh",
+                en: "Wi-Fi, BLE, Zigbee, Thread, Z-Wave, Mesh"
+            },
+            spec: {
+                uk: "Matter прагне уніфікувати розумний дім",
+                ru: "Matter стремится унифицировать умный дом",
+                en: "Matter aims to unify the smart home"
+            },
+            links: [
+                { name: "Matter Protocol", url: "https://csa-iot.org/all-solutions/matter/" },
+                { name: "Zigbee Alliance", url: "https://csa-iot.org" }
+            ]
+        },
+        {
+            cat: "connectivity",
+            icon: "📶",
+            name: {
+                uk: "Мережі дальнього радіусу (LPWAN)",
+                ru: "Сети дальнего радиуса (LPWAN)",
+                en: "Long-Range Networks (LPWAN)"
+            },
+            desc: {
+                uk: "LoRaWAN, NB-IoT, LTE-M, Sigfox — для пристроїв з низьким енергоспоживанням і великою дальністю (кілометри). Ідеально для сенсорів у полі, містах, логістиці.",
+                ru: "LoRaWAN, NB-IoT, LTE-M, Sigfox — для устройств с низким энергопотреблением и большой дальностью (километры). Идеально для сенсоров в поле, городах, логистике.",
+                en: "LoRaWAN, NB-IoT, LTE-M, Sigfox — for low-power devices with long range (kilometers). Ideal for field sensors, cities, logistics."
+            },
+            traits: {
+                uk: "LoRaWAN, NB-IoT, LTE-M, Низьке споживання, Велика дальність",
+                ru: "LoRaWAN, NB-IoT, LTE-M, Низкое потребление, Большая дальность",
+                en: "LoRaWAN, NB-IoT, LTE-M, Low power, Long range"
+            },
+            spec: {
+                uk: "LPWAN — основа масового IoT",
+                ru: "LPWAN — основа массового IoT",
+                en: "LPWAN is the foundation of mass IoT"
+            },
+            links: [
+                { name: "LoRa Alliance", url: "https://lora-alliance.org" },
+                { name: "NB-IoT explainer", url: "https://www.gsma.com/iot/narrow-band-internet-of-things-nb-iot/" }
+            ]
+        },
+        {
+            cat: "connectivity",
+            icon: "📨",
+            name: {
+                uk: "Протоколи обміну повідомленнями",
+                ru: "Протоколы обмена сообщениями",
+                en: "Messaging Protocols"
+            },
+            desc: {
+                uk: "MQTT — легкий pub/sub для IoT. CoAP — для обмежених пристроїв. HTTP/HTTPS — коли потрібна сумісність з вебом. AMQP, DDS — у складніших промислових сценаріях.",
+                ru: "MQTT — легкий pub/sub для IoT. CoAP — для ограниченных устройств. HTTP/HTTPS — когда нужна совместимость с вебом. AMQP, DDS — в более сложных промышленных сценариях.",
+                en: "MQTT is a lightweight pub/sub for IoT. CoAP for constrained devices. HTTP/HTTPS when web compatibility is needed. AMQP, DDS in more complex industrial scenarios."
+            },
+            traits: {
+                uk: "MQTT, CoAP, HTTP, Pub/Sub, Легкість, Надійність",
+                ru: "MQTT, CoAP, HTTP, Pub/Sub, Легкость, Надежность",
+                en: "MQTT, CoAP, HTTP, Pub/Sub, Lightweight, Reliability"
+            },
+            spec: {
+                uk: "MQTT — стандарт де-факто для IoT-повідомлень",
+                ru: "MQTT — стандарт де-факто для IoT-сообщений",
+                en: "MQTT is the de-facto standard for IoT messaging"
+            },
+            links: [
+                { name: "MQTT.org", url: "https://mqtt.org" },
+                { name: "Eclipse Mosquitto", url: "https://mosquitto.org" },
+                { name: "CoAP", url: "https://coap.technology" }
+            ]
+        },
+        {
+            cat: "platforms",
+            icon: "☁️",
+            name: {
+                uk: "Хмарні IoT-платформи",
+                ru: "Облачные IoT-платформы",
+                en: "Cloud IoT Platforms"
+            },
+            desc: {
+                uk: "AWS IoT, Azure IoT Hub, Google Cloud IoT, тощо. Забезпечують підключення пристроїв, управління, маршрутизацію повідомлень, безпеку, інтеграцію з аналітикою та ML.",
+                ru: "AWS IoT, Azure IoT Hub, Google Cloud IoT и др. Обеспечивают подключение устройств, управление, маршрутизацию сообщений, безопасность, интеграцию с аналитикой и ML.",
+                en: "AWS IoT, Azure IoT Hub, Google Cloud IoT, etc. Provide device connectivity, management, message routing, security, integration with analytics and ML."
+            },
+            traits: {
+                uk: "AWS IoT, Azure IoT, Device management, Rules, Інтеграції",
+                ru: "AWS IoT, Azure IoT, Device management, Rules, Интеграции",
+                en: "AWS IoT, Azure IoT, Device management, Rules, Integrations"
+            },
+            spec: {
+                uk: "Хмара спрощує масштабування IoT",
+                ru: "Облако упрощает масштабирование IoT",
+                en: "Cloud simplifies IoT scaling"
+            },
+            links: [
+                { name: "AWS IoT", url: "https://aws.amazon.com/iot/" },
+                { name: "Azure IoT", url: "https://azure.microsoft.com/en-us/products/iot-hub/" },
+                { name: "Google Cloud IoT", url: "https://cloud.google.com/iot-core" }
+            ]
+        },
+        {
+            cat: "platforms",
+            icon: "🔧",
+            name: {
+                uk: "Open-source та self-hosted рішення",
+                ru: "Open-source и self-hosted решения",
+                en: "Open-Source and Self-Hosted Solutions"
+            },
+            desc: {
+                uk: "Home Assistant, ThingsBoard, Node-RED, OpenHAB, Eclipse IoT — дозволяють будувати IoT без прив’язки до хмари вендора. Популярні для розумного будинку, прототипів і on-premise.",
+                ru: "Home Assistant, ThingsBoard, Node-RED, OpenHAB, Eclipse IoT — позволяют строить IoT без привязки к облаку вендора. Популярны для умного дома, прототипов и on-premise.",
+                en: "Home Assistant, ThingsBoard, Node-RED, OpenHAB, Eclipse IoT — enable IoT without vendor cloud lock-in. Popular for smart home, prototypes and on-premise."
+            },
+            traits: {
+                uk: "Home Assistant, ThingsBoard, Node-RED, OpenHAB, Self-hosted",
+                ru: "Home Assistant, ThingsBoard, Node-RED, OpenHAB, Self-hosted",
+                en: "Home Assistant, ThingsBoard, Node-RED, OpenHAB, Self-hosted"
+            },
+            spec: {
+                uk: "Контроль даних і відсутність vendor lock-in",
+                ru: "Контроль данных и отсутствие vendor lock-in",
+                en: "Data control and no vendor lock-in"
+            },
+            links: [
+                { name: "Home Assistant", url: "https://www.home-assistant.io" },
+                { name: "ThingsBoard", url: "https://thingsboard.io" },
+                { name: "Node-RED", url: "https://nodered.org" }
+            ]
+        },
+        {
+            cat: "platforms",
+            icon: "⚡",
+            name: {
+                uk: "Edge computing в IoT",
+                ru: "Edge computing в IoT",
+                en: "Edge Computing in IoT"
+            },
+            desc: {
+                uk: "Обробка даних ближче до пристроїв: зменшення затримки, економія трафіку, робота офлайн, приватність. Використовується в промисловості, автономному транспорті, відеоаналітиці.",
+                ru: "Обработка данных ближе к устройствам: снижение задержки, экономия трафика, работа офлайн, приватность. Используется в промышленности, автономном транспорте, видеоаналитике.",
+                en: "Processing data closer to devices: lower latency, less traffic, offline operation, privacy. Used in industry, autonomous transport, video analytics."
+            },
+            traits: {
+                uk: "Edge, Локальна обробка, Низька затримка, Офлайн, Приватність",
+                ru: "Edge, Локальная обработка, Низкая задержка, Офлайн, Приватность",
+                en: "Edge, Local processing, Low latency, Offline, Privacy"
+            },
+            spec: {
+                uk: "Не все треба відправляти в хмару",
+                ru: "Не всё нужно отправлять в облако",
+                en: "Not everything needs to go to the cloud"
+            },
+            links: [
+                { name: "Edge Computing explained", url: "https://www.ibm.com/topics/edge-computing" }
+            ]
+        },
+        {
+            cat: "applications",
+            icon: "🏠",
+            name: {
+                uk: "Розумний будинок і споживацький IoT",
+                ru: "Умный дом и потребительский IoT",
+                en: "Smart Home and Consumer IoT"
+            },
+            desc: {
+                uk: "Освітлення, клімат, безпека, побутова техніка, колонки з голосовими асистентами. Matter, HomeKit, Google Home, Alexa — екосистеми, що прагнуть сумісності.",
+                ru: "Освещение, климат, безопасность, бытовая техника, колонки с голосовыми ассистентами. Matter, HomeKit, Google Home, Alexa — экосистемы, стремящиеся к совместимости.",
+                en: "Lighting, climate, security, appliances, speakers with voice assistants. Matter, HomeKit, Google Home, Alexa — ecosystems aiming for interoperability."
+            },
+            traits: {
+                uk: "Matter, HomeKit, Alexa, Google Home, Автоматизації",
+                ru: "Matter, HomeKit, Alexa, Google Home, Автоматизации",
+                en: "Matter, HomeKit, Alexa, Google Home, Automations"
+            },
+            spec: {
+                uk: "Зручність vs приватність — постійний баланс",
+                ru: "Удобство vs приватность — постоянный баланс",
+                en: "Convenience vs privacy — a constant balance"
+            },
+            links: [
+                { name: "Matter", url: "https://csa-iot.org/all-solutions/matter/" },
+                { name: "Home Assistant", url: "https://www.home-assistant.io" }
+            ]
+        },
+        {
+            cat: "applications",
+            icon: "🏭",
+            name: {
+                uk: "Промисловий IoT (IIoT)",
+                ru: "Промышленный IoT (IIoT)",
+                en: "Industrial IoT (IIoT)"
+            },
+            desc: {
+                uk: "Моніторинг обладнання, предиктивне обслуговування, оптимізація виробництва, цифрові двійники. Високі вимоги до надійності, безпеки та інтеграції з SCADA/PLC.",
+                ru: "Мониторинг оборудования, предиктивное обслуживание, оптимизация производства, цифровые двойники. Высокие требования к надежности, безопасности и интеграции с SCADA/PLC.",
+                en: "Equipment monitoring, predictive maintenance, production optimization, digital twins. High requirements for reliability, security and integration with SCADA/PLC."
+            },
+            traits: {
+                uk: "Предиктивне ТО, Digital Twin, SCADA, Надійність, OT/IT",
+                ru: "Предиктивное ТО, Digital Twin, SCADA, Надежность, OT/IT",
+                en: "Predictive maintenance, Digital Twin, SCADA, Reliability, OT/IT"
+            },
+            spec: {
+                uk: "IIoT дає вимірювану економію та безпеку",
+                ru: "IIoT дает измеримую экономию и безопасность",
+                en: "IIoT delivers measurable savings and safety"
+            },
+            links: [
+                { name: "IIoT explained", url: "https://www.ibm.com/topics/industrial-iot" },
+                { name: "OPC UA", url: "https://opcfoundation.org" }
+            ]
+        },
+        {
+            cat: "applications",
+            icon: "🏙️",
+            name: {
+                uk: "Розумні міста та інфраструктура",
+                ru: "Умные города и инфраструктура",
+                en: "Smart Cities and Infrastructure"
+            },
+            desc: {
+                uk: "Освітлення вулиць, паркування, якість повітря, управління відходами, транспорт. IoT допомагає містам ефективніше використовувати ресурси та покращувати якість життя.",
+                ru: "Освещение улиц, парковка, качество воздуха, управление отходами, транспорт. IoT помогает городам эффективнее использовать ресурсы и улучшать качество жизни.",
+                en: "Street lighting, parking, air quality, waste management, transport. IoT helps cities use resources more efficiently and improve quality of life."
+            },
+            traits: {
+                uk: "Освітлення, Паркування, Екологія, Транспорт, Дані міста",
+                ru: "Освещение, Парковка, Экология, Транспорт, Данные города",
+                en: "Lighting, Parking, Environment, Transport, City data"
+            },
+            spec: {
+                uk: "Масштаб і інтероперабельність — головні виклики",
+                ru: "Масштаб и интероперабельность — главные вызовы",
+                en: "Scale and interoperability are the main challenges"
+            },
+            links: [
+                { name: "Smart Cities Council", url: "https://www.smartcitiescouncil.com" }
+            ]
+        },
+        {
+            cat: "applications",
+            icon: "🚚",
+            name: {
+                uk: "Логістика, сільське господарство, охорона здоров’я",
+                ru: "Логистика, сельское хозяйство, здравоохранение",
+                en: "Logistics, Agriculture, Healthcare"
+            },
+            desc: {
+                uk: "Трекінг вантажів і холодового ланцюга, точне землеробство (датчики ґрунту, дрони), віддалений моніторинг пацієнтів і медичні носимі пристрої — типові vertical-застосування IoT.",
+                ru: "Трекинг грузов и холодовой цепи, точное земледелие (датчики почвы, дроны), удаленный мониторинг пациентов и медицинские носимые устройства — типичные vertical-применения IoT.",
+                en: "Cargo and cold-chain tracking, precision agriculture (soil sensors, drones), remote patient monitoring and medical wearables — typical vertical IoT applications."
+            },
+            traits: {
+                uk: "Трекінг, Precision ag, Wearables, Холодовий ланцюг, Моніторинг",
+                ru: "Трекинг, Precision ag, Wearables, Холодовая цепь, Мониторинг",
+                en: "Tracking, Precision ag, Wearables, Cold chain, Monitoring"
+            },
+            spec: {
+                uk: "Кожна галузь має свої вимоги до надійності",
+                ru: "Каждая отрасль имеет свои требования к надежности",
+                en: "Each industry has its own reliability requirements"
+            },
+            links: [
+                { name: "IoT in Agriculture", url: "https://www.ibm.com/topics/internet-of-things" }
+            ]
+        },
+        {
+            cat: "security",
+            icon: "🔒",
+            name: {
+                uk: "Безпека IoT",
+                ru: "Безопасность IoT",
+                en: "IoT Security"
+            },
+            desc: {
+                uk: "Слабкі паролі, незашифрований трафік, відсутність оновлень, фізичний доступ — типові ризики. Потрібні: безпечне завантаження, шифрування, ідентифікація пристроїв, оновлення прошивки, сегментація мережі.",
+                ru: "Слабые пароли, незашифрованный трафик, отсутствие обновлений, физический доступ — типичные риски. Нужны: безопасная загрузка, шифрование, идентификация устройств, обновления прошивки, сегментация сети.",
+                en: "Weak passwords, unencrypted traffic, missing updates, physical access — typical risks. Needed: secure boot, encryption, device identity, firmware updates, network segmentation."
+            },
+            traits: {
+                uk: "Шифрування, Оновлення, Ідентичність пристрою, Zero Trust, Сегментація",
+                ru: "Шифрование, Обновления, Идентичность устройства, Zero Trust, Сегментация",
+                en: "Encryption, Updates, Device identity, Zero Trust, Segmentation"
+            },
+            spec: {
+                uk: "Незахищений IoT — вхідна точка для атак",
+                ru: "Незащищенный IoT — точка входа для атак",
+                en: "Insecure IoT is an entry point for attacks"
+            },
+            links: [
+                { name: "OWASP IoT", url: "https://owasp.org/www-project-internet-of-things/" },
+                { name: "NIST IoT Security", url: "https://www.nist.gov/itl/applied-cybersecurity/nist-initiatives-iot" }
+            ]
+        },
+        {
+            cat: "security",
+            icon: "⚠️",
+            name: {
+                uk: "Виклики та обмеження IoT",
+                ru: "Вызовы и ограничения IoT",
+                en: "IoT Challenges and Limitations"
+            },
+            desc: {
+                uk: "Енергоспоживання, масштаб (мільйони пристроїв), сумісність протоколів, приватність даних, вартість підтримки, складність інтеграції OT і IT. Успішний IoT вимагає дисципліни на всіх рівнях.",
+                ru: "Энергопотребление, масштаб (миллионы устройств), совместимость протоколов, приватность данных, стоимость поддержки, сложность интеграции OT и IT. Успешный IoT требует дисциплины на всех уровнях.",
+                en: "Power consumption, scale (millions of devices), protocol interoperability, data privacy, support cost, OT/IT integration complexity. Successful IoT requires discipline at every layer."
+            },
+            traits: {
+                uk: "Енергія, Масштаб, Сумісність, Приватність, Підтримка, OT/IT",
+                ru: "Энергия, Масштаб, Совместимость, Приватность, Поддержка, OT/IT",
+                en: "Power, Scale, Interoperability, Privacy, Support, OT/IT"
+            },
+            spec: {
+                uk: "Технологія — лише частина успіху",
+                ru: "Технология — только часть успеха",
+                en: "Technology is only part of success"
+            },
+            links: [
+                { name: "IoT Challenges", url: "https://www.gartner.com/en/information-technology/insights/internet-of-things" }
+            ]
+        }
+    ];
+
+    const ui = {
+        uk: {
+            title: "Інтернет речей (IoT) — Довідник",
+            pageTitle: "📡 Інтернет речей (IoT)",
+            home: "Головна сторінка",
+            all: "Усі розділи",
+            traits: "Ключові елементи та поняття",
+            mfgText: "Корисні ресурси:",
+            noResults: "Нічого не знайдено.",
+            footer: "📡 Інтернет речей (IoT) | Довідник 2026",
+            introTitle: "Що таке Інтернет речей (IoT)?",
+            intro1: "Інтернет речей (Internet of Things) — це мережа фізичних пристроїв із датчиками, програмним забезпеченням і підключенням до мережі, які збирають і обмінюються даними. Від розумної лампочки до промислового датчика на заводі — усе це IoT.",
+            intro2: "Сучасний IoT охоплює протоколи зв’язку, edge і хмарні платформи, безпеку, аналітику та застосування в будинках, містах, промисловості, логістиці й охороні здоров’я. Розуміння цих рівнів допомагає будувати надійні та корисні IoT-рішення."
+        },
+        ru: {
+            title: "Интернет вещей (IoT) — Справочник",
+            pageTitle: "📡 Интернет вещей (IoT)",
+            home: "Главная страница",
+            all: "Все разделы",
+            traits: "Ключевые элементы и понятия",
+            mfgText: "Полезные ресурсы:",
+            noResults: "Ничего не найдено.",
+            footer: "📡 Интернет вещей (IoT) | Справочник 2026",
+            introTitle: "Что такое Интернет вещей (IoT)?",
+            intro1: "Интернет вещей (Internet of Things) — это сеть физических устройств с датчиками, программным обеспечением и подключением к сети, которые собирают и обмениваются данными. От умной лампочки до промышленного датчика на заводе — всё это IoT.",
+            intro2: "Современный IoT охватывает протоколы связи, edge и облачные платформы, безопасность, аналитику и применения в домах, городах, промышленности, логистике и здравоохранении. Понимание этих уровней помогает строить надежные и полезные IoT-решения."
+        },
+        en: {
+            title: "Internet of Things (IoT) — Guide",
+            pageTitle: "📡 Internet of Things (IoT)",
+            home: "Home page",
+            all: "All sections",
+            traits: "Key concepts and elements",
+            mfgText: "Useful resources:",
+            noResults: "Nothing found.",
+            footer: "📡 Internet of Things (IoT) | Guide 2026",
+            introTitle: "What is the Internet of Things (IoT)?",
+            intro1: "The Internet of Things is a network of physical devices with sensors, software and network connectivity that collect and exchange data. From a smart light bulb to an industrial sensor on a factory floor — that is IoT.",
+            intro2: "Modern IoT covers communication protocols, edge and cloud platforms, security, analytics and applications in homes, cities, industry, logistics and healthcare. Understanding these layers helps build reliable and useful IoT solutions."
+        }
+    };
+
+    let currentLang = safeGet("lang-iot", "uk");
+    let activeCategory = "all";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-iot", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + "</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) { return e.cat === catKey; });
+            if (!list.length) return;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        main.innerHTML = html || ('<div class="no-results">' + ui[currentLang].noResults + "</div>");
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Навчально-методичний довідник: Що таке Інформаційні Технології?</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --text-muted: #596575;
+            --accent-color: #2563eb;
+            --header-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --footer-bg: #1e293b;
+            --footer-text: #cbd5e1;
+            --nav-bg: #ffffff;
+            --nav-text: #334155;
+            --hero-bg: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f1f5f9;
+            --text-muted: #94a3b8;
+            --accent-color: #3b82f6;
+            --header-bg: #0f172a;
+            --border-color: #334155;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --footer-bg: #020617;
+            --footer-text: #94a3b8;
+            --nav-bg: #1e293b;
+            --nav-text: #f1f5f9;
+            --hero-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        /* Плавний скрол для всієї сторінки */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 
+           ВИПРАВЛЕННЯ АДРЕСАЦІЇ МЕНЮ:
+           Задає відступ зверху для елементів з ID під час прокручування за якорем, 
+           щоб шапка не перекривала заголовки розділів.
+        */
+        [id] {
+            scroll-margin-top: 90px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header & Navigation */
+        header {
+            background-color: var(--nav-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            color: var(--nav-text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        nav a:hover {
+            color: var(--accent-color);
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .lang-select {
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--border-color);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            flex: 1;
+        }
+
+        /* Hero / Title */
+        .hero {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .hero-img-container {
+            margin: 1.5rem 0;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .hero-img-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Info Blocks Header Text */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .info-card {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
+        }
+
+        .info-card h3 {
+            margin-bottom: 0.75rem;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        /* Sections Category Grid */
+        .section-title {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .category-group {
+            margin-bottom: 2.5rem;
+        }
+
+        .category-header {
+            font-size: 1.4rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.4rem;
+        }
+
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .portal-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.2rem;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .portal-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            border-color: var(--accent-color);
+        }
+
+        .portal-card h4 {
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .portal-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* Future / Perspectives Accordion/Details */
+        .perspectives-block {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .perspectives-block h2 {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .perspectives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.2rem;
+            margin-top: 1rem;
+        }
+
+        .perspective-item {
+            background-color: var(--bg-color);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .perspective-item h4 {
+            margin-bottom: 0.4rem;
+            font-size: 1rem;
+        }
+
+        .perspective-item p {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .footer-disclaimer {
+            font-size: 0.82rem;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Nav -->
+    <header>
+        <div class="header-container">
+            <a href="#" class="logo">💻 ІТ Портал</a>
+            <nav>
+                <ul>
+                    <li><a href="#about" data-i18n="nav_about">Про ІТ</a></li>
+                    <li><a href="#categories" data-i18n="nav_categories">Розділи</a></li>
+                    <li><a href="#future" data-i18n="nav_future">Майбутнє ІТ</a></li>
+                </ul>
+            </nav>
+            <div class="controls">
+                <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
+                    <option value="uk">UA 🇺🇦</option>
+                    <option value="en">EN 🇬🇧</option>
+                    <option value="ru">RU 🌐</option>
+                </select>
+                <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙 Tema</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- Hero Title & Image -->
+        <section class="hero">
+            <h1 data-i18n="hero_title">Учбово-методичний довідник : " Що таке Інформаційні Технології ?"</h1>
+            <div class="hero-img-container">
+                <img src="rozvitok_it.png" alt="Історія розвитку ІТ" onerror="this.onerror=null; this.src='rozvitok_it.jpg';">
+            </div>
+        </section>
+
+        <!-- General Info Grid -->
+        <section class="info-grid" id="about">
+            <div class="info-card">
+                <h3>💡 <span data-i18n="info_what_title">Що це таке?</span></h3>
+                <p data-i18n="info_what_desc">
+                    Інформаційні технології (ІТ) — це сукупність методів, процесів і засобів для збирання, зберігання, обробки та передачі інформації за допомогою комп'ютерів і телекомунікацій. Це не просто «комп'ютери» — це нервова система сучасної цивілізації, що поєднує мільярди пристроїв та людей у єдине цифрове середовище.
+                </p>
+            </div>
+            <div class="info-card">
+                <h3>🚀 <span data-i18n="info_why_title">Для чого потрібні?</span></h3>
+                <p data-i18n="info_why_desc">
+                    Від лікування пацієнтів і запуску супутників до управління фінансами та навчання дітей. ІТ автоматизують рутину, аналізують величезні масиви даних, з'єднують людей через континенти та відкривають можливості, про які ми не мріяли пів століття тому. Без ІТ сучасна медицина, наука, транспорт і економіка просто неможливі.
+                </p>
+            </div>
+            <div class="info-card">
+                <h3>🌍 <span data-i18n="info_life_title">Місце в житті</span></h3>
+                <p data-i18n="info_life_desc">
+                    Сьогодні ІТ проникли в кожну сферу — медицину, транспорт, сільське господарство, мистецтво, політику. Смартфон у кишені, безконтактна оплата, відеозв'язок з рідними, прогноз погоди — усе це результат праці мільйонів фахівців. ІТ перетворилися з привілею обраних на базову інфраструктуру.
+                </p>
+            </div>
+        </section>
+
+        <!-- Categories and Sections Grid -->
+        <section id="categories">
+            <h2 class="section-title" data-i18n="section_categories_title">Каталог розділів довідника</h2>
+
+            <!-- Group 1: Hardware & Infrastructure -->
+            <div class="category-group">
+                <h3 class="category-header">🖥️ <span data-i18n="cat_hardware">Апаратне забезпечення та Інфраструктура</span></h3>
+                <div class="portal-grid">
+                    <a href="hardware.html" class="portal-card">
+                        <h4>💻 Klasифікація комп'ютерних систем</h4>
+                        <p>Огляд систем від персональних комп'ютерів до суперкомп'ютерів та серверів.</p>
+                    </a>
+                    <a href="apparat.html" class="portal-card">
+                        <h4>⚙️ Апаратне забезпечення</h4>
+                        <p>Процесори, материнські плати, пам'ять та фізичні складові комп'ютера.</p>
+                    </a>
+                    <a href="storage-devices.html" class="portal-card">
+                        <h4>💾 Засоби збереження інформації</h4>
+                        <p>Накопичувачі SSD, HDD, оптичні носії та новітні технології зберігання.</p>
+                    </a>
+                    <a href="ports.html" class="portal-card">
+                        <h4>🔌 Порти та інтерфейси</h4>
+                        <p>Стандарти підключення: USB, HDMI, PCIe, Thunderbolt та фізичні роз'єми.</p>
+                    </a>
+                    <a href="networks_and_protocols.html" class="portal-card">
+                        <h4>🌐 Мережі та протоколи</h4>
+                        <p>Основи мережевих технологій, моделі OSI/TCP-IP, роутери та маршрутизація.</p>
+                    </a>
+                    <a href="cloud_virtualization.html" class="portal-card">
+                        <h4>☁️ Хмари та віртуалізація</h4>
+                        <p>Віртуальні машини, Docker, Kubernetes, AWS, Azure та хмарні сервіси.</p>
+                    </a>
+                    <a href="legacy-mainframes.html" class="portal-card">
+                        <h4>🏛️ Легасі-системи та Мейнфрейми</h4>
+                        <p>Надійні корпоративні мейнфрейми та підтримка застарілого ПЗ.</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Group 2: Software & System Environment -->
+            <div class="category-group">
+                <h3 class="category-header">💿 <span data-i18n="cat_software">Системне та Офісне ПЗ</span></h3>
+                <div class="portal-grid">
+                    <a href="spr_os.html" class="portal-card">
+                        <h4>🖥️ Довідник операційних систем</h4>
+                        <p>Windows, Linux, macOS, Android, iOS та архітектура ОС.</p>
+                    </a>
+                    <a href="file_systems.html" class="portal-card">
+                        <h4>📁 Файлові системи</h4>
+                        <p>Організація даних на накопичувачах: NTFS, ext4, APFS, FAT32.</p>
+                    </a>
+                    <a href="office_editors.html" class="portal-card">
+                        <h4>📝 Текстові редактори та офісні програми</h4>
+                        <p>Інструменти для роботи з документами, таблицями та презентаціями.</p>
+                    </a>
+                    <a href="search-engines.html" class="portal-card">
+                        <h4>🔍 Пошукові системи</h4>
+                        <p>Принципи роботи пошукових роботів, індексація та рангування.</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Group 3: Programming & Software Development -->
+            <div class="category-group">
+                <h3 class="category-header">👨‍💻 <span data-i18n="cat_programming">Програмування та Розробка ПЗ</span></h3>
+                <div class="portal-grid">
+                    <a href="proglang-directory.html" class="portal-card">
+                        <h4>📚 Довідник мов програмування</h4>
+                        <p>Системні та прикладні мови: C++, Java, Python, Rust, Go.</p>
+                    </a>
+                    <a href="weblang-directory.html" class="portal-card">
+                        <h4>🌐 Мови веб-програмування</h4>
+                        <p>Технології створення сайтів: HTML, CSS, JavaScript, PHP, TypeScript.</p>
+                    </a>
+                    <a href="compilers-interpreters.html" class="portal-card">
+                        <h4>⚙️ Компілятори та інтерпретатори</h4>
+                        <p>Трансляція коду, транслятори, синтаксичний аналіз та виконання.</p>
+                    </a>
+                    <a href="data-structures-algorithms.html" class="portal-card">
+                        <h4>🧩 Структури даних та алгоритми</h4>
+                        <p>Масиви, списки, дерева, графи, пошук та сортування даних.</p>
+                    </a>
+                    <a href="design_patterns.html" class="portal-card">
+                        <h4>🎨 Патерни проєктування</h4>
+                        <p>Типові архітектурні рішення: Singleton, Factory, Observer.</p>
+                    </a>
+                    <a href="developer_tools.html" class="portal-card">
+                        <h4>🛠️ Інструменти розробника</h4>
+                        <p>IDE, дебагери, профільувальники та консольні утиліти.</p>
+                    </a>
+                    <a href="version-control-systems.html" class="portal-card">
+                        <h4>🌿 Системи контролю версій</h4>
+                        <p>Управління версіями коду: Git, GitHub, GitLab, розгалуження.</p>
+                    </a>
+                    <a href="software-engineering-sdlc.html" class="portal-card">
+                        <h4>📐 Основи програмної інженерії / SDLC</h4>
+                        <p>Життєвий цикл розробки ПЗ, методології Agile, Scrum, Waterfall.</p>
+                    </a>
+                    <a href="software-testing-qa.html" class="portal-card">
+                        <h4>🧪 Тестування ПЗ (QA / Testing)</h4>
+                        <p>Контроль якості, ручне та автоматизоване тестування, баг-трекінг.</p>
+                    </a>
+                    <a href="devops-basics.html" class="portal-card">
+                        <h4>♾️ Основи DevOps & CI/CD</h4>
+                        <p>Автоматизація розгортання, інтеграція та безперервна доставка.</p>
+                    </a>
+                    <a href="api-microservices-integrations.html" class="portal-card">
+                        <h4>🔗 API, мікросервіси та інтеграції</h4>
+                        <p>REST, GraphQL, gRPC, сервісно-орієнтовані архітектури.</p>
+                    </a>
+                    <a href="mobile-development.html" class="portal-card">
+                        <h4>📱 Мобільна розробка</h4>
+                        <p>Створення додатків під iOS та Android: Swift, Kotlin, Flutter.</p>
+                    </a>
+                    <a href="game-development.html" class="portal-card">
+                        <h4>🎮 Розробка ігор (GameDev)</h4>
+                        <p>Ігрові рушії Unity, Unreal Engine, 3D-графіка та фізика.</p>
+                    </a>
+                    <a href="formal-methods.html" class="portal-card">
+                        <h4>🧮 Формальні методи / Теорія обчислень</h4>
+                        <p>Математичні основи, автомати, верифікація складних систем.</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Group 4: Data & Databases -->
+            <div class="category-group">
+                <h3 class="category-header">🗄️ <span data-i18n="cat_data">Бази даних та Аналітика</span></h3>
+                <div class="portal-grid">
+                    <a href="spr_subd.html" class="portal-card">
+                        <h4>📊 Довідник СКБД</h4>
+                        <p>Реляційні та NoSQL бази даних: PostgreSQL, MySQL, MongoDB, Redis.</p>
+                    </a>
+                    <a href="data-science-bigdata.html" class="portal-card">
+                        <h4>📈 Data Science, Big Data та аналітика</h4>
+                        <p>Обробка великих даних, Hadoop, Spark, аналітичні панелі.</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Group 5: Advanced Technologies & Security -->
+            <div class="category-group">
+                <h3 class="category-header">🤖 <span data-i18n="cat_advanced">Новітні Технології та Безпека</span></h3>
+                <div class="portal-grid">
+                    <a href="machine-learning-ai.html" class="portal-card">
+                        <h4>🧠 Машинне навчання та ШІ</h4>
+                        <p>Нейромережі, глибоке навчання, моделі LLM та комп'ютерний зір.</p>
+                    </a>
+                    <a href="spr_ai_servises.html" class="portal-card">
+                        <h4>🤖 Довідник сервісів ШІ</h4>
+                        <p>Огляд ChatGPT, Claude, Midjourney та корпоративних AI-інструментів.</p>
+                    </a>
+                    <a href="cybersecurity.html" class="portal-card">
+                        <h4>🛡️ Кібербезпека</h4>
+                        <p>Захист даних, шифрування, аудит безпеки, протидія хакерським атакам.</p>
+                    </a>
+                    <a href="internet-of-things.html" class="portal-card">
+                        <h4>📡 Інтернет речей (IoT)</h4>
+                        <p>Розумні будинки, сенсори, контролери ESP/Arduino, промисловий IoT.</p>
+                    </a>
+                    <a href="blockchain-distributed-ledgers.html" class="portal-card">
+                        <h4>🔗 Блокчейн та розподілені реєстри</h4>
+                        <p>Смарт-контракти, криптографія, децентралізовані додатки (dApps).</p>
+                    </a>
+                    <a href="quantum-computing.html" class="portal-card">
+                        <h4>⚛️ Квантові обчислення</h4>
+                        <p>Кубіти, квантові алгоритми та майбутнє обчислювальних потужностей.</p>
+                    </a>
+                    <a href="ar-vr-metaverse.html" class="portal-card">
+                        <h4>🥽 AR/VR / Метавсесвіти</h4>
+                        <p>Доповнена та віртуальна реальність, 3D-простори та симуляції.</p>
+                    </a>
+                    <a href="robotics.html" class="portal-card">
+                        <h4>🤖 Робототехніка (Robotics)</h4>
+                        <p>Автономні робототехнічні системи, мехатроніка, сенсорика.</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Group 6: IT Management, Design & Web Services -->
+            <div class="category-group">
+                <h3 class="category-header">💼 <span data-i18n="cat_management">Бізнес, Дизайн та Суспільство</span></h3>
+                <div class="portal-grid">
+                    <a href="architecture_it.html" class="portal-card">
+                        <h4>🏛️ Архітектури ІТ</h4>
+                        <p>Корпоративні архітектури, проекти складних інформаційних систем.</p>
+                    </a>
+                    <a href="it-and-business.html" class="portal-card">
+                        <h4>📊 ІТ та Бізнес-процеси</h4>
+                        <p>Цифрова трансформація, ERP, CRM системи, автоматизація бізнесу.</p>
+                    </a>
+                    <a href="it-project-management.html" class="portal-card">
+                        <h4>📋 Управління ІТ-проєктами</h4>
+                        <p>Управління командами, термінами, Agile, Kanban, PMBOK.</p>
+                    </a>
+                    <a href="ui-ux-design.html" class="portal-card">
+                        <h4>🎨 UI/UX та дизайн інтерфейсів</h4>
+                        <p>Проєктування зручних користувацьких інтерфейсів, Figma, прототипи.</p>
+                    </a>
+                    <a href="accessibility.html" class="portal-card">
+                        <h4>♿ Доступність (Accessibility / a11y)</h4>
+                        <p>Створення інклюзивних веб-сайтів та додатків для всіх користувачів.</p>
+                    </a>
+                    <a href="seo-tools.html" class="portal-card">
+                        <h4>📈 SEO-інструменти</h4>
+                        <p>Оптимізація сайтів для пошукових систем та аналітика трафіку.</p>
+                    </a>
+                    <a href="social_networks.html" class="portal-card">
+                        <h4>📱 Соціальні мережі</h4>
+                        <p>Платформи комунікації, SMM, алгоритми розповсюдження контенту.</p>
+                    </a>
+                    <a href="parallel-distributed-computing.html" class="portal-card">
+                        <h4>⚡ Паралельні та розподілені обчислення</h4>
+                        <p>Кластери, багатопоточність, високопродуктивні обчислення (HPC).</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Group 7: History, Career & Info -->
+            <div class="category-group">
+                <h3 class="category-header">📜 <span data-i18n="cat_history">Історія, Кар'єра та Новини</span></h3>
+                <div class="portal-grid">
+                    <a href="history-computing.html" class="portal-card">
+                        <h4>📜 Історія обчислювальної техніки</h4>
+                        <p>Еволюція від абака до квантових суперкомп'ютерів.</p>
+                    </a>
+                    <a href="history-programming-languages.html" class="portal-card">
+                        <h4>📜 Історія мов програмування</h4>
+                        <p>Шлях розвитку від асемблера до високорівневих мов.</p>
+                    </a>
+                    <a href="it-careers-specialties.html" class="portal-card">
+                        <h4>🎓 Кар’єра в ІТ / спеціальності</h4>
+                        <p>Огляд професій: Developer, QA, DevOps, Data Scientist, PM.</p>
+                    </a>
+                    <a href="it-glossary.html" class="portal-card">
+                        <h4>📖 Глосарій термінів ІТ</h4>
+                        <p>Словник основних понять, абревіатур та сленгу зі світу ІТ.</p>
+                    </a>
+                    <a href="it-news.html" class="portal-card">
+                        <h4>📰 Рух та новини ІТ</h4>
+                        <p>Останні події, тренди та інновації у сфері технологій.</p>
+                    </a>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Future / Perspectives -->
+        <section class="perspectives-block" id="future">
+            <h2>🚀 <span data-i18n="future_title">Перспективи та майбутнє інформаційних технологій</span></h2>
+            <p data-i18n="future_intro">
+                Інформаційні технології вже не лише «обслуговують» бізнес і побут — вони стають інфраструктурою суспільства: від охорони здоров’я й освіти до енергетики, транспорту та безпеки. У найближчі роки розвиток ІТ визначатимуть кілька взаємопов’язаних напрямів.
+            </p>
+            <div class="perspectives-grid">
+                <div class="perspective-item">
+                    <h4>🤖 <span data-i18n="p1_title">Штучний інтелект</span></h4>
+                    <p data-i18n="p1_desc">Переходить від експериментів до повсякденного інструменту: генерація коду, аналітика, автономні агенти. Зростає попит на етичні рамки використання ШІ.</p>
+                </div>
+                <div class="perspective-item">
+                    <h4>☁️ <span data-i18n="p2_title">Хмара, край (edge) і розподілені системи</span></h4>
+                    <p data-i18n="p2_desc">Обчислення ближче до користувача й датчиків зменшують затримки, а гібридні архітектури стають нормою для бізнесу й держави.</p>
+                </div>
+                <div class="perspective-item">
+                    <h4>🛡️ <span data-i18n="p3_title">Кібербезпека</span></h4>
+                    <p data-i18n="p3_desc">Що більше систем онлайн, то вища ціна помилки. Захист ідентичності та критичної інфраструктури — обов’язкова частина будь-якої ІТ-стратегії.</p>
+                </div>
+                <div class="perspective-item">
+                    <h4>🕶️ <span data-i18n="p4_title">Нові інтерфейси й платформи</span></h4>
+                    <p data-i18n="p4_desc">Голосові, мультимодальні інтерфейси, AR/VR, інтернет речей змінюють спосіб взаємодії людини з цифровим світом.</p>
+                </div>
+                <div class="perspective-item">
+                    <h4>👥 <span data-i18n="p5_title">Людський вимір</span></h4>
+                    <p data-i18n="p5_desc">Потрібні фахівці, які поєднують техніку з розумінням домену. Майбутнє ІТ — це стійкі системи, що підсилюють людину, а не замінюють її.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div>
+                Учбово-методичний довідник : " Що таке Інформаційні Технології ?"
+            </div>
+            <div>
+                Copyright © 2025 - <span id="currentYear"></span> рік.
+            </div>
+            <div>
+                E-mail: <a href="mailto:_pvi@ukr.net" target="_blank">_pvi@ukr.net</a>
+            </div>
+            <div class="footer-disclaimer">
+                Всі матеріали, надані на цьому інформаційному ресурсі призначені ВИКЛЮЧНО з ОЗНАЙОМЧОЮ, НАВЧАЛЬНОЮ та ОСВІТНЬОЮ МЕТОЮ,<br>
+                адміністрація ресурсу не претендує на їх авторство и не несе відповідальності на їхній зміст.<br>
+                Створено з допомогою різних Сервісів Штучного Інтелекту
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Set year
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Theme Switcher
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            document.getElementById('themeBtn').textContent = newTheme === 'dark' ? '☀️ Tema' : '🌙 Tema';
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '☀️ Tema' : '🌙 Tema';
+
+        // Multilingual Translations Dictionary
+        const translations = {
+            uk: {
+                nav_about: "Про ІТ",
+                nav_categories: "Розділи",
+                nav_future: "Майбутнє ІТ",
+                hero_title: 'Учбово-методичний довідник : " Що таке Інформаційні Технології ?"',
+                info_what_title: "Що це таке?",
+                info_what_desc: "Інформаційні технології (ІТ) — це сукупність методів, процесів і засобів для збирання, зберігання, обробки та передачі інформації за допомогою комп'ютерів і телекомунікацій. Це не просто «комп'ютери» — це нервова система сучасної цивілізації, що поєднує мільярди пристроїв та людей у єдине цифрове середовище.",
+                info_why_title: "Для чого потрібні?",
+                info_why_desc: "Від лікування пацієнтів і запуску супутників до управління фінансами та навчання дітей. ІТ автоматизують рутину, аналізують величезні масиви даних, з'єднують людей через континенти та відкривають можливості, про які ми не мріяли пів століття тому. Без ІТ сучасна медицина, наука, транспорт і економіка просто неможливі.",
+                info_life_title: "Місце в житті",
+                info_life_desc: "Сьогодні ІТ проникли в кожну сферу — медицину, транспорт, сільське господарство, мистецтво, политику. Смартфон у кишені, безконтактна оплата, відеозв'язок з рідними, прогноз погоди — усе це результат праці мільйонів фахівців. ІТ перетворилися з привілею обраних на базову інфраструктуру.",
+                section_categories_title: "Каталог розділів довідника",
+                cat_hardware: "Апаратне забезпечення та Інфраструктура",
+                cat_software: "Системне та Офісне ПЗ",
+                cat_programming: "Програмування та Розробка ПЗ",
+                cat_data: "Бази даних та Аналітика",
+                cat_advanced: "Новітні Технології та Безпека",
+                cat_management: "Бізнес, Дизайн та Суспільство",
+                cat_history: "Історія, Кар'єра та Новини",
+                future_title: "Перспективи та майбутнє інформаційних технологій",
+                future_intro: "Інформаційні технології вже не лише «обслуговують» бізнес і побут — вони стають інфраструктурою суспільства: від охорони здоров’я й освіти до енергетики, транспорту та безпеки.",
+                p1_title: "Штучний інтелект",
+                p1_desc: "Переходить від експериментів до повсякденного інструменту: генерація коду, аналітика, автономні агенти.",
+                p2_title: "Хмара, край (edge) і розподілені системи",
+                p2_desc: "Обчислення ближче до користувача й датчиків зменшують затримки, а гібридні архітектури стають нормою.",
+                p3_title: "Кібербезпека",
+                p3_desc: "Що більше систем онлайн, то вища ціна помилки. Захист ідентичності — обов’язкова частина ІТ-стратегії.",
+                p4_title: "Нові інтерфейси й платформи",
+                p4_desc: "Голосові, мультимодальні інтерфейси, AR/VR, інтернет речей змінюють спосіб взаємодії людини з цифровим світом.",
+                p5_title: "Людський вимір",
+                p5_desc: "Майбутнє ІТ — це стійкі системи, що підсилюють людину, а не замінюють її."
+            },
+            en: {
+                nav_about: "About IT",
+                nav_categories: "Sections",
+                nav_future: "Future of IT",
+                hero_title: 'Educational Reference Guide: "What is Information Technology?"',
+                info_what_title: "What is it?",
+                info_what_desc: "Information Technology (IT) is a set of methods, processes, and tools for collecting, storing, processing, and transmitting information using computers and telecommunications. It is the nervous system of modern civilization.",
+                info_why_title: "Why is it needed?",
+                info_why_desc: "From treating patients to financial management and children's education. IT automates routines, analyzes big data, and connects people across continents.",
+                info_life_title: "Place in life",
+                info_life_desc: "Today IT has penetrated every sphere — medicine, transport, agriculture, art, politics. Smartphones, contactless payments, video calls — IT is basic infrastructure.",
+                section_categories_title: "Portal Sections Directory",
+                cat_hardware: "Hardware & Infrastructure",
+                cat_software: "System & Office Software",
+                cat_programming: "Programming & Software Engineering",
+                cat_data: "Databases & Analytics",
+                cat_advanced: "Advanced Technologies & Cybersecurity",
+                cat_management: "Business, Design & Society",
+                cat_history: "History, Career & News",
+                future_title: "Perspectives and Future of IT",
+                future_intro: "Information technologies are no longer just serving business; they are becoming society's infrastructure.",
+                p1_title: "Artificial Intelligence",
+                p1_desc: "Moving from experiments to everyday tools: code generation, analytics, autonomous agents.",
+                p2_title: "Cloud, Edge & Distributed Systems",
+                p2_desc: "Computing closer to users and sensors reduces latency, hybrid architectures become the norm.",
+                p3_title: "Cybersecurity",
+                p3_desc: "As more systems go online, the cost of error increases. Identity protection is mandatory.",
+                p4_title: "New Interfaces & Platforms",
+                p4_desc: "Voice, multimodal interfaces, AR/VR, IoT change human interaction with the digital world.",
+                p5_title: "Human Dimension",
+                p5_desc: "The future of IT is sustainable systems that empower humans rather than replacing them."
+            },
+            ru: {
+                nav_about: "Об ИТ",
+                nav_categories: "Разделы",
+                nav_future: "Будущее ИТ",
+                hero_title: 'Учебно-методический справочник: "Что такое Информационные Технологии?"',
+                info_what_title: "Что это такое?",
+                info_what_desc: "Информационные технологии (ИТ) — это совокупность методов, процессов и средств для сбора, хранения, обработки и передачи информации с помощью компьютеров и телекоммуникаций.",
+                info_why_title: "Для чего нужны?",
+                info_why_desc: "От лечения пациентов до управления финансами и обучения детей. ИТ автоматизируют рутину, анализируют массивы данных и соединяют людей.",
+                info_life_title: "Место в жизни",
+                info_life_desc: "Сегодня ИТ проникли во все сферы — медицину, транспорт, искусство, политику. Смартфон, бесконтактная оплата — это базовая инфраструктура.",
+                section_categories_title: "Каталог разделов справочника",
+                cat_hardware: "Аппаратное обеспечение и Инфраструктура",
+                cat_software: "Системное и Офисное ПО",
+                cat_programming: "Программирование и Разработка ПО",
+                cat_data: "Базы данных и Аналитика",
+                cat_advanced: "Новейшие Технологии и Безопасность",
+                cat_management: "Бизнес, Дизайн и Общество",
+                cat_history: "История, Карьера и Новости",
+                future_title: "Перспективы и будущее информационных технологий",
+                future_intro: "Информационные технологии становятся базовой инфраструктурой общества.",
+                p1_title: "Искусственный интеллект",
+                p1_desc: "Переходит от экспериментов к повседневным инструментам: генерация кода, аналитика, агенты.",
+                p2_title: "Облака, edge и распределенные системы",
+                p2_desc: "Вычисления ближе к пользователю уменьшают задержки, а гибридные архитектуры становятся нормой.",
+                p3_title: "Кибербезопасность",
+                p3_desc: "Защита идентичности и критической инфраструктуры — обязательная часть ИТ-стратегии.",
+                p4_title: "Новые интерфейсы и платформы",
+                p4_desc: "Голосовые, мультимодальные интерфейсы, AR/VR, интернет вещей меняют взаимодействие.",
+                p5_title: "Человеческое измерение",
+                p5_desc: "Будущее ИТ — это устойчивые системы, усиливающие человека, а не заменяющие его."
+            }
+        };
+
+        function changeLanguage(lang) {
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+            localStorage.setItem('lang', lang);
+        }
+
+        // Load saved language
+        const savedLang = localStorage.getItem('lang') || 'uk';
+        document.getElementById('langSelect').value = savedLang;
+        changeLanguage(savedLang);
+    </script>
+</body>
+</html>

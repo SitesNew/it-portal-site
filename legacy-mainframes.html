@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Легасі-системи та Мейнфрейми — Довідник</title>
+    <style>
+        :root { --bg: #0a0a12; --surface: #12121f; --surface-hover: #1a1a2e; --card: #16162a; --text: #f0f0f5; --text-muted: #8b8ba3; --accent: #27ae60; --accent-2: #2196f3; --gradient: linear-gradient(135deg, #27ae60, #2196f3); --shadow: 0 4px 24px rgba(0,0,0,0.4); --radius: 1rem; }
+        [data-theme="light"] { --bg: #f4f6fb; --surface: #ffffff; --surface-hover: #f0f2f8; --card: #ffffff; --text: #0f0f1a; --text-muted: #5a5a70; --shadow: 0 4px 24px rgba(0,0,0,0.08); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; transition: background 0.3s, color 0.3s; }
+        header { background: var(--surface); border-bottom: 1px solid rgba(255,255,255,0.04); padding: 1rem 5% 0.8rem; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; }
+        .brand-area { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+        .home-link { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.95rem; white-space: nowrap; transition: opacity 0.2s; }
+        .home-link:hover { opacity: 0.8; } .home-link::before { content: "← "; }
+        .page-title { font-size: 1.2rem; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher { display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px; }
+        .lang-switcher button { background: transparent; border: none; color: var(--text-muted); padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer; font-size: 0.75rem; font-weight: 700; transition: 0.2s; }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn { width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--surface-hover); color: var(--text); cursor: pointer; font-size: 1rem; transition: 0.2s; }
+        .theme-btn:hover { transform: scale(1.1); }
+        .filters { max-width: 1200px; margin: 1rem auto; padding: 0 5%; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .filter-btn { padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08); background: var(--surface); color: var(--text-muted); cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap; }
+        .filter-btn:hover, .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+        main { max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem; }
+        .section-title { font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+        .card { background: var(--card); border: 1px solid rgba(255,255,255,0.04); border-radius: var(--radius); padding: 1.3rem; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: rgba(39,174,96,0.4); }
+        .card-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem; }
+        .card-icon { width: 44px; height: 44px; border-radius: 10px; background: var(--surface-hover); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc { color: var(--text-muted); font-size: 0.9rem; line-height: 1.55; margin: 0.5rem 0; flex: 1; }
+        .card-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem; }
+        .card-meta strong { color: var(--text); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem; }
+        .tag { display: inline-block; background: rgba(39,174,96,0.15); color: var(--accent); padding: 0.15rem 0.5rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0; }
+        .spec-tag { display: inline-block; background: rgba(33,150,243,0.12); color: var(--accent-2); padding: 0.15rem 0.5rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem; }
+        .mfg-links { margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.06); display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .mfg-link { color: var(--text); background: var(--surface-hover); text-decoration: none; padding: 0.2rem 0.55rem; border-radius: 0.4rem; font-size: 0.75rem; font-weight: 600; transition: 0.2s; }
+        .mfg-link:hover { background: var(--accent); color: #fff; }
+        footer { text-align: center; padding: 2rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem; }
+        @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } .page-title { font-size: 1.02rem; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <div class="brand-area">
+                <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+                <div class="page-title" id="page-title">🗄️ Легасі-системи та Мейнфрейми</div>
+            </div>
+            <div class="controls">
+                <div class="lang-switcher">
+                    <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                    <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                    <button onclick="setLang('en')" id="btn-en">EN</button>
+                </div>
+                <button class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+            </div>
+        </div>
+        <div class="filters" id="filters"></div>
+    </header>
+    <main id="main"></main>
+    <footer id="footer"></footer>
+
+    <script>
+        const categories = {
+            hardware: { uk: "🖥️ Апаратне забезпечення", ru: "🖥️ Аппаратное обеспечение", en: "🖥️ Hardware" },
+            software: { uk: "💻 ПЗ та Мови", ru: "💻 ПО и Языки", en: "💻 Software & Languages" },
+            concepts: { uk: "⚙️ Концепції", ru: "⚙️ Концепции", en: "⚙️ Concepts" },
+            modernization: { uk: "🚀 Модернізація", ru: "🚀 Модернизация", en: "🚀 Modernization" }
+        };
+
+        const items = [
+            { cat: "hardware", icon: "🏛️", name: { uk: "IBM Z Mainframes", ru: "IBM Z Mainframes", en: "IBM Z Mainframes" }, desc: { uk: "Великі сервери для критичних навантажень. Банківські системи працюють на них десятиліттями через надійність (99.999% uptime) та шифрування.", ru: "Большие серверы для критических нагрузок. Банковские системы работают на них десятилетиями из-за надежности (99.999% uptime) и шифрования.", en: "Large servers for critical workloads. Banking systems run on them for decades due to reliability (99.999% uptime) and encryption." }, traits: { uk: "IBM Z, Sysplex, Crypto Cards, 99.999% uptime", ru: "IBM Z, Sysplex, Crypto Cards, 99.999% uptime", en: "IBM Z, Sysplex, Crypto Cards, 99.999% uptime" }, spec: { uk: "Сфера: Банкінг, Уряди, Страхування", ru: "Сфера: Банкинг, Правительства, Страхование", en: "Field: Banking, Government, Insurance" }, links: [ { name: "IBM Z", url: "https://www.ibm.com/it-infrastructure/z" } ]},
+            { cat: "software", icon: "📄", name: { uk: "COBOL", ru: "COBOL", en: "COBOL" }, desc: { uk: "Мова програмування, створена у 1959 році для бізнес-додатків. На ній досі пишуться базові банківські транзакції по всьому світу.", ru: "Язык программирования, созданный в 1959 году для бизнес-приложений. На нем до сих пор пишутся базовые банковские транзакции по всему миру.", en: "Programming language created in 1959 for business applications. It still writes core banking transactions worldwide." }, traits: { uk: "Fixed-point math, Batch processing, Mainframe", ru: "Fixed-point math, Batch processing, Mainframe", en: "Fixed-point math, Batch processing, Mainframe" }, spec: { uk: 'Статус: "Мертвий", але живий у продакшені', ru: 'Статус: "Мертвый", но жив в продакшене', en: 'Status: "Dead", but alive in production' }, links: [ { name: "GnuCOBOL", url: "https://sourceforge.net/projects/open-cobol/" } ]},
+            { cat: "software", icon: "📋", name: { uk: "PL/I (Programming Language One)", ru: "PL/I (Programming Language One)", en: "PL/I (Programming Language One)" }, desc: { uk: "Потужна мова IBM, створена для заміни COBOL та Fortran. Використовується в системах IBM MVS, z/OS.", ru: "Мощный язык IBM, созданный для замены COBOL и Fortran. Используется в системах IBM MVS, z/OS.", en: "Powerful IBM language created to replace COBOL and Fortran. Used in IBM MVS, z/OS systems." }, traits: { uk: "IBM, z/OS, Structured, Compiler", ru: "IBM, z/OS, Structured, Compiler", en: "IBM, z/OS, Structured, Compiler" }, spec: { uk: "Фокус: Комерційні та наукові додатки", ru: "Фокус: Коммерческие и научные приложения", en: "Focus: Commercial & Scientific Apps" }, links: [ { name: "IBM PL/I", url: "https://www.ibm.com/" } ]},
+            { cat: "concepts", icon: "⏳", name: { uk: "Batch Processing (Пакетна обробка)", ru: "Batch Processing (Пакетная обработка)", en: "Batch Processing" }, desc: { uk: 'Виконання завдань без взаємодії з користувачем, зібраних у "пакети". Наприклад, обробка зарплат усім працівникам вночі.', ru: 'Выполнение задач без взаимодействия с пользователем, собранных в "пакеты". Например, обработка зарплат всем сотрудникам ночью.', en: 'Executing tasks without user interaction, collected in "batches". E.g., processing payroll for all employees overnight.' }, traits: { uk: "JES2/JES3, JCL, Nightly jobs, No UI", ru: "JES2/JES3, JCL, Nightly jobs, No UI", en: "JES2/JES3, JCL, Nightly jobs, No UI" }, spec: { uk: "Режим: Автономний викон", ru: "Режим: Автономное выполнение", en: "Mode: Autonomous execution" }, links: [ { name: "IBM JCL", url: "https://www.ibm.com/docs/en/zos/" } ]},
+            { cat: "concepts", icon: "📺", name: { uk: "Емулятор термінала (3270)", ru: "Эмулятор терминала (3270)", en: "Terminal Emulator (3270)" }, desc: { uk: 'Інтерфейс "чорного екрану" для доступу до мейнфреймів. Сучасні емулятори імітують його на Windows/Linux для доступу до старого ПЗ.', ru: 'Интерфейс "черного экрана" для доступа к мейнфреймам. Современные эмуляторы имитируют его на Windows/Linux для доступа к старому ПО.', en: '"Black screen" interface for accessing mainframes. Modern emulators mimic it on Windows/Linux to access legacy software.' }, traits: { uk: "TN3270, CICS, Green Screen, VT100", ru: "TN3270, CICS, Green Screen, VT100", en: "TN3270, CICS, Green Screen, VT100" }, spec: { uk: "Інструмент: IBM Personal Communications", ru: "Инструмент: IBM Personal Communications", en: "Tool: IBM Personal Communications" }, links: [ { name: "x3270 (Open Source)", url: "http://x3270.bgp.nu/" } ]},
+            { cat: "modernization", icon: "🔄", name: { uk: "API-фіксація (API Enablement)", ru: "API-ификация (API Enablement)", en: "API Enablement" }, desc: { uk: "Обгортання старого COBOL-коду у сучасні REST API, щоб веб та мобільні додатки могли використовувати логіку мейнфрейму.", ru: "Оборачивание старого COBOL-кода в современные REST API, чтобы веб и мобильные приложения могли использовать логику мейнфрейма.", en: "Wrapping old COBOL code in modern REST APIs so web and mobile apps can use mainframe logic." }, traits: { uk: "REST, SOAP, z/OS Connect, Microservices", ru: "REST, SOAP, z/OS Connect, Microservices", en: "REST, SOAP, z/OS Connect, Microservices" }, spec: { uk: "Підхід: Strangler Fig Pattern", ru: "Подход: Strangler Fig Pattern", en: "Approach: Strangler Fig Pattern" }, links: [ { name: "z/OS Connect Enterprise", url: "https://www.ibm.com/products/zos-connect" } ]},
+            { cat: "modernization", icon: "☁️", name: { uk: "Міграція у Хмару", ru: "Миграция в Облако", en: "Cloud Migration" }, desc: { uk: "Перенесення робочих навантажень з мейнфреймів на AWS/Azure. Часто робиться через повне переписування (Replatforming/Refactoring).", ru: "Перенос рабочих нагрузок с мейнфреймов на AWS/Azure. Часто делается через полное переписывание (Replatforming/Refactoring).", en: "Moving workloads from mainframes to AWS/Azure. Often done through complete rewriting (Replatforming/Refactoring)." }, traits: { uk: "Lift & Shift, Replatform, AWS Mainframe Modernization", ru: "Lift & Shift, Replatform, AWS Mainframe Modernization", en: "Lift & Shift, Replatform, AWS Mainframe Modernization" }, spec: { uk: "Серйозний виклик для Enterprise", ru: "Серьезный вызов для Enterprise", en: "Serious challenge for Enterprise" }, links: [ { name: "AWS Mainframe Modernization", url: "https://aws.amazon.com/mainframe-modernization/" } ]}
+        ];
+
+        const ui = {
+            uk: { title: "Легасі-системи та Мейнфрейми — Довідник", pageTitle: "🗄️ Легасі-системи та Мейнфрейми", home: "Головна сторінка", all: "Усі розділи", traits: "Ключові поняття", mfgText: "Технології та інструменти:", noResults: "Нічого не знайдено.", footer: "🗄️ Легасі-системи та Мейнфрейми | Довідник 2025" },
+            ru: { title: "Легаси-системы и Мейнфреймы — Справочник", pageTitle: "🗄️ Легаси-системы и Мейнфреймы", home: "Главная страница", all: "Все разделы", traits: "Ключевые понятия", mfgText: "Технологии и инструменты:", noResults: "Ничего не найдено.", footer: "🗄️ Легаси-системы и Мейнфреймы | Справочник 2025" },
+            en: { title: "Legacy & Mainframes — Guide", pageTitle: "🗄️ Legacy & Mainframes", home: "Home page", all: "All Sections", traits: "Key Concepts", mfgText: "Technologies & Tools:", noResults: "Nothing found.", footer: "🗄️ Legacy & Mainframes | Guide 2025" }
+        };
+
+        let currentLang = localStorage.getItem('lang-legacy') || 'uk';
+        let activeCategory = 'all';
+
+        function setLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang-legacy', lang);
+            document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+            ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+            document.title = ui[lang].title;
+            document.getElementById('home-link').textContent = ui[lang].home;
+            document.getElementById('page-title').textContent = ui[lang].pageTitle;
+            renderFilters();
+            render();
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const cur = html.getAttribute('data-theme');
+            html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+            localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+        }
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+        function renderFilters() {
+            const c = document.getElementById('filters');
+            let h = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+            for (const [k,v] of Object.entries(categories)) {
+                h += `<button class="filter-btn ${activeCategory===k?'active':''}" onclick="setCat('${k}')">${v[currentLang]}</button>`;
+            }
+            c.innerHTML = h;
+        }
+
+        function setCat(cat) {
+            activeCategory = cat;
+            renderFilters();
+            render();
+        }
+
+        function render() {
+            const main = document.getElementById('main');
+            let html = '';
+            const cats = (activeCategory === 'all') ? Object.keys(categories) : [activeCategory];
+
+            cats.forEach(catKey => {
+                const list = items.filter(e => e.cat === catKey);
+                if (!list.length) return;
+                html += `<div class="section-title">${categories[catKey][currentLang]}</div><div class="grid">`;
+                list.forEach(e => {
+                    const tags = e.traits[currentLang].split(',').map(t => `<span class="tag">${t.trim()}</span>`).join('');
+                    let linksHtml = '';
+                    if (e.links && e.links.length) {
+                        linksHtml = `<div class="mfg-links"><strong style="width:100%; font-size:0.7rem; color:var(--text-muted); margin-bottom:2px;">${ui[currentLang].mfgText}</strong>` + e.links.map(l => `<a href="${l.url}" target="_blank" rel="noopener" class="mfg-link">🔗 ${l.name}</a>`).join('') + `</div>`;
+                    }
+                    html += `<div class="card"><div class="card-header"><div class="card-icon">${e.icon}</div><div class="card-title">${e.name[currentLang]}</div></div><div class="card-desc">${e.desc[currentLang]}</div><div class="card-meta"><strong>${ui[currentLang].traits}</strong><div style="margin-top:0.25rem">${tags}</div></div><div class="spec-tag">📌 ${e.spec[currentLang]}</div>${linksHtml}</div>`;
+                });
+                html += `</div>`;
+            });
+            if (!html) html = `<div class="no-results">${ui[currentLang].noResults}</div>`;
+            main.innerHTML = html;
+            document.getElementById('footer').textContent = ui[currentLang].footer;
+        }
+
+        setLang(currentLang);
+    </script>
+</body>
+</html>

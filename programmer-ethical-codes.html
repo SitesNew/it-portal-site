@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Етичні кодекси програмістів — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">📜 Етичні кодекси програмістів</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    const categories = {
+        codes: {
+            uk: "📜 Основні кодекси",
+            ru: "📜 Основные кодексы",
+            en: "📜 Major Codes"
+        },
+        principles: {
+            uk: "🧭 Ключові принципи",
+            ru: "🧭 Ключевые принципы",
+            en: "🧭 Key Principles"
+        },
+        dilemmas: {
+            uk: "⚖️ Дилеми та ситуації",
+            ru: "⚖️ Дилеммы и ситуации",
+            en: "⚖️ Dilemmas & Situations"
+        },
+        practice: {
+            uk: "🛠️ Застосування на практиці",
+            ru: "🛠️ Применение на практике",
+            en: "🛠️ Putting into Practice"
+        }
+    };
+
+    const items = [
+        {
+            cat: "codes",
+            icon: "📘",
+            name: {
+                uk: "ACM Code of Ethics and Professional Conduct",
+                ru: "ACM Code of Ethics and Professional Conduct",
+                en: "ACM Code of Ethics and Professional Conduct"
+            },
+            desc: {
+                uk: "Один з найвідоміших кодексів для обчислювальної спільноти. Оновлений у 2018 році. Охоплює загальні етичні принципи, професійні обов’язки, керівні принципи для лідерів і відповідність кодексу. Базовий орієнтир для програмістів у всьому світі.",
+                ru: "Один из самых известных кодексов для вычислительного сообщества. Обновлен в 2018 году. Охватывает общие этические принципы, профессиональные обязанности, руководящие принципы для лидеров и соответствие кодексу. Базовый ориентир для программистов во всем мире.",
+                en: "One of the best-known codes for the computing community. Updated in 2018. Covers general ethical principles, professional responsibilities, leadership guidelines and compliance. A baseline reference for programmers worldwide."
+            },
+            traits: {
+                uk: "ACM, 2018, Принципи, Професійні обов’язки, Лідерство",
+                ru: "ACM, 2018, Принципы, Профессиональные обязанности, Лидерство",
+                en: "ACM, 2018, Principles, Professional duties, Leadership"
+            },
+            spec: {
+                uk: "Найцитованіший кодекс у галузі computing",
+                ru: "Самый цитируемый кодекс в области computing",
+                en: "The most cited code in computing"
+            },
+            links: [
+                { name: "ACM Code of Ethics", url: "https://www.acm.org/code-of-ethics" },
+                { name: "ACM Code (full text)", url: "https://www.acm.org/code-of-ethics/code-of-ethics-full-text" }
+            ]
+        },
+        {
+            cat: "codes",
+            icon: "📗",
+            name: {
+                uk: "IEEE Code of Ethics та Software Engineering Code",
+                ru: "IEEE Code of Ethics и Software Engineering Code",
+                en: "IEEE Code of Ethics and Software Engineering Code"
+            },
+            desc: {
+                uk: "IEEE Code of Ethics — для всіх членів IEEE. Окремо існує Software Engineering Code of Ethics and Professional Practice (спільно ACM/IEEE-CS) — детальніший документ саме для інженерів ПЗ: продукт, суспільство, клієнт, судження, управління, професія, колеги, власна особа.",
+                ru: "IEEE Code of Ethics — для всех членов IEEE. Отдельно существует Software Engineering Code of Ethics and Professional Practice (совместно ACM/IEEE-CS) — более детальный документ именно для инженеров ПО: продукт, общество, клиент, суждение, управление, профессия, коллеги, собственная личность.",
+                en: "IEEE Code of Ethics applies to all IEEE members. Separately, the Software Engineering Code of Ethics and Professional Practice (joint ACM/IEEE-CS) is a more detailed document for software engineers: product, public, client, judgment, management, profession, colleagues, self."
+            },
+            traits: {
+                uk: "IEEE, SE Code, Продукт, Суспільство, Клієнт, Професія",
+                ru: "IEEE, SE Code, Продукт, Общество, Клиент, Профессия",
+                en: "IEEE, SE Code, Product, Public, Client, Profession"
+            },
+            spec: {
+                uk: "Спеціалізований кодекс саме для software engineering",
+                ru: "Специализированный кодекс именно для software engineering",
+                en: "A specialized code specifically for software engineering"
+            },
+            links: [
+                { name: "IEEE Code of Ethics", url: "https://www.ieee.org/about/corporate/governance/p7-8.html" },
+                { name: "SE Code of Ethics", url: "https://ethics.acm.org/code-of-ethics/software-engineering-code/" }
+            ]
+        },
+        {
+            cat: "codes",
+            icon: "📙",
+            name: {
+                uk: "Інші професійні кодекси",
+                ru: "Другие профессиональные кодексы",
+                en: "Other Professional Codes"
+            },
+            desc: {
+                uk: "BCS (British Computer Society) Code of Conduct, ACS (Australian Computer Society), GI (Germany), національні асоціації. Багато компаній мають внутрішні етичні політики. Кодекси доповнюють одне одного і підкреслюють спільні цінності.",
+                ru: "BCS (British Computer Society) Code of Conduct, ACS (Australian Computer Society), GI (Germany), национальные ассоциации. Многие компании имеют внутренние этические политики. Кодексы дополняют друг друга и подчеркивают общие ценности.",
+                en: "BCS (British Computer Society) Code of Conduct, ACS (Australian Computer Society), GI (Germany), national associations. Many companies have internal ethics policies. Codes complement each other and emphasize shared values."
+            },
+            traits: {
+                uk: "BCS, ACS, Національні асоціації, Корпоративні політики",
+                ru: "BCS, ACS, Национальные ассоциации, Корпоративные политики",
+                en: "BCS, ACS, National associations, Corporate policies"
+            },
+            spec: {
+                uk: "Локальний контекст доповнює глобальні стандарти",
+                ru: "Локальный контекст дополняет глобальные стандарты",
+                en: "Local context complements global standards"
+            },
+            links: [
+                { name: "BCS Code of Conduct", url: "https://www.bcs.org/membership-and-registrations/standards-and-governance/bcs-code-of-conduct/" },
+                { name: "ACS Code of Ethics", url: "https://www.acs.org.au/content/dam/acs/acs-documents/Code-of-Ethics.pdf" }
+            ]
+        },
+        {
+            cat: "codes",
+            icon: "📖",
+            name: {
+                uk: "Історія та еволюція кодексів",
+                ru: "История и эволюция кодексов",
+                en: "History and Evolution of Codes"
+            },
+            desc: {
+                uk: "Перші спроби — середина XX ст. ACM Code з’явився у 1972, суттєво оновлений у 1992 і 2018. SE Code — 1999. Зміни відображають нові технології (інтернет, big data, ШІ) і суспільні очікування щодо відповідальності IT.",
+                ru: "Первые попытки — середина XX в. ACM Code появился в 1972, существенно обновлен в 1992 и 2018. SE Code — 1999. Изменения отражают новые технологии (интернет, big data, ИИ) и общественные ожидания ответственности IT.",
+                en: "First attempts — mid-20th century. ACM Code appeared in 1972, substantially revised in 1992 and 2018. SE Code — 1999. Changes reflect new technologies (internet, big data, AI) and public expectations of IT responsibility."
+            },
+            traits: {
+                uk: "1972, 1992, 2018, Еволюція, Нові технології, Відповідальність",
+                ru: "1972, 1992, 2018, Эволюция, Новые технологии, Ответственность",
+                en: "1972, 1992, 2018, Evolution, New technologies, Responsibility"
+            },
+            spec: {
+                uk: "Кодекси живуть і оновлюються разом із галуззю",
+                ru: "Кодексы живут и обновляются вместе с отраслью",
+                en: "Codes live and evolve with the field"
+            },
+            links: [
+                { name: "History of ACM Code", url: "https://ethics.acm.org/code-of-ethics/history/" }
+            ]
+        },
+        {
+            cat: "principles",
+            icon: "🌍",
+            name: {
+                uk: "Суспільна користь і «не нашкодь»",
+                ru: "Общественная польза и «не навреди»",
+                en: "Public Good and “Do No Harm”"
+            },
+            desc: {
+                uk: "Центральний принцип: інтереси суспільства і користувачів важливіші за вузькі інтереси. Уникати створення систем, що свідомо шкодять людям, дискримінують або підривають безпеку. Оцінювати вплив продукту до і після випуску.",
+                ru: "Центральный принцип: интересы общества и пользователей важнее узких интересов. Избегать создания систем, которые сознательно вредят людям, дискриминируют или подрывают безопасность. Оценивать влияние продукта до и после выпуска.",
+                en: "Central principle: society’s and users’ interests outweigh narrow ones. Avoid building systems that knowingly harm people, discriminate or undermine safety. Assess product impact before and after release."
+            },
+            traits: {
+                uk: "Public interest, Do no harm, Вплив, Безпека, Антидискримінація",
+                ru: "Public interest, Do no harm, Влияние, Безопасность, Антидискриминация",
+                en: "Public interest, Do no harm, Impact, Safety, Anti-discrimination"
+            },
+            spec: {
+                uk: "Перший обов’язок — перед людьми, не перед кодом",
+                ru: "Первый долг — перед людьми, не перед кодом",
+                en: "First duty is to people, not to code"
+            },
+            links: [
+                { name: "ACM Principle 1", url: "https://www.acm.org/code-of-ethics#h-1.-general-ethical-principles" }
+            ]
+        },
+        {
+            cat: "principles",
+            icon: "honesty",
+            name: {
+                uk: "Чесність, довіра, компетентність",
+                ru: "Честность, доверие, компетентность",
+                en: "Honesty, Trust, Competence"
+            },
+            desc: {
+                uk: "Не обманювати клієнтів, користувачів, колег щодо можливостей, ризиків і статусу роботи. Братися лише за те, на що вистачає компетенції, або розвивати її / залучати допомогу. Довіра — основа професії.",
+                ru: "Не обманывать клиентов, пользователей, коллег относительно возможностей, рисков и статуса работы. Браться только за то, на что хватает компетенции, или развивать её / привлекать помощь. Доверие — основа профессии.",
+                en: "Do not deceive clients, users or colleagues about capabilities, risks or work status. Take on only what your competence allows, or grow it / get help. Trust is the foundation of the profession."
+            },
+            traits: {
+                uk: "Чесність, Компетентність, Прозорість, Довіра, Межі знань",
+                ru: "Честность, Компетентность, Прозрачность, Доверие, Границы знаний",
+                en: "Honesty, Competence, Transparency, Trust, Knowledge limits"
+            },
+            spec: {
+                uk: "Краще сказати «не знаю», ніж нашкодити",
+                ru: "Лучше сказать «не знаю», чем навредить",
+                en: "Better to say “I don’t know” than to cause harm"
+            },
+            links: [
+                { name: "ACM Principle 1.3, 2.2", url: "https://www.acm.org/code-of-ethics" }
+            ]
+        },
+        {
+            cat: "principles",
+            icon: "🔐",
+            name: {
+                uk: "Конфіденційність і приватність",
+                ru: "Конфиденциальность и приватность",
+                en: "Confidentiality and Privacy"
+            },
+            desc: {
+                uk: "Поважати конфіденційність даних користувачів і клієнтів. Не збирати і не розголошувати більше, ніж потрібно. Захищати дані відповідно до зобов’язань і закону. Приватність — етичний обов’язок, а не лише юридична вимога.",
+                ru: "Уважать конфиденциальность данных пользователей и клиентов. Не собирать и не разглашать больше, чем нужно. Защищать данные в соответствии с обязательствами и законом. Приватность — этический долг, а не только юридическое требование.",
+                en: "Respect confidentiality of user and client data. Do not collect or disclose more than needed. Protect data according to obligations and law. Privacy is an ethical duty, not only a legal requirement."
+            },
+            traits: {
+                uk: "Конфіденційність, Мінімізація даних, Захист, Згода, Довіра",
+                ru: "Конфиденциальность, Минимизация данных, Защита, Согласие, Доверие",
+                en: "Confidentiality, Data minimization, Protection, Consent, Trust"
+            },
+            spec: {
+                uk: "Дані користувача — не «ваші» дані",
+                ru: "Данные пользователя — не «ваши» данные",
+                en: "User data is not “your” data"
+            },
+            links: [
+                { name: "ACM Principle 1.6, 1.7", url: "https://www.acm.org/code-of-ethics" }
+            ]
+        },
+        {
+            cat: "principles",
+            icon: "🤝",
+            name: {
+                uk: "Повага до колег і професії",
+                ru: "Уважение к коллегам и профессии",
+                en: "Respect for Colleagues and the Profession"
+            },
+            desc: {
+                uk: "Справедливе ставлення до колег, визнання внеску інших, уникнення дискримінації та переслідувань. Підтримувати високі стандарти професії, ділитися знаннями, не підривати довіру до галузі.",
+                ru: "Справедливое отношение к коллегам, признание вклада других, избегание дискриминации и преследований. Поддерживать высокие стандарты профессии, делиться знаниями, не подрывать доверие к отрасли.",
+                en: "Fair treatment of colleagues, acknowledging others’ contributions, avoiding discrimination and harassment. Uphold high professional standards, share knowledge, do not undermine trust in the field."
+            },
+            traits: {
+                uk: "Повага, Справедливість, Визнання, Антидискримінація, Спільнота",
+                ru: "Уважение, Справедливость, Признание, Антидискриминация, Сообщество",
+                en: "Respect, Fairness, Credit, Anti-discrimination, Community"
+            },
+            spec: {
+                uk: "Професія сильніша, коли ми підтримуємо одне одного",
+                ru: "Профессия сильнее, когда мы поддерживаем друг друга",
+                en: "The profession is stronger when we support each other"
+            },
+            links: [
+                { name: "ACM Principle 3", url: "https://www.acm.org/code-of-ethics#h-3.-professional-leadership-principles" }
+            ]
+        },
+        {
+            cat: "dilemmas",
+            icon: "⚠️",
+            name: {
+                uk: "Тиск бізнесу vs етика",
+                ru: "Давление бизнеса vs этика",
+                en: "Business Pressure vs Ethics"
+            },
+            desc: {
+                uk: "Типові ситуації: «зробіть швидше, якість потім», «зберігайте всі дані “про всяк випадок”», «приховайте відомий баг до релізу». Кодекси закликають документувати ризики, піднімати питання і не йти на свідомий обман користувачів.",
+                ru: "Типичные ситуации: «сделайте быстрее, качество потом», «храните все данные “на всякий случай”», «спрячьте известный баг до релиза». Кодексы призывают документировать риски, поднимать вопросы и не идти на сознательный обман пользователей.",
+                en: "Typical situations: “ship faster, quality later”, “keep all data just in case”, “hide a known bug until after release”. Codes urge documenting risks, raising issues and not knowingly deceiving users."
+            },
+            traits: {
+                uk: "Тиск термінів, Технічний борг, Приховування ризиків, Ескалація",
+                ru: "Давление сроков, Технический долг, Сокрытие рисков, Эскалация",
+                en: "Deadline pressure, Technical debt, Hiding risks, Escalation"
+            },
+            spec: {
+                uk: "«Так сказав менеджер» не знімає особистої відповідальності",
+                ru: "«Так сказал менеджер» не снимает личной ответственности",
+                en: "“My manager said so” does not remove personal responsibility"
+            },
+            links: [
+                { name: "ACM Case studies", url: "https://ethics.acm.org/integrity-project/case-studies/" }
+            ]
+        },
+        {
+            cat: "dilemmas",
+            icon: "🔍",
+            name: {
+                uk: "Виявлення помилок і вразливостей",
+                ru: "Обнаружение ошибок и уязвимостей",
+                en: "Discovering Bugs and Vulnerabilities"
+            },
+            desc: {
+                uk: "Що робити, якщо знайшли критичний баг або діру в безпеці у своєму чи чужому продукті? Відповідальний disclosure, інформування відповідальних осіб, уникнення публічного розголошення, що шкодить користувачам без потреби.",
+                ru: "Что делать, если нашли критический баг или дыру в безопасности в своем или чужом продукте? Ответственный disclosure, информирование ответственных лиц, избегание публичного разглашения, вредящего пользователям без необходимости.",
+                en: "What to do if you find a critical bug or security hole in your own or another’s product? Responsible disclosure, informing the right people, avoiding public disclosure that harms users unnecessarily."
+            },
+            traits: {
+                uk: "Responsible disclosure, Баги, Вразливості, Повідомлення, Безпека",
+                ru: "Responsible disclosure, Баги, Уязвимости, Уведомление, Безопасность",
+                en: "Responsible disclosure, Bugs, Vulnerabilities, Notification, Security"
+            },
+            spec: {
+                uk: "Мовчання про відому діру — теж вибір",
+                ru: "Молчание об известной дыре — тоже выбор",
+                en: "Silence about a known hole is also a choice"
+            },
+            links: [
+                { name: "Responsible disclosure", url: "https://en.wikipedia.org/wiki/Responsible_disclosure" }
+            ]
+        },
+        {
+            cat: "dilemmas",
+            icon: "👤",
+            name: {
+                uk: "Конфлікт з роботодавцем або клієнтом",
+                ru: "Конфликт с работодателем или клиентом",
+                en: "Conflict with Employer or Client"
+            },
+            desc: {
+                uk: "Коли вимоги суперечать етиці чи закону: незаконний збір даних, дискримінаційні алгоритми, приховування від користувачів. Варіанти: внутрішня ескалація, консультація з колегами/юристами, у крайньому разі — відмова від участі (і whistleblowing за захищеними каналами).",
+                ru: "Когда требования противоречат этике или закону: незаконный сбор данных, дискриминационные алгоритмы, сокрытие от пользователей. Варианты: внутренняя эскалация, консультация с коллегами/юристами, в крайнем случае — отказ от участия (и whistleblowing по защищенным каналам).",
+                en: "When demands conflict with ethics or law: illegal data collection, discriminatory algorithms, hiding from users. Options: internal escalation, consulting colleagues/lawyers, in extreme cases — refusing to participate (and whistleblowing via protected channels)."
+            },
+            traits: {
+                uk: "Ескалація, Whistleblowing, Відмова, Консультація, Документування",
+                ru: "Эскалация, Whistleblowing, Отказ, Консультация, Документирование",
+                en: "Escalation, Whistleblowing, Refusal, Consultation, Documentation"
+            },
+            spec: {
+                uk: "Кодекс дає мову для розмови про «червоні лінії»",
+                ru: "Кодекс дает язык для разговора о «красных линиях»",
+                en: "The code gives language for talking about “red lines”"
+            },
+            links: [
+                { name: "ACM on conflicts", url: "https://www.acm.org/code-of-ethics" }
+            ]
+        },
+        {
+            cat: "dilemmas",
+            icon: "🤖",
+            name: {
+                uk: "Етичні виклики ШІ та автоматизації",
+                ru: "Этические вызовы ИИ и автоматизации",
+                en: "Ethical Challenges of AI and Automation"
+            },
+            desc: {
+                uk: "Упередження моделей, непрозорі рішення, вплив на зайнятість, автономна зброя, deepfakes. Кодекси закликають оцінювати суспільний вплив, забезпечувати підзвітність і не знімати з людей відповідальність «бо так вирішив алгоритм».",
+                ru: "Предвзятость моделей, непрозрачные решения, влияние на занятость, автономное оружие, deepfakes. Кодексы призывают оценивать общественное влияние, обеспечивать подотчетность и не снимать с людей ответственность «потому что так решил алгоритм».",
+                en: "Model bias, opaque decisions, impact on employment, autonomous weapons, deepfakes. Codes urge assessing societal impact, ensuring accountability and not removing human responsibility “because the algorithm decided”."
+            },
+            traits: {
+                uk: "Bias, Підзвітність, Автономія, Вплив на суспільство, Людський контроль",
+                ru: "Bias, Подотчетность, Автономия, Влияние на общество, Человеческий контроль",
+                en: "Bias, Accountability, Autonomy, Societal impact, Human control"
+            },
+            spec: {
+                uk: "Алгоритм не знімає відповідальності з автора",
+                ru: "Алгоритм не снимает ответственности с автора",
+                en: "An algorithm does not remove the author’s responsibility"
+            },
+            links: [
+                { name: "ACM on algorithmic bias", url: "https://www.acm.org/binaries/content/assets/public-policy/2017_usacm_statement_algorithms.pdf" }
+            ]
+        },
+        {
+            cat: "practice",
+            icon: "📚",
+            name: {
+                uk: "Як вивчати і застосовувати кодекс",
+                ru: "Как изучать и применять кодекс",
+                en: "How to Study and Apply a Code"
+            },
+            desc: {
+                uk: "Прочитати повний текст (не лише заголовки). Обговорювати кейси в команді. Використовувати принципи як чекліст при прийнятті рішень. Повертатися до кодексу, коли виникає дискомфорт («щось не так»).",
+                ru: "Прочитать полный текст (не только заголовки). Обсуждать кейсы в команде. Использовать принципы как чеклист при принятии решений. Возвращаться к кодексу, когда возникает дискомфорт («что-то не так»).",
+                en: "Read the full text (not only headings). Discuss cases in the team. Use principles as a checklist when deciding. Return to the code when something feels wrong."
+            },
+            traits: {
+                uk: "Читання, Кейси, Чекліст, Рефлексія, Обговорення",
+                ru: "Чтение, Кейсы, Чеклист, Рефлексия, Обсуждение",
+                en: "Reading, Cases, Checklist, Reflection, Discussion"
+            },
+            spec: {
+                uk: "Кодекс працює, лише коли його знають і обговорюють",
+                ru: "Кодекс работает, только когда его знают и обсуждают",
+                en: "A code works only when it is known and discussed"
+            },
+            links: [
+                { name: "ACM Integrity Project", url: "https://ethics.acm.org/integrity-project/" },
+                { name: "Case studies", url: "https://ethics.acm.org/integrity-project/case-studies/" }
+            ]
+        },
+        {
+            cat: "practice",
+            icon: "🏢",
+            name: {
+                uk: "Етика в команді та компанії",
+                ru: "Этика в команде и компании",
+                en: "Ethics in the Team and Company"
+            },
+            desc: {
+                uk: "Культура, у якій можна піднімати етичні питання без страху. Процеси review дизайну з погляду впливу. Канали для повідомлень. Лідери задають тон: чи винагороджується «швидко будь-якою ціною», чи якість і відповідальність.",
+                ru: "Культура, в которой можно поднимать этические вопросы без страха. Процессы review дизайна с точки зрения влияния. Каналы для сообщений. Лидеры задают тон: поощряется ли «быстро любой ценой» или качество и ответственность.",
+                en: "A culture where ethical issues can be raised without fear. Design review processes that consider impact. Reporting channels. Leaders set the tone: is “fast at any cost” rewarded, or quality and responsibility?"
+            },
+            traits: {
+                uk: "Культура, Psychological safety, Review, Лідерство, Канали",
+                ru: "Культура, Psychological safety, Review, Лидерство, Каналы",
+                en: "Culture, Psychological safety, Review, Leadership, Channels"
+            },
+            spec: {
+                uk: "Етика — не індивідуальний «героїзм», а система",
+                ru: "Этика — не индивидуальный «героизм», а система",
+                en: "Ethics is not individual “heroism” but a system"
+            },
+            links: [
+                { name: "Building ethical culture", url: "https://ethics.acm.org" }
+            ]
+        },
+        {
+            cat: "practice",
+            icon: "✍️",
+            name: {
+                uk: "Особисті зобов’язання та розвиток",
+                ru: "Личные обязательства и развитие",
+                en: "Personal Commitments and Growth"
+            },
+            desc: {
+                uk: "Постійне навчання (у т.ч. етичних аспектів нових технологій). Рефлексія над власними проєктами. Готовність визнавати помилки. Підтримка колег у складних ситуаціях. Етика — навичка, яку розвивають, а не разове «прочитав кодекс».",
+                ru: "Постоянное обучение (в т.ч. этических аспектов новых технологий). Рефлексия над собственными проектами. Готовность признавать ошибки. Поддержка коллег в сложных ситуациях. Этика — навык, который развивают, а не разовое «прочитал кодекс».",
+                en: "Continuous learning (including ethical aspects of new tech). Reflecting on your own projects. Willingness to admit mistakes. Supporting colleagues in hard situations. Ethics is a skill you develop, not a one-time “I read the code”."
+            },
+            traits: {
+                uk: "Навчання, Рефлексія, Визнання помилок, Підтримка, Зростання",
+                ru: "Обучение, Рефлексия, Признание ошибок, Поддержка, Рост",
+                en: "Learning, Reflection, Admitting mistakes, Support, Growth"
+            },
+            spec: {
+                uk: "Етична зрілість приходить з досвідом і практикою",
+                ru: "Этическая зрелость приходит с опытом и практикой",
+                en: "Ethical maturity comes with experience and practice"
+            },
+            links: [
+                { name: "ACM Code — full text", url: "https://www.acm.org/code-of-ethics/code-of-ethics-full-text" }
+            ]
+        }
+    ];
+
+    // Fix icon that was text "honesty"
+    items.forEach(function (item) {
+        if (item.icon === "honesty") item.icon = "💎";
+    });
+
+    const ui = {
+        uk: {
+            title: "Етичні кодекси програмістів — Довідник",
+            pageTitle: "📜 Етичні кодекси програмістів",
+            home: "Головна сторінка",
+            all: "Усі розділи",
+            traits: "Ключові елементи та поняття",
+            mfgText: "Корисні ресурси:",
+            noResults: "Нічого не знайдено.",
+            footer: "📜 Етичні кодекси програмістів | Довідник 2026",
+            introTitle: "Що таке етичні кодекси програмістів?",
+            intro1: "Етичні кодекси — це документи професійних спільнот (ACM, IEEE, BCS та інших), які формулюють принципи відповідальної поведінки програмістів і інженерів ПЗ: суспільна користь, чесність, конфіденційність, компетентність, повага до колег і професії.",
+            intro2: "Вони не замінюють закон, але дають орієнтири в складних ситуаціях, допомагають аргументувати «червоні лінії» і формують культуру відповідальності в ІТ. Знання кодексів — частина професійної зрілості."
+        },
+        ru: {
+            title: "Этические кодексы программистов — Справочник",
+            pageTitle: "📜 Этические кодексы программистов",
+            home: "Главная страница",
+            all: "Все разделы",
+            traits: "Ключевые элементы и понятия",
+            mfgText: "Полезные ресурсы:",
+            noResults: "Ничего не найдено.",
+            footer: "📜 Этические кодексы программистов | Справочник 2026",
+            introTitle: "Что такое этические кодексы программистов?",
+            intro1: "Этические кодексы — это документы профессиональных сообществ (ACM, IEEE, BCS и других), которые формулируют принципы ответственного поведения программистов и инженеров ПО: общественная польза, честность, конфиденциальность, компетентность, уважение к коллегам и профессии.",
+            intro2: "Они не заменяют закон, но дают ориентиры в сложных ситуациях, помогают аргументировать «красные линии» и формируют культуру ответственности в ИТ. Знание кодексов — часть профессиональной зрелости."
+        },
+        en: {
+            title: "Programmer Ethical Codes — Guide",
+            pageTitle: "📜 Programmer Ethical Codes",
+            home: "Home page",
+            all: "All sections",
+            traits: "Key concepts and elements",
+            mfgText: "Useful resources:",
+            noResults: "Nothing found.",
+            footer: "📜 Programmer Ethical Codes | Guide 2026",
+            introTitle: "What are programmer ethical codes?",
+            intro1: "Ethical codes are documents from professional communities (ACM, IEEE, BCS and others) that state principles of responsible conduct for programmers and software engineers: public good, honesty, confidentiality, competence, respect for colleagues and the profession.",
+            intro2: "They do not replace the law, but provide guidance in hard situations, help argue “red lines” and shape a culture of responsibility in IT. Knowing the codes is part of professional maturity."
+        }
+    };
+
+    let currentLang = safeGet("lang-codes", "uk");
+    let activeCategory = "all";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-codes", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + "</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) { return e.cat === catKey; });
+            if (!list.length) return;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        main.innerHTML = html || ('<div class="no-results">' + ui[currentLang].noResults + "</div>");
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

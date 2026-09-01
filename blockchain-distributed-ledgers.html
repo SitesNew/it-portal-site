@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Блокчейн та розподілені реєстри — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">⛓️ Блокчейн та розподілені реєстри</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    const categories = {
+        foundations: {
+            uk: "📘 Основи блокчейну",
+            ru: "📘 Основы блокчейна",
+            en: "📘 Blockchain Foundations"
+        },
+        consensus: {
+            uk: "⚖️ Консенсус і мережі",
+            ru: "⚖️ Консенсус и сети",
+            en: "⚖️ Consensus & Networks"
+        },
+        smart: {
+            uk: "📜 Смарт-контракти та платформи",
+            ru: "📜 Смарт-контракты и платформы",
+            en: "📜 Smart Contracts & Platforms"
+        },
+        applications: {
+            uk: "💼 Застосування",
+            ru: "💼 Применения",
+            en: "💼 Applications"
+        },
+        challenges: {
+            uk: "⚠️ Виклики та перспективи",
+            ru: "⚠️ Вызовы и перспективы",
+            en: "⚠️ Challenges & Outlook"
+        }
+    };
+
+    const items = [
+        {
+            cat: "foundations",
+            icon: "🔗",
+            name: {
+                uk: "Що таке блокчейн",
+                ru: "Что такое блокчейн",
+                en: "What is Blockchain"
+            },
+            desc: {
+                uk: "Блокчейн — розподілений реєстр, у якому дані зберігаються у вигляді ланцюжка блоків, захищених криптографією. Кожен блок містить хеш попереднього, що робить історію майже незмінною без згоди мережі.",
+                ru: "Блокчейн — распределенный реестр, в котором данные хранятся в виде цепочки блоков, защищенных криптографией. Каждый блок содержит хеш предыдущего, что делает историю почти неизменной без согласия сети.",
+                en: "Blockchain is a distributed ledger where data is stored as a chain of blocks secured by cryptography. Each block contains the hash of the previous one, making history nearly immutable without network consensus."
+            },
+            traits: {
+                uk: "Блоки, Хеш, Незмінність, Розподіленість, Криптографія",
+                ru: "Блоки, Хеш, Неизменность, Распределенность, Криптография",
+                en: "Blocks, Hash, Immutability, Distribution, Cryptography"
+            },
+            spec: {
+                uk: "Довіра без єдиного центру контролю",
+                ru: "Доверие без единого центра контроля",
+                en: "Trust without a single control center"
+            },
+            links: [
+                { name: "Bitcoin Whitepaper", url: "https://bitcoin.org/bitcoin.pdf" },
+                { name: "Blockchain Explained (IBM)", url: "https://www.ibm.com/topics/blockchain" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "📚",
+            name: {
+                uk: "Розподілені реєстри (DLT)",
+                ru: "Распределенные реестры (DLT)",
+                en: "Distributed Ledger Technology (DLT)"
+            },
+            desc: {
+                uk: "DLT — ширше поняття: будь-який розподілений реєстр, не обов’язково у вигляді ланцюжка блоків. Блокчейн — один з видів DLT. Існують також DAG (Directed Acyclic Graph) та інші структури.",
+                ru: "DLT — более широкое понятие: любой распределенный реестр, не обязательно в виде цепочки блоков. Блокчейн — один из видов DLT. Существуют также DAG (Directed Acyclic Graph) и другие структуры.",
+                en: "DLT is a broader term: any distributed ledger, not necessarily a chain of blocks. Blockchain is one type of DLT. There are also DAGs (Directed Acyclic Graphs) and other structures."
+            },
+            traits: {
+                uk: "DLT, Blockchain, DAG, Реєстр, Реплікація",
+                ru: "DLT, Blockchain, DAG, Реестр, Репликация",
+                en: "DLT, Blockchain, DAG, Ledger, Replication"
+            },
+            spec: {
+                uk: "Не кожен DLT — блокчейн",
+                ru: "Не каждый DLT — блокчейн",
+                en: "Not every DLT is a blockchain"
+            },
+            links: [
+                { name: "DLT overview", url: "https://www.ibm.com/topics/distributed-ledger-technology" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "🔐",
+            name: {
+                uk: "Криптографія в блокчейні",
+                ru: "Криптография в блокчейне",
+                en: "Cryptography in Blockchain"
+            },
+            desc: {
+                uk: "Хеш-функції (SHA-256), цифрові підписи (ECDSA, EdDSA), дерева Меркла, публічні/приватні ключі. Саме криптографія забезпечує цілісність даних і право власності на активи без посередників.",
+                ru: "Хеш-функции (SHA-256), цифровые подписи (ECDSA, EdDSA), деревья Меркла, публичные/приватные ключи. Именно криптография обеспечивает целостность данных и право собственности на активы без посредников.",
+                en: "Hash functions (SHA-256), digital signatures (ECDSA, EdDSA), Merkle trees, public/private keys. Cryptography ensures data integrity and ownership of assets without intermediaries."
+            },
+            traits: {
+                uk: "SHA-256, Підписи, Merkle tree, Ключі, Цілісність",
+                ru: "SHA-256, Подписи, Merkle tree, Ключи, Целостность",
+                en: "SHA-256, Signatures, Merkle tree, Keys, Integrity"
+            },
+            spec: {
+                uk: "Без криптографії блокчейн неможливий",
+                ru: "Без криптографии блокчейн невозможен",
+                en: "Without cryptography blockchain is impossible"
+            },
+            links: [
+                { name: "Merkle Trees", url: "https://en.wikipedia.org/wiki/Merkle_tree" },
+                { name: "ECDSA", url: "https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm" }
+            ]
+        },
+        {
+            cat: "consensus",
+            icon: "⛏️",
+            name: {
+                uk: "Proof of Work (PoW)",
+                ru: "Proof of Work (PoW)",
+                en: "Proof of Work (PoW)"
+            },
+            desc: {
+                uk: "Механізм консенсусу, за якого вузли («майнери») змагаються у розв’язанні обчислювальної задачі. Перший, хто знайшов рішення, додає блок і отримує винагороду. Використовується в Bitcoin. Енергозатратний, але перевірений часом.",
+                ru: "Механизм консенсуса, при котором узлы («майнеры») соревнуются в решении вычислительной задачи. Первый, кто нашел решение, добавляет блок и получает вознаграждение. Используется в Bitcoin. Энергозатратный, но проверенный временем.",
+                en: "A consensus mechanism where nodes (“miners”) compete to solve a computational puzzle. The first to find the solution adds the block and gets a reward. Used in Bitcoin. Energy-intensive but battle-tested."
+            },
+            traits: {
+                uk: "Майнінг, Хешрейт, Складність, Винагорода, Енергія",
+                ru: "Майнинг, Хешрейт, Сложность, Вознаграждение, Энергия",
+                en: "Mining, Hashrate, Difficulty, Reward, Energy"
+            },
+            spec: {
+                uk: "Найвища безпека ціною енергії",
+                ru: "Наивысшая безопасность ценой энергии",
+                en: "Highest security at the cost of energy"
+            },
+            links: [
+                { name: "Bitcoin Mining", url: "https://bitcoin.org/en/how-it-works" }
+            ]
+        },
+        {
+            cat: "consensus",
+            icon: "🥩",
+            name: {
+                uk: "Proof of Stake (PoS) та варіанти",
+                ru: "Proof of Stake (PoS) и варианты",
+                en: "Proof of Stake (PoS) and Variants"
+            },
+            desc: {
+                uk: "Валідатори «стакають» (блокують) свої токени і з певною ймовірністю обираються для створення блоків. Значно економніше за PoW. Використовується в Ethereum (після Merge), Cardano, Solana (з модифікаціями) тощо.",
+                ru: "Валидаторы «стейкают» (блокируют) свои токены и с определенной вероятностью выбираются для создания блоков. Значительно экономичнее PoW. Используется в Ethereum (после Merge), Cardano, Solana (с модификациями) и др.",
+                en: "Validators “stake” (lock) their tokens and are chosen with some probability to create blocks. Much more energy-efficient than PoW. Used in Ethereum (after the Merge), Cardano, Solana (with modifications) and others."
+            },
+            traits: {
+                uk: "Стейкінг, Валідатори, Енергоефективність, Slash, Фінальність",
+                ru: "Стейкинг, Валидаторы, Энергоэффективность, Slash, Финальность",
+                en: "Staking, Validators, Energy efficiency, Slash, Finality"
+            },
+            spec: {
+                uk: "Став стандартом для нових мереж",
+                ru: "Стал стандартом для новых сетей",
+                en: "Became the standard for new networks"
+            },
+            links: [
+                { name: "Ethereum Proof of Stake", url: "https://ethereum.org/en/developers/docs/consensus-mechanisms/pos/" }
+            ]
+        },
+        {
+            cat: "consensus",
+            icon: "🏛️",
+            name: {
+                uk: "Публічні, приватні та consortium-мережі",
+                ru: "Публичные, приватные и consortium-сети",
+                en: "Public, Private and Consortium Networks"
+            },
+            desc: {
+                uk: "Публічні (Bitcoin, Ethereum) — відкриті для всіх. Приватні — під контролем однієї організації. Consortium (Hyperledger Fabric, Corda) — керуються групою організацій. Вибір залежить від вимог до відкритості та контролю.",
+                ru: "Публичные (Bitcoin, Ethereum) — открыты для всех. Приватные — под контролем одной организации. Consortium (Hyperledger Fabric, Corda) — управляются группой организаций. Выбор зависит от требований к открытости и контролю.",
+                en: "Public (Bitcoin, Ethereum) — open to everyone. Private — controlled by one organization. Consortium (Hyperledger Fabric, Corda) — governed by a group of organizations. Choice depends on openness and control needs."
+            },
+            traits: {
+                uk: "Permissionless, Permissioned, Consortium, Hyperledger, Corda",
+                ru: "Permissionless, Permissioned, Consortium, Hyperledger, Corda",
+                en: "Permissionless, Permissioned, Consortium, Hyperledger, Corda"
+            },
+            spec: {
+                uk: "Не завжди потрібен публічний блокчейн",
+                ru: "Не всегда нужен публичный блокчейн",
+                en: "A public blockchain is not always needed"
+            },
+            links: [
+                { name: "Hyperledger Fabric", url: "https://hyperledger-fabric.readthedocs.io" },
+                { name: "Corda", url: "https://corda.net" }
+            ]
+        },
+        {
+            cat: "smart",
+            icon: "📜",
+            name: {
+                uk: "Смарт-контракти",
+                ru: "Смарт-контракты",
+                en: "Smart Contracts"
+            },
+            desc: {
+                uk: "Програми, що виконуються на блокчейні автоматично при виконанні умов. Усувають потребу в посередниках для багатьох угод. Найпоширеніша платформа — Ethereum (Solidity). Важливі безпека коду та аудит.",
+                ru: "Программы, выполняемые на блокчейне автоматически при выполнении условий. Устраняют потребность в посредниках для многих сделок. Самая распространенная платформа — Ethereum (Solidity). Важны безопасность кода и аудит.",
+                en: "Programs that run on the blockchain automatically when conditions are met. Remove the need for intermediaries in many agreements. The most common platform is Ethereum (Solidity). Code security and audits are critical."
+            },
+            traits: {
+                uk: "Solidity, EVM, Автоматичне виконання, Аудит, Незмінність коду",
+                ru: "Solidity, EVM, Автоматическое выполнение, Аудит, Неизменность кода",
+                en: "Solidity, EVM, Automatic execution, Audit, Code immutability"
+            },
+            spec: {
+                uk: "Код — закон (code is law), але помилки дорогі",
+                ru: "Код — закон (code is law), но ошибки дороги",
+                en: "Code is law, but bugs are expensive"
+            },
+            links: [
+                { name: "Solidity Docs", url: "https://docs.soliditylang.org" },
+                { name: "Ethereum Smart Contracts", url: "https://ethereum.org/en/developers/docs/smart-contracts/" }
+            ]
+        },
+        {
+            cat: "smart",
+            icon: "⟠",
+            name: {
+                uk: "Ethereum та EVM-сумісні мережі",
+                ru: "Ethereum и EVM-совместимые сети",
+                en: "Ethereum and EVM-Compatible Networks"
+            },
+            desc: {
+                uk: "Ethereum — найбільша платформа для смарт-контрактів. EVM (Ethereum Virtual Machine) стала стандартом: багато мереж (Polygon, Arbitrum, Optimism, BNB Chain) сумісні з нею, що спрощує перенесення додатків.",
+                ru: "Ethereum — крупнейшая платформа для смарт-контрактов. EVM (Ethereum Virtual Machine) стала стандартом: многие сети (Polygon, Arbitrum, Optimism, BNB Chain) совместимы с ней, что упрощает перенос приложений.",
+                en: "Ethereum is the largest smart-contract platform. The EVM (Ethereum Virtual Machine) became a standard: many networks (Polygon, Arbitrum, Optimism, BNB Chain) are compatible with it, simplifying app portability."
+            },
+            traits: {
+                uk: "EVM, Solidity, Layer 2, Gas, dApps",
+                ru: "EVM, Solidity, Layer 2, Gas, dApps",
+                en: "EVM, Solidity, Layer 2, Gas, dApps"
+            },
+            spec: {
+                uk: "Екосистема з найбільшою кількістю розробників",
+                ru: "Экосистема с наибольшим числом разработчиков",
+                en: "Ecosystem with the largest number of developers"
+            },
+            links: [
+                { name: "ethereum.org", url: "https://ethereum.org" },
+                { name: "Polygon", url: "https://polygon.technology" },
+                { name: "Arbitrum", url: "https://arbitrum.io" }
+            ]
+        },
+        {
+            cat: "smart",
+            icon: "🌐",
+            name: {
+                uk: "Інші платформи (Solana, Cosmos, Polkadot…)",
+                ru: "Другие платформы (Solana, Cosmos, Polkadot…)",
+                en: "Other Platforms (Solana, Cosmos, Polkadot…)"
+            },
+            desc: {
+                uk: "Solana — висока пропускна здатність. Cosmos — екосистема взаємодіючих блокчейнів (IBC). Polkadot — парачейни та спільна безпека. Кожна платформа пропонує свій баланс швидкості, безпеки та децентралізації.",
+                ru: "Solana — высокая пропускная способность. Cosmos — экосистема взаимодействующих блокчейнов (IBC). Polkadot — парачейны и общая безопасность. Каждая платформа предлагает свой баланс скорости, безопасности и децентрализации.",
+                en: "Solana — high throughput. Cosmos — ecosystem of interconnected blockchains (IBC). Polkadot — parachains and shared security. Each platform offers its own balance of speed, security and decentralization."
+            },
+            traits: {
+                uk: "Solana, Cosmos, Polkadot, IBC, Парачейни, TPS",
+                ru: "Solana, Cosmos, Polkadot, IBC, Парачейны, TPS",
+                en: "Solana, Cosmos, Polkadot, IBC, Parachains, TPS"
+            },
+            spec: {
+                uk: "Немає універсально «найкращої» мережі",
+                ru: "Нет универсально «лучшей» сети",
+                en: "There is no universally “best” network"
+            },
+            links: [
+                { name: "Solana", url: "https://solana.com" },
+                { name: "Cosmos", url: "https://cosmos.network" },
+                { name: "Polkadot", url: "https://polkadot.network" }
+            ]
+        },
+        {
+            cat: "applications",
+            icon: "💰",
+            name: {
+                uk: "Криптовалюти та платежі",
+                ru: "Криптовалюты и платежи",
+                en: "Cryptocurrencies and Payments"
+            },
+            desc: {
+                uk: "Bitcoin як «цифрове золото», стейблкоїни (USDT, USDC) для розрахунків, швидкі та дешеві перекази через блокчейн. Платежі без банків, але з волатильністю та регуляторними питаннями.",
+                ru: "Bitcoin как «цифровое золото», стейблкоины (USDT, USDC) для расчетов, быстрые и дешевые переводы через блокчейн. Платежи без банков, но с волатильностью и регуляторными вопросами.",
+                en: "Bitcoin as “digital gold”, stablecoins (USDT, USDC) for settlements, fast and cheap transfers via blockchain. Payments without banks, but with volatility and regulatory questions."
+            },
+            traits: {
+                uk: "Bitcoin, Стейблкоїни, Перекази, Волатильність, Регуляція",
+                ru: "Bitcoin, Стейблкоины, Переводы, Волатильность, Регуляция",
+                en: "Bitcoin, Stablecoins, Transfers, Volatility, Regulation"
+            },
+            spec: {
+                uk: "Найзріліше застосування блокчейну",
+                ru: "Самое зрелое применение блокчейна",
+                en: "The most mature blockchain application"
+            },
+            links: [
+                { name: "Bitcoin.org", url: "https://bitcoin.org" },
+                { name: "Circle USDC", url: "https://www.circle.com/en/usdc" }
+            ]
+        },
+        {
+            cat: "applications",
+            icon: "🏦",
+            name: {
+                uk: "DeFi — децентралізовані фінанси",
+                ru: "DeFi — децентрализованные финансы",
+                en: "DeFi — Decentralized Finance"
+            },
+            desc: {
+                uk: "Кредитування, обмін, стейкінг, деривативи без традиційних банків і брокерів. Протоколи на смарт-контрактах (Uniswap, Aave, Compound). Висока інноваційність і високі ризики (хаки, імперманент лосс).",
+                ru: "Кредитование, обмен, стейкинг, деривативы без традиционных банков и брокеров. Протоколы на смарт-контрактах (Uniswap, Aave, Compound). Высокая инновационность и высокие риски (хаки, имперманент лосс).",
+                en: "Lending, exchange, staking, derivatives without traditional banks and brokers. Protocols on smart contracts (Uniswap, Aave, Compound). High innovation and high risks (hacks, impermanent loss)."
+            },
+            traits: {
+                uk: "DEX, Lending, Liquidity pools, Yield, Ризики смарт-контрактів",
+                ru: "DEX, Lending, Liquidity pools, Yield, Риски смарт-контрактов",
+                en: "DEX, Lending, Liquidity pools, Yield, Smart contract risks"
+            },
+            spec: {
+                uk: "Відкриті фінанси з відкритими ризиками",
+                ru: "Открытые финансы с открытыми рисками",
+                en: "Open finance with open risks"
+            },
+            links: [
+                { name: "Uniswap", url: "https://uniswap.org" },
+                { name: "Aave", url: "https://aave.com" },
+                { name: "DeFi Llama", url: "https://defillama.com" }
+            ]
+        },
+        {
+            cat: "applications",
+            icon: "🖼️",
+            name: {
+                uk: "NFT, токенізація та цифрова власність",
+                ru: "NFT, токенизация и цифровая собственность",
+                en: "NFTs, Tokenization and Digital Ownership"
+            },
+            desc: {
+                uk: "NFT (незамінні токени) підтверджують унікальне право на цифровий або фізичний об’єкт. Токенізація активів (нерухомість, мистецтво, акції) відкриває нові моделі власності та ліквідності.",
+                ru: "NFT (незаменимые токены) подтверждают уникальное право на цифровой или физический объект. Токенизация активов (недвижимость, искусство, акции) открывает новые модели собственности и ликвидности.",
+                en: "NFTs (non-fungible tokens) prove unique ownership of a digital or physical object. Asset tokenization (real estate, art, shares) opens new ownership and liquidity models."
+            },
+            traits: {
+                uk: "NFT, Токенізація, Цифрова власність, Роялті, Метавсесвіт",
+                ru: "NFT, Токенизация, Цифровая собственность, Роялти, Метавселенная",
+                en: "NFT, Tokenization, Digital ownership, Royalties, Metaverse"
+            },
+            spec: {
+                uk: "Право власності стає програмованим",
+                ru: "Право собственности становится программируемым",
+                en: "Ownership becomes programmable"
+            },
+            links: [
+                { name: "Ethereum NFTs", url: "https://ethereum.org/en/nft/" },
+                { name: "OpenSea", url: "https://opensea.io" }
+            ]
+        },
+        {
+            cat: "applications",
+            icon: "🏢",
+            name: {
+                uk: "Корпоративні та державні кейси",
+                ru: "Корпоративные и государственные кейсы",
+                en: "Enterprise and Government Use Cases"
+            },
+            desc: {
+                uk: "Ланцюги поставок, документообіг, цифрові ідентичності, земельні кадастри, CBDC (цифрові валюти центральних банків). Частіше використовують permissioned-мережі з контрольованим доступом.",
+                ru: "Цепочки поставок, документооборот, цифровые идентичности, земельные кадастры, CBDC (цифровые валюты центральных банков). Чаще используют permissioned-сети с контролируемым доступом.",
+                en: "Supply chains, document flow, digital identities, land registries, CBDC (central bank digital currencies). Often use permissioned networks with controlled access."
+            },
+            traits: {
+                uk: "Supply chain, CBDC, Ідентичність, Кадастр, Permissioned",
+                ru: "Supply chain, CBDC, Идентичность, Кадастр, Permissioned",
+                en: "Supply chain, CBDC, Identity, Land registry, Permissioned"
+            },
+            spec: {
+                uk: "Блокчейн як інструмент прозорості та довіри",
+                ru: "Блокчейн как инструмент прозрачности и доверия",
+                en: "Blockchain as a tool for transparency and trust"
+            },
+            links: [
+                { name: "Hyperledger Use Cases", url: "https://www.hyperledger.org/learn/use-cases" },
+                { name: "CBDC Tracker", url: "https://cbdctracker.org" }
+            ]
+        },
+        {
+            cat: "challenges",
+            icon: "📈",
+            name: {
+                uk: "Масштабованість і Layer 2",
+                ru: "Масштабируемость и Layer 2",
+                en: "Scalability and Layer 2"
+            },
+            desc: {
+                uk: "Публічні блокчейни обмежені в пропускній здатності. Layer 2 (Optimistic / ZK rollups, state channels, sidechains) переносять обчислення з основного ланцюга, зберігаючи безпеку. Ключ до масового прийняття.",
+                ru: "Публичные блокчейны ограничены в пропускной способности. Layer 2 (Optimistic / ZK rollups, state channels, sidechains) переносят вычисления с основной цепи, сохраняя безопасность. Ключ к массовому принятию.",
+                en: "Public blockchains are limited in throughput. Layer 2 (Optimistic / ZK rollups, state channels, sidechains) move computation off the main chain while keeping security. Key to mass adoption."
+            },
+            traits: {
+                uk: "Rollups, ZK, Optimistic, Sidechains, TPS, Комісії",
+                ru: "Rollups, ZK, Optimistic, Sidechains, TPS, Комиссии",
+                en: "Rollups, ZK, Optimistic, Sidechains, TPS, Fees"
+            },
+            spec: {
+                uk: "Масштаб без жертви децентралізацією",
+                ru: "Масштаб без жертвы децентрализацией",
+                en: "Scale without sacrificing decentralization"
+            },
+            links: [
+                { name: "L2Beat", url: "https://l2beat.com" },
+                { name: "Ethereum Scaling", url: "https://ethereum.org/en/layer-2/" }
+            ]
+        },
+        {
+            cat: "challenges",
+            icon: "⚖️",
+            name: {
+                uk: "Регуляція, енергія, ризики",
+                ru: "Регуляция, энергия, риски",
+                en: "Regulation, Energy, Risks"
+            },
+            desc: {
+                uk: "Регуляторна невизначеність, енергоспоживання PoW, хаки смарт-контрактів, волатильність, шахрайство. Успішне впровадження вимагає юридичної ясності, аудитів і відповідального підходу.",
+                ru: "Регуляторная неопределенность, энергопотребление PoW, хаки смарт-контрактов, волатильность, мошенничество. Успешное внедрение требует юридической ясности, аудитов и ответственного подхода.",
+                en: "Regulatory uncertainty, PoW energy use, smart-contract hacks, volatility, fraud. Successful adoption needs legal clarity, audits and a responsible approach."
+            },
+            traits: {
+                uk: "Регуляція, ESG, Аудити, Ризики, Відповідальність",
+                ru: "Регуляция, ESG, Аудиты, Риски, Ответственность",
+                en: "Regulation, ESG, Audits, Risks, Responsibility"
+            },
+            spec: {
+                uk: "Технологія зріє швидше за регулювання",
+                ru: "Технология зреет быстрее регулирования",
+                en: "Technology matures faster than regulation"
+            },
+            links: [
+                { name: "EU MiCA", url: "https://www.esma.europa.eu/esmas-activities/digital-finance-and-innovation/markets-crypto-assets-regulation-mica" }
+            ]
+        }
+    ];
+
+    const ui = {
+        uk: {
+            title: "Блокчейн та розподілені реєстри — Довідник",
+            pageTitle: "⛓️ Блокчейн та розподілені реєстри",
+            home: "Головна сторінка",
+            all: "Усі розділи",
+            traits: "Ключові елементи та поняття",
+            mfgText: "Корисні ресурси:",
+            noResults: "Нічого не знайдено.",
+            footer: "⛓️ Блокчейн та розподілені реєстри | Довідник 2026",
+            introTitle: "Що таке блокчейн та розподілені реєстри?",
+            intro1: "Блокчейн — це розподілений реєстр, у якому записи з’єднані в ланцюжок блоків і захищені криптографією. Він дозволяє досягати згоди між учасниками без єдиного центру довіри. Розподілені реєстри (DLT) — ширше поняття, що включає блокчейн і інші структури.",
+            intro2: "Технологія лежить в основі криптовалют, смарт-контрактів, DeFi, NFT, корпоративних ланцюгів поставок і цифрових валют центробанків. Розуміння консенсусу, безпеки, масштабованості та регуляції допомагає оцінювати реальні можливості й обмеження."
+        },
+        ru: {
+            title: "Блокчейн и распределенные реестры — Справочник",
+            pageTitle: "⛓️ Блокчейн и распределенные реестры",
+            home: "Главная страница",
+            all: "Все разделы",
+            traits: "Ключевые элементы и понятия",
+            mfgText: "Полезные ресурсы:",
+            noResults: "Ничего не найдено.",
+            footer: "⛓️ Блокчейн и распределенные реестры | Справочник 2026",
+            introTitle: "Что такое блокчейн и распределенные реестры?",
+            intro1: "Блокчейн — это распределенный реестр, в котором записи соединены в цепочку блоков и защищены криптографией. Он позволяет достигать согласия между участниками без единого центра доверия. Распределенные реестры (DLT) — более широкое понятие, включающее блокчейн и другие структуры.",
+            intro2: "Технология лежит в основе криптовалют, смарт-контрактов, DeFi, NFT, корпоративных цепочек поставок и цифровых валют центробанков. Понимание консенсуса, безопасности, масштабируемости и регуляции помогает оценивать реальные возможности и ограничения."
+        },
+        en: {
+            title: "Blockchain and Distributed Ledgers — Guide",
+            pageTitle: "⛓️ Blockchain & Distributed Ledgers",
+            home: "Home page",
+            all: "All sections",
+            traits: "Key concepts and elements",
+            mfgText: "Useful resources:",
+            noResults: "Nothing found.",
+            footer: "⛓️ Blockchain and Distributed Ledgers | Guide 2026",
+            introTitle: "What are Blockchain and Distributed Ledgers?",
+            intro1: "Blockchain is a distributed ledger where records are linked in a chain of blocks and secured by cryptography. It allows participants to reach agreement without a single trusted center. Distributed Ledger Technology (DLT) is a broader term that includes blockchain and other structures.",
+            intro2: "The technology underpins cryptocurrencies, smart contracts, DeFi, NFTs, enterprise supply chains and central bank digital currencies. Understanding consensus, security, scalability and regulation helps assess real capabilities and limits."
+        }
+    };
+
+    let currentLang = safeGet("lang-blockchain", "uk");
+    let activeCategory = "all";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-blockchain", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + "</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) { return e.cat === catKey; });
+            if (!list.length) return;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        main.innerHTML = html || ('<div class="no-results">' + ui[currentLang].noResults + "</div>");
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

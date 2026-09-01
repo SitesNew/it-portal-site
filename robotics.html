@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Робототехніка (Robotics) — Довідник</title>
+    <style>
+        :root { --bg: #0a0a12; --surface: #12121f; --surface-hover: #1a1a2e; --card: #16162a; --text: #f0f0f5; --text-muted: #8b8ba3; --accent: #27ae60; --accent-2: #2196f3; --gradient: linear-gradient(135deg, #27ae60, #2196f3); --shadow: 0 4px 24px rgba(0,0,0,0.4); --radius: 1rem; }
+        [data-theme="light"] { --bg: #f4f6fb; --surface: #ffffff; --surface-hover: #f0f2f8; --card: #ffffff; --text: #0f0f1a; --text-muted: #5a5a70; --shadow: 0 4px 24px rgba(0,0,0,0.08); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; transition: background 0.3s, color 0.3s; }
+        header { background: var(--surface); border-bottom: 1px solid rgba(255,255,255,0.04); padding: 1rem 5% 0.8rem; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; }
+        .brand-area { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+        .home-link { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.95rem; white-space: nowrap; transition: opacity 0.2s; }
+        .home-link:hover { opacity: 0.8; } .home-link::before { content: "← "; }
+        .page-title { font-size: 1.2rem; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher { display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px; }
+        .lang-switcher button { background: transparent; border: none; color: var(--text-muted); padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer; font-size: 0.75rem; font-weight: 700; transition: 0.2s; }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn { width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--surface-hover); color: var(--text); cursor: pointer; font-size: 1rem; transition: 0.2s; }
+        .theme-btn:hover { transform: scale(1.1); }
+        .filters { max-width: 1200px; margin: 1rem auto; padding: 0 5%; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .filter-btn { padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08); background: var(--surface); color: var(--text-muted); cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap; }
+        .filter-btn:hover, .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+        main { max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem; }
+        .section-title { font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+        .card { background: var(--card); border: 1px solid rgba(255,255,255,0.04); border-radius: var(--radius); padding: 1.3rem; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: rgba(39,174,96,0.4); }
+        .card-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem; }
+        .card-icon { width: 44px; height: 44px; border-radius: 10px; background: var(--surface-hover); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc { color: var(--text-muted); font-size: 0.9rem; line-height: 1.55; margin: 0.5rem 0; flex: 1; }
+        .card-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem; }
+        .card-meta strong { color: var(--text); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem; }
+        .tag { display: inline-block; background: rgba(39,174,96,0.15); color: var(--accent); padding: 0.15rem 0.5rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0; }
+        .spec-tag { display: inline-block; background: rgba(33,150,243,0.12); color: var(--accent-2); padding: 0.15rem 0.5rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem; }
+        .mfg-links { margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.06); display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .mfg-link { color: var(--text); background: var(--surface-hover); text-decoration: none; padding: 0.2rem 0.55rem; border-radius: 0.4rem; font-size: 0.75rem; font-weight: 600; transition: 0.2s; }
+        .mfg-link:hover { background: var(--accent); color: #fff; }
+        footer { text-align: center; padding: 2rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem; }
+        @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } .page-title { font-size: 1.02rem; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <div class="brand-area">
+                <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+                <div class="page-title" id="page-title">🤖 Робототехніка (Robotics)</div>
+            </div>
+            <div class="controls">
+                <div class="lang-switcher">
+                    <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                    <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                    <button onclick="setLang('en')" id="btn-en">EN</button>
+                </div>
+                <button class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+            </div>
+        </div>
+        <div class="filters" id="filters"></div>
+    </header>
+    <main id="main"></main>
+    <footer id="footer"></footer>
+
+    <script>
+        const categories = {
+            software: { uk: "💻 Програмне забезпечення", ru: "💻 Програмное обеспечение", en: "💻 Software & OS" },
+            hardware: { uk: "🔧 Апаратне забезпечення", ru: "🔧 Аппаратное обеспечение", en: "🔧 Hardware" },
+            algorithms: { uk: "🧠 Алгоритми та сприйняття", ru: "🧠 Алгоритмы и восприятие", en: "🧠 Algorithms & Perception" },
+            applications: { uk: "🏭 Сфери застосування", ru: "🏭 Сферы применения", en: "🏭 Applications" }
+        };
+
+        const items = [
+            { cat: "software", icon: "⚙️", name: { uk: "ROS (Robot Operating System)", ru: "ROS (Robot Operating System)", en: "ROS (Robot Operating System)" }, desc: { uk: "Найпопулярніший відкритий фреймворк для написання програм для роботів. Надає драйвери, бібліотеки та інструменти для комунікації між компонентами.", ru: "Самый популярный открытый фреймворк для написания программ для роботов. Предоставляет драйверы, библиотеки и инструменты для коммуникации между компонентами.", en: "The most popular open-source framework for writing robot software. Provides drivers, libraries, and tools for communication between components." }, traits: { uk: "Nodes, Topics, Services, RViz, Gazebo", ru: "Nodes, Topics, Services, RViz, Gazebo", en: "Nodes, Topics, Services, RViz, Gazebo" }, spec: { uk: "Стандарт де-факто у дослідженнях та комерції", ru: "Стандарт де-факто в исследованиях и коммерции", en: "De facto standard in research and commerce" }, links: [ { name: "ROS.org", url: "https://www.ros.org/" } ]},
+            { cat: "software", icon: "🔄", name: { uk: "ROS 2", ru: "ROS 2", en: "ROS 2" }, desc: { uk: "Нове покоління ROS, переписане з нуля для кращої безпеки, реального часу (Real-Time) та підтримки багатьох роботів одночасно.", ru: "Новое поколение ROS, переписанное с нуля для лучшей безопасности, реального времени (Real-Time) и поддержки множества роботов одновременно.", en: "The next generation of ROS, rewritten from scratch for better security, real-time capabilities, and multi-robot support." }, traits: { uk: "DDS, Real-Time, QoS, Безпека", ru: "DDS, Real-Time, QoS, Безопасность", en: "DDS, Real-Time, QoS, Security" }, spec: { uk: "Фокус: Промислові та комерційні системи", ru: "Фокус: Промышленные и коммерческие системы", en: "Focus: Industrial & Commercial Systems" }, links: [ { name: "ROS 2 Documentation", url: "https://docs.ros.org/en/rolling/" } ]},
+            { cat: "hardware", icon: "🦾", name: { uk: "Актуатори та мотори", ru: "Актуаторы и моторы", en: "Actuators & Motors" }, desc: { uk: "Механізми, що перетворюють енергію на рух. Серва, шагові двигуни, гідравліка та пневматика для руху частин робота.", ru: "Механизмы, преобразующие энергию в движение. Сервоприводы, шаговые двигатели, гидравлика и пневматика для движения частей робота.", en: "Mechanisms that convert energy into motion. Servos, stepper motors, hydraulics, and pneumatics for moving robot parts." }, traits: { uk: "Servomotors, Stepper motors, PWM, Encoders", ru: "Servomotors, Stepper motors, PWM, Encoders", en: "Servomotors, Stepper motors, PWM, Encoders" }, spec: { uk: "Рівень: Фізична взаємодія зі світом", ru: "Уровень: Физическое взаимодействие с миром", en: "Level: Physical interaction with the world" }, links: [ { name: "SparkFun Motor Driver", url: "https://www.sparkfun.com/categories/238" } ]},
+            { cat: "hardware", icon: "🕹️", name: { uk: "Мікроконтролери", ru: "Микроконтроллеры", en: "Microcontrollers" }, desc: { uk: "Мозок простих роботів або датчик-хабів. Arduino, STM32, ESP32 для зчитування датчиків та керування моторами на низькому рівні.", ru: "Мозг простых роботов или сенсорных хабов. Arduino, STM32, ESP32 для считывания датчиков и управления моторами на низком уровне.", en: "The brain of simple robots or sensor hubs. Arduino, STM32, ESP32 for reading sensors and controlling motors at a low level." }, traits: { uk: "Arduino, ESP32, STM32, PWM, I2C/SPI", ru: "Arduino, ESP32, STM32, PWM, I2C/SPI", en: "Arduino, ESP32, STM32, PWM, I2C/SPI" }, spec: { uk: "Фокус: Швидка реакція та Embedded", ru: "Фокус: Быстрая реакция и Embedded", en: "Focus: Fast response & Embedded" }, links: [ { name: "Arduino", url: "https://www.arduino.cc/" } ]},
+            { cat: "algorithms", icon: "🧭", name: { uk: "SLAM (Локалізація та картографування)", ru: "SLAM (Локализация и картографирование)", en: "SLAM (Simultaneous Localization and Mapping)" }, desc: { uk: "Алгоритми, що дозволяють роботу будувати карту невідомого приміщення і одночасно визначати своє місцезнаходження на ній.", ru: "Алгоритмы, позволяющие роботу строить карту неизвестного помещения и одновременно определять свое местоположение на ней.", en: "Algorithms that allow a robot to build a map of an unknown environment and simultaneously determine its location on it." }, traits: { uk: "Lidar, Vision SLAM, EKF, Particle Filters", ru: "Lidar, Vision SLAM, EKF, Particle Filters", en: "Lidar, Vision SLAM, EKF, Particle Filters" }, spec: { uk: "Проблема: Курячий або яєчний (потребує карти для локалізації)", ru: "Проблема: Курица или яйцо (нужна карта для локализации)", en: "Problem: Chicken or egg (needs map for localization)" }, links: [ { name: "OpenSLAM", url: "https://openslam-org.github.io/" } ]},
+            { cat: "algorithms", icon: "👁️", name: { uk: "Комп'ютерний зір (Robot Vision)", ru: "Компьютерное зрение (Robot Vision)", en: "Computer Vision (Robot Vision)" }, desc: { uk: "Обробка зображень з камер для розпізнавання об'єктів, навігації та уникнення перешкод. OpenCV є основним інструментом.", ru: "Обработка изображений с камер для распознавания объектов, навигации и избегания препятствий. OpenCV является основным инструментом.", en: "Processing images from cameras for object recognition, navigation, and obstacle avoidance. OpenCV is the primary tool." }, traits: { uk: "OpenCV, YOLO, Depth Cameras, Stereo Vision", ru: "OpenCV, YOLO, Depth Cameras, Stereo Vision", en: "OpenCV, YOLO, Depth Cameras, Stereo Vision" }, spec: { uk: "Сенсор: Камери та Лідари", ru: "Сенсор: Камеры и Лидары", en: "Sensor: Cameras & Lidars" }, links: [ { name: "OpenCV", url: "https://opencv.org/" } ]},
+            { cat: "applications", icon: "🏭", name: { uk: "Промислові роботи", ru: "Промышленные роботы", en: "Industrial Robots" }, desc: { uk: "Руки-маніпулятори для зварювання, фарбування та складання на конвеєрах. Стандарти ISO та безпека (cages).", ru: "Руки-манипуляторы для сварки, покраски и сборки на конвейерах. Стандарты ISO и безопасность (cages).", en: "Manipulator arms for welding, painting, and assembly on conveyors. ISO standards and safety (cages)." }, traits: { uk: "KUKA, ABB, Fanuc, 6-DOF, Високоточність", ru: "KUKA, ABB, Fanuc, 6-DOF, Высокоточные", en: "KUKA, ABB, Fanuc, 6-DOF, High Precision" }, spec: { uk: "Сфера: Автоматизація виробництва", ru: "Сфера: Автоматизация производства", en: "Field: Manufacturing Automation" }, links: [ { name: "ABB Robotics", url: "https://new.abb.com/products/robotics" } ]},
+            { cat: "applications", icon: "🚗", name: { uk: "Автономні транспортні засоби", ru: "Автономные транспортные средства", en: "Autonomous Vehicles" }, desc: { uk: "Самокеровані автомобілі та дрони. Використовують LIDAR, радари та ШІ для прийняття рішень на дорозі в реальному часі.", ru: "Самоуправляемые автомобили и дроны. Используют LIDAR, радары и ИИ для принятия решений на дороге в реальном времени.", en: "Self-driving cars and drones. Use LIDAR, radars, and AI to make real-time road decisions." }, traits: { uk: "Autopilot, LIDAR, Sensor Fusion, Path Planning", ru: "Autopilot, LIDAR, Sensor Fusion, Path Planning", en: "Autopilot, LIDAR, Sensor Fusion, Path Planning" }, spec: { uk: "Вимога: Високий рівень безпеки (ASIL-D)", ru: "Требование: Высокий уровень безопасности (ASIL-D)", en: "Requirement: High Safety Level (ASIL-D)" }, links: [ { name: "Autonomous Vehicles (IEEE)", url: "https://www.ieee.org/" } ]}
+        ];
+
+        const ui = {
+            uk: { title: "Робототехніка (Robotics) — Довідник", pageTitle: "🤖 Робототехніка (Robotics)", home: "Головна сторінка", all: "Усі розділи", traits: "Ключові поняття", mfgText: "Технології та інструменти:", noResults: "Нічого не знайдено.", footer: "🤖 Робототехніка (Robotics) | Довідник 2025" },
+            ru: { title: "Робототехника (Robotics) — Справочник", pageTitle: "🤖 Робототехника (Robotics)", home: "Главная страница", all: "Все разделы", traits: "Ключевые понятия", mfgText: "Технологии и инструменты:", noResults: "Ничего не найдено.", footer: "🤖 Робототехника (Robotics) | Справочник 2025" },
+            en: { title: "Robotics — Guide", pageTitle: "🤖 Robotics", home: "Home page", all: "All Sections", traits: "Key Concepts", mfgText: "Technologies & Tools:", noResults: "Nothing found.", footer: "🤖 Robotics | Guide 2025" }
+        };
+
+        let currentLang = localStorage.getItem('lang-robotics') || 'uk';
+        let activeCategory = 'all';
+
+        function setLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang-robotics', lang);
+            document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+            ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+            document.title = ui[lang].title;
+            document.getElementById('home-link').textContent = ui[lang].home;
+            document.getElementById('page-title').textContent = ui[lang].pageTitle;
+            renderFilters();
+            render();
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const cur = html.getAttribute('data-theme');
+            html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+            localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+        }
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+        function renderFilters() {
+            const c = document.getElementById('filters');
+            let h = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+            for (const [k,v] of Object.entries(categories)) {
+                h += `<button class="filter-btn ${activeCategory===k?'active':''}" onclick="setCat('${k}')">${v[currentLang]}</button>`;
+            }
+            c.innerHTML = h;
+        }
+
+        function setCat(cat) {
+            activeCategory = cat;
+            renderFilters();
+            render();
+        }
+
+        function render() {
+            const main = document.getElementById('main');
+            let html = '';
+            const cats = (activeCategory === 'all') ? Object.keys(categories) : [activeCategory];
+
+            cats.forEach(catKey => {
+                const list = items.filter(e => e.cat === catKey);
+                if (!list.length) return;
+                html += `<div class="section-title">${categories[catKey][currentLang]}</div><div class="grid">`;
+                list.forEach(e => {
+                    const tags = e.traits[currentLang].split(',').map(t => `<span class="tag">${t.trim()}</span>`).join('');
+                    let linksHtml = '';
+                    if (e.links && e.links.length) {
+                        linksHtml = `<div class="mfg-links"><strong style="width:100%; font-size:0.7rem; color:var(--text-muted); margin-bottom:2px;">${ui[currentLang].mfgText}</strong>` + e.links.map(l => `<a href="${l.url}" target="_blank" rel="noopener" class="mfg-link">🔗 ${l.name}</a>`).join('') + `</div>`;
+                    }
+                    html += `<div class="card"><div class="card-header"><div class="card-icon">${e.icon}</div><div class="card-title">${e.name[currentLang]}</div></div><div class="card-desc">${e.desc[currentLang]}</div><div class="card-meta"><strong>${ui[currentLang].traits}</strong><div style="margin-top:0.25rem">${tags}</div></div><div class="spec-tag">📌 ${e.spec[currentLang]}</div>${linksHtml}</div>`;
+                });
+                html += `</div>`;
+            });
+            if (!html) html = `<div class="no-results">${ui[currentLang].noResults}</div>`;
+            main.innerHTML = html;
+            document.getElementById('footer').textContent = ui[currentLang].footer;
+        }
+
+        setLang(currentLang);
+    </script>
+</body>
+</html>

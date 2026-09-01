@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Компілятори та інтерпретатори — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">⚙️ Компілятори та інтерпретатори</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    const categories = {
+        foundations: {
+            uk: "📘 Основи",
+            ru: "📘 Основы",
+            en: "📘 Foundations"
+        },
+        pipeline: {
+            uk: "🔧 Етапи компіляції",
+            ru: "🔧 Этапы компиляции",
+            en: "🔧 Compilation Pipeline"
+        },
+        approaches: {
+            uk: "🔀 Підходи до виконання",
+            ru: "🔀 Подходы к выполнению",
+            en: "🔀 Execution Approaches"
+        },
+        tools: {
+            uk: "🛠️ Інструменти та технології",
+            ru: "🛠️ Инструменты и технологии",
+            en: "🛠️ Tools & Technologies"
+        },
+        practice: {
+            uk: "💡 Практика та застосування",
+            ru: "💡 Практика и применение",
+            en: "💡 Practice & Applications"
+        }
+    };
+
+    const items = [
+        {
+            cat: "foundations",
+            icon: "⚙️",
+            name: {
+                uk: "Що таке компілятор",
+                ru: "Что такое компилятор",
+                en: "What is a Compiler"
+            },
+            desc: {
+                uk: "Програма, яка перетворює вихідний код (source) мовою програмування на іншу форму — зазвичай машинний код або байткод — до виконання. Результат можна запускати багато разів без повторної трансляції всього коду.",
+                ru: "Программа, которая преобразует исходный код (source) на языке программирования в другую форму — обычно машинный код или байткод — до выполнения. Результат можно запускать много раз без повторной трансляции всего кода.",
+                en: "A program that transforms source code in a programming language into another form — usually machine code or bytecode — before execution. The result can be run many times without re-translating the whole program."
+            },
+            traits: {
+                uk: "Source → Target, AOT, Машинний код, Байткод",
+                ru: "Source → Target, AOT, Машинный код, Байткод",
+                en: "Source → Target, AOT, Machine code, Bytecode"
+            },
+            spec: {
+                uk: "«Перекласти один раз — виконувати багато разів»",
+                ru: "«Перевести один раз — выполнять много раз»",
+                en: "“Translate once — run many times”"
+            },
+            links: [
+                { name: "Compilers (Wikipedia)", url: "https://en.wikipedia.org/wiki/Compiler" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "📖",
+            name: {
+                uk: "Що таке інтерпретатор",
+                ru: "Что такое интерпретатор",
+                en: "What is an Interpreter"
+            },
+            desc: {
+                uk: "Програма, яка читає і виконує вихідний код (або проміжне представлення) крок за кроком, без обов’язкового створення окремого виконуваного файлу. Зручно для скриптів і швидкого циклу розробки; зазвичай повільніше за скомпільований код.",
+                ru: "Программа, которая читает и выполняет исходный код (или промежуточное представление) шаг за шагом, без обязательного создания отдельного исполняемого файла. Удобно для скриптов и быстрого цикла разработки; обычно медленнее скомпилированного кода.",
+                en: "A program that reads and executes source code (or an intermediate form) step by step, without necessarily producing a separate executable. Convenient for scripts and a fast edit–run cycle; usually slower than compiled code."
+            },
+            traits: {
+                uk: "Покрокове виконання, Скрипти, REPL, Гнучкість",
+                ru: "Пошаговое выполнение, Скрипты, REPL, Гибкость",
+                en: "Step-by-step execution, Scripts, REPL, Flexibility"
+            },
+            spec: {
+                uk: "«Читати і виконувати одразу»",
+                ru: "«Читать и выполнять сразу»",
+                en: "“Read and execute immediately”"
+            },
+            links: [
+                { name: "Interpreter (Wikipedia)", url: "https://en.wikipedia.org/wiki/Interpreter_(computing)" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "⚖️",
+            name: {
+                uk: "Компілятор vs інтерпретатор",
+                ru: "Компилятор vs интерпретатор",
+                en: "Compiler vs Interpreter"
+            },
+            desc: {
+                uk: "Компіляція: довша підготовка, швидше виконання, помилки часто «на етапі збірки». Інтерпретація: швидкий старт, повільніше виконання, помилки під час роботи. Багато сучасних мов поєднують обидва підходи (байткод + VM, JIT).",
+                ru: "Компиляция: дольше подготовка, быстрее выполнение, ошибки часто «на этапе сборки». Интерпретация: быстрый старт, медленнее выполнение, ошибки во время работы. Многие современные языки сочетают оба подхода (байткод + VM, JIT).",
+                en: "Compilation: longer setup, faster execution, errors often at build time. Interpretation: quick start, slower execution, errors at runtime. Many modern languages combine both (bytecode + VM, JIT)."
+            },
+            traits: {
+                uk: "Швидкість, Зручність, Помилки, Гібриди, VM",
+                ru: "Скорость, Удобство, Ошибки, Гибриды, VM",
+                en: "Speed, Convenience, Errors, Hybrids, VM"
+            },
+            spec: {
+                uk: "Межа між ними на практиці розмита",
+                ru: "Граница между ними на практике размыта",
+                en: "In practice the boundary is blurred"
+            },
+            links: []
+        },
+        {
+            cat: "foundations",
+            icon: "🔤",
+            name: {
+                uk: "Мови: високорівневі та низькорівневі",
+                ru: "Языки: высокоуровневые и низкоуровневые",
+                en: "Languages: High-level and Low-level"
+            },
+            desc: {
+                uk: "Низькорівневі (асемблер, C) ближчі до машини. Високорівневі (Python, JS, Java) абстрагують деталі. Компілятори/інтерпретатори «знімають» цю абстракцію до того, що розуміє процесор або VM.",
+                ru: "Низкоуровневые (ассемблер, C) ближе к машине. Высокоуровневые (Python, JS, Java) абстрагируют детали. Компиляторы/интерпретаторы «снимают» эту абстракцию до того, что понимает процессор или VM.",
+                en: "Low-level languages (assembly, C) are closer to the machine. High-level ones (Python, JS, Java) abstract details away. Compilers/interpreters bridge that abstraction to what the CPU or VM understands."
+            },
+            traits: {
+                uk: "Абстракція, Портативність, Контроль, Продуктивність",
+                ru: "Абстракция, Портативность, Контроль, Производительность",
+                en: "Abstraction, Portability, Control, Performance"
+            },
+            spec: {
+                uk: "Рівень мови ≠ обов’язково «компілятор чи інтерпретатор»",
+                ru: "Уровень языка ≠ обязательно «компилятор или интерпретатор»",
+                en: "Language level ≠ automatically “compiler or interpreter”"
+            },
+            links: []
+        },
+        {
+            cat: "pipeline",
+            icon: "✂️",
+            name: {
+                uk: "Лексичний аналіз (Lexer / Scanner)",
+                ru: "Лексический анализ (Lexer / Scanner)",
+                en: "Lexical Analysis (Lexer / Scanner)"
+            },
+            desc: {
+                uk: "Перший етап: розбиття тексту програми на токени (ідентифікатори, числа, ключові слова, оператори). Ігнорує пробіли і коментарі (залежно від мови). Помилки на кшталт «невідомий символ».",
+                ru: "Первый этап: разбиение текста программы на токены (идентификаторы, числа, ключевые слова, операторы). Игнорирует пробелы и комментарии (в зависимости от языка). Ошибки вроде «неизвестный символ».",
+                en: "First stage: splitting program text into tokens (identifiers, numbers, keywords, operators). Ignores whitespace and comments (depending on the language). Errors like “unknown character”."
+            },
+            traits: {
+                uk: "Токени, Регулярні вирази, Scanner, Символи",
+                ru: "Токены, Регулярные выражения, Scanner, Символы",
+                en: "Tokens, Regular expressions, Scanner, Characters"
+            },
+            spec: {
+                uk: "Текст → потік токенів",
+                ru: "Текст → поток токенов",
+                en: "Text → stream of tokens"
+            },
+            links: []
+        },
+        {
+            cat: "pipeline",
+            icon: "🌳",
+            name: {
+                uk: "Синтаксичний аналіз (Parser)",
+                ru: "Синтаксический анализ (Parser)",
+                en: "Syntax Analysis (Parser)"
+            },
+            desc: {
+                uk: "Побудова синтаксичного дерева (AST) за граматикою мови. Перевіряє, чи відповідає послідовність токенів правилам (наприклад, «if потребує умову і тіло»). Помилки синтаксису ловляться тут.",
+                ru: "Построение синтаксического дерева (AST) по грамматике языка. Проверяет, соответствует ли последовательность токенов правилам (например, «if требует условие и тело»). Ошибки синтаксиса ловятся здесь.",
+                en: "Building a syntax tree (AST) according to the language grammar. Checks whether the token sequence matches the rules (e.g. “if needs a condition and a body”). Syntax errors are caught here."
+            },
+            traits: {
+                uk: "AST, Граматика, CFG, LL/LR, Синтаксис",
+                ru: "AST, Грамматика, CFG, LL/LR, Синтаксис",
+                en: "AST, Grammar, CFG, LL/LR, Syntax"
+            },
+            spec: {
+                uk: "Токени → дерево структури програми",
+                ru: "Токены → дерево структуры программы",
+                en: "Tokens → tree of program structure"
+            },
+            links: []
+        },
+        {
+            cat: "pipeline",
+            icon: "🧠",
+            name: {
+                uk: "Семантичний аналіз",
+                ru: "Семантический анализ",
+                en: "Semantic Analysis"
+            },
+            desc: {
+                uk: "Перевірка сенсу: типи, області видимості, оголошення змінних, сумісність операцій. «x = \"a\" + 1» може бути синтаксично ок, але семантично — ні (залежно від мови). Таблиці символів, type checking.",
+                ru: "Проверка смысла: типы, области видимости, объявления переменных, совместимость операций. «x = \"a\" + 1» может быть синтаксически ок, но семантически — нет (зависит от языка). Таблицы символов, type checking.",
+                en: "Checking meaning: types, scopes, variable declarations, operation compatibility. “x = \"a\" + 1” may be syntactically fine but semantically wrong (depending on the language). Symbol tables, type checking."
+            },
+            traits: {
+                uk: "Типи, Scope, Symbol table, Type check, Зв’язування",
+                ru: "Типы, Scope, Symbol table, Type check, Связывание",
+                en: "Types, Scope, Symbol table, Type check, Binding"
+            },
+            spec: {
+                uk: "«Чи має це сенс» після «чи правильно написано»",
+                ru: "«Имеет ли это смысл» после «правильно ли написано»",
+                en: "“Does it make sense” after “is it written correctly”"
+            },
+            links: []
+        },
+        {
+            cat: "pipeline",
+            icon: "📦",
+            name: {
+                uk: "Проміжне представлення (IR)",
+                ru: "Промежуточное представление (IR)",
+                en: "Intermediate Representation (IR)"
+            },
+            desc: {
+                uk: "Внутрішня форма програми між аналізом і генерацією коду: AST, триадресний код, SSA (Static Single Assignment), LLVM IR, байткод. IR дозволяє оптимізувати і генерувати код для різних цілей з одного «ядра».",
+                ru: "Внутренняя форма программы между анализом и генерацией кода: AST, трёхадресный код, SSA (Static Single Assignment), LLVM IR, байткод. IR позволяет оптимизировать и генерировать код для разных целей из одного «ядра».",
+                en: "Internal form of the program between analysis and code generation: AST, three-address code, SSA (Static Single Assignment), LLVM IR, bytecode. IR enables optimization and code generation for different targets from one “core”."
+            },
+            traits: {
+                uk: "LLVM IR, SSA, Байткод, Портативність, Оптимізації",
+                ru: "LLVM IR, SSA, Байткод, Портативность, Оптимизации",
+                en: "LLVM IR, SSA, Bytecode, Portability, Optimizations"
+            },
+            spec: {
+                uk: "IR — «спільна мова» всередині компілятора",
+                ru: "IR — «общий язык» внутри компилятора",
+                en: "IR is the “common language” inside the compiler"
+            },
+            links: [
+                { name: "LLVM", url: "https://llvm.org" }
+            ]
+        },
+        {
+            cat: "pipeline",
+            icon: "✨",
+            name: {
+                uk: "Оптимізація коду",
+                ru: "Оптимизация кода",
+                en: "Code Optimization"
+            },
+            desc: {
+                uk: "Перетворення IR або коду для швидшої/меншої програми без зміни семантики: constant folding, dead code elimination, inlining, loop optimizations, register allocation. Баланс між часом компіляції і якістю коду.",
+                ru: "Преобразование IR или кода для более быстрой/меньшей программы без изменения семантики: constant folding, dead code elimination, inlining, loop optimizations, register allocation. Баланс между временем компиляции и качеством кода.",
+                en: "Transforming IR or code for a faster/smaller program without changing semantics: constant folding, dead code elimination, inlining, loop optimizations, register allocation. Balance between compile time and code quality."
+            },
+            traits: {
+                uk: "Inlining, DCE, Loops, Registers, -O2/-O3",
+                ru: "Inlining, DCE, Loops, Registers, -O2/-O3",
+                en: "Inlining, DCE, Loops, Registers, -O2/-O3"
+            },
+            spec: {
+                uk: "Оптимізатор не повинен «ламати» поведінку",
+                ru: "Оптимизатор не должен «ломать» поведение",
+                en: "The optimizer must not “break” behaviour"
+            },
+            links: []
+        },
+        {
+            cat: "pipeline",
+            icon: "🎯",
+            name: {
+                uk: "Генерація коду (Codegen)",
+                ru: "Генерация кода (Codegen)",
+                en: "Code Generation (Codegen)"
+            },
+            desc: {
+                uk: "Останній етап front/middle → backend: з IR у машинний код цільової архітектури (x86, ARM) або байткод VM. Вибір інструкцій, регістрів, формату об’єктного файлу (ELF, PE, Mach-O).",
+                ru: "Последний этап front/middle → backend: из IR в машинный код целевой архитектуры (x86, ARM) или байткод VM. Выбор инструкций, регистров, формата объектного файла (ELF, PE, Mach-O).",
+                en: "Final front/middle → backend stage: from IR to machine code for the target architecture (x86, ARM) or VM bytecode. Instruction selection, registers, object file format (ELF, PE, Mach-O)."
+            },
+            traits: {
+                uk: "Machine code, ABI, Object file, Target, Backend",
+                ru: "Machine code, ABI, Object file, Target, Backend",
+                en: "Machine code, ABI, Object file, Target, Backend"
+            },
+            spec: {
+                uk: "Різні CPU — різний codegen",
+                ru: "Разные CPU — разный codegen",
+                en: "Different CPUs need different codegen"
+            },
+            links: []
+        },
+        {
+            cat: "approaches",
+            icon: "📦",
+            name: {
+                uk: "AOT-компіляція",
+                ru: "AOT-компиляция",
+                en: "AOT Compilation"
+            },
+            desc: {
+                uk: "Ahead-of-Time: уся програма (або модуль) компілюється до запуску. Класичний C/C++, Go, Rust; також AOT для Java/C# у деяких сценаріях. Передбачувана продуктивність, довший цикл збірки.",
+                ru: "Ahead-of-Time: вся программа (или модуль) компилируется до запуска. Классический C/C++, Go, Rust; также AOT для Java/C# в некоторых сценариях. Предсказуемая производительность, более длинный цикл сборки.",
+                en: "Ahead-of-Time: the whole program (or module) is compiled before run. Classic C/C++, Go, Rust; also AOT for Java/C# in some scenarios. Predictable performance, longer build cycle."
+            },
+            traits: {
+                uk: "AOT, Native, Статична збірка, Передбачуваність",
+                ru: "AOT, Native, Статическая сборка, Предсказуемость",
+                en: "AOT, Native, Static build, Predictability"
+            },
+            spec: {
+                uk: "Максимум роботи — до запуску",
+                ru: "Максимум работы — до запуска",
+                en: "Most of the work happens before run"
+            },
+            links: []
+        },
+        {
+            cat: "approaches",
+            icon: "⚡",
+            name: {
+                uk: "JIT-компіляція",
+                ru: "JIT-компиляция",
+                en: "JIT Compilation"
+            },
+            desc: {
+                uk: "Just-in-Time: код компілюється під час виконання, часто «гарячі» ділянки. JVM, V8 (JS), .NET CLR, PyPy. Може використовувати профілювання рантайму для кращих оптимізацій, ніж чистий AOT.",
+                ru: "Just-in-Time: код компилируется во время выполнения, часто «горячие» участки. JVM, V8 (JS), .NET CLR, PyPy. Может использовать профилирование рантайма для лучших оптимизаций, чем чистый AOT.",
+                en: "Just-in-Time: code is compiled during execution, often “hot” paths. JVM, V8 (JS), .NET CLR, PyPy. Can use runtime profiling for better optimizations than pure AOT."
+            },
+            traits: {
+                uk: "JIT, Hot path, Profiling, VM, Warm-up",
+                ru: "JIT, Hot path, Profiling, VM, Warm-up",
+                en: "JIT, Hot path, Profiling, VM, Warm-up"
+            },
+            spec: {
+                uk: "Швидкість «розганяється» після warm-up",
+                ru: "Скорость «разгоняется» после warm-up",
+                en: "Speed “ramps up” after warm-up"
+            },
+            links: []
+        },
+        {
+            cat: "approaches",
+            icon: "🖥️",
+            name: {
+                uk: "Віртуальна машина (VM) і байткод",
+                ru: "Виртуальная машина (VM) и байткод",
+                en: "Virtual Machine (VM) and Bytecode"
+            },
+            desc: {
+                uk: "Програма компілюється в байткод (проміжний код), який виконує VM: інтерпретація, JIT або суміш. JVM, CLR, Python bytecode, Lua VM. Портативність: один байткод — багато платформ.",
+                ru: "Программа компилируется в байткод (промежуточный код), который выполняет VM: интерпретация, JIT или смесь. JVM, CLR, Python bytecode, Lua VM. Портативность: один байткод — много платформ.",
+                en: "The program is compiled to bytecode (intermediate code) that a VM runs: interpretation, JIT, or a mix. JVM, CLR, Python bytecode, Lua VM. Portability: one bytecode — many platforms."
+            },
+            traits: {
+                uk: "Bytecode, JVM, CLR, Портативність, Sandbox",
+                ru: "Bytecode, JVM, CLR, Портативность, Sandbox",
+                en: "Bytecode, JVM, CLR, Portability, Sandbox"
+            },
+            spec: {
+                uk: "«Write once, run anywhere» — ідея VM",
+                ru: "«Write once, run anywhere» — идея VM",
+                en: "“Write once, run anywhere” — the VM idea"
+            },
+            links: [
+                { name: "JVM", url: "https://docs.oracle.com/javase/specs/jvms/se21/html/" }
+            ]
+        },
+        {
+            cat: "approaches",
+            icon: "🔁",
+            name: {
+                uk: "Транспіляція (Transpilation)",
+                ru: "Транспиляция (Transpilation)",
+                en: "Transpilation"
+            },
+            desc: {
+                uk: "Компіляція з однієї високорівневої мови в іншу (TypeScript → JavaScript, Babel, Kotlin/JS). Не в машинний код, а в «близьку» мову, яку вже вміють виконувати існуючі середовища.",
+                ru: "Компиляция из одного высокоуровневого языка в другой (TypeScript → JavaScript, Babel, Kotlin/JS). Не в машинный код, а в «близкий» язык, который уже умеют выполнять существующие среды.",
+                en: "Compiling from one high-level language to another (TypeScript → JavaScript, Babel, Kotlin/JS). Not to machine code, but to a “nearby” language that existing runtimes already execute."
+            },
+            traits: {
+                uk: "Source-to-source, TypeScript, Babel, Сумісність",
+                ru: "Source-to-source, TypeScript, Babel, Совместимость",
+                en: "Source-to-source, TypeScript, Babel, Compatibility"
+            },
+            spec: {
+                uk: "Нова мова на старій екосистемі",
+                ru: "Новый язык на старой экосистеме",
+                en: "A new language on an existing ecosystem"
+            },
+            links: []
+        },
+        {
+            cat: "tools",
+            icon: "🔷",
+            name: {
+                uk: "GCC і Clang/LLVM",
+                ru: "GCC и Clang/LLVM",
+                en: "GCC and Clang/LLVM"
+            },
+            desc: {
+                uk: "GCC — класичний набір компіляторів (C, C++, Fortran…). Clang — front-end на базі LLVM; LLVM — універсальна інфраструктура IR, оптимізацій і codegen. Основа багатьох сучасних компіляторів і інструментів.",
+                ru: "GCC — классический набор компиляторов (C, C++, Fortran…). Clang — front-end на базе LLVM; LLVM — универсальная инфраструктура IR, оптимизаций и codegen. Основа многих современных компиляторов и инструментов.",
+                en: "GCC is the classic compiler suite (C, C++, Fortran…). Clang is an LLVM-based front-end; LLVM is a universal IR, optimization and codegen infrastructure. Foundation of many modern compilers and tools."
+            },
+            traits: {
+                uk: "GCC, Clang, LLVM, C/C++, Native",
+                ru: "GCC, Clang, LLVM, C/C++, Native",
+                en: "GCC, Clang, LLVM, C/C++, Native"
+            },
+            spec: {
+                uk: "LLVM змінив індустрію компіляторів",
+                ru: "LLVM изменил индустрию компиляторов",
+                en: "LLVM changed the compiler industry"
+            },
+            links: [
+                { name: "GCC", url: "https://gcc.gnu.org" },
+                { name: "LLVM", url: "https://llvm.org" }
+            ]
+        },
+        {
+            cat: "tools",
+            icon: "☕",
+            name: {
+                uk: "JVM, CLR, V8 та інші runtime",
+                ru: "JVM, CLR, V8 и другие runtime",
+                en: "JVM, CLR, V8 and Other Runtimes"
+            },
+            desc: {
+                uk: "Середовища виконання з байткодом/JIT: JVM (Java, Kotlin, Scala), CLR (.NET), V8 (JavaScript), CPython / PyPy, LuaJIT. Часто включають GC, стандартну бібліотеку, інструменти профілювання.",
+                ru: "Среды выполнения с байткодом/JIT: JVM (Java, Kotlin, Scala), CLR (.NET), V8 (JavaScript), CPython / PyPy, LuaJIT. Часто включают GC, стандартную библиотеку, инструменты профилирования.",
+                en: "Execution environments with bytecode/JIT: JVM (Java, Kotlin, Scala), CLR (.NET), V8 (JavaScript), CPython / PyPy, LuaJIT. Often include GC, standard library, profiling tools."
+            },
+            traits: {
+                uk: "JVM, .NET, V8, GC, JIT, Runtime",
+                ru: "JVM, .NET, V8, GC, JIT, Runtime",
+                en: "JVM, .NET, V8, GC, JIT, Runtime"
+            },
+            spec: {
+                uk: "Мова часто = компілятор + runtime",
+                ru: "Язык часто = компилятор + runtime",
+                en: "A language is often compiler + runtime"
+            },
+            links: [
+                { name: "V8", url: "https://v8.dev" }
+            ]
+        },
+        {
+            cat: "tools",
+            icon: "🛠️",
+            name: {
+                uk: "Генератори парсерів і DSL-інструменти",
+                ru: "Генераторы парсеров и DSL-инструменты",
+                en: "Parser Generators and DSL Tools"
+            },
+            desc: {
+                uk: "ANTLR, yacc/bison, peg.js, tree-sitter — генерація лексерів/парсерів з граматики. Корисно для мов, конфігів, IDE (підсвітка, навігація). DSL — мови під конкретну задачу.",
+                ru: "ANTLR, yacc/bison, peg.js, tree-sitter — генерация лексеров/парсеров из грамматики. Полезно для языков, конфигов, IDE (подсветка, навигация). DSL — языки под конкретную задачу.",
+                en: "ANTLR, yacc/bison, peg.js, tree-sitter — generating lexers/parsers from a grammar. Useful for languages, configs, IDEs (highlighting, navigation). DSLs are languages for a specific domain."
+            },
+            traits: {
+                uk: "ANTLR, Bison, Grammar, DSL, IDE support",
+                ru: "ANTLR, Bison, Grammar, DSL, IDE support",
+                en: "ANTLR, Bison, Grammar, DSL, IDE support"
+            },
+            spec: {
+                uk: "Не завжди пишуть парсер «з нуля»",
+                ru: "Не всегда пишут парсер «с нуля»",
+                en: "You don’t always write a parser from scratch"
+            },
+            links: [
+                { name: "ANTLR", url: "https://www.antlr.org" },
+                { name: "tree-sitter", url: "https://tree-sitter.github.io/tree-sitter/" }
+            ]
+        },
+        {
+            cat: "tools",
+            icon: "📚",
+            name: {
+                uk: "Класичні книги та курси",
+                ru: "Классические книги и курсы",
+                en: "Classic Books and Courses"
+            },
+            desc: {
+                uk: "«Dragon Book» (Aho et al.) — класика компіляторів. Engineering a Compiler, Crafting Interpreters (Nystrom) — практичніші. Онлайн: курси з LLVM, «Write a compiler» туторіали. Теорія + практика дають найкращий результат.",
+                ru: "«Dragon Book» (Aho et al.) — классика компиляторов. Engineering a Compiler, Crafting Interpreters (Nystrom) — практичнее. Онлайн: курсы по LLVM, «Write a compiler» туториалы. Теория + практика дают лучший результат.",
+                en: "The “Dragon Book” (Aho et al.) is the compiler classic. Engineering a Compiler and Crafting Interpreters (Nystrom) are more practical. Online: LLVM courses, “write a compiler” tutorials. Theory + practice work best."
+            },
+            traits: {
+                uk: "Dragon Book, Crafting Interpreters, LLVM courses",
+                ru: "Dragon Book, Crafting Interpreters, LLVM courses",
+                en: "Dragon Book, Crafting Interpreters, LLVM courses"
+            },
+            spec: {
+                uk: "Найкращий спосіб зрозуміти — написати свій маленький компілятор",
+                ru: "Лучший способ понять — написать свой маленький компилятор",
+                en: "The best way to understand is to write a small compiler"
+            },
+            links: [
+                { name: "Crafting Interpreters", url: "https://craftinginterpreters.com" }
+            ]
+        },
+        {
+            cat: "practice",
+            icon: "🐛",
+            name: {
+                uk: "Помилки компіляції та діагностика",
+                ru: "Ошибки компиляции и диагностика",
+                en: "Compile Errors and Diagnostics"
+            },
+            desc: {
+                uk: "Зрозумілі повідомлення про помилки — частина якості компілятора. Source maps, span помилок, підказки «можливо, ви мали на увазі…». Rust і TypeScript відомі сильною діагностикою; це впливає на DX.",
+                ru: "Понятные сообщения об ошибках — часть качества компилятора. Source maps, span ошибок, подсказки «возможно, вы имели в виду…». Rust и TypeScript известны сильной диагностикой; это влияет на DX.",
+                en: "Clear error messages are part of compiler quality. Source maps, error spans, “did you mean…” hints. Rust and TypeScript are known for strong diagnostics; this affects DX."
+            },
+            traits: {
+                uk: "Diagnostics, Source maps, DX, Error spans",
+                ru: "Diagnostics, Source maps, DX, Error spans",
+                en: "Diagnostics, Source maps, DX, Error spans"
+            },
+            spec: {
+                uk: "Хороша помилка економить години дебагу",
+                ru: "Хорошая ошибка экономит часы отладки",
+                en: "A good error message saves hours of debugging"
+            },
+            links: []
+        },
+        {
+            cat: "practice",
+            icon: "🔗",
+            name: {
+                uk: "Лінкер і завантажувач",
+                ru: "Линкер и загрузчик",
+                en: "Linker and Loader"
+            },
+            desc: {
+                uk: "Після компіляції об’єктних файлів лінкер з’єднує їх і бібліотеки в виконуваний файл (резолв символів, relocation). Завантажувач ОС завантажує програму в пам’ять під час запуску. Важлива частина «як код стає процесом».",
+                ru: "После компиляции объектных файлов линкер соединяет их и библиотеки в исполняемый файл (резолв символов, relocation). Загрузчик ОС загружает программу в память при запуске. Важная часть «как код становится процессом».",
+                en: "After compiling object files, the linker joins them and libraries into an executable (symbol resolution, relocation). The OS loader loads the program into memory at run. A key part of “how code becomes a process”."
+            },
+            traits: {
+                uk: "Linker, Symbols, Relocation, Loader, ELF/PE",
+                ru: "Linker, Symbols, Relocation, Loader, ELF/PE",
+                en: "Linker, Symbols, Relocation, Loader, ELF/PE"
+            },
+            spec: {
+                uk: "«Undefined reference» — часто помилка лінкера",
+                ru: "«Undefined reference» — часто ошибка линкера",
+                en: "“Undefined reference” is often a linker error"
+            },
+            links: []
+        },
+        {
+            cat: "practice",
+            icon: "🎓",
+            name: {
+                uk: "Навіщо це знати розробнику",
+                ru: "Зачем это знать разработчику",
+                en: "Why Developers Should Care"
+            },
+            desc: {
+                uk: "Розуміння компіляції допомагає читати помилки, обирати оптимізації, розуміти продуктивність, дебажити «дивний» код, працювати з FFI і низькорівневими інструментами. Навіть у «високорівневих» мовах ланцюг компіляції/VM завжди поруч.",
+                ru: "Понимание компиляции помогает читать ошибки, выбирать оптимизации, понимать производительность, дебажить «странный» код, работать с FFI и низкоуровневыми инструментами. Даже в «высокоуровневых» языках цепочка компиляции/VM всегда рядом.",
+                en: "Understanding compilation helps read errors, choose optimizations, reason about performance, debug “weird” code, work with FFI and low-level tools. Even in “high-level” languages the compile/VM chain is always nearby."
+            },
+            traits: {
+                uk: "Performance, Debug, FFI, Оптимізації, DX",
+                ru: "Performance, Debug, FFI, Оптимизации, DX",
+                en: "Performance, Debug, FFI, Optimizations, DX"
+            },
+            spec: {
+                uk: "Компілятор — не «чорна скринька», а інструмент",
+                ru: "Компилятор — не «чёрный ящик», а инструмент",
+                en: "The compiler is a tool, not a black box"
+            },
+            links: []
+        }
+    ];
+
+    const ui = {
+        uk: {
+            title: "Компілятори та інтерпретатори — Довідник",
+            pageTitle: "⚙️ Компілятори та інтерпретатори",
+            home: "Головна сторінка",
+            all: "Усі розділи",
+            traits: "Ключові елементи та поняття",
+            mfgText: "Корисні ресурси:",
+            noResults: "Нічого не знайдено.",
+            footer: "⚙️ Компілятори та інтерпретатори | Довідник 2026",
+            introTitle: "Що таке компілятори та інтерпретатори?",
+            intro1: "Компілятор перетворює вихідний код у машинний код або байткод до виконання; інтерпретатор виконує код крок за кроком. Багато сучасних мов поєднують обидва підходи: байткод, віртуальні машини, JIT-компіляція.",
+            intro2: "Розуміння етапів (лексер, парсер, IR, оптимізації, codegen) і різниці між AOT, JIT та інтерпретацією допомагає краще працювати з інструментами збірки, продуктивністю та діагностикою помилок."
+        },
+        ru: {
+            title: "Компиляторы и интерпретаторы — Справочник",
+            pageTitle: "⚙️ Компиляторы и интерпретаторы",
+            home: "Главная страница",
+            all: "Все разделы",
+            traits: "Ключевые элементы и понятия",
+            mfgText: "Полезные ресурсы:",
+            noResults: "Ничего не найдено.",
+            footer: "⚙️ Компиляторы и интерпретаторы | Справочник 2026",
+            introTitle: "Что такое компиляторы и интерпретаторы?",
+            intro1: "Компилятор преобразует исходный код в машинный код или байткод до выполнения; интерпретатор выполняет код шаг за шагом. Многие современные языки сочетают оба подхода: байткод, виртуальные машины, JIT-компиляция.",
+            intro2: "Понимание этапов (лексер, парсер, IR, оптимизации, codegen) и разницы между AOT, JIT и интерпретацией помогает лучше работать с инструментами сборки, производительностью и диагностикой ошибок."
+        },
+        en: {
+            title: "Compilers and Interpreters — Guide",
+            pageTitle: "⚙️ Compilers and Interpreters",
+            home: "Home page",
+            all: "All sections",
+            traits: "Key concepts and elements",
+            mfgText: "Useful resources:",
+            noResults: "Nothing found.",
+            footer: "⚙️ Compilers and Interpreters | Guide 2026",
+            introTitle: "What are compilers and interpreters?",
+            intro1: "A compiler turns source code into machine code or bytecode before execution; an interpreter executes code step by step. Many modern languages combine both: bytecode, virtual machines, JIT compilation.",
+            intro2: "Understanding the stages (lexer, parser, IR, optimizations, codegen) and the differences between AOT, JIT and interpretation helps you work better with build tools, performance and error diagnostics."
+        }
+    };
+
+    let currentLang = safeGet("lang-compilers", "uk");
+    let activeCategory = "all";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-compilers", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + "</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) { return e.cat === catKey; });
+            if (!list.length) return;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        main.innerHTML = html || ('<div class="no-results">' + ui[currentLang].noResults + "</div>");
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

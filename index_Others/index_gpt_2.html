@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Учбово-методичний довідник «Що таке Інформаційні Технології?» — ІТ Портал">
+<title>ІТ Портал — Що таке Інформаційні Технології?</title>
+<style>
+:root{
+  --bg:#f2f7fc;
+  --bg2:#e5eef7;
+  --panel:#ffffff;
+  --panel2:#eef4fb;
+  --text:#0b2a41;
+  --text-light:#1e4a6e;
+  --muted:#2c5778;
+  --line:#b8d0e5;
+  --blue:#1a8cff;
+  --cyan:#00b8d4;
+  --violet:#7c5cfc;
+  --gold:#e6a800;
+  --shadow:0 12px 35px rgba(0,30,60,.12);
+  --border-light:#c5d8ea;
+  --nav-height:130px;
+  --top-bg:rgba(255,255,255,.92);
+  --top-border:#c5d8ea;
+  --nav-bg:#ffffff;
+  --nav-text:#0b2a41;
+  --nav-hover:#d4e5f7;
+  --nav-active:#004b9e;
+  --footer-bg:#f0f6fd;
+  --footer-text:#0b2a41;
+  --footer-strong:#003366;
+  --category-bg:#e8f4fd;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+ margin:0;background:linear-gradient(180deg,#f5faff,#e8f0fa);
+ color:var(--text);font-family:Segoe UI,Arial,sans-serif;line-height:1.55;
+ transition:background .3s, color .3s;
+}
+a{color:inherit;text-decoration:none}
+.container{width:min(1180px,calc(100% - 30px));margin:auto}
+.anchor-offset {
+  scroll-margin-top: 140px;
+}
+.top{
+ position:sticky;top:0;z-index:100;
+ background:var(--top-bg);backdrop-filter:blur(14px);
+ border-bottom:1px solid var(--top-border);
+ transition:background .3s, border-color .3s;
+}
+.head{min-height:76px;display:flex;align-items:center;gap:20px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;min-width:230px}
+.logo-mark{font-size:31px}
+.logo-main{font-size:21px;font-weight:800;letter-spacing:.7px;color:var(--text);transition:color .3s;}
+.logo-sub{font-size:12px;color:var(--muted);transition:color .3s;}
+.head-title{flex:1;text-align:center;font-size:18px;font-weight:700;color:#1a6bb0}
+.head-sub{font-size:12px;color:var(--muted);font-weight:400;margin-top:2px;transition:color .3s;}
+.controls{display:flex;align-items:center;gap:7px}
+.lang button,.theme{
+ border:1px solid var(--border-light);background:var(--panel);color:var(--text);
+ border-radius:9px;padding:8px 11px;cursor:pointer;font-weight:700;transition:all .2s
+}
+.lang button.active{background:#1a8cff;border-color:#1a8cff;color:#fff}
+.lang button:hover:not(.active){background:var(--bg2)}
+.theme{font-size:18px;min-width:48px}
+.nav{
+ border-top:1px solid var(--border-light);
+ display:flex;overflow-x:auto;scrollbar-width:none;
+ background:var(--nav-bg);
+ transition:background .3s, border-color .3s;
+}
+.nav::-webkit-scrollbar{display:none}
+.nav a{
+ text-decoration:none;padding:12px 17px;color:var(--nav-text);white-space:nowrap;
+ font-weight:650;font-size:14px;border-right:1px solid var(--border-light);
+ transition:background .15s, color .15s;cursor:pointer
+}
+.nav a:hover,.nav a.active{background:var(--nav-hover);color:var(--nav-active)}
+.hero{padding:0 0 22px}
+.hero-img{
+ width:100%;display:block;max-height:400px;object-fit:cover;
+ border:1px solid var(--border-light);border-top:0;box-shadow:var(--shadow);
+ background:#fff;transition:border-color .3s;
+}
+.hero-text{text-align:center;padding:22px 10px 12px}
+.hero-text h1{font-size:clamp(24px,3vw,35px);margin:0 0 7px;color:#0066cc}
+.hero-text p{max-width:960px;margin:0 auto;color:var(--text-light);font-size:16px;transition:color .3s;}
+.three{
+ display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+ margin:20px 0 35px;border:1px solid var(--border-light);border-radius:16px;
+ background:var(--panel);overflow:hidden;box-shadow:var(--shadow);
+ transition:background .3s, border-color .3s;
+}
+.info{padding:20px 24px;display:flex;gap:16px}
+.info+ .info{border-left:1px solid var(--border-light);transition:border-color .3s;}
+.info-icon{font-size:37px;min-width:44px;text-align:center}
+.info h2{font-size:18px;color:#0055aa;margin:0 0 5px;transition:color .3s;}
+.info p{font-size:14px;color:var(--text-light);margin:0;transition:color .3s;}
+.section-head{text-align:center;margin:38px 0 22px}
+.section-head h2{margin:0;font-size:27px;color:#004080;transition:color .3s;}
+.section-head h2:before,.section-head h2:after{content:"◇";color:#1a8cff;margin:0 28px}
+.section-head p{color:var(--text-light);margin:7px auto 0;max-width:820px;transition:color .3s;}
+.map{
+ display:grid;grid-template-columns:repeat(5,1fr);gap:14px
+}
+.topic{
+ min-height:180px;padding:18px 15px;text-align:center;text-decoration:none;
+ border:1px solid var(--border-light);border-radius:15px;
+ background:linear-gradient(145deg,var(--panel),var(--bg2));
+ box-shadow:0 4px 12px rgba(0,40,80,.08);
+ transition:transform .18s,border-color .18s,box-shadow .18s,background .3s;
+ cursor:pointer;
+}
+.topic:hover{transform:translateY(-4px);border-color:#1a8cff;box-shadow:0 12px 28px rgba(0,80,180,.15)}
+.topic:nth-child(2n){border-color:#80b8e0}.topic:nth-child(3n){border-color:#9a8cff}
+.topic-icon{
+ width:62px;height:62px;margin:0 auto 10px;border-radius:50%;
+ display:grid;place-items:center;font-size:31px;
+ border:2px solid #1a8cff;background:#e5f0ff;
+ transition:background .3s;
+}
+.topic h3{font-size:16px;line-height:1.25;margin:5px 0 8px;color:#003366;transition:color .3s;}
+.topic p{font-size:12.5px;color:var(--text-light);margin:0;transition:color .3s;}
+.arrow{display:block;color:#1a8cff;font-size:20px;margin-top:8px;transition:transform .3s;}
+
+/* Стилі для розділів категорій */
+.category-sections {
+  display:none;
+  margin-top:20px;
+  padding:20px 25px;
+  border:2px solid #1a8cff;
+  border-radius:16px;
+  background:var(--category-bg);
+  box-shadow:var(--shadow);
+  transition:background .3s, border-color .3s;
+  scroll-margin-top: 140px;
+}
+.category-sections.open {
+  display:block;
+  animation: fadeSlideDown .4s ease;
+}
+@keyframes fadeSlideDown {
+  0% { opacity:0; transform:translateY(-15px); }
+  100% { opacity:1; transform:translateY(0); }
+}
+.category-sections h4 {
+  margin:0 0 15px 0;
+  color:#004080;
+  font-size:18px;
+  border-bottom:2px solid var(--border-light);
+  padding-bottom:10px;
+}
+.category-sections .sections-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));
+  gap:10px;
+}
+.category-sections .sections-grid a {
+  display:block;
+  padding:10px 14px;
+  background:var(--panel);
+  border:1px solid var(--border-light);
+  border-radius:8px;
+  color:var(--text);
+  font-size:13px;
+  transition:all .2s;
+  text-decoration:none;
+}
+.category-sections .sections-grid a:hover {
+  background:#1a8cff;
+  color:#fff;
+  border-color:#1a8cff;
+  transform:translateX(4px);
+}
+.category-sections .close-btn {
+  margin-top:15px;
+  padding:8px 20px;
+  background:#e74c3c;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:700;
+  transition:background .2s;
+}
+.category-sections .close-btn:hover {
+  background:#c0392b;
+}
+
+.future{
+ margin:42px 0;border:1px solid var(--border-light);border-radius:17px;
+ padding:25px;background:linear-gradient(105deg,var(--bg),var(--bg2));box-shadow:var(--shadow);
+ transition:background .3s, border-color .3s;
+}
+.future-grid{display:grid;grid-template-columns:1fr 1.8fr;gap:25px;align-items:center}
+.future-main{display:flex;gap:17px;align-items:center}
+.bulb{font-size:58px}
+.future h2{margin:0 0 6px;color:#003366;font-size:23px;transition:color .3s;}
+.future p{margin:0;color:var(--text-light);font-size:14px;transition:color .3s;}
+.future-items{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+.future-item{text-align:center;padding:12px 5px;border:1px solid var(--border-light);border-radius:12px;background:var(--panel);transition:background .3s, border-color .3s;}
+.future-item b{display:block;font-size:25px;margin-bottom:4px}
+.future-item span{font-size:11px;color:var(--text-light);transition:color .3s;}
+.cta{
+ display:inline-block;margin-top:15px;text-decoration:none;border:1px solid #1a8cff;
+ padding:8px 16px;border-radius:9px;color:#fff;font-weight:700;font-size:13px;
+ background:#1a8cff;transition:background .2s
+}
+.cta:hover{background:#0066cc;border-color:#0066cc}
+footer{
+ margin-top:45px;border-top:1px solid var(--border-light);padding:30px 0 35px;
+ background:var(--footer-bg);border-bottom:3px solid var(--border-light);
+ color:var(--footer-text);text-align:center;font-size:13px;
+ transition:background .3s, border-color .3s, color .3s;
+}
+footer strong{color:var(--footer-strong);font-size:16px;display:block;margin-bottom:4px;transition:color .3s;}
+footer a{color:#0066cc;font-weight:600}
+footer .footer-inner{background:var(--panel);padding:22px 20px;border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--border-light);transition:background .3s, border-color .3s;}
+.disclaimer{max-width:980px;margin:12px auto 0;font-size:12.5px;color:var(--text-light);border-top:1px solid var(--border-light);padding-top:14px;transition:color .3s, border-color .3s;}
+.disclaimer strong{color:var(--footer-strong);font-size:12.5px;transition:color .3s;}
+#footer-anchor{scroll-margin-top:80px;}
+@media(max-width:1000px){
+ .map{grid-template-columns:repeat(3,1fr)}
+ .head-title{display:none}.logo{min-width:auto}.head{justify-content:space-between}
+ .future-grid{grid-template-columns:1fr}.future-items{grid-template-columns:repeat(5,1fr)}
+ .category-sections .sections-grid{grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));}
+}
+@media(max-width:720px){
+ .three{grid-template-columns:1fr}.info+.info{border-left:0;border-top:1px solid var(--border-light)}
+ .map{grid-template-columns:repeat(2,1fr)}
+ .future-items{grid-template-columns:repeat(2,1fr)}
+ .nav a{padding:10px 12px;font-size:13px}
+ .category-sections .sections-grid{grid-template-columns:1fr;}
+}
+@media(max-width:480px){
+ .container{width:calc(100% - 18px)}
+ .map{grid-template-columns:1fr}.hero-img{max-height:280px}
+ .logo-main{font-size:17px}.logo-sub{font-size:10px}
+ .lang button{padding:7px 8px}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+ <div class="container head">
+  <a class="logo" href="#">
+   <span class="logo-mark">🎓</span>
+   <span><span class="logo-main">ІТ ПОРТАЛ</span><br><span class="logo-sub" data-i18n="subtitle">Учбово-методичний довідник</span></span>
+  </a>
+  <div class="head-title">
+   <span data-i18n="header-title">Що таке Інформаційні Технології ?</span>
+   <div class="head-sub" data-i18n="header-sub">Знання сьогодні — технології завтра — можливості безмежні</div>
+  </div>
+  <div class="controls">
+   <div class="lang">
+    <button data-lang="uk" class="active">UA</button>
+    <button data-lang="ru">RU</button>
+    <button data-lang="en">EN</button>
+   </div>
+   <button class="theme" id="themeBtn" title="Змінити тему">🌙</button>
+  </div>
+ </div>
+ <nav class="nav">
+  <div class="container" style="display:flex">
+   <a href="#map" class="active" data-i18n="nav-map">▤ &nbsp;Карта розділів ІТ Порталу</a>
+   <a href="#future" data-i18n="nav-future">⌁ &nbsp;Майбутнє</a>
+   <a href="it-news.html" data-i18n="nav-news">▦ &nbsp;Новини</a>
+   <a href="it-glossary.html" data-i18n="nav-glossary">▧ &nbsp;Глосарій</a>
+   <a href="#footer-anchor" data-i18n="nav-contacts">✉ &nbsp;Контакти</a>
+  </div>
+ </nav>
+</header>
+
+<main>
+ <section class="hero">
+  <div class="container">
+   <img class="hero-img" src="rozvitok_it.png" alt="Історія розвитку інформаційних технологій">
+   <div class="hero-text">
+    <h1 data-i18n="hero-title">Інформаційні технології (ІТ) — нервова система сучасної цивілізації</h1>
+    <p data-i18n="hero-desc">ІТ — це не лише комп'ютери. Це люди, знання, дані, програми, мережі та процеси, які поєднують світ у єдине цифрове середовище.</p>
+   </div>
+  </div>
+ </section>
+
+ <section class="container">
+  <div class="three">
+   <div class="info">
+    <div class="info-icon">🚀</div><div>
+     <h2 data-i18n="about-1-title">Для чого потрібні?</h2>
+     <p data-i18n="about-1-desc">Автоматизація, аналіз даних, зв'язок між людьми, підтримка складних рішень і нові можливості.</p>
+    </div>
+   </div>
+   <div class="info">
+    <div class="info-icon">🌐</div><div>
+     <h2 data-i18n="about-2-title">Місце в житті</h2>
+     <p data-i18n="about-2-desc">Медицина, транспорт, фінанси, освіта, мистецтво, наука — ІТ стали базовою інфраструктурою.</p>
+    </div>
+   </div>
+   <div class="info">
+    <div class="info-icon">⭐</div><div>
+     <h2 data-i18n="about-3-title">Перспективи</h2>
+     <p data-i18n="about-3-desc">ШІ, хмари, кібербезпека, IoT, великі дані та нові інтерфейси відкривають шлях у майбутнє.</p>
+    </div>
+   </div>
+  </div>
+ </section>
+
+ <section id="map" class="container anchor-offset">
+  <div class="section-head" id="mapTitle">
+   <h2 data-i18n="map-title">Карта розділів ІТ Порталу</h2>
+   <p data-i18n="map-desc">Натисніть на категорію, щоб переглянути перелік розділів.</p>
+  </div>
+
+  <div class="map" id="categoriesMap">
+   <!-- Категорія 1 -->
+   <div class="topic" data-category="fundamentals" data-anchor="fundamentals">
+    <div class="topic-icon">🏛️</div>
+    <h3 data-i18n="topic-1-title">Основи, історія<br>та фундамент</h3>
+    <p data-i18n="topic-1-desc">Історія, архітектури, алгоритми, теорія обчислень та базові поняття.</p>
+    <span class="arrow">▼</span>
+   </div>
+   <!-- Категорія 2 -->
+   <div class="topic" data-category="hardware" data-anchor="hardware">
+    <div class="topic-icon">🖥️</div>
+    <h3 data-i18n="topic-2-title">Апаратне забезпечення<br>та системи</h3>
+    <p data-i18n="topic-2-desc">Комп'ютерні системи, компоненти, зберігання даних та операційні системи.</p>
+    <span class="arrow">▼</span>
+   </div>
+   <!-- Категорія 3 -->
+   <div class="topic" data-category="networks" data-anchor="networks">
+    <div class="topic-icon">☁️</div>
+    <h3 data-i18n="topic-3-title">Мережі, хмари<br>та кібербезпека</h3>
+    <p data-i18n="topic-3-desc">Мережі, протоколи, хмари, віртуалізація, захист інформації та IoT.</p>
+    <span class="arrow">▼</span>
+   </div>
+   <!-- Категорія 4 -->
+   <div class="topic" data-category="programming" data-anchor="programming">
+    <div class="topic-icon">‹/›</div>
+    <h3 data-i18n="topic-4-title">Програмування<br>та інструменти</h3>
+    <p data-i18n="topic-4-desc">Мови, алгоритми, патерни, компілятори, API, розробка та контроль версій.</p>
+    <span class="arrow">▼</span>
+   </div>
+   <!-- Категорія 5 -->
+   <div class="topic" data-category="engineering" data-anchor="engineering">
+    <div class="topic-icon">♾️</div>
+    <h3 data-i18n="topic-5-title">Програмна інженерія<br>та DevOps</h3>
+    <p data-i18n="topic-5-desc">SDLC, тестування, QA, DevOps, CI/CD, командні процеси та якість ПЗ.</p>
+    <span class="arrow">▼</span>
+   </div>
+   <!-- Категорія 6 -->
+   <div class="topic" data-category="data" data-anchor="data">
+    <div class="topic-icon">📊</div>
+    <h3 data-i18n="topic-6-title">Дані, аналітика<br>та ШІ</h3>
+    <p data-i18n="topic-6-desc">Бази даних, Big Data, Data Science, машинне навчання та штучний інтелект.</p>
+    <span class="arrow">▼</span>
+   </div>
+   <!-- Категорія 7 -->
+   <div class="topic" data-category="web" data-anchor="web">
+    <div class="topic-icon">🌐</div>
+    <h3 data-i18n="topic-7-title">Web, дизайн<br>та цифрова взаємодія</h3>
+    <p data-i18n="topic-7-desc">Web-розробка, UI/UX, мобільні технології, AR/VR та доступність.</p>
+    <span class="arrow">▼</span>
+   </div>
+   <!-- Категорія 8 -->
+   <div class="topic" data-category="business" data-anchor="business">
+    <div class="topic-icon">💼</div>
+    <h3 data-i18n="topic-8-title">ІТ, бізнес<br>та управління</h3>
+    <p data-i18n="topic-8-desc">Бізнес-процеси, проєктний менеджмент, професії та розвиток кар'єри.</p>
+    <span class="arrow">▼</span>
+   </div>
+   <!-- Категорія 9 -->
+   <div class="topic" data-category="information" data-anchor="information">
+    <div class="topic-icon">🔎</div>
+    <h3 data-i18n="topic-9-title">Пошук, SEO, соціальні<br>мережі та інформація</h3>
+    <p data-i18n="topic-9-desc">Пошукові системи, SEO, соціальні платформи та новини ІТ.</p>
+    <span class="arrow">▼</span>
+   </div>
+   <!-- Категорія 10 -->
+   <div class="topic" data-category="newtech" data-anchor="newtech">
+    <div class="topic-icon">🤖</div>
+    <h3 data-i18n="topic-10-title">Робототехніка та нові<br>обчислювальні середовища</h3>
+    <p data-i18n="topic-10-desc">Робототехніка, квантові та паралельні обчислення, блокчейн і нові технології.</p>
+    <span class="arrow">▼</span>
+   </div>
+  </div>
+
+  <!-- Контейнер для розділів категорій -->
+  <div id="categorySectionsContainer"></div>
+ </section>
+
+ <section id="future" class="container future anchor-offset">
+  <div class="future-grid">
+   <div class="future-main">
+    <div class="bulb">💡</div>
+    <div>
+     <h2 data-i18n="future-title">Майбутнє ІТ — це майбутнє людини</h2>
+     <p data-i18n="future-desc">Технології змінюються щодня, але головне — люди, які створюють, розвивають і застосовують їх для кращого завтра.</p>
+     <a class="cta" href="machine-learning-ai.html" data-i18n="future-cta">Дізнатися більше про перспективи ІТ →</a>
+    </div>
+   </div>
+   <div class="future-items">
+    <div class="future-item"><b>🧠</b><span data-i18n="future-item-1">Штучний інтелект</span></div>
+    <div class="future-item"><b>☁️</b><span data-i18n="future-item-2">Хмарні технології</span></div>
+    <div class="future-item"><b>🛡️</b><span data-i18n="future-item-3">Кібербезпека</span></div>
+    <div class="future-item"><b>📡</b><span data-i18n="future-item-4">Інтернет речей</span></div>
+    <div class="future-item"><b>⚛️</b><span data-i18n="future-item-5">Квантові обчислення</span></div>
+   </div>
+  </div>
+ </section>
+</main>
+
+<footer id="footer-anchor">
+ <div id="footer" class="container footer-inner anchor-offset" style="scroll-margin-top:140px;">
+  <strong id="footer-title" data-i18n="footer-title">Учбово-методичний довідник : « Що таке Інформаційні Технології ? »</strong>
+  <div style="margin:6px 0">Copyright © 2025 - <span id="year"></span> <span data-i18n="footer-year">рік.</span></div>
+  <div>E-mail: <a href="mailto:_pvi@ukr.net">_pvi@ukr.net</a></div>
+  <div class="disclaimer">
+   <span data-i18n="footer-disclaimer-1">Всі матеріали, надані на цьому інформаційному ресурсі, призначені</span>
+   <strong data-i18n="footer-disclaimer-2">ВИКЛЮЧНО з ОЗНАЙОМЧОЮ, НАВЧАЛЬНОЮ та ОСВІТНЬОЮ МЕТОЮ.</strong><br>
+   <span data-i18n="footer-disclaimer-3">Адміністрація ресурсу не претендує на їх авторство і не несе відповідальності за їхній зміст.</span><br>
+   <span data-i18n="footer-disclaimer-4">Створено з допомогою різних Сервісів Штучного Інтелекту.</span>
+  </div>
+ </div>
+</footer>
+
+<script>
+// ---- ПОТОЧНИЙ РІК ----
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// ---- ДАНІ КАТЕГОРІЙ ТА РОЗДІЛІВ ----
+const categoryData = {
+  fundamentals: {
+    title_uk: 'Основи, історія та фундамент',
+    title_ru: 'Основы, история и фундамент',
+    title_en: 'Fundamentals, History and Foundation',
+    anchor: 'fundamentals',
+    sections: [
+      { name_uk: 'Історія обчислювальної техніки', name_ru: 'История вычислительной техники', name_en: 'History of Computing', url: 'history-computing.html' },
+      { name_uk: 'Історія мов програмування', name_ru: 'История языков программирования', name_en: 'History of Programming Languages', url: 'history-programming-languages.html' },
+      { name_uk: 'Архітектури ІТ', name_ru: 'Архитектуры ИТ', name_en: 'IT Architectures', url: 'architecture_it.html' },
+      { name_uk: 'Формальні методи / Теорія обчислень', name_ru: 'Формальные методы / Теория вычислений', name_en: 'Formal Methods / Theory of Computation', url: 'formal-methods.html' },
+      { name_uk: 'Паралельні та розподілені обчислення', name_ru: 'Параллельные и распределенные вычисления', name_en: 'Parallel and Distributed Computing', url: 'parallel-distributed-computing.html' },
+      { name_uk: 'Квантові обчислення', name_ru: 'Квантовые вычисления', name_en: 'Quantum Computing', url: 'quantum-computing.html' },
+      { name_uk: 'Глосарій термінів ІТ', name_ru: 'Глоссарий терминов ИТ', name_en: 'IT Glossary', url: 'it-glossary.html' }
+    ]
+  },
+  hardware: {
+    title_uk: 'Апаратне забезпечення та системи',
+    title_ru: 'Аппаратное обеспечение и системы',
+    title_en: 'Hardware and Systems',
+    anchor: 'hardware',
+    sections: [
+      { name_uk: 'Класифікація комп\'ютерних систем', name_ru: 'Классификация компьютерных систем', name_en: 'Classification of Computer Systems', url: 'hardware.html' },
+      { name_uk: 'Апаратне забезпечення комп\'ютерів', name_ru: 'Аппаратное обеспечение компьютеров', name_en: 'Computer Hardware', url: 'apparat.html' },
+      { name_uk: 'Засоби збереження інформації', name_ru: 'Средства хранения информации', name_en: 'Storage Devices', url: 'storage-devices.html' },
+      { name_uk: 'Файлові системи', name_ru: 'Файловые системы', name_en: 'File Systems', url: 'file_systems.html' },
+      { name_uk: 'Порти та інтерфейси', name_ru: 'Порты и интерфейсы', name_en: 'Ports and Interfaces', url: 'ports.html' },
+      { name_uk: 'Довідник операційних систем', name_ru: 'Справочник операционных систем', name_en: 'Operating Systems Reference', url: 'spr_os.html' },
+      { name_uk: 'Легасі-системи та Мейнфрейми', name_ru: 'Легаси-системы и Мейнфреймы', name_en: 'Legacy Systems and Mainframes', url: 'legacy-mainframes.html' }
+    ]
+  },
+  networks: {
+    title_uk: 'Мережі, хмари та кібербезпека',
+    title_ru: 'Сети, облака и кибербезопасность',
+    title_en: 'Networks, Clouds and Cybersecurity',
+    anchor: 'networks',
+    sections: [
+      { name_uk: 'Мережі та протоколи', name_ru: 'Сети и протоколы', name_en: 'Networks and Protocols', url: 'networks_and_protocols.html' },
+      { name_uk: 'Хмари та віртуалізація', name_ru: 'Облака и виртуализация', name_en: 'Clouds and Virtualization', url: 'cloud_virtualization.html' },
+      { name_uk: 'Кібербезпека', name_ru: 'Кибербезопасность', name_en: 'Cybersecurity', url: 'cybersecurity.html' },
+      { name_uk: 'Інтернет речей (IoT)', name_ru: 'Интернет вещей (IoT)', name_en: 'Internet of Things (IoT)', url: 'internet-of-things.html' },
+      { name_uk: 'Блокчейн та розподілені реєстри', name_ru: 'Блокчейн и распределенные реестры', name_en: 'Blockchain and Distributed Ledgers', url: 'blockchain-distributed-ledgers.html' }
+    ]
+  },
+  programming: {
+    title_uk: 'Програмування та інструменти',
+    title_ru: 'Программирование и инструменты',
+    title_en: 'Programming and Tools',
+    anchor: 'programming',
+    sections: [
+      { name_uk: 'Інструменти розробника', name_ru: 'Инструменты разработчика', name_en: 'Developer Tools', url: 'developer_tools.html' },
+      { name_uk: 'Довідник мов програмування', name_ru: 'Справочник языков программирования', name_en: 'Programming Languages Reference', url: 'proglang-directory.html' },
+      { name_uk: 'Довідник мов веб-програмування', name_ru: 'Справочник языков веб-программирования', name_en: 'Web Programming Languages Reference', url: 'weblang-directory.html' },
+      { name_uk: 'Структури даних та алгоритми', name_ru: 'Структуры данных и алгоритмы', name_en: 'Data Structures and Algorithms', url: 'data-structures-algorithms.html' },
+      { name_uk: 'Патерни проєктування', name_ru: 'Паттерны проектирования', name_en: 'Design Patterns', url: 'design_patterns.html' },
+      { name_uk: 'Компілятори та інтерпретатори', name_ru: 'Компиляторы и интерпретаторы', name_en: 'Compilers and Interpreters', url: 'compilers-interpreters.html' }
+    ]
+  },
+  engineering: {
+    title_uk: 'Програмна інженерія та DevOps',
+    title_ru: 'Программная инженерия и DevOps',
+    title_en: 'Software Engineering and DevOps',
+    anchor: 'engineering',
+    sections: [
+      { name_uk: 'Програмна інженерія / SDLC', name_ru: 'Программная инженерия / SDLC', name_en: 'Software Engineering / SDLC', url: 'software-engineering-sdlc.html' },
+      { name_uk: 'Тестування ПЗ', name_ru: 'Тестирование ПО', name_en: 'Software Testing', url: 'software-testing-qa.html' },
+      { name_uk: 'Системи контролю версій', name_ru: 'Системы контроля версий', name_en: 'Version Control Systems', url: 'version-control-systems.html' },
+      { name_uk: 'API, мікросервіси та інтеграції', name_ru: 'API, микросервисы и интеграции', name_en: 'API, Microservices and Integrations', url: 'api-microservices-integrations.html' },
+      { name_uk: 'Основи DevOps & CI/CD', name_ru: 'Основы DevOps & CI/CD', name_en: 'DevOps & CI/CD Basics', url: 'devops-basics.html' }
+    ]
+  },
+  data: {
+    title_uk: 'Дані, аналітика та ШІ',
+    title_ru: 'Данные, аналитика и ИИ',
+    title_en: 'Data, Analytics and AI',
+    anchor: 'data',
+    sections: [
+      { name_uk: 'Довідник СУБД', name_ru: 'Справочник СУБД', name_en: 'DBMS Reference', url: 'spr_subd.html' },
+      { name_uk: 'Data Science, Big Data та аналітика', name_ru: 'Data Science, Big Data и аналитика', name_en: 'Data Science, Big Data and Analytics', url: 'data-science-bigdata.html' },
+      { name_uk: 'Машинне навчання та ШІ', name_ru: 'Машинное обучение и ИИ', name_en: 'Machine Learning and AI', url: 'machine-learning-ai.html' },
+      { name_uk: 'Довідник сервісів ШІ', name_ru: 'Справочник сервисов ИИ', name_en: 'AI Services Reference', url: 'spr_ai_servises.html' }
+    ]
+  },
+  web: {
+    title_uk: 'Web, дизайн та цифрова взаємодія',
+    title_ru: 'Web, дизайн и цифровое взаимодействие',
+    title_en: 'Web, Design and Digital Interaction',
+    anchor: 'web',
+    sections: [
+      { name_uk: 'UI/UX та дизайн інтерфейсів', name_ru: 'UI/UX и дизайн интерфейсов', name_en: 'UI/UX and Interface Design', url: 'ui-ux-design.html' },
+      { name_uk: 'Мобільна розробка', name_ru: 'Мобильная разработка', name_en: 'Mobile Development', url: 'mobile-development.html' },
+      { name_uk: 'AR/VR / метавсесвіти', name_ru: 'AR/VR / метавселенные', name_en: 'AR/VR / Metaverses', url: 'ar-vr-metaverse.html' },
+      { name_uk: 'Доступність (Accessibility / a11y)', name_ru: 'Доступность (Accessibility / a11y)', name_en: 'Accessibility (a11y)', url: 'accessibility.html' },
+      { name_uk: 'Розробка ігор', name_ru: 'Разработка игр', name_en: 'Game Development', url: 'game-development.html' }
+    ]
+  },
+  business: {
+    title_uk: 'ІТ, бізнес та управління',
+    title_ru: 'ИТ, бизнес и управление',
+    title_en: 'IT, Business and Management',
+    anchor: 'business',
+    sections: [
+      { name_uk: 'ІТ та бізнес-процеси', name_ru: 'ИТ и бизнес-процессы', name_en: 'IT and Business Processes', url: 'it-and-business.html' },
+      { name_uk: 'Управління ІТ-проєктами', name_ru: 'Управление ИТ-проектами', name_en: 'IT Project Management', url: 'it-project-management.html' },
+      { name_uk: 'Кар\'єра в ІТ / спеціальності', name_ru: 'Карьера в ИТ / специальности', name_en: 'IT Careers / Specialties', url: 'it-careers-specialties.html' }
+    ]
+  },
+  information: {
+    title_uk: 'Пошук, SEO, соціальні мережі та інформація',
+    title_ru: 'Поиск, SEO, социальные сети и информация',
+    title_en: 'Search, SEO, Social Networks and Information',
+    anchor: 'information',
+    sections: [
+      { name_uk: 'Текстові редактори та офісні програми', name_ru: 'Текстовые редакторы и офисные программы', name_en: 'Text Editors and Office Programs', url: 'office_editors.html' },
+      { name_uk: 'Пошукові системи', name_ru: 'Поисковые системы', name_en: 'Search Engines', url: 'search-engines.html' },
+      { name_uk: 'SEO-інструменти', name_ru: 'SEO-инструменты', name_en: 'SEO Tools', url: 'seo-tools.html' },
+      { name_uk: 'Соціальні мережі', name_ru: 'Социальные сети', name_en: 'Social Networks', url: 'social_networks.html' },
+      { name_uk: 'Рух та новини ІТ', name_ru: 'Движение и новости ИТ', name_en: 'IT Movement and News', url: 'it-news.html' }
+    ]
+  },
+  newtech: {
+    title_uk: 'Робототехніка та нові обчислювальні середовища',
+    title_ru: 'Робототехника и новые вычислительные среды',
+    title_en: 'Robotics and New Computing Environments',
+    anchor: 'newtech',
+    sections: [
+      { name_uk: 'Робототехніка', name_ru: 'Робототехника', name_en: 'Robotics', url: 'robotics.html' }
+    ]
+  }
+};
+
+// ---- ФУНКЦІЯ ВІДОБРАЖЕННЯ РОЗДІЛІВ КАТЕГОРІЇ ----
+function showCategorySections(categoryKey, anchorName) {
+  const container = document.getElementById('categorySectionsContainer');
+  const data = categoryData[categoryKey];
+  if (!data) return;
+
+  const currentLang = document.documentElement.lang || 'uk';
+  const titleKey = 'title_' + currentLang;
+  const title = data[titleKey] || data.title_uk;
+
+  // Закриваємо всі відкриті розділи
+  document.querySelectorAll('.category-sections').forEach(el => el.classList.remove('open'));
+
+  // Створюємо або оновлюємо контейнер
+  let sectionDiv = document.getElementById('section_' + categoryKey);
+  if (!sectionDiv) {
+    sectionDiv = document.createElement('div');
+    sectionDiv.id = 'section_' + categoryKey;
+    sectionDiv.className = 'category-sections';
+    container.appendChild(sectionDiv);
+  }
+
+  // Будуємо HTML
+  let html = `<h4>📚 ${title}</h4><div class="sections-grid">`;
+  data.sections.forEach(section => {
+    const nameKey = 'name_' + currentLang;
+    const name = section[nameKey] || section.name_uk;
+    html += `<a href="${section.url}">${name}</a>`;
+  });
+  html += `</div><button class="close-btn" onclick="closeCategory('${categoryKey}')">✕ Закрити</button>`;
+  sectionDiv.innerHTML = html;
+  sectionDiv.classList.add('open');
+
+  // Оновлюємо URL з якорем
+  if (anchorName) {
+    const newUrl = window.location.pathname + '#' + anchorName;
+    history.pushState({ category: categoryKey }, '', newUrl);
+  }
+
+  // Прокручуємо до блоку з розділами
+  setTimeout(() => {
+    const targetElement = document.getElementById('section_' + categoryKey);
+    if (targetElement) {
+      const headerHeight = document.querySelector('.top').offsetHeight;
+      // Віднімаємо висоту шапки + невеликий відступ, щоб блок було видно
+      const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight - 20;
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+    }
+  }, 200);
+}
+
+function closeCategory(categoryKey) {
+  const sectionDiv = document.getElementById('section_' + categoryKey);
+  if (sectionDiv) {
+    sectionDiv.classList.remove('open');
+  }
+  // Прибираємо якір з URL
+  if (window.location.hash) {
+    history.pushState(null, '', window.location.pathname);
+  }
+}
+
+// ---- ОБРОБНИКИ ДЛЯ КАРТОК КАТЕГОРІЙ ----
+document.querySelectorAll('.topic[data-category]').forEach(topic => {
+  topic.addEventListener('click', function(e) {
+    // Запобігаємо стандартній поведінці, якщо це посилання
+    e.preventDefault();
+    const category = this.dataset.category;
+    const anchor = this.dataset.anchor || category;
+    showCategorySections(category, anchor);
+  });
+});
+
+// ---- ВІДНОВЛЕННЯ СТАНУ ПРИ ЗАВАНТАЖЕННІ (якщо є якір) ----
+window.addEventListener('load', function() {
+  const hash = window.location.hash;
+  if (hash) {
+    const anchorName = hash.replace('#', '');
+    // Шукаємо категорію за anchor
+    for (const [key, data] of Object.entries(categoryData)) {
+      if (data.anchor === anchorName) {
+        setTimeout(() => {
+          showCategorySections(key, anchorName);
+        }, 400);
+        break;
+      }
+    }
+  }
+});
+
+// ---- ПЕРЕКЛАДИ ----
+const translations = {
+  uk: {
+    'subtitle': 'Учбово-методичний довідник',
+    'header-title': 'Що таке Інформаційні Технології ?',
+    'header-sub': 'Знання сьогодні — технології завтра — можливості безмежні',
+    'nav-map': '▤  Карта розділів ІТ Порталу',
+    'nav-future': '⌁  Майбутнє',
+    'nav-news': '▦  Новини',
+    'nav-glossary': '▧  Глосарій',
+    'nav-contacts': '✉  Контакти',
+    'hero-title': 'Інформаційні технології (ІТ) — нервова система сучасної цивілізації',
+    'hero-desc': 'ІТ — це не лише комп\'ютери. Це люди, знання, дані, програми, мережі та процеси, які поєднують світ у єдине цифрове середовище.',
+    'about-1-title': 'Для чого потрібні?',
+    'about-1-desc': 'Автоматизація, аналіз даних, зв\'язок між людьми, підтримка складних рішень і нові можливості.',
+    'about-2-title': 'Місце в житті',
+    'about-2-desc': 'Медицина, транспорт, фінанси, освіта, мистецтво, наука — ІТ стали базовою інфраструктурою.',
+    'about-3-title': 'Перспективи',
+    'about-3-desc': 'ШІ, хмари, кібербезпека, IoT, великі дані та нові інтерфейси відкривають шлях у майбутнє.',
+    'map-title': 'Карта розділів ІТ Порталу',
+    'map-desc': 'Натисніть на категорію, щоб переглянути перелік розділів.',
+    'topic-1-title': 'Основи, історія\nта фундамент',
+    'topic-1-desc': 'Історія, архітектури, алгоритми, теорія обчислень та базові поняття.',
+    'topic-2-title': 'Апаратне забезпечення\nта системи',
+    'topic-2-desc': 'Комп\'ютерні системи, компоненти, зберігання даних та операційні системи.',
+    'topic-3-title': 'Мережі, хмари\nта кібербезпека',
+    'topic-3-desc': 'Мережі, протоколи, хмари, віртуалізація, захист інформації та IoT.',
+    'topic-4-title': 'Програмування\nта інструменти',
+    'topic-4-desc': 'Мови, алгоритми, патерни, компілятори, API, розробка та контроль версій.',
+    'topic-5-title': 'Програмна інженерія\nта DevOps',
+    'topic-5-desc': 'SDLC, тестування, QA, DevOps, CI/CD, командні процеси та якість ПЗ.',
+    'topic-6-title': 'Дані, аналітика\nта ШІ',
+    'topic-6-desc': 'Бази даних, Big Data, Data Science, машинне навчання та штучний інтелект.',
+    'topic-7-title': 'Web, дизайн\nта цифрова взаємодія',
+    'topic-7-desc': 'Web-розробка, UI/UX, мобільні технології, AR/VR та доступність.',
+    'topic-8-title': 'ІТ, бізнес\nта управління',
+    'topic-8-desc': 'Бізнес-процеси, проєктний менеджмент, професії та розвиток кар\'єри.',
+    'topic-9-title': 'Пошук, SEO, соціальні\nмережі та інформація',
+    'topic-9-desc': 'Пошукові системи, SEO, соціальні платформи та новини ІТ.',
+    'topic-10-title': 'Робототехніка та нові\nобчислювальні середовища',
+    'topic-10-desc': 'Робототехніка, квантові та паралельні обчислення, блокчейн і нові технології.',
+    'future-title': 'Майбутнє ІТ — це майбутнє людини',
+    'future-desc': 'Технології змінюються щодня, але головне — люди, які створюють, розвивають і застосовують їх для кращого завтра.',
+    'future-cta': 'Дізнатися більше про перспективи ІТ →',
+    'future-item-1': 'Штучний інтелект',
+    'future-item-2': 'Хмарні технології',
+    'future-item-3': 'Кібербезпека',
+    'future-item-4': 'Інтернет речей',
+    'future-item-5': 'Квантові обчислення',
+    'footer-title': 'Учбово-методичний довідник : « Що таке Інформаційні Технології ? »',
+    'footer-year': 'рік.',
+    'footer-disclaimer-1': 'Всі матеріали, надані на цьому інформаційному ресурсі, призначені',
+    'footer-disclaimer-2': 'ВИКЛЮЧНО з ОЗНАЙОМЧОЮ, НАВЧАЛЬНОЮ та ОСВІТНЬОЮ МЕТОЮ.',
+    'footer-disclaimer-3': 'Адміністрація ресурсу не претендує на їх авторство і не несе відповідальності за їхній зміст.',
+    'footer-disclaimer-4': 'Створено з допомогою різних Сервісів Штучного Інтелекту.'
+  },
+  ru: {
+    'subtitle': 'Учебно-методический справочник',
+    'header-title': 'Что такое Информационные Технологии ?',
+    'header-sub': 'Знания сегодня — технологии завтра — возможности безграничны',
+    'nav-map': '▤  Карта разделов ИТ Портала',
+    'nav-future': '⌁  Будущее',
+    'nav-news': '▦  Новости',
+    'nav-glossary': '▧  Глоссарий',
+    'nav-contacts': '✉  Контакты',
+    'hero-title': 'Информационные технологии (ИТ) — нервная система современной цивилизации',
+    'hero-desc': 'ИТ — это не только компьютеры. Это люди, знания, данные, программы, сети и процессы, которые объединяют мир в единую цифровую среду.',
+    'about-1-title': 'Для чего нужны?',
+    'about-1-desc': 'Автоматизация, анализ данных, связь между людьми, поддержка сложных решений и новые возможности.',
+    'about-2-title': 'Место в жизни',
+    'about-2-desc': 'Медицина, транспорт, финансы, образование, искусство, наука — ИТ стали базовой инфраструктурой.',
+    'about-3-title': 'Перспективы',
+    'about-3-desc': 'ИИ, облака, кибербезопасность, IoT, большие данные и новые интерфейсы открывают путь в будущее.',
+    'map-title': 'Карта разделов ИТ Портала',
+    'map-desc': 'Нажмите на категорию, чтобы просмотреть список разделов.',
+    'topic-1-title': 'Основы, история\nи фундамент',
+    'topic-1-desc': 'История, архитектуры, алгоритмы, теория вычислений и базовые понятия.',
+    'topic-2-title': 'Аппаратное обеспечение\nи системы',
+    'topic-2-desc': 'Компьютерные системы, компоненты, хранение данных и операционные системы.',
+    'topic-3-title': 'Сети, облака\nи кибербезопасность',
+    'topic-3-desc': 'Сети, протоколы, облака, виртуализация, защита информации и IoT.',
+    'topic-4-title': 'Программирование\nи инструменты',
+    'topic-4-desc': 'Языки, алгоритмы, паттерны, компиляторы, API, разработка и контроль версий.',
+    'topic-5-title': 'Программная инженерия\nи DevOps',
+    'topic-5-desc': 'SDLC, тестирование, QA, DevOps, CI/CD, командные процессы и качество ПО.',
+    'topic-6-title': 'Данные, аналитика\nи ИИ',
+    'topic-6-desc': 'Базы данных, Big Data, Data Science, машинное обучение и искусственный интеллект.',
+    'topic-7-title': 'Web, дизайн\nи цифровое взаимодействие',
+    'topic-7-desc': 'Web-разработка, UI/UX, мобильные технологии, AR/VR и доступность.',
+    'topic-8-title': 'ИТ, бизнес\nи управление',
+    'topic-8-desc': 'Бизнес-процессы, проектный менеджмент, профессии и развитие карьеры.',
+    'topic-9-title': 'Поиск, SEO, социальные\nсети и информация',
+    'topic-9-desc': 'Поисковые системы, SEO, социальные платформы и новости ИТ.',
+    'topic-10-title': 'Робототехника и новые\nвычислительные среды',
+    'topic-10-desc': 'Робототехника, квантовые и параллельные вычисления, блокчейн и новые технологии.',
+    'future-title': 'Будущее ИТ — это будущее человека',
+    'future-desc': 'Технологии меняются каждый день, но главное — люди, которые создают, развивают и применяют их для лучшего завтра.',
+    'future-cta': 'Узнать больше о перспективах ИТ →',
+    'future-item-1': 'Искусственный интеллект',
+    'future-item-2': 'Облачные технологии',
+    'future-item-3': 'Кибербезопасность',
+    'future-item-4': 'Интернет вещей',
+    'future-item-5': 'Квантовые вычисления',
+    'footer-title': 'Учебно-методический справочник : « Что такое Информационные Технологии ? »',
+    'footer-year': 'год.',
+    'footer-disclaimer-1': 'Все материалы, предоставленные на этом информационном ресурсе, предназначены',
+    'footer-disclaimer-2': 'ИСКЛЮЧИТЕЛЬНО для ОЗНАКОМИТЕЛЬНЫХ, УЧЕБНЫХ и ОБРАЗОВАТЕЛЬНЫХ ЦЕЛЕЙ.',
+    'footer-disclaimer-3': 'Администрация ресурса не претендует на их авторство и не несет ответственности за их содержание.',
+    'footer-disclaimer-4': 'Создано с помощью различных Сервисов Искусственного Интеллекта.'
+  },
+  en: {
+    'subtitle': 'Educational and Methodological Reference',
+    'header-title': 'What is Information Technology ?',
+    'header-sub': 'Knowledge today — technology tomorrow — unlimited opportunities',
+    'nav-map': '▤  IT Portal Section Map',
+    'nav-future': '⌁  Future',
+    'nav-news': '▦  News',
+    'nav-glossary': '▧  Glossary',
+    'nav-contacts': '✉  Contacts',
+    'hero-title': 'Information Technology (IT) — the nervous system of modern civilization',
+    'hero-desc': 'IT is not just computers. It\'s people, knowledge, data, software, networks, and processes that connect the world into a single digital environment.',
+    'about-1-title': 'What are they for?',
+    'about-1-desc': 'Automation, data analysis, communication between people, support for complex decisions and new opportunities.',
+    'about-2-title': 'Place in life',
+    'about-2-desc': 'Medicine, transport, finance, education, art, science — IT has become the basic infrastructure.',
+    'about-3-title': 'Perspectives',
+    'about-3-desc': 'AI, clouds, cybersecurity, IoT, big data and new interfaces pave the way to the future.',
+    'map-title': 'IT Portal Section Map',
+    'map-desc': 'Click on a category to view the list of sections.',
+    'topic-1-title': 'Fundamentals, History\nand Foundation',
+    'topic-1-desc': 'History, architectures, algorithms, theory of computation and basic concepts.',
+    'topic-2-title': 'Hardware\nand Systems',
+    'topic-2-desc': 'Computer systems, components, data storage and operating systems.',
+    'topic-3-title': 'Networks, Clouds\nand Cybersecurity',
+    'topic-3-desc': 'Networks, protocols, clouds, virtualization, information security and IoT.',
+    'topic-4-title': 'Programming\nand Tools',
+    'topic-4-desc': 'Languages, algorithms, patterns, compilers, API, development and version control.',
+    'topic-5-title': 'Software Engineering\nand DevOps',
+    'topic-5-desc': 'SDLC, testing, QA, DevOps, CI/CD, team processes and software quality.',
+    'topic-6-title': 'Data, Analytics\nand AI',
+    'topic-6-desc': 'Databases, Big Data, Data Science, machine learning and artificial intelligence.',
+    'topic-7-title': 'Web, Design\nand Digital Interaction',
+    'topic-7-desc': 'Web development, UI/UX, mobile technologies, AR/VR and accessibility.',
+    'topic-8-title': 'IT, Business\nand Management',
+    'topic-8-desc': 'Business processes, project management, professions and career development.',
+    'topic-9-title': 'Search, SEO, Social\nNetworks and Information',
+    'topic-9-desc': 'Search engines, SEO, social platforms and IT news.',
+    'topic-10-title': 'Robotics and New\nComputing Environments',
+    'topic-10-desc': 'Robotics, quantum and parallel computing, blockchain and new technologies.',
+    'future-title': 'The future of IT is the future of humanity',
+    'future-desc': 'Technologies change every day, but the main thing is the people who create, develop and apply them for a better tomorrow.',
+    'future-cta': 'Learn more about IT perspectives →',
+    'future-item-1': 'Artificial Intelligence',
+    'future-item-2': 'Cloud Technologies',
+    'future-item-3': 'Cybersecurity',
+    'future-item-4': 'Internet of Things',
+    'future-item-5': 'Quantum Computing',
+    'footer-title': 'Educational and Methodological Reference : « What is Information Technology ? »',
+    'footer-year': 'year.',
+    'footer-disclaimer-1': 'All materials provided on this information resource are intended',
+    'footer-disclaimer-2': 'EXCLUSIVELY for INFORMATIONAL, EDUCATIONAL and LEARNING PURPOSES.',
+    'footer-disclaimer-3': 'The resource administration does not claim authorship and is not responsible for their content.',
+    'footer-disclaimer-4': 'Created with the help of various Artificial Intelligence Services.'
+  }
+};
+
+// ---- ФУНКЦІЯ ЗМІНИ МОВИ ----
+function changeLanguage(lang) {
+  document.querySelectorAll('[data-i18n]').forEach(element => {
+    const key = element.getAttribute('data-i18n');
+    if (translations[lang] && translations[lang][key]) {
+      if (element.innerHTML.includes('<br>')) {
+        const text = translations[lang][key];
+        const parts = text.split('\n');
+        if (parts.length > 1) {
+          element.innerHTML = parts.join('<br>');
+        } else {
+          element.textContent = text;
+        }
+      } else {
+        element.textContent = translations[lang][key];
+      }
+    }
+  });
+
+  document.documentElement.lang = lang;
+  localStorage.setItem('it-lang', lang);
+  
+  document.querySelectorAll('[data-lang]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+
+  // Оновлюємо заголовки відкритих категорій
+  document.querySelectorAll('.category-sections').forEach(el => {
+    const id = el.id;
+    if (id && id.startsWith('section_')) {
+      const key = id.replace('section_', '');
+      const data = categoryData[key];
+      if (data) {
+        const titleKey = 'title_' + lang;
+        const title = data[titleKey] || data.title_uk;
+        const h4 = el.querySelector('h4');
+        if (h4) h4.textContent = '📚 ' + title;
+        
+        const links = el.querySelectorAll('.sections-grid a');
+        data.sections.forEach((section, index) => {
+          if (links[index]) {
+            const nameKey = 'name_' + lang;
+            const name = section[nameKey] || section.name_uk;
+            links[index].textContent = name;
+          }
+        });
+      }
+    }
+  });
+}
+
+// ---- ОБРОБНИКИ ДЛЯ КНОПОК МОВ ----
+document.querySelectorAll('[data-lang]').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const lang = this.dataset.lang;
+    changeLanguage(lang);
+  });
+});
+
+// ---- ВІДНОВЛЮЄМО ЗБЕРЕЖЕНУ МОВУ ----
+const savedLang = localStorage.getItem('it-lang') || 'uk';
+changeLanguage(savedLang);
+
+// ---- ТЕМА: за замовчуванням світла (light) ----
+const themeBtn = document.getElementById('themeBtn');
+let theme = localStorage.getItem('it-theme') || 'light';
+
+function setLightTheme() {
+  document.documentElement.style.setProperty('--bg', '#f2f7fc');
+  document.documentElement.style.setProperty('--bg2', '#e5eef7');
+  document.documentElement.style.setProperty('--panel', '#ffffff');
+  document.documentElement.style.setProperty('--panel2', '#eef4fb');
+  document.documentElement.style.setProperty('--text', '#0b2a41');
+  document.documentElement.style.setProperty('--text-light', '#1e4a6e');
+  document.documentElement.style.setProperty('--muted', '#2c5778');
+  document.documentElement.style.setProperty('--line', '#b8d0e5');
+  document.documentElement.style.setProperty('--border-light', '#c5d8ea');
+  document.documentElement.style.setProperty('--top-bg', 'rgba(255,255,255,.92)');
+  document.documentElement.style.setProperty('--top-border', '#c5d8ea');
+  document.documentElement.style.setProperty('--nav-bg', '#ffffff');
+  document.documentElement.style.setProperty('--nav-text', '#0b2a41');
+  document.documentElement.style.setProperty('--nav-hover', '#d4e5f7');
+  document.documentElement.style.setProperty('--nav-active', '#004b9e');
+  document.documentElement.style.setProperty('--footer-bg', '#f0f6fd');
+  document.documentElement.style.setProperty('--footer-text', '#0b2a41');
+  document.documentElement.style.setProperty('--footer-strong', '#003366');
+  document.documentElement.style.setProperty('--category-bg', '#e8f4fd');
+  document.body.style.background = 'linear-gradient(180deg,#f5faff,#e8f0fa)';
+  themeBtn.textContent = '🌙';
+}
+
+function setDarkTheme() {
+  document.documentElement.style.setProperty('--bg', '#0a1e3d');
+  document.documentElement.style.setProperty('--bg2', '#0f2a50');
+  document.documentElement.style.setProperty('--panel', '#112d55');
+  document.documentElement.style.setProperty('--panel2', '#1a3a66');
+  document.documentElement.style.setProperty('--text', '#e8f0ff');
+  document.documentElement.style.setProperty('--text-light', '#b8d0f0');
+  document.documentElement.style.setProperty('--muted', '#8aacd4');
+  document.documentElement.style.setProperty('--line', '#2a5a8a');
+  document.documentElement.style.setProperty('--border-light', '#2a5a8a');
+  document.documentElement.style.setProperty('--top-bg', 'rgba(10,30,61,.94)');
+  document.documentElement.style.setProperty('--top-border', '#2a5a8a');
+  document.documentElement.style.setProperty('--nav-bg', '#0f2a50');
+  document.documentElement.style.setProperty('--nav-text', '#d4e8ff');
+  document.documentElement.style.setProperty('--nav-hover', '#1a3a66');
+  document.documentElement.style.setProperty('--nav-active', '#66b5ff');
+  document.documentElement.style.setProperty('--footer-bg', '#0a1e3d');
+  document.documentElement.style.setProperty('--footer-text', '#c0d8f0');
+  document.documentElement.style.setProperty('--footer-strong', '#66b5ff');
+  document.documentElement.style.setProperty('--category-bg', '#0f2a50');
+  document.body.style.background = 'linear-gradient(180deg,#0a1e3d,#0f2a50 48%,#081830)';
+  themeBtn.textContent = '☀️';
+}
+
+function applyTheme(v) {
+  theme = v;
+  if (v === 'light') {
+    setLightTheme();
+  } else {
+    setDarkTheme();
+  }
+  localStorage.setItem('it-theme', v);
+}
+
+applyTheme(theme);
+
+themeBtn.addEventListener('click', () => {
+  const newTheme = (theme === 'light') ? 'dark' : 'light';
+  applyTheme(newTheme);
+});
+
+// ---- АКТИВНІ ПОСИЛАННЯ В НАВІГАЦІЇ ----
+document.querySelectorAll('.nav a[href^="#"]').forEach(link => {
+  link.addEventListener('click', function(e) {
+    document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+    this.classList.add('active');
+    
+    const targetId = this.getAttribute('href');
+    if (targetId && targetId !== '#') {
+      const targetElement = document.querySelector(targetId);
+      if (targetElement) {
+        e.preventDefault();
+        const headerHeight = document.querySelector('.top').offsetHeight;
+        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight - 10;
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }
+  });
+});
+
+// Підсвічуємо активний пункт меню при скролі
+window.addEventListener('scroll', () => {
+  const sections = ['map', 'future', 'footer-anchor'];
+  const scrollPos = window.pageYOffset + 150;
+  
+  sections.forEach(id => {
+    const section = document.getElementById(id);
+    if (section) {
+      const top = section.offsetTop;
+      const height = section.offsetHeight;
+      if (scrollPos >= top && scrollPos < top + height) {
+        document.querySelectorAll('.nav a').forEach(a => {
+          const href = a.getAttribute('href');
+          a.classList.toggle('active', href === '#' + id);
+        });
+      }
+    }
+  });
+});
+</script>
+</body>
+</html>

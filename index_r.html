@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Учбово-методичний довідник: Що таке Інформаційні Технології?</title>
+  <meta name="description" content="Освітній ІТ-портал: історія, архітектура, програмування, кібербезпека, ШІ та сучасні технології">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Light theme by default */
+      --bg-primary: #f4f7fb;
+      --bg-secondary: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f0f5ff;
+      --text-primary: #1a2332;
+      --text-secondary: #4a5a6a;
+      --text-muted: #7a8a9a;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-soft: rgba(37, 99, 235, 0.1);
+      --border: #d8e0ea;
+      --gradient-start: #3b82f6;
+      --gradient-end: #8b5cf6;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      --radius: 14px;
+      --transition: 0.25s ease;
+      --header-offset: 130px;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #0f1419;
+      --bg-secondary: #1a2332;
+      --bg-card: #1e2a3a;
+      --bg-card-hover: #243447;
+      --text-primary: #e8eef5;
+      --text-secondary: #a0b0c0;
+      --text-muted: #6b7c8f;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-soft: rgba(59, 130, 246, 0.15);
+      --border: #2d3a4d;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.65;
+      transition: background var(--transition), color var(--transition);
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+    }
+
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 1.15rem;
+    }
+
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      line-height: 1.2;
+    }
+
+    .logo-text small {
+      display: block;
+      font-weight: 500;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .lang-switcher, .theme-switcher {
+      display: flex;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .lang-btn, .theme-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 0.45rem 0.7rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      font-family: inherit;
+    }
+
+    .lang-btn:hover, .theme-btn:hover {
+      color: var(--text-primary);
+      background: var(--accent-soft);
+    }
+
+    .lang-btn.active, .theme-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .nav-toggle {
+      display: none;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.5rem 0.75rem;
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    /* Navigation */
+    .main-nav {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0.35rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.15rem 0.1rem;
+    }
+
+    .nav-link {
+      display: inline-block;
+      padding: 0.55rem 0.85rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      white-space: nowrap;
+      border-radius: 8px;
+      border-bottom: 2px solid transparent;
+      transition: all var(--transition);
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-bottom-color: var(--accent);
+    }
+
+    /* Scroll offset for sticky header + nav */
+    section[id],
+    .category[id],
+    #hero,
+    #future {
+      scroll-margin-top: var(--header-offset);
+    }
+
+    /* Hero */
+    .hero {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 2rem;
+    }
+
+    .hero-content {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 0.35rem 0.85rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.6rem, 4vw, 2.35rem);
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 1.25rem;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-text {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-text p {
+      margin-bottom: 1rem;
+    }
+
+    .hero-text strong {
+      color: var(--text-primary);
+    }
+
+    .hero-image-wrap {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .hero-image-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .hero-image-wrap:hover img {
+      transform: scale(1.02);
+    }
+
+    .hero-image-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.75));
+      color: #fff;
+      padding: 1.5rem 1rem 0.85rem;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    /* Sections intro */
+    .section-intro {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 1.5rem 2rem;
+    }
+
+    .section-intro h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-intro p {
+      color: var(--text-secondary);
+      max-width: 900px;
+    }
+
+    /* Categories */
+    .categories {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
+
+    .category {
+      margin-bottom: 2.75rem;
+    }
+
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .category-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      background: var(--accent-soft);
+      flex-shrink: 0;
+    }
+
+    .category-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .category-count {
+      margin-left: auto;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: var(--bg-card);
+      padding: 0.25rem 0.65rem;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.15rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.35rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all var(--transition);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--gradient-start), var(--gradient-end));
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+
+    .card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-emoji {
+      font-size: 1.6rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .card-desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      flex-grow: 1;
+      line-height: 1.55;
+    }
+
+    .card-link {
+      margin-top: 0.85rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .card:hover .card-link {
+      color: var(--accent-hover);
+    }
+
+    /* Future section */
+    .future-section {
+      max-width: 1280px;
+      margin: 0 auto 3rem;
+      padding: 0 1.5rem;
+    }
+
+    .future-box {
+      background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem 2.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .future-box::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .future-box h2 {
+      font-size: 1.45rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .future-box p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .future-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .future-item {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.15rem;
+    }
+
+    .future-item h3 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .future-item p {
+      font-size: 0.88rem;
+      margin: 0;
+      color: var(--text-muted);
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+
+    .footer-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .footer-title {
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+    }
+
+    .footer-copy {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-email {
+      margin: 0.75rem 0;
+    }
+
+    .footer-email a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .footer-email a:hover {
+      text-decoration: underline;
+    }
+
+    .footer-disclaimer {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Back to top */
+    .back-to-top {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      width: 44px;
+      height: 44px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: all var(--transition);
+      box-shadow: var(--shadow);
+      z-index: 100;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .back-to-top:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .hero-content {
+        grid-template-columns: 1fr;
+      }
+      .hero-image-wrap {
+        order: -1;
+      }
+    }
+
+    @media (max-width: 900px) {
+      :root {
+        --header-offset: 160px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      :root {
+        --header-offset: 180px;
+      }
+      .header-inner {
+        padding: 0.65rem 1rem;
+      }
+      .logo-text span {
+        display: none;
+      }
+      .nav-toggle {
+        display: block;
+      }
+      .main-nav {
+        display: none;
+      }
+      .main-nav.open {
+        display: block;
+      }
+      .nav-inner {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0.5rem 1rem;
+        gap: 0.15rem;
+      }
+      .nav-link {
+        border-bottom: none;
+        padding: 0.7rem 0.75rem;
+        text-align: left;
+      }
+      .hero {
+        padding: 1.5rem 1rem;
+      }
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .future-box {
+        padding: 1.5rem;
+      }
+    }
+
+    /* Language visibility */
+    [data-lang] {
+      display: none;
+    }
+    html[lang="uk"] [data-lang="uk"],
+    html[lang="ru"] [data-lang="ru"],
+    html[lang="en"] [data-lang="en"] {
+      display: inline;
+    }
+    html[lang="uk"] p[data-lang="uk"],
+    html[lang="ru"] p[data-lang="ru"],
+    html[lang="en"] p[data-lang="en"],
+    html[lang="uk"] div[data-lang="uk"],
+    html[lang="ru"] div[data-lang="ru"],
+    html[lang="en"] div[data-lang="en"],
+    html[lang="uk"] h1[data-lang="uk"],
+    html[lang="ru"] h1[data-lang="ru"],
+    html[lang="en"] h1[data-lang="en"],
+    html[lang="uk"] h2[data-lang="uk"],
+    html[lang="ru"] h2[data-lang="ru"],
+    html[lang="en"] h2[data-lang="en"],
+    html[lang="uk"] h3[data-lang="uk"],
+    html[lang="ru"] h3[data-lang="ru"],
+    html[lang="en"] h3[data-lang="en"],
+    html[lang="uk"] span[data-lang="uk"],
+    html[lang="ru"] span[data-lang="ru"],
+    html[lang="en"] span[data-lang="en"] {
+      display: block;
+    }
+    /* Override for inline spans inside other elements */
+    html[lang="uk"] .card-title [data-lang="uk"],
+    html[lang="ru"] .card-title [data-lang="ru"],
+    html[lang="en"] .card-title [data-lang="en"],
+    html[lang="uk"] .card-desc [data-lang="uk"],
+    html[lang="ru"] .card-desc [data-lang="ru"],
+    html[lang="en"] .card-desc [data-lang="en"],
+    html[lang="uk"] .card-link [data-lang="uk"],
+    html[lang="ru"] .card-link [data-lang="ru"],
+    html[lang="en"] .card-link [data-lang="en"],
+    html[lang="uk"] .category-title [data-lang="uk"],
+    html[lang="ru"] .category-title [data-lang="ru"],
+    html[lang="en"] .category-title [data-lang="en"],
+    html[lang="uk"] .nav-link [data-lang="uk"],
+    html[lang="ru"] .nav-link [data-lang="ru"],
+    html[lang="en"] .nav-link [data-lang="en"],
+    html[lang="uk"] .logo-text [data-lang="uk"],
+    html[lang="ru"] .logo-text [data-lang="ru"],
+    html[lang="en"] .logo-text [data-lang="en"],
+    html[lang="uk"] .hero-badge [data-lang="uk"],
+    html[lang="ru"] .hero-badge [data-lang="ru"],
+    html[lang="en"] .hero-badge [data-lang="en"],
+    html[lang="uk"] .future-item h3 [data-lang="uk"],
+    html[lang="ru"] .future-item h3 [data-lang="ru"],
+    html[lang="en"] .future-item h3 [data-lang="en"] {
+      display: inline;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">💻</div>
+        <div class="logo-text">
+          <span data-lang="uk">ІТ Довідник</span>
+          <span data-lang="ru">ИТ Справочник</span>
+          <span data-lang="en">IT Handbook</span>
+          <small data-lang="uk">Що таке Інформаційні Технології?</small>
+          <small data-lang="ru">Что такое Информационные Технологии?</small>
+          <small data-lang="en">What are Information Technologies?</small>
+        </div>
+      </a>
+
+      <div class="header-controls">
+        <div class="lang-switcher" role="group" aria-label="Language">
+          <button class="lang-btn active" data-set-lang="uk">UA</button>
+          <button class="lang-btn" data-set-lang="ru">RU</button>
+          <button class="lang-btn" data-set-lang="en">EN</button>
+        </div>
+        <div class="theme-switcher" role="group" aria-label="Theme">
+          <button class="theme-btn active" data-set-theme="light" title="Light">☀️</button>
+          <button class="theme-btn" data-set-theme="dark" title="Dark">🌙</button>
+        </div>
+        <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Navigation -->
+  <nav class="main-nav" id="mainNav">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-link">
+        <span data-lang="uk">🏠 Головна</span>
+        <span data-lang="ru">🏠 Главная</span>
+        <span data-lang="en">🏠 Home</span>
+      </a>
+      <a href="#history" class="nav-link">
+        <span data-lang="uk">📜 Історія</span>
+        <span data-lang="ru">📜 История</span>
+        <span data-lang="en">📜 History</span>
+      </a>
+      <a href="#hardware" class="nav-link">
+        <span data-lang="uk">🖥️ Апаратура</span>
+        <span data-lang="ru">🖥️ Аппаратура</span>
+        <span data-lang="en">🖥️ Hardware</span>
+      </a>
+      <a href="#programming" class="nav-link">
+        <span data-lang="uk">⌨️ Програмування</span>
+        <span data-lang="ru">⌨️ Программирование</span>
+        <span data-lang="en">⌨️ Programming</span>
+      </a>
+      <a href="#dev" class="nav-link">
+        <span data-lang="uk">🛠️ Розробка</span>
+        <span data-lang="ru">🛠️ Разработка</span>
+        <span data-lang="en">🛠️ Development</span>
+      </a>
+      <a href="#architecture" class="nav-link">
+        <span data-lang="uk">🏛️ Архітектура</span>
+        <span data-lang="ru">🏛️ Архитектура</span>
+        <span data-lang="en">🏛️ Architecture</span>
+      </a>
+      <a href="#data-ai" class="nav-link">
+        <span data-lang="uk">🤖 Дані та ШІ</span>
+        <span data-lang="ru">🤖 Данные и ИИ</span>
+        <span data-lang="en">🤖 Data & AI</span>
+      </a>
+      <a href="#emerging" class="nav-link">
+        <span data-lang="uk">🚀 Сучасні технології</span>
+        <span data-lang="ru">🚀 Современные технологии</span>
+        <span data-lang="en">🚀 Emerging Tech</span>
+      </a>
+      <a href="#business" class="nav-link">
+        <span data-lang="uk">💼 Бізнес і кар'єра</span>
+        <span data-lang="ru">💼 Бизнес и карьера</span>
+        <span data-lang="en">💼 Business & Career</span>
+      </a>
+      <a href="it-news.html" class="nav-link">
+        <span data-lang="uk">📰 Новини</span>
+        <span data-lang="ru">📰 Новости</span>
+        <span data-lang="en">📰 News</span>
+      </a>
+      <a href="#future" class="nav-link">
+        <span data-lang="uk">🔮 Майбутнє</span>
+        <span data-lang="ru">🔮 Будущее</span>
+        <span data-lang="en">🔮 Future</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-text-block">
+        <div class="hero-badge">
+          <span data-lang="uk">📚 Учбово-методичний довідник</span>
+          <span data-lang="ru">📚 Учебно-методический справочник</span>
+          <span data-lang="en">📚 Educational Handbook</span>
+        </div>
+        <h1>
+          <span data-lang="uk">Що таке Інформаційні Технології?</span>
+          <span data-lang="ru">Что такое Информационные Технологии?</span>
+          <span data-lang="en">What are Information Technologies?</span>
+        </h1>
+        <div class="hero-text">
+          <p data-lang="uk">
+            <strong>Інформаційні технології (ІТ)</strong> — це сукупність методів, процесів і засобів для збирання, зберігання, обробки та передачі інформації за допомогою комп'ютерів і телекомунікацій. Це не просто «комп'ютери» — це <strong>нервова система сучасної цивілізації</strong>, що поєднує мільярди пристроїв та людей у єдине цифрове середовище. 🌐
+          </p>
+          <p data-lang="ru">
+            <strong>Информационные технологии (ИТ)</strong> — это совокупность методов, процессов и средств для сбора, хранения, обработки и передачи информации с помощью компьютеров и телекоммуникаций. Это не просто «компьютеры» — это <strong>нервная система современной цивилизации</strong>, объединяющая миллиарды устройств и людей в единую цифровую среду. 🌐
+          </p>
+          <p data-lang="en">
+            <strong>Information Technologies (IT)</strong> are a set of methods, processes and tools for collecting, storing, processing and transmitting information using computers and telecommunications. This is not just “computers” — it is the <strong>nervous system of modern civilization</strong>, connecting billions of devices and people into a single digital environment. 🌐
+          </p>
+
+          <p data-lang="uk">
+            <strong>Для чого потрібні?</strong> Від лікування пацієнтів і запуску супутників до управління фінансами та навчання дітей. ІТ автоматизують рутину, аналізують величезні масиви даних, з'єднують людей через континенти та відкривають можливості, про які ми не мріяли пів століття тому. Без ІТ сучасна медицина, наука, транспорт і економіка просто неможливі. 🚀
+          </p>
+          <p data-lang="ru">
+            <strong>Для чего нужны?</strong> От лечения пациентов и запуска спутников до управления финансами и обучения детей. ИТ автоматизируют рутину, анализируют огромные массивы данных, соединяют людей через континенты и открывают возможности, о которых мы не мечтали полвека назад. Без ИТ современная медицина, наука, транспорт и экономика просто невозможны. 🚀
+          </p>
+          <p data-lang="en">
+            <strong>Why do we need them?</strong> From treating patients and launching satellites to managing finances and educating children. IT automates routine tasks, analyzes huge data sets, connects people across continents and opens opportunities we could not dream of half a century ago. Without IT, modern medicine, science, transport and the economy are simply impossible. 🚀
+          </p>
+
+          <p data-lang="uk">
+            <strong>Місце в житті.</strong> Сьогодні ІТ проникли в кожну сферу — медицину, транспорт, сільське господарство, мистецтво, політику. Смартфон у кишені, безконтактна оплата, відеозв'язок з рідними, прогноз погоди — усе це результат праці мільйонів фахівців. ІТ перетворилися з привілею обраних на <strong>базову інфраструктуру</strong>, як електрика чи водопостачання. ⚡
+          </p>
+          <p data-lang="ru">
+            <strong>Место в жизни.</strong> Сегодня ИТ проникли в каждую сферу — медицину, транспорт, сельское хозяйство, искусство, политику. Смартфон в кармане, бесконтактная оплата, видеосвязь с родными, прогноз погоды — всё это результат труда миллионов специалистов. ИТ превратились из привилегии избранных в <strong>базовую инфраструктуру</strong>, как электричество или водоснабжение. ⚡
+          </p>
+          <p data-lang="en">
+            <strong>Place in life.</strong> Today IT has penetrated every sphere — medicine, transport, agriculture, art, politics. A smartphone in your pocket, contactless payments, video calls with family, weather forecasts — all of this is the result of the work of millions of specialists. IT has transformed from a privilege of the few into <strong>basic infrastructure</strong>, like electricity or water supply. ⚡
+          </p>
+        </div>
+      </div>
+
+      <div class="hero-image-wrap">
+        <img src="rozvitok_it.png" alt="Історія розвитку інформаційних технологій / History of IT development" width="800" height="450">
+        <div class="hero-image-caption">
+          <span data-lang="uk">📜 Від абака до штучного інтелекту — шлях розвитку ІТ</span>
+          <span data-lang="ru">📜 От абака до искусственного интеллекта — путь развития ИТ</span>
+          <span data-lang="en">📜 From the abacus to artificial intelligence — the path of IT development</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <div class="categories">
+
+    <!-- 1. History -->
+    <section class="category" id="history">
+      <div class="category-header">
+        <div class="category-icon">📜</div>
+        <h2 class="category-title">
+          <span data-lang="uk">Історія та основи</span>
+          <span data-lang="ru">История и основы</span>
+          <span data-lang="en">History & Foundations</span>
+        </h2>
+        <span class="category-count">6</span>
+      </div>
+      <div class="cards-grid">
+        <a href="history-computing.html" class="card">
+          <div class="card-emoji">🖥️</div>
+          <div class="card-title">
+            <span data-lang="uk">Історія обчислювальної техніки</span>
+            <span data-lang="ru">История вычислительной техники</span>
+            <span data-lang="en">History of Computing</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Від механічних абаків і арифмометрів до електронних комп'ютерів. Ключові винаходи, покоління ЕОМ та особистості, що змінили світ.</span>
+            <span data-lang="ru">От механических абаков и арифмометров до электронных компьютеров. Ключевые изобретения, поколения ЭВМ и личности, изменившие мир.</span>
+            <span data-lang="en">From mechanical abacuses and arithmometers to electronic computers. Key inventions, computer generations and the people who changed the world.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="history-programming-languages.html" class="card">
+          <div class="card-emoji">📝</div>
+          <div class="card-title">
+            <span data-lang="uk">Історія мов програмування</span>
+            <span data-lang="ru">История языков программирования</span>
+            <span data-lang="en">History of Programming Languages</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Як з'явилися Fortran, C, Java, Python та інші. Еволюція парадигм і вплив мов на розвиток індустрії.</span>
+            <span data-lang="ru">Как появились Fortran, C, Java, Python и другие. Эволюция парадигм и влияние языков на развитие индустрии.</span>
+            <span data-lang="en">How Fortran, C, Java, Python and others appeared. Evolution of paradigms and the impact of languages on the industry.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="formal-methods.html" class="card">
+          <div class="card-emoji">📐</div>
+          <div class="card-title">
+            <span data-lang="uk">Формальні методи / Теорія обчислень</span>
+            <span data-lang="ru">Формальные методы / Теория вычислений</span>
+            <span data-lang="en">Formal Methods / Theory of Computation</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Математичні основи інформатики: автомати, складність алгоритмів, доказове програмування та формальна верифікація.</span>
+            <span data-lang="ru">Математические основы информатики: автоматы, сложность алгоритмов, доказательное программирование и формальная верификация.</span>
+            <span data-lang="en">Mathematical foundations of computer science: automata, algorithm complexity, provable programming and formal verification.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="compilers-interpreters.html" class="card">
+          <div class="card-emoji">⚙️</div>
+          <div class="card-title">
+            <span data-lang="uk">Компілятори та інтерпретатори</span>
+            <span data-lang="ru">Компиляторы и интерпретаторы</span>
+            <span data-lang="en">Compilers and Interpreters</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Як код перетворюється на машинні інструкції. Етапи компіляції, JIT, віртуальні машини та оптимізації.</span>
+            <span data-lang="ru">Как код превращается в машинные инструкции. Этапы компиляции, JIT, виртуальные машины и оптимизации.</span>
+            <span data-lang="en">How code turns into machine instructions. Compilation stages, JIT, virtual machines and optimizations.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="legacy-mainframes.html" class="card">
+          <div class="card-emoji">🏛️</div>
+          <div class="card-title">
+            <span data-lang="uk">Легасі-системи та Мейнфрейми</span>
+            <span data-lang="ru">Легаси-системы и Мейнфреймы</span>
+            <span data-lang="en">Legacy Systems & Mainframes</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Великі ЕОМ, COBOL, банківські та державні системи, які працюють десятиліттями. Міграція та підтримка спадщини.</span>
+            <span data-lang="ru">Большие ЭВМ, COBOL, банковские и государственные системы, работающие десятилетиями. Миграция и поддержка наследия.</span>
+            <span data-lang="en">Large computers, COBOL, banking and government systems that have been running for decades. Migration and legacy support.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="it-glossary.html" class="card">
+          <div class="card-emoji">📖</div>
+          <div class="card-title">
+            <span data-lang="uk">Глосарій термінів ІТ</span>
+            <span data-lang="ru">Глоссарий терминов ИТ</span>
+            <span data-lang="en">IT Glossary</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Ключові поняття, абревіатури та визначення з усього світу інформаційних технологій у зручному довіднику.</span>
+            <span data-lang="ru">Ключевые понятия, аббревиатуры и определения из всего мира информационных технологий в удобном справочнике.</span>
+            <span data-lang="en">Key concepts, abbreviations and definitions from the entire world of information technology in a convenient handbook.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 2. Hardware -->
+    <section class="category" id="hardware">
+      <div class="category-header">
+        <div class="category-icon">🖥️</div>
+        <h2 class="category-title">
+          <span data-lang="uk">Апаратне забезпечення</span>
+          <span data-lang="ru">Аппаратное обеспечение</span>
+          <span data-lang="en">Hardware</span>
+        </h2>
+        <span class="category-count">5</span>
+      </div>
+      <div class="cards-grid">
+        <a href="hardware.html" class="card">
+          <div class="card-emoji">🏗️</div>
+          <div class="card-title">
+            <span data-lang="uk">Класифікація комп'ютерних систем</span>
+            <span data-lang="ru">Классификация компьютерных систем</span>
+            <span data-lang="en">Computer Systems Classification</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Від суперкомп'ютерів і серверів до вбудованих систем і мобільних пристроїв. Типи архітектур і сфери застосування.</span>
+            <span data-lang="ru">От суперкомпьютеров и серверов до встроенных систем и мобильных устройств. Типы архитектур и сферы применения.</span>
+            <span data-lang="en">From supercomputers and servers to embedded systems and mobile devices. Architecture types and application areas.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="apparat.html" class="card">
+          <div class="card-emoji">🔌</div>
+          <div class="card-title">
+            <span data-lang="uk">Апаратне забезпечення комп'ютерів</span>
+            <span data-lang="ru">Аппаратное обеспечение компьютеров</span>
+            <span data-lang="en">Computer Hardware</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Процесори, пам'ять, материнські плати, відеокарти, периферія. Як влаштований сучасний комп'ютер зсередини.</span>
+            <span data-lang="ru">Процессоры, память, материнские платы, видеокарты, периферия. Как устроен современный компьютер изнутри.</span>
+            <span data-lang="en">Processors, memory, motherboards, graphics cards, peripherals. How a modern computer is built inside.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="ports.html" class="card">
+          <div class="card-emoji">🔗</div>
+          <div class="card-title">
+            <span data-lang="uk">Порти та інтерфейси</span>
+            <span data-lang="ru">Порты и интерфейсы</span>
+            <span data-lang="en">Ports and Interfaces</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">USB, HDMI, Thunderbolt, PCIe, SATA та інші. Стандарти підключення, швидкості та сумісність пристроїв.</span>
+            <span data-lang="ru">USB, HDMI, Thunderbolt, PCIe, SATA и другие. Стандарты подключения, скорости и совместимость устройств.</span>
+            <span data-lang="en">USB, HDMI, Thunderbolt, PCIe, SATA and more. Connection standards, speeds and device compatibility.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="storage-devices.html" class="card">
+          <div class="card-emoji">💾</div>
+          <div class="card-title">
+            <span data-lang="uk">Засоби збереження інформації</span>
+            <span data-lang="ru">Средства хранения информации</span>
+            <span data-lang="en">Storage Devices</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">HDD, SSD, NVMe, стрічки, оптичні носії та хмарне сховище. Принципи роботи, надійність і вибір під задачі.</span>
+            <span data-lang="ru">HDD, SSD, NVMe, ленты, оптические носители и облачное хранилище. Принципы работы, надёжность и выбор под задачи.</span>
+            <span data-lang="en">HDD, SSD, NVMe, tapes, optical media and cloud storage. Operating principles, reliability and choosing for tasks.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="file_systems.html" class="card">
+          <div class="card-emoji">📁</div>
+          <div class="card-title">
+            <span data-lang="uk">Файлові системи</span>
+            <span data-lang="ru">Файловые системы</span>
+            <span data-lang="en">File Systems</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">NTFS, ext4, APFS, ZFS, Btrfs. Організація даних на дисках, журналювання, квоти та особливості різних ОС.</span>
+            <span data-lang="ru">NTFS, ext4, APFS, ZFS, Btrfs. Организация данных на дисках, журналирование, квоты и особенности разных ОС.</span>
+            <span data-lang="en">NTFS, ext4, APFS, ZFS, Btrfs. Data organization on disks, journaling, quotas and features of different OSes.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 3. OS & Office -->
+    <section class="category" id="os">
+      <div class="category-header">
+        <div class="category-icon">🪟</div>
+        <h2 class="category-title">
+          <span data-lang="uk">Операційні системи та офісні програми</span>
+          <span data-lang="ru">Операционные системы и офисные программы</span>
+          <span data-lang="en">Operating Systems & Office Software</span>
+        </h2>
+        <span class="category-count">2</span>
+      </div>
+      <div class="cards-grid">
+        <a href="spr_os.html" class="card">
+          <div class="card-emoji">🐧</div>
+          <div class="card-title">
+            <span data-lang="uk">Довідник операційних систем</span>
+            <span data-lang="ru">Справочник операционных систем</span>
+            <span data-lang="en">Operating Systems Directory</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Windows, Linux, macOS, Android, iOS та інші. Архітектура, ядра, дистрибутиви та сфери застосування.</span>
+            <span data-lang="ru">Windows, Linux, macOS, Android, iOS и другие. Архитектура, ядра, дистрибутивы и сферы применения.</span>
+            <span data-lang="en">Windows, Linux, macOS, Android, iOS and others. Architecture, kernels, distributions and application areas.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="office_editors.html" class="card">
+          <div class="card-emoji">📄</div>
+          <div class="card-title">
+            <span data-lang="uk">Текстові редактори та офісні програми</span>
+            <span data-lang="ru">Текстовые редакторы и офисные программы</span>
+            <span data-lang="en">Text Editors & Office Suites</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">MS Office, LibreOffice, Google Docs, VS Code, Vim. Інструменти для документів, таблиць і щоденної роботи.</span>
+            <span data-lang="ru">MS Office, LibreOffice, Google Docs, VS Code, Vim. Инструменты для документов, таблиц и повседневной работы.</span>
+            <span data-lang="en">MS Office, LibreOffice, Google Docs, VS Code, Vim. Tools for documents, spreadsheets and everyday work.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 4. Programming -->
+    <section class="category" id="programming">
+      <div class="category-header">
+        <div class="category-icon">⌨️</div>
+        <h2 class="category-title">
+          <span data-lang="uk">Програмування та мови</span>
+          <span data-lang="ru">Программирование и языки</span>
+          <span data-lang="en">Programming & Languages</span>
+        </h2>
+        <span class="category-count">4</span>
+      </div>
+      <div class="cards-grid">
+        <a href="proglang-directory.html" class="card">
+          <div class="card-emoji">🔤</div>
+          <div class="card-title">
+            <span data-lang="uk">Довідник мов програмування (не для WEB)</span>
+            <span data-lang="ru">Справочник языков программирования (не для WEB)</span>
+            <span data-lang="en">Programming Languages Directory (non-WEB)</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">C, C++, Java, Python, Go, Rust, C# та інші. Особливості, сфери застосування та порівняння мов загального призначення.</span>
+            <span data-lang="ru">C, C++, Java, Python, Go, Rust, C# и другие. Особенности, сферы применения и сравнение языков общего назначения.</span>
+            <span data-lang="en">C, C++, Java, Python, Go, Rust, C# and others. Features, application areas and comparison of general-purpose languages.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="weblang-directory.html" class="card">
+          <div class="card-emoji">🌐</div>
+          <div class="card-title">
+            <span data-lang="uk">Довідник мов веб-програмування</span>
+            <span data-lang="ru">Справочник языков веб-программирования</span>
+            <span data-lang="en">Web Programming Languages Directory</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">HTML, CSS, JavaScript, TypeScript, PHP, Python (Django/Flask), Node.js. Стек сучасного веброзробника.</span>
+            <span data-lang="ru">HTML, CSS, JavaScript, TypeScript, PHP, Python (Django/Flask), Node.js. Стек современного веб-разработчика.</span>
+            <span data-lang="en">HTML, CSS, JavaScript, TypeScript, PHP, Python (Django/Flask), Node.js. The modern web developer stack.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="design_patterns.html" class="card">
+          <div class="card-emoji">🧩</div>
+          <div class="card-title">
+            <span data-lang="uk">Патерни проєктування</span>
+            <span data-lang="ru">Паттерны проектирования</span>
+            <span data-lang="en">Design Patterns</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Породжувальні, структурні та поведінкові патерни. Готові рішення типових задач архітектури ПЗ.</span>
+            <span data-lang="ru">Порождающие, структурные и поведенческие паттерны. Готовые решения типичных задач архитектуры ПО.</span>
+            <span data-lang="en">Creational, structural and behavioral patterns. Ready-made solutions for typical software architecture problems.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="data-structures-algorithms.html" class="card">
+          <div class="card-emoji">🧮</div>
+          <div class="card-title">
+            <span data-lang="uk">Структури даних та алгоритми</span>
+            <span data-lang="ru">Структуры данных и алгоритмы</span>
+            <span data-lang="en">Data Structures & Algorithms</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Масиви, списки, дерева, графи, хеш-таблиці. Алгоритми сортування, пошуку та їхня складність.</span>
+            <span data-lang="ru">Массивы, списки, деревья, графы, хеш-таблицы. Алгоритмы сортировки, поиска и их сложность.</span>
+            <span data-lang="en">Arrays, lists, trees, graphs, hash tables. Sorting and search algorithms and their complexity.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 5. Development practices -->
+    <section class="category" id="dev">
+      <div class="category-header">
+        <div class="category-icon">🛠️</div>
+        <h2 class="category-title">
+          <span data-lang="uk">Інструменти та практики розробки</span>
+          <span data-lang="ru">Инструменты и практики разработки</span>
+          <span data-lang="en">Development Tools & Practices</span>
+        </h2>
+        <span class="category-count">6</span>
+      </div>
+      <div class="cards-grid">
+        <a href="developer_tools.html" class="card">
+          <div class="card-emoji">🧰</div>
+          <div class="card-title">
+            <span data-lang="uk">Інструменти розробника</span>
+            <span data-lang="ru">Инструменты разработчика</span>
+            <span data-lang="en">Developer Tools</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">IDE, debuggers, профайлери, пакетні менеджери, Docker, термінали. Щоденний арсенал сучасного розробника.</span>
+            <span data-lang="ru">IDE, debuggers, профайлеры, пакетные менеджеры, Docker, терминалы. Ежедневный арсенал современного разработчика.</span>
+            <span data-lang="en">IDEs, debuggers, profilers, package managers, Docker, terminals. The daily arsenal of a modern developer.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="version-control-systems.html" class="card">
+          <div class="card-emoji">🌿</div>
+          <div class="card-title">
+            <span data-lang="uk">Системи контролю версій</span>
+            <span data-lang="ru">Системы контроля версий</span>
+            <span data-lang="en">Version Control Systems</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Git, GitHub, GitLab, Bitbucket. Гілки, merge, rebase, pull requests та спільна робота над кодом.</span>
+            <span data-lang="ru">Git, GitHub, GitLab, Bitbucket. Ветки, merge, rebase, pull requests и совместная работа над кодом.</span>
+            <span data-lang="en">Git, GitHub, GitLab, Bitbucket. Branches, merge, rebase, pull requests and collaborative coding.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="devops-basics.html" class="card">
+          <div class="card-emoji">🔄</div>
+          <div class="card-title">
+            <span data-lang="uk">Основи DevOps & CI/CD</span>
+            <span data-lang="ru">Основы DevOps & CI/CD</span>
+            <span data-lang="en">DevOps Basics & CI/CD</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Неперервна інтеграція та доставка, інфраструктура як код, контейнеризація, моніторинг і автоматизація релізів.</span>
+            <span data-lang="ru">Непрерывная интеграция и доставка, инфраструктура как код, контейнеризация, мониторинг и автоматизация релизов.</span>
+            <span data-lang="en">Continuous integration and delivery, infrastructure as code, containerization, monitoring and release automation.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="software-engineering-sdlc.html" class="card">
+          <div class="card-emoji">📋</div>
+          <div class="card-title">
+            <span data-lang="uk">Основи програмної інженерії / SDLC</span>
+            <span data-lang="ru">Основы программной инженерии / SDLC</span>
+            <span data-lang="en">Software Engineering / SDLC</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Життєвий цикл розробки ПЗ: вимоги, проектування, реалізація, тестування, впровадження та підтримка.</span>
+            <span data-lang="ru">Жизненный цикл разработки ПО: требования, проектирование, реализация, тестирование, внедрение и поддержка.</span>
+            <span data-lang="en">Software development life cycle: requirements, design, implementation, testing, deployment and maintenance.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="software-testing-qa.html" class="card">
+          <div class="card-emoji">🧪</div>
+          <div class="card-title">
+            <span data-lang="uk">Тестування ПЗ (QA / Testing)</span>
+            <span data-lang="ru">Тестирование ПО (QA / Testing)</span>
+            <span data-lang="en">Software Testing (QA)</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Види тестування, тест-кейси, автоматизація, unit/integration/e2e. Як забезпечити якість продукту.</span>
+            <span data-lang="ru">Виды тестирования, тест-кейсы, автоматизация, unit/integration/e2e. Как обеспечить качество продукта.</span>
+            <span data-lang="en">Types of testing, test cases, automation, unit/integration/e2e. How to ensure product quality.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="api-microservices-integrations.html" class="card">
+          <div class="card-emoji">🔌</div>
+          <div class="card-title">
+            <span data-lang="uk">API, мікросервіси та інтеграції</span>
+            <span data-lang="ru">API, микросервисы и интеграции</span>
+            <span data-lang="en">API, Microservices & Integrations</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">REST, GraphQL, gRPC, повідомлення, сервісні шини. Як будувати масштабовані розподілені системи.</span>
+            <span data-lang="ru">REST, GraphQL, gRPC, сообщения, сервисные шины. Как строить масштабируемые распределённые системы.</span>
+            <span data-lang="en">REST, GraphQL, gRPC, messaging, service buses. How to build scalable distributed systems.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 6. Architecture & Networks -->
+    <section class="category" id="architecture">
+      <div class="category-header">
+        <div class="category-icon">🏛️</div>
+        <h2 class="category-title">
+          <span data-lang="uk">Архітектура, мережі та хмари</span>
+          <span data-lang="ru">Архитектура, сети и облака</span>
+          <span data-lang="en">Architecture, Networks & Cloud</span>
+        </h2>
+        <span class="category-count">4</span>
+      </div>
+      <div class="cards-grid">
+        <a href="architecture_it.html" class="card">
+          <div class="card-emoji">📐</div>
+          <div class="card-title">
+            <span data-lang="uk">Архітектури ІТ</span>
+            <span data-lang="ru">Архитектуры ИТ</span>
+            <span data-lang="en">IT Architectures</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Клієнт-сервер, мікросервіси, event-driven, serverless. Принципи побудови сучасних інформаційних систем.</span>
+            <span data-lang="ru">Клиент-сервер, микросервисы, event-driven, serverless. Принципы построения современных информационных систем.</span>
+            <span data-lang="en">Client-server, microservices, event-driven, serverless. Principles of building modern information systems.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="cloud_virtualization.html" class="card">
+          <div class="card-emoji">☁️</div>
+          <div class="card-title">
+            <span data-lang="uk">Хмари та віртуалізація</span>
+            <span data-lang="ru">Облака и виртуализация</span>
+            <span data-lang="en">Cloud & Virtualization</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">AWS, Azure, GCP, Kubernetes, VMware. IaaS, PaaS, SaaS, контейнери та оркестрація в хмарі.</span>
+            <span data-lang="ru">AWS, Azure, GCP, Kubernetes, VMware. IaaS, PaaS, SaaS, контейнеры и оркестрация в облаке.</span>
+            <span data-lang="en">AWS, Azure, GCP, Kubernetes, VMware. IaaS, PaaS, SaaS, containers and cloud orchestration.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="networks_and_protocols.html" class="card">
+          <div class="card-emoji">🌍</div>
+          <div class="card-title">
+            <span data-lang="uk">Мережі та протоколи</span>
+            <span data-lang="ru">Сети и протоколы</span>
+            <span data-lang="en">Networks & Protocols</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">TCP/IP, HTTP/HTTPS, DNS, VPN, маршрутизація. Як працює Інтернет і локальні мережі.</span>
+            <span data-lang="ru">TCP/IP, HTTP/HTTPS, DNS, VPN, маршрутизация. Как работает Интернет и локальные сети.</span>
+            <span data-lang="en">TCP/IP, HTTP/HTTPS, DNS, VPN, routing. How the Internet and local networks work.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="parallel-distributed-computing.html" class="card">
+          <div class="card-emoji">⚡</div>
+          <div class="card-title">
+            <span data-lang="uk">Паралельні та розподілені обчислення</span>
+            <span data-lang="ru">Параллельные и распределённые вычисления</span>
+            <span data-lang="en">Parallel & Distributed Computing</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Багатопотоковість, MPI, MapReduce, кластери. Як прискорити обчислення на багатьох вузлах.</span>
+            <span data-lang="ru">Многопоточность, MPI, MapReduce, кластеры. Как ускорить вычисления на многих узлах.</span>
+            <span data-lang="en">Multithreading, MPI, MapReduce, clusters. How to speed up computations across many nodes.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 7. Data & AI -->
+    <section class="category" id="data-ai">
+      <div class="category-header">
+        <div class="category-icon">🤖</div>
+        <h2 class="category-title">
+          <span data-lang="uk">Дані, аналітика та штучний інтелект</span>
+          <span data-lang="ru">Данные, аналитика и искусственный интеллект</span>
+          <span data-lang="en">Data, Analytics & Artificial Intelligence</span>
+        </h2>
+        <span class="category-count">4</span>
+      </div>
+      <div class="cards-grid">
+        <a href="spr_subd.html" class="card">
+          <div class="card-emoji">🗄️</div>
+          <div class="card-title">
+            <span data-lang="uk">Довідник систем управління базами даних</span>
+            <span data-lang="ru">Справочник систем управления базами данных</span>
+            <span data-lang="en">Database Management Systems Directory</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">PostgreSQL, MySQL, MongoDB, Redis, Oracle. Реляційні та NoSQL бази, транзакції, індекси та оптимізація.</span>
+            <span data-lang="ru">PostgreSQL, MySQL, MongoDB, Redis, Oracle. Реляционные и NoSQL базы, транзакции, индексы и оптимизация.</span>
+            <span data-lang="en">PostgreSQL, MySQL, MongoDB, Redis, Oracle. Relational and NoSQL databases, transactions, indexes and optimization.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="data-science-bigdata.html" class="card">
+          <div class="card-emoji">📊</div>
+          <div class="card-title">
+            <span data-lang="uk">Data Science, Big Data та аналітика</span>
+            <span data-lang="ru">Data Science, Big Data и аналитика</span>
+            <span data-lang="en">Data Science, Big Data & Analytics</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Обробка великих даних, ETL, візуалізація, статистика. Інструменти та методи аналізу даних.</span>
+            <span data-lang="ru">Обработка больших данных, ETL, визуализация, статистика. Инструменты и методы анализа данных.</span>
+            <span data-lang="en">Big data processing, ETL, visualization, statistics. Tools and methods for data analysis.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="machine-learning-ai.html" class="card">
+          <div class="card-emoji">🧠</div>
+          <div class="card-title">
+            <span data-lang="uk">Машинне навчання та ШІ</span>
+            <span data-lang="ru">Машинное обучение и ИИ</span>
+            <span data-lang="en">Machine Learning & AI</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Навчання з учителем і без, нейромережі, NLP, комп'ютерний зір. Основи сучасного штучного інтелекту.</span>
+            <span data-lang="ru">Обучение с учителем и без, нейросети, NLP, компьютерное зрение. Основы современного искусственного интеллекта.</span>
+            <span data-lang="en">Supervised and unsupervised learning, neural networks, NLP, computer vision. Foundations of modern AI.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="spr_ai_servises.html" class="card">
+          <div class="card-emoji">✨</div>
+          <div class="card-title">
+            <span data-lang="uk">Довідник сервісів Штучного Інтелекту</span>
+            <span data-lang="ru">Справочник сервисов искусственного интеллекта</span>
+            <span data-lang="en">AI Services Directory</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">ChatGPT, Claude, Midjourney, Gemini та інші. Огляд популярних AI-сервісів і можливостей їхнього застосування.</span>
+            <span data-lang="ru">ChatGPT, Claude, Midjourney, Gemini и другие. Обзор популярных AI-сервисов и возможностей их применения.</span>
+            <span data-lang="en">ChatGPT, Claude, Midjourney, Gemini and others. Overview of popular AI services and their application possibilities.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 8. Web & Social -->
+    <section class="category" id="web">
+      <div class="category-header">
+        <div class="category-icon">🌐</div>
+        <h2 class="category-title">
+          <span data-lang="uk">Веб, пошук і соціальні мережі</span>
+          <span data-lang="ru">Веб, поиск и социальные сети</span>
+          <span data-lang="en">Web, Search & Social Networks</span>
+        </h2>
+        <span class="category-count">3</span>
+      </div>
+      <div class="cards-grid">
+        <a href="search-engines.html" class="card">
+          <div class="card-emoji">🔍</div>
+          <div class="card-title">
+            <span data-lang="uk">Пошукові системи</span>
+            <span data-lang="ru">Поисковые системы</span>
+            <span data-lang="en">Search Engines</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Google, Bing, DuckDuckGo. Як працює пошук, індексація, ранжування та алгоритми релевантності.</span>
+            <span data-lang="ru">Google, Bing, DuckDuckGo. Как работает поиск, индексация, ранжирование и алгоритмы релевантности.</span>
+            <span data-lang="en">Google, Bing, DuckDuckGo. How search works, indexing, ranking and relevance algorithms.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="seo-tools.html" class="card">
+          <div class="card-emoji">📈</div>
+          <div class="card-title">
+            <span data-lang="uk">SEO-інструменти</span>
+            <span data-lang="ru">SEO-инструменты</span>
+            <span data-lang="en">SEO Tools</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Аналіз сайтів, ключові слова, лінкбілдинг, технічне SEO. Інструменти для просування в пошуку.</span>
+            <span data-lang="ru">Анализ сайтов, ключевые слова, линкбилдинг, техническое SEO. Инструменты для продвижения в поиске.</span>
+            <span data-lang="en">Site analysis, keywords, link building, technical SEO. Tools for search engine promotion.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="social_networks.html" class="card">
+          <div class="card-emoji">📱</div>
+          <div class="card-title">
+            <span data-lang="uk">Соціальні мережі</span>
+            <span data-lang="ru">Социальные сети</span>
+            <span data-lang="en">Social Networks</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Facebook, Instagram, X (Twitter), LinkedIn, TikTok. Платформи, API, алгоритми стрічки та маркетинг.</span>
+            <span data-lang="ru">Facebook, Instagram, X (Twitter), LinkedIn, TikTok. Платформы, API, алгоритмы ленты и маркетинг.</span>
+            <span data-lang="en">Facebook, Instagram, X (Twitter), LinkedIn, TikTok. Platforms, APIs, feed algorithms and marketing.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 9. Emerging tech -->
+    <section class="category" id="emerging">
+      <div class="category-header">
+        <div class="category-icon">🚀</div>
+        <h2 class="category-title">
+          <span data-lang="uk">Сучасні та перспективні технології</span>
+          <span data-lang="ru">Современные и перспективные технологии</span>
+          <span data-lang="en">Modern & Emerging Technologies</span>
+        </h2>
+        <span class="category-count">7</span>
+      </div>
+      <div class="cards-grid">
+        <a href="mobile-development.html" class="card">
+          <div class="card-emoji">📲</div>
+          <div class="card-title">
+            <span data-lang="uk">Мобільна розробка</span>
+            <span data-lang="ru">Мобильная разработка</span>
+            <span data-lang="en">Mobile Development</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">iOS, Android, Flutter, React Native. Нативні та кросплатформні підходи до створення мобільних додатків.</span>
+            <span data-lang="ru">iOS, Android, Flutter, React Native. Нативные и кроссплатформенные подходы к созданию мобильных приложений.</span>
+            <span data-lang="en">iOS, Android, Flutter, React Native. Native and cross-platform approaches to building mobile apps.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="game-development.html" class="card">
+          <div class="card-emoji">🎮</div>
+          <div class="card-title">
+            <span data-lang="uk">Розробка ігор (Game Development)</span>
+            <span data-lang="ru">Разработка игр (Game Development)</span>
+            <span data-lang="en">Game Development</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Unity, Unreal Engine, Godot. Ігрові рушії, фізика, графіка та цикли розробки ігор.</span>
+            <span data-lang="ru">Unity, Unreal Engine, Godot. Игровые движки, физика, графика и циклы разработки игр.</span>
+            <span data-lang="en">Unity, Unreal Engine, Godot. Game engines, physics, graphics and game development cycles.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="internet-of-things.html" class="card">
+          <div class="card-emoji">📡</div>
+          <div class="card-title">
+            <span data-lang="uk">Інтернет речей (IoT)</span>
+            <span data-lang="ru">Интернет вещей (IoT)</span>
+            <span data-lang="en">Internet of Things (IoT)</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Датчики, мікроконтролери, протоколи MQTT, edge-обчислення. Розумні міста, промисловість і дім.</span>
+            <span data-lang="ru">Датчики, микроконтроллеры, протоколы MQTT, edge-вычисления. Умные города, промышленность и дом.</span>
+            <span data-lang="en">Sensors, microcontrollers, MQTT protocols, edge computing. Smart cities, industry and home.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="blockchain-distributed-ledgers.html" class="card">
+          <div class="card-emoji">⛓️</div>
+          <div class="card-title">
+            <span data-lang="uk">Блокчейн та розподілені реєстри</span>
+            <span data-lang="ru">Блокчейн и распределённые реестры</span>
+            <span data-lang="en">Blockchain & Distributed Ledgers</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Криптографія, смарт-контракти, консенсус. Застосування блокчейну за межами криптовалют.</span>
+            <span data-lang="ru">Криптография, смарт-контракты, консенсус. Применение блокчейна за пределами криптовалют.</span>
+            <span data-lang="en">Cryptography, smart contracts, consensus. Blockchain applications beyond cryptocurrencies.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="quantum-computing.html" class="card">
+          <div class="card-emoji">⚛️</div>
+          <div class="card-title">
+            <span data-lang="uk">Квантові обчислення</span>
+            <span data-lang="ru">Квантовые вычисления</span>
+            <span data-lang="en">Quantum Computing</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Квантові біти, суперпозиція, алгоритми Шора та Гровера. Потенціал і виклики квантових комп'ютерів.</span>
+            <span data-lang="ru">Квантовые биты, суперпозиция, алгоритмы Шора и Гровера. Потенциал и вызовы квантовых компьютеров.</span>
+            <span data-lang="en">Qubits, superposition, Shor’s and Grover’s algorithms. Potential and challenges of quantum computers.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="ar-vr-metaverse.html" class="card">
+          <div class="card-emoji">🥽</div>
+          <div class="card-title">
+            <span data-lang="uk">AR/VR / метавсесвіти</span>
+            <span data-lang="ru">AR/VR / метавселенные</span>
+            <span data-lang="en">AR/VR / Metaverses</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Доповнена та віртуальна реальність, окуляри, движки. Майбутнє взаємодії людини з цифровим світом.</span>
+            <span data-lang="ru">Дополненная и виртуальная реальность, очки, движки. Будущее взаимодействия человека с цифровым миром.</span>
+            <span data-lang="en">Augmented and virtual reality, headsets, engines. The future of human interaction with the digital world.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="robotics.html" class="card">
+          <div class="card-emoji">🤖</div>
+          <div class="card-title">
+            <span data-lang="uk">Робототехніка (Robotics)</span>
+            <span data-lang="ru">Робототехника (Robotics)</span>
+            <span data-lang="en">Robotics</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Датчики, актуатори, ROS, автономні системи. Роботи в промисловості, медицині та побуті.</span>
+            <span data-lang="ru">Датчики, актуаторы, ROS, автономные системы. Роботы в промышленности, медицине и быту.</span>
+            <span data-lang="en">Sensors, actuators, ROS, autonomous systems. Robots in industry, medicine and everyday life.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 10. Business, Security, Career -->
+    <section class="category" id="business">
+      <div class="category-header">
+        <div class="category-icon">💼</div>
+        <h2 class="category-title">
+          <span data-lang="uk">Безпека, бізнес, кар'єра та інше</span>
+          <span data-lang="ru">Безопасность, бизнес, карьера и другое</span>
+          <span data-lang="en">Security, Business, Career & More</span>
+        </h2>
+        <span class="category-count">7</span>
+      </div>
+      <div class="cards-grid">
+        <a href="cybersecurity.html" class="card">
+          <div class="card-emoji">🔒</div>
+          <div class="card-title">
+            <span data-lang="uk">Кібербезпека</span>
+            <span data-lang="ru">Кибербезопасность</span>
+            <span data-lang="en">Cybersecurity</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Загрози, шифрування, автентифікація, захист мереж і додатків. Як захищати дані та системи.</span>
+            <span data-lang="ru">Угрозы, шифрование, аутентификация, защита сетей и приложений. Как защищать данные и системы.</span>
+            <span data-lang="en">Threats, encryption, authentication, network and application protection. How to secure data and systems.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="it-and-business.html" class="card">
+          <div class="card-emoji">📈</div>
+          <div class="card-title">
+            <span data-lang="uk">ІТ та Бізнес-процеси</span>
+            <span data-lang="ru">ИТ и Бизнес-процессы</span>
+            <span data-lang="en">IT & Business Processes</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Автоматизація, ERP, CRM, цифрова трансформація. Як ІТ змінюють бізнес і створюють цінність.</span>
+            <span data-lang="ru">Автоматизация, ERP, CRM, цифровая трансформация. Как ИТ меняют бизнес и создают ценность.</span>
+            <span data-lang="en">Automation, ERP, CRM, digital transformation. How IT changes business and creates value.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="it-project-management.html" class="card">
+          <div class="card-emoji">📅</div>
+          <div class="card-title">
+            <span data-lang="uk">Управління ІТ-проєктами</span>
+            <span data-lang="ru">Управление ИТ-проектами</span>
+            <span data-lang="en">IT Project Management</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Agile, Scrum, Kanban, Waterfall. Планування, оцінка ризиків, команди та доставка результатів.</span>
+            <span data-lang="ru">Agile, Scrum, Kanban, Waterfall. Планирование, оценка рисков, команды и доставка результатов.</span>
+            <span data-lang="en">Agile, Scrum, Kanban, Waterfall. Planning, risk assessment, teams and delivering results.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="it-careers-specialties.html" class="card">
+          <div class="card-emoji">👨‍💻</div>
+          <div class="card-title">
+            <span data-lang="uk">Кар’єра в ІТ / спеціальності</span>
+            <span data-lang="ru">Карьера в ИТ / специальности</span>
+            <span data-lang="en">IT Careers & Specialties</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Розробник, аналітик, DevOps, QA, Product Manager. Шляхи входу в галузь і розвиток навичок.</span>
+            <span data-lang="ru">Разработчик, аналитик, DevOps, QA, Product Manager. Пути входа в отрасль и развитие навыков.</span>
+            <span data-lang="en">Developer, analyst, DevOps, QA, Product Manager. Paths into the industry and skill development.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="ui-ux-design.html" class="card">
+          <div class="card-emoji">🎨</div>
+          <div class="card-title">
+            <span data-lang="uk">UI/UX та дизайн інтерфейсів</span>
+            <span data-lang="ru">UI/UX и дизайн интерфейсов</span>
+            <span data-lang="en">UI/UX & Interface Design</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Принципи зручності, прототипування, дизайн-системи, доступність. Як створювати приємні інтерфейси.</span>
+            <span data-lang="ru">Принципы удобства, прототипирование, дизайн-системы, доступность. Как создавать приятные интерфейсы.</span>
+            <span data-lang="en">Usability principles, prototyping, design systems, accessibility. How to create pleasant interfaces.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="accessibility.html" class="card">
+          <div class="card-emoji">♿</div>
+          <div class="card-title">
+            <span data-lang="uk">Доступність (Accessibility / a11y)</span>
+            <span data-lang="ru">Доступность (Accessibility / a11y)</span>
+            <span data-lang="en">Accessibility (a11y)</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">WCAG, ARIA, адаптація для людей з обмеженими можливостями. Інклюзивний дизайн цифрових продуктів.</span>
+            <span data-lang="ru">WCAG, ARIA, адаптация для людей с ограниченными возможностями. Инклюзивный дизайн цифровых продуктов.</span>
+            <span data-lang="en">WCAG, ARIA, adaptation for people with disabilities. Inclusive design of digital products.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+        <a href="it-news.html" class="card">
+          <div class="card-emoji">📰</div>
+          <div class="card-title">
+            <span data-lang="uk">Рух та новини ІТ</span>
+            <span data-lang="ru">Движение и новости ИТ</span>
+            <span data-lang="en">IT News & Trends</span>
+          </div>
+          <div class="card-desc">
+            <span data-lang="uk">Останні тренди, події, конференції та новини зі світу інформаційних технологій.</span>
+            <span data-lang="ru">Последние тренды, события, конференции и новости из мира информационных технологий.</span>
+            <span data-lang="en">Latest trends, events, conferences and news from the world of information technology.</span>
+          </div>
+          <div class="card-link">→ <span data-lang="uk">Перейти</span><span data-lang="ru">Перейти</span><span data-lang="en">Go</span></div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- Future section -->
+  <section class="future-section" id="future">
+    <div class="future-box">
+      <h2>
+        <span data-lang="uk">🔮 Перспективи та майбутнє інформаційних технологій</span>
+        <span data-lang="ru">🔮 Перспективы и будущее информационных технологий</span>
+        <span data-lang="en">🔮 Prospects and the Future of Information Technologies</span>
+      </h2>
+      <p data-lang="uk">
+        Інформаційні технології вже не лише «обслуговують» бізнес і побут — вони стають інфраструктурою суспільства: від охорони здоров’я й освіти до енергетики, транспорту та безпеки. У найближчі роки розвиток ІТ визначатимуть кілька взаємопов’язаних напрямів.
+      </p>
+      <p data-lang="ru">
+        Информационные технологии уже не только «обслуживают» бизнес и быт — они становятся инфраструктурой общества: от здравоохранения и образования до энергетики, транспорта и безопасности. В ближайшие годы развитие ИТ будут определять несколько взаимосвязанных направлений.
+      </p>
+      <p data-lang="en">
+        Information technologies no longer merely “serve” business and everyday life — they are becoming the infrastructure of society: from healthcare and education to energy, transport and security. In the coming years, several interconnected directions will determine the development of IT.
+      </p>
+
+      <div class="future-grid">
+        <div class="future-item">
+          <h3>
+            <span data-lang="uk">🤖 Штучний інтелект</span>
+            <span data-lang="ru">🤖 Искусственный интеллект</span>
+            <span data-lang="en">🤖 Artificial Intelligence</span>
+          </h3>
+          <p data-lang="uk">Генерація коду й контенту, аналітика, персоналізація, автономні агенти. Попит на якісні дані, пояснюваність і етичні рамки.</p>
+          <p data-lang="ru">Генерация кода и контента, аналитика, персонализация, автономные агенты. Спрос на качественные данные, объяснимость и этические рамки.</p>
+          <p data-lang="en">Code and content generation, analytics, personalization, autonomous agents. Demand for quality data, explainability and ethical frameworks.</p>
+        </div>
+        <div class="future-item">
+          <h3>
+            <span data-lang="uk">☁️ Хмара, edge і розподілені системи</span>
+            <span data-lang="ru">☁️ Облако, edge и распределённые системы</span>
+            <span data-lang="en">☁️ Cloud, Edge & Distributed Systems</span>
+          </h3>
+          <p data-lang="uk">Обчислення ближче до користувача, гібридні архітектури, зменшення затримок і масштабування.</p>
+          <p data-lang="ru">Вычисления ближе к пользователю, гибридные архитектуры, уменьшение задержек и масштабирование.</p>
+          <p data-lang="en">Computing closer to the user, hybrid architectures, reduced latency and scaling.</p>
+        </div>
+        <div class="future-item">
+          <h3>
+            <span data-lang="uk">🔒 Кібербезпека</span>
+            <span data-lang="ru">🔒 Кибербезопасность</span>
+            <span data-lang="en">🔒 Cybersecurity</span>
+          </h3>
+          <p data-lang="uk">Захист ідентичності, ланцюгів постачання ПЗ і критичної інфраструктури — обов’язкова частина будь-якої стратегії.</p>
+          <p data-lang="ru">Защита идентичности, цепочек поставок ПО и критической инфраструктуры — обязательная часть любой стратегии.</p>
+          <p data-lang="en">Identity protection, software supply chains and critical infrastructure — an essential part of any strategy.</p>
+        </div>
+        <div class="future-item">
+          <h3>
+            <span data-lang="uk">🖐️ Нові інтерфейси</span>
+            <span data-lang="ru">🖐️ Новые интерфейсы</span>
+            <span data-lang="en">🖐️ New Interfaces</span>
+          </h3>
+          <p data-lang="uk">Голосові й мультимодальні інтерфейси, AR, IoT, відкриті стандарти та енергоефективність.</p>
+          <p data-lang="ru">Голосовые и мультимодальные интерфейсы, AR, IoT, открытые стандарты и энергоэффективность.</p>
+          <p data-lang="en">Voice and multimodal interfaces, AR, IoT, open standards and energy efficiency.</p>
+        </div>
+        <div class="future-item">
+          <h3>
+            <span data-lang="uk">👤 Людський вимір</span>
+            <span data-lang="ru">👤 Человеческое измерение</span>
+            <span data-lang="en">👤 The Human Dimension</span>
+          </h3>
+          <p data-lang="uk">Фахівці, що поєднують техніку з доменом, цифрова грамотність суспільства. ІТ підсилюють людину, а не замінюють її сліпо.</p>
+          <p data-lang="ru">Специалисты, сочетающие технику с доменом, цифровая грамотность общества. ИТ усиливают человека, а не заменяют его слепо.</p>
+          <p data-lang="en">Specialists combining technology with domain knowledge, digital literacy of society. IT empowers people, rather than blindly replacing them.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-title">
+        <span data-lang="uk">Учбово-методичний довідник : «Що таке Інформаційні Технології?»</span>
+        <span data-lang="ru">Учебно-методический справочник : «Что такое Информационные Технологии?»</span>
+        <span data-lang="en">Educational Handbook : «What are Information Technologies?»</span>
+      </div>
+      <div class="footer-copy" id="copyright">
+        Copyright © 2025 – <span id="year"></span>
+        <span data-lang="uk"> рік.</span>
+        <span data-lang="ru"> год.</span>
+        <span data-lang="en"> year.</span>
+      </div>
+      <div class="footer-email">
+        E-mail:&nbsp;&nbsp;<a href="mailto:_pvi@ukr.net" target="_blank">_pvi@ukr.net</a>
+      </div>
+      <div class="footer-disclaimer">
+        <span data-lang="uk">
+          Всі матеріали, надані на цьому інформаційному ресурсі, призначені ВИКЛЮЧНО з ОЗНАЙОМЧОЮ, НАВЧАЛЬНОЮ та ОСВІТНЬОЮ МЕТОЮ.<br>
+          Адміністрація ресурсу не претендує на їх авторство і не несе відповідальності за їхній зміст.<br>
+          Створено з допомогою різних Сервісів Штучного Інтелекту.
+        </span>
+        <span data-lang="ru">
+          Все материалы, предоставленные на этом информационном ресурсе, предназначены ИСКЛЮЧИТЕЛЬНО в ОЗНАКОМИТЕЛЬНЫХ, УЧЕБНЫХ и ОБРАЗОВАТЕЛЬНЫХ ЦЕЛЯХ.<br>
+          Администрация ресурса не претендует на их авторство и не несёт ответственности за их содержание.<br>
+          Создано с помощью различных Сервисов Искусственного Интеллекта.
+        </span>
+        <span data-lang="en">
+          All materials provided on this information resource are intended EXCLUSIVELY for INFORMATIONAL, EDUCATIONAL and TRAINING purposes.<br>
+          The resource administration does not claim authorship and is not responsible for their content.<br>
+          Created with the help of various Artificial Intelligence Services.
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+  <script>
+    // Language switcher
+    const html = document.documentElement;
+    const langButtons = document.querySelectorAll('[data-set-lang]');
+    const savedLang = localStorage.getItem('it-portal-lang') || 'uk';
+    setLang(savedLang);
+
+    langButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const lang = btn.dataset.setLang;
+        setLang(lang);
+        localStorage.setItem('it-portal-lang', lang);
+      });
+    });
+
+    function setLang(lang) {
+      html.lang = lang;
+      langButtons.forEach(b => b.classList.toggle('active', b.dataset.setLang === lang));
+    }
+
+    // Theme switcher (light by default)
+    const themeButtons = document.querySelectorAll('[data-set-theme]');
+    const savedTheme = localStorage.getItem('it-portal-theme') || 'light';
+    setTheme(savedTheme);
+
+    themeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const theme = btn.dataset.setTheme;
+        setTheme(theme);
+        localStorage.setItem('it-portal-theme', theme);
+      });
+    });
+
+    function setTheme(theme) {
+      if (theme === 'light') {
+        html.removeAttribute('data-theme');
+      } else {
+        html.setAttribute('data-theme', theme);
+      }
+      themeButtons.forEach(b => b.classList.toggle('active', b.dataset.setTheme === theme));
+    }
+
+    // Mobile nav toggle
+    const navToggle = document.getElementById('navToggle');
+    const mainNav = document.getElementById('mainNav');
+    navToggle.addEventListener('click', () => {
+      mainNav.classList.toggle('open');
+    });
+
+    // Close nav on link click (mobile)
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        mainNav.classList.remove('open');
+      });
+    });
+
+    // Copyright year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Back to top
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      backToTop.classList.toggle('visible', window.scrollY > 400);
+    });
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Active nav link on scroll
+    const sections = document.querySelectorAll('section[id], .category[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const headerOffset = 140;
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - headerOffset;
+        if (window.scrollY >= sectionTop) {
+          current = section.getAttribute('id');
+        }
+      });
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + current) {
+          link.classList.add('active');
+        }
+      });
+    });
+
+    // Precise smooth scroll for nav links (accounts for sticky header)
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        if (href && href.startsWith('#')) {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            const top = target.getBoundingClientRect().top + window.scrollY - headerOffset + 10;
+            window.scrollTo({ top, behavior: 'smooth' });
+            history.pushState(null, '', href);
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

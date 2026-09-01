@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управління ІТ-проєктами — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">📋 Управління ІТ-проєктами</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    const categories = {
+        classic: {
+            uk: "📐 Класичні підходи",
+            ru: "📐 Классические подходы",
+            en: "📐 Classic Approaches"
+        },
+        agile: {
+            uk: "🔄 Agile та фреймворки",
+            ru: "🔄 Agile и фреймворки",
+            en: "🔄 Agile & Frameworks"
+        },
+        practices: {
+            uk: "🛠️ Практики та артефакти",
+            ru: "🛠️ Практики и артефакты",
+            en: "🛠️ Practices & Artifacts"
+        },
+        roles: {
+            uk: "👥 Ролі та команди",
+            ru: "👥 Роли и команды",
+            en: "👥 Roles & Teams"
+        },
+        tools: {
+            uk: "📊 Інструменти та масштабування",
+            ru: "📊 Инструменты и масштабирование",
+            en: "📊 Tools & Scaling"
+        }
+    };
+
+    const items = [
+        {
+            cat: "classic",
+            icon: "📏",
+            name: {
+                uk: "Waterfall (каскадна модель)",
+                ru: "Waterfall (каскадная модель)",
+                en: "Waterfall Model"
+            },
+            desc: {
+                uk: "Послідовний підхід: вимоги → проєктування → реалізація → тестування → впровадження → супровід. Кожна фаза майже завершується перед початком наступної. Добре підходить для проєктів зі стабільними вимогами.",
+                ru: "Последовательный подход: требования → проектирование → реализация → тестирование → внедрение → сопровождение. Каждая фаза почти завершается перед началом следующей. Хорошо подходит для проектов со стабильными требованиями.",
+                en: "A sequential approach: requirements → design → implementation → testing → deployment → maintenance. Each phase is largely completed before the next begins. Works well for projects with stable requirements."
+            },
+            traits: {
+                uk: "Послідовність, Фази, Документація, Фіксований обсяг, Передбачуваність",
+                ru: "Последовательность, Фазы, Документация, Фиксированный объем, Предсказуемость",
+                en: "Sequence, Phases, Documentation, Fixed scope, Predictability"
+            },
+            spec: {
+                uk: "Сильний при чітких і незмінних вимогах",
+                ru: "Силен при четких и неизменных требованиях",
+                en: "Strong when requirements are clear and stable"
+            },
+            links: [
+                { name: "Waterfall Model", url: "https://en.wikipedia.org/wiki/Waterfall_model" },
+                { name: "PMI / PMBOK", url: "https://www.pmi.org" }
+            ]
+        },
+        {
+            cat: "classic",
+            icon: "📊",
+            name: {
+                uk: "Традиційне проєктне управління (PMBOK)",
+                ru: "Традиционное проектное управление (PMBOK)",
+                en: "Traditional Project Management (PMBOK)"
+            },
+            desc: {
+                uk: "Стандарти PMI: групи процесів (ініціація, планування, виконання, моніторинг, закриття) і області знань (обсяг, час, вартість, якість, ризики, стейкхолдери тощо). Орієнтований на план і контроль.",
+                ru: "Стандарты PMI: группы процессов (инициация, планирование, исполнение, мониторинг, закрытие) и области знаний (объем, время, стоимость, качество, риски, стейкхолдеры и т.д.). Ориентирован на план и контроль.",
+                en: "PMI standards: process groups (initiating, planning, executing, monitoring, closing) and knowledge areas (scope, time, cost, quality, risk, stakeholders, etc.). Oriented toward planning and control."
+            },
+            traits: {
+                uk: "PMBOK, WBS, Gantt, Ризики, Стейкхолдери, Базовий план",
+                ru: "PMBOK, WBS, Gantt, Риски, Стейкхолдеры, Базовый план",
+                en: "PMBOK, WBS, Gantt, Risks, Stakeholders, Baseline"
+            },
+            spec: {
+                uk: "Корисно для великих і регульованих проєктів",
+                ru: "Полезно для крупных и регулируемых проектов",
+                en: "Useful for large and regulated projects"
+            },
+            links: [
+                { name: "PMI", url: "https://www.pmi.org" },
+                { name: "PRINCE2", url: "https://www.prince2.com" }
+            ]
+        },
+        {
+            cat: "agile",
+            icon: "🚀",
+            name: {
+                uk: "Agile — маніфест і принципи",
+                ru: "Agile — манифест и принципы",
+                en: "Agile — Manifesto and Principles"
+            },
+            desc: {
+                uk: "Agile — не один метод, а набір цінностей: люди і взаємодія важливіші за процеси; робочий продукт — за документацію; співпраця з замовником — за контракт; готовність до змін — за план. 12 принципів доповнюють маніфест.",
+                ru: "Agile — не один метод, а набор ценностей: люди и взаимодействие важнее процессов; рабочий продукт — документации; сотрудничество с заказчиком — контракта; готовность к изменениям — плана. 12 принципов дополняют манифест.",
+                en: "Agile is not a single method but a set of values: individuals and interactions over processes; working software over documentation; customer collaboration over contract; responding to change over following a plan. 12 principles complement the manifesto."
+            },
+            traits: {
+                uk: "Маніфест, 12 принципів, Ітерації, Адаптація, Цінність",
+                ru: "Манифест, 12 принципов, Итерации, Адаптация, Ценность",
+                en: "Manifesto, 12 principles, Iterations, Adaptation, Value"
+            },
+            spec: {
+                uk: "Мислення, а не лише церемонії",
+                ru: "Мышление, а не только церемонии",
+                en: "A mindset, not just ceremonies"
+            },
+            links: [
+                { name: "Agile Manifesto", url: "https://agilemanifesto.org" },
+                { name: "12 Principles", url: "https://agilemanifesto.org/principles.html" }
+            ]
+        },
+        {
+            cat: "agile",
+            icon: "🏉",
+            name: {
+                uk: "Scrum",
+                ru: "Scrum",
+                en: "Scrum"
+            },
+            desc: {
+                uk: "Найпопулярніший Agile-фреймворк. Фіксовані ітерації (спринти), ролі (Product Owner, Scrum Master, Developers), події (Planning, Daily, Review, Retrospective) і артефакти (Product Backlog, Sprint Backlog, Increment).",
+                ru: "Самый популярный Agile-фреймворк. Фиксированные итерации (спринты), роли (Product Owner, Scrum Master, Developers), события (Planning, Daily, Review, Retrospective) и артефакты (Product Backlog, Sprint Backlog, Increment).",
+                en: "The most popular Agile framework. Fixed-length iterations (sprints), roles (Product Owner, Scrum Master, Developers), events (Planning, Daily, Review, Retrospective) and artifacts (Product Backlog, Sprint Backlog, Increment)."
+            },
+            traits: {
+                uk: "Спринт, Backlog, Daily Scrum, Review, Retrospective, Increment",
+                ru: "Спринт, Backlog, Daily Scrum, Review, Retrospective, Increment",
+                en: "Sprint, Backlog, Daily Scrum, Review, Retrospective, Increment"
+            },
+            spec: {
+                uk: "Емпіричний контроль: прозорість, інспекція, адаптація",
+                ru: "Эмпирический контроль: прозрачность, инспекция, адаптация",
+                en: "Empirical control: transparency, inspection, adaptation"
+            },
+            links: [
+                { name: "Scrum Guide", url: "https://scrumguides.org" },
+                { name: "Scrum.org", url: "https://www.scrum.org" }
+            ]
+        },
+        {
+            cat: "agile",
+            icon: "📌",
+            name: {
+                uk: "Kanban",
+                ru: "Kanban",
+                en: "Kanban"
+            },
+            desc: {
+                uk: "Метод управління потоком роботи: візуалізація (дошка), обмеження WIP (роботи в процесі), управління потоком, явні політики, зворотний зв’язок, еволюційне покращення. Немає фіксованих спринтів — робота «тягнеться» за готовністю.",
+                ru: "Метод управления потоком работы: визуализация (доска), ограничение WIP (работы в процессе), управление потоком, явные политики, обратная связь, эволюционное улучшение. Нет фиксированных спринтов — работа «тянется» по готовности.",
+                en: "A method for managing work flow: visualization (board), WIP limits, flow management, explicit policies, feedback, evolutionary improvement. No fixed sprints — work is “pulled” when capacity allows."
+            },
+            traits: {
+                uk: "Дошка, WIP-ліміти, Потік, Lead time, Cycle time, Pull",
+                ru: "Доска, WIP-лимиты, Поток, Lead time, Cycle time, Pull",
+                en: "Board, WIP limits, Flow, Lead time, Cycle time, Pull"
+            },
+            spec: {
+                uk: "Ідеально для підтримки та безперервного потоку",
+                ru: "Идеально для поддержки и непрерывного потока",
+                en: "Ideal for support and continuous flow"
+            },
+            links: [
+                { name: "Kanban University", url: "https://kanban.university" },
+                { name: "Personal Kanban", url: "https://www.personalkanban.com" }
+            ]
+        },
+        {
+            cat: "agile",
+            icon: "🔀",
+            name: {
+                uk: "Scrum + Kanban та інші гібриди",
+                ru: "Scrum + Kanban и другие гибриды",
+                en: "Scrum + Kanban and Other Hybrids"
+            },
+            desc: {
+                uk: "Команди часто комбінують підходи: Scrumban (спринти + WIP-ліміти), Agile + Waterfall для різних частин продукту. Важливо свідомо обирати практики під контекст, а не «копіювати» фреймворк сліпо.",
+                ru: "Команды часто комбинируют подходы: Scrumban (спринты + WIP-лимиты), Agile + Waterfall для разных частей продукта. Важно сознательно выбирать практики под контекст, а не «копировать» фреймворк слепо.",
+                en: "Teams often combine approaches: Scrumban (sprints + WIP limits), Agile + Waterfall for different product parts. It is important to consciously choose practices for the context, not blindly copy a framework."
+            },
+            traits: {
+                uk: "Scrumban, Гібриди, Контекст, Адаптація, Прагматизм",
+                ru: "Scrumban, Гибриды, Контекст, Адаптация, Прагматизм",
+                en: "Scrumban, Hybrids, Context, Adaptation, Pragmatism"
+            },
+            spec: {
+                uk: "Немає універсального «єдиного правильного» методу",
+                ru: "Нет универсального «единственно правильного» метода",
+                en: "There is no universal “one right” method"
+            },
+            links: [
+                { name: "Scrumban", url: "https://www.agilealliance.org/scrumban/" }
+            ]
+        },
+        {
+            cat: "practices",
+            icon: "📝",
+            name: {
+                uk: "Беклог, User Stories, оцінка",
+                ru: "Бэклог, User Stories, оценка",
+                en: "Backlog, User Stories, Estimation"
+            },
+            desc: {
+                uk: "Product Backlog — пріоритезований список робіт. User Stories описують потребу з погляду користувача. Оцінка: Story Points, Planning Poker, T-shirt sizes. Мета — спільно зрозуміти обсяг і складність, а не «вгадати години».",
+                ru: "Product Backlog — приоритезированный список работ. User Stories описывают потребность с точки зрения пользователя. Оценка: Story Points, Planning Poker, T-shirt sizes. Цель — совместно понять объем и сложность, а не «угадать часы».",
+                en: "Product Backlog is a prioritized list of work. User Stories describe a need from the user’s perspective. Estimation: Story Points, Planning Poker, T-shirt sizes. The goal is shared understanding of size and complexity, not “guessing hours”."
+            },
+            traits: {
+                uk: "User Story, Acceptance criteria, Story Points, Planning Poker, Refinement",
+                ru: "User Story, Acceptance criteria, Story Points, Planning Poker, Refinement",
+                en: "User Story, Acceptance criteria, Story Points, Planning Poker, Refinement"
+            },
+            spec: {
+                uk: "Оцінка — інструмент розмови, а не контракт",
+                ru: "Оценка — инструмент разговора, а не контракт",
+                en: "Estimation is a conversation tool, not a contract"
+            },
+            links: [
+                { name: "User Stories", url: "https://www.mountaingoatsoftware.com/agile/user-stories" },
+                { name: "Planning Poker", url: "https://www.mountaingoatsoftware.com/agile/planning-poker" }
+            ]
+        },
+        {
+            cat: "practices",
+            icon: "📅",
+            name: {
+                uk: "Планування, огляди, ретроспективи",
+                ru: "Планирование, обзоры, ретроспективы",
+                en: "Planning, Reviews, Retrospectives"
+            },
+            desc: {
+                uk: "Sprint Planning визначає ціль і обсяг спринту. Review демонструє результат стейкхолдерам. Retrospective — команда аналізує процес і домовляється про покращення. Без ретроспективи Agile «застигає».",
+                ru: "Sprint Planning определяет цель и объем спринта. Review демонстрирует результат стейкхолдерам. Retrospective — команда анализирует процесс и договаривается об улучшениях. Без ретроспективы Agile «застывает».",
+                en: "Sprint Planning sets the sprint goal and scope. Review demonstrates the result to stakeholders. Retrospective — the team inspects the process and agrees on improvements. Without retrospectives Agile stagnates."
+            },
+            traits: {
+                uk: "Planning, Review, Retro, Inspect & Adapt, Continuous improvement",
+                ru: "Planning, Review, Retro, Inspect & Adapt, Continuous improvement",
+                en: "Planning, Review, Retro, Inspect & Adapt, Continuous improvement"
+            },
+            spec: {
+                uk: "Ретроспектива — серце покращення",
+                ru: "Ретроспектива — сердце улучшения",
+                en: "Retrospective is the heart of improvement"
+            },
+            links: [
+                { name: "Retrospective formats", url: "https://retromat.org" },
+                { name: "Scrum Events", url: "https://scrumguides.org/scrum-guide.html#events" }
+            ]
+        },
+        {
+            cat: "practices",
+            icon: "🎯",
+            name: {
+                uk: "Definition of Done і якість",
+                ru: "Definition of Done и качество",
+                en: "Definition of Done and Quality"
+            },
+            desc: {
+                uk: "DoD — спільне розуміння, коли робота «завершена» (код, тести, рев’ю, документація). Чіткий DoD зменшує «майже готово» і технічний борг. Якість вбудовується в процес, а не «додається в кінці».",
+                ru: "DoD — общее понимание, когда работа «завершена» (код, тесты, ревью, документация). Четкий DoD уменьшает «почти готово» и технический долг. Качество встраивается в процесс, а не «добавляется в конце».",
+                en: "DoD is a shared understanding of when work is “done” (code, tests, review, docs). A clear DoD reduces “almost done” and technical debt. Quality is built into the process, not “added at the end”."
+            },
+            traits: {
+                uk: "DoD, Acceptance criteria, Технічний борг, Якість, Готовність",
+                ru: "DoD, Acceptance criteria, Технический долг, Качество, Готовность",
+                en: "DoD, Acceptance criteria, Technical debt, Quality, Readiness"
+            },
+            spec: {
+                uk: "«Готово» має означати одне й те саме для всіх",
+                ru: "«Готово» должно означать одно и то же для всех",
+                en: "“Done” must mean the same thing for everyone"
+            },
+            links: [
+                { name: "Definition of Done", url: "https://www.scrum.org/resources/blog/done-understanding-definition-done" }
+            ]
+        },
+        {
+            cat: "roles",
+            icon: "👑",
+            name: {
+                uk: "Product Owner і управління продуктом",
+                ru: "Product Owner и управление продуктом",
+                en: "Product Owner and Product Management"
+            },
+            desc: {
+                uk: "Product Owner відповідає за максимізацію цінності продукту: пріоритезація беклогу, бачення, зв’язок зі стейкхолдерами. У ширшому сенсі product management включає стратегію, discovery і delivery.",
+                ru: "Product Owner отвечает за максимизацию ценности продукта: приоритизация бэклога, видение, связь со стейкхолдерами. В более широком смысле product management включает стратегию, discovery и delivery.",
+                en: "The Product Owner is accountable for maximizing product value: backlog prioritization, vision, stakeholder connection. More broadly, product management includes strategy, discovery and delivery."
+            },
+            traits: {
+                uk: "Цінність, Пріоритети, Бачення, Discovery, Delivery, Стейкхолдери",
+                ru: "Ценность, Приоритеты, Видение, Discovery, Delivery, Стейкхолдеры",
+                en: "Value, Priorities, Vision, Discovery, Delivery, Stakeholders"
+            },
+            spec: {
+                uk: "Один голос пріоритетів для команди",
+                ru: "Один голос приоритетов для команды",
+                en: "One voice of priorities for the team"
+            },
+            links: [
+                { name: "Scrum Guide — Product Owner", url: "https://scrumguides.org/scrum-guide.html#product-owner" },
+                { name: "Inspired (Marty Cagan)", url: "https://www.svpg.com/inspired-how-to-create-products-customers-love/" }
+            ]
+        },
+        {
+            cat: "roles",
+            icon: "🛡️",
+            name: {
+                uk: "Scrum Master і фасилітація",
+                ru: "Scrum Master и фасилитация",
+                en: "Scrum Master and Facilitation"
+            },
+            desc: {
+                uk: "Scrum Master допомагає команді і організації ефективно використовувати Scrum: прибирає перешкоди, фасилітує події, навчає, захищає команду від зовнішнього тиску. Це servant-leader, а не «менеджер завдань».",
+                ru: "Scrum Master помогает команде и организации эффективно использовать Scrum: убирает препятствия, фасилитирует события, обучает, защищает команду от внешнего давления. Это servant-leader, а не «менеджер задач».",
+                en: "The Scrum Master helps the team and organization use Scrum effectively: removes impediments, facilitates events, coaches, protects the team from external pressure. A servant-leader, not a “task manager”."
+            },
+            traits: {
+                uk: "Facilitation, Coaching, Impediments, Servant-leadership, Навчання",
+                ru: "Facilitation, Coaching, Impediments, Servant-leadership, Обучение",
+                en: "Facilitation, Coaching, Impediments, Servant-leadership, Teaching"
+            },
+            spec: {
+                uk: "Успіх вимірюється успіхом команди",
+                ru: "Успех измеряется успехом команды",
+                en: "Success is measured by the team’s success"
+            },
+            links: [
+                { name: "Scrum Master role", url: "https://scrumguides.org/scrum-guide.html#scrum-master" }
+            ]
+        },
+        {
+            cat: "roles",
+            icon: "🤝",
+            name: {
+                uk: "Крос-функціональні команди",
+                ru: "Кросс-функциональные команды",
+                en: "Cross-Functional Teams"
+            },
+            desc: {
+                uk: "Команда, яка має всі навички для доставки інкременту (розробка, тест, дизайн, аналітика тощо). Мінімізує залежності від «зовнішніх» відділів і прискорює зворотний зв’язок.",
+                ru: "Команда, которая имеет все навыки для поставки инкремента (разработка, тест, дизайн, аналитика и т.д.). Минимизирует зависимости от «внешних» отделов и ускоряет обратную связь.",
+                en: "A team that has all the skills needed to deliver an increment (development, test, design, analysis, etc.). Minimizes dependencies on “external” departments and speeds up feedback."
+            },
+            traits: {
+                uk: "T-shaped skills, Автономія, Спільна відповідальність, Швидкий feedback",
+                ru: "T-shaped skills, Автономия, Совместная ответственность, Быстрый feedback",
+                en: "T-shaped skills, Autonomy, Shared ownership, Fast feedback"
+            },
+            spec: {
+                uk: "Команда доставляє цінність, а не «свою частину»",
+                ru: "Команда поставляет ценность, а не «свою часть»",
+                en: "The team delivers value, not “its part”"
+            },
+            links: [
+                { name: "Cross-functional teams", url: "https://www.atlassian.com/agile/agile-at-scale/cross-functional-teams" }
+            ]
+        },
+        {
+            cat: "tools",
+            icon: "🛠️",
+            name: {
+                uk: "Інструменти управління роботою",
+                ru: "Инструменты управления работой",
+                en: "Work Management Tools"
+            },
+            desc: {
+                uk: "Jira, Azure DevOps, Linear, YouTrack, Trello, Asana, Monday — дошки, беклоги, спринти, звіти. Інструмент має підтримувати процес команди, а не нав’язувати зайву складність.",
+                ru: "Jira, Azure DevOps, Linear, YouTrack, Trello, Asana, Monday — доски, бэклоги, спринты, отчеты. Инструмент должен поддерживать процесс команды, а не навязывать лишнюю сложность.",
+                en: "Jira, Azure DevOps, Linear, YouTrack, Trello, Asana, Monday — boards, backlogs, sprints, reports. The tool should support the team’s process, not impose unnecessary complexity."
+            },
+            traits: {
+                uk: "Jira, Azure DevOps, Linear, Дошки, Звіти, Інтеграції",
+                ru: "Jira, Azure DevOps, Linear, Доски, Отчеты, Интеграции",
+                en: "Jira, Azure DevOps, Linear, Boards, Reports, Integrations"
+            },
+            spec: {
+                uk: "Спочатку процес, потім інструмент",
+                ru: "Сначала процесс, потом инструмент",
+                en: "Process first, tool second"
+            },
+            links: [
+                { name: "Jira", url: "https://www.atlassian.com/software/jira" },
+                { name: "Linear", url: "https://linear.app" },
+                { name: "Azure DevOps", url: "https://azure.microsoft.com/en-us/products/devops" }
+            ]
+        },
+        {
+            cat: "tools",
+            icon: "📏",
+            name: {
+                uk: "Масштабування Agile (SAFe, LeSS, Nexus)",
+                ru: "Масштабирование Agile (SAFe, LeSS, Nexus)",
+                en: "Scaling Agile (SAFe, LeSS, Nexus)"
+            },
+            desc: {
+                uk: "Коли кілька команд працюють над одним продуктом: SAFe (широкий фреймворк для підприємства), LeSS (великий Scrum), Nexus (Scrum.org). Масштабування потребує дисципліни і часто спрощення, а не додавання шарів.",
+                ru: "Когда несколько команд работают над одним продуктом: SAFe (широкий фреймворк для предприятия), LeSS (большой Scrum), Nexus (Scrum.org). Масштабирование требует дисциплины и часто упрощения, а не добавления слоев.",
+                en: "When multiple teams work on one product: SAFe (broad enterprise framework), LeSS (Large-Scale Scrum), Nexus (Scrum.org). Scaling needs discipline and often simplification, not more layers."
+            },
+            traits: {
+                uk: "SAFe, LeSS, Nexus, Багато команд, Синхронізація, Архітектура",
+                ru: "SAFe, LeSS, Nexus, Много команд, Синхронизация, Архитектура",
+                en: "SAFe, LeSS, Nexus, Multiple teams, Synchronization, Architecture"
+            },
+            spec: {
+                uk: "Масштаб без втрати гнучкості — складно, але можливо",
+                ru: "Масштаб без потери гибкости — сложно, но возможно",
+                en: "Scale without losing agility is hard but possible"
+            },
+            links: [
+                { name: "SAFe", url: "https://scaledagileframework.com" },
+                { name: "LeSS", url: "https://less.works" },
+                { name: "Nexus", url: "https://www.scrum.org/resources/nexus" }
+            ]
+        },
+        {
+            cat: "tools",
+            icon: "📈",
+            name: {
+                uk: "Метрики та прогнозування",
+                ru: "Метрики и прогнозирование",
+                en: "Metrics and Forecasting"
+            },
+            desc: {
+                uk: "Velocity, burndown/burnup, cycle time, lead time, throughput, CFD. У Agile краще прогнозувати за історичними даними потоку (Monte Carlo), ніж жорстко фіксувати дати без буферів. Метрики — для навчання, а не для покарання.",
+                ru: "Velocity, burndown/burnup, cycle time, lead time, throughput, CFD. В Agile лучше прогнозировать по историческим данным потока (Monte Carlo), чем жестко фиксировать даты без буферов. Метрики — для обучения, а не для наказания.",
+                en: "Velocity, burndown/burnup, cycle time, lead time, throughput, CFD. In Agile it is better to forecast from historical flow data (Monte Carlo) than to lock dates without buffers. Metrics are for learning, not punishment."
+            },
+            traits: {
+                uk: "Velocity, Cycle time, CFD, Monte Carlo, Прогнози, Прозорість",
+                ru: "Velocity, Cycle time, CFD, Monte Carlo, Прогнозы, Прозрачность",
+                en: "Velocity, Cycle time, CFD, Monte Carlo, Forecasts, Transparency"
+            },
+            spec: {
+                uk: "Вимірюйте те, що допомагає покращуватися",
+                ru: "Измеряйте то, что помогает улучшаться",
+                en: "Measure what helps you improve"
+            },
+            links: [
+                { name: "Actionable Agile Metrics", url: "https://actionableagile.com" },
+                { name: "Monte Carlo forecasting", url: "https://www.focusedobjective.com" }
+            ]
+        }
+    ];
+
+    const ui = {
+        uk: {
+            title: "Управління ІТ-проєктами — Довідник",
+            pageTitle: "📋 Управління ІТ-проєктами",
+            home: "Головна сторінка",
+            all: "Усі розділи",
+            traits: "Ключові елементи та поняття",
+            mfgText: "Корисні ресурси:",
+            noResults: "Нічого не знайдено.",
+            footer: "📋 Управління ІТ-проєктами | Довідник 2026",
+            introTitle: "Що таке управління ІТ-проєктами?",
+            intro1: "Управління ІТ-проєктами — це організація людей, процесів і інструментів для доставки цінності в строк, з потрібною якістю та в межах бюджету. Підходи різняться: від класичного Waterfall до гнучких Agile-фреймворків (Scrum, Kanban) і їхніх гібридів.",
+            intro2: "Сучасні команди часто поєднують практики: ітерації, візуалізацію потоку, регулярний зворотний зв’язок і фокус на цінності для користувача. Розуміння сильних і слабких сторін кожного підходу допомагає обирати те, що працює саме у вашому контексті."
+        },
+        ru: {
+            title: "Управление ИТ-проектами — Справочник",
+            pageTitle: "📋 Управление ИТ-проектами",
+            home: "Главная страница",
+            all: "Все разделы",
+            traits: "Ключевые элементы и понятия",
+            mfgText: "Полезные ресурсы:",
+            noResults: "Ничего не найдено.",
+            footer: "📋 Управление ИТ-проектами | Справочник 2026",
+            introTitle: "Что такое управление ИТ-проектами?",
+            intro1: "Управление ИТ-проектами — это организация людей, процессов и инструментов для поставки ценности в срок, с нужным качеством и в рамках бюджета. Подходы различаются: от классического Waterfall до гибких Agile-фреймворков (Scrum, Kanban) и их гибридов.",
+            intro2: "Современные команды часто сочетают практики: итерации, визуализацию потока, регулярную обратную связь и фокус на ценности для пользователя. Понимание сильных и слабых сторон каждого подхода помогает выбирать то, что работает именно в вашем контексте."
+        },
+        en: {
+            title: "IT Project Management — Guide",
+            pageTitle: "📋 IT Project Management",
+            home: "Home page",
+            all: "All sections",
+            traits: "Key concepts and elements",
+            mfgText: "Useful resources:",
+            noResults: "Nothing found.",
+            footer: "📋 IT Project Management | Guide 2026",
+            introTitle: "What is IT Project Management?",
+            intro1: "IT project management is the organization of people, processes and tools to deliver value on time, with the required quality and within budget. Approaches range from classic Waterfall to agile frameworks (Scrum, Kanban) and their hybrids.",
+            intro2: "Modern teams often combine practices: iterations, flow visualization, regular feedback and focus on user value. Understanding the strengths and limits of each approach helps choose what works in your specific context."
+        }
+    };
+
+    let currentLang = safeGet("lang-pm", "uk");
+    let activeCategory = "all";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-pm", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + "</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) { return e.cat === catKey; });
+            if (!list.length) return;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        main.innerHTML = html || ('<div class="no-results">' + ui[currentLang].noResults + "</div>");
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

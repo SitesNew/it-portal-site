@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI/UX та дизайн інтерфейсів — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">🎨 UI/UX та дизайн інтерфейсів</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    const categories = {
+        foundations: {
+            uk: "📘 Основи UI/UX",
+            ru: "📘 Основы UI/UX",
+            en: "📘 UI/UX Foundations"
+        },
+        process: {
+            uk: "🔍 Дослідження та процес",
+            ru: "🔍 Исследование и процесс",
+            en: "🔍 Research & Process"
+        },
+        design: {
+            uk: "✏️ Проєктування інтерфейсів",
+            ru: "✏️ Проектирование интерфейсов",
+            en: "✏️ Interface Design"
+        },
+        systems: {
+            uk: "🧩 Design Systems та доступність",
+            ru: "🧩 Design Systems и доступность",
+            en: "🧩 Design Systems & Accessibility"
+        },
+        tools: {
+            uk: "🛠️ Інструменти та прототипування",
+            ru: "🛠️ Инструменты и прототипирование",
+            en: "🛠️ Tools & Prototyping"
+        }
+    };
+
+    const items = [
+        {
+            cat: "foundations",
+            icon: "🎯",
+            name: {
+                uk: "Що таке UI та UX",
+                ru: "Что такое UI и UX",
+                en: "What are UI and UX"
+            },
+            desc: {
+                uk: "UI (User Interface) — візуальна частина: кнопки, кольори, типографіка, сітки. UX (User Experience) — загальний досвід користувача: зручність, логіка, емоції, досягнення цілей. Разом вони визначають, наскільки продукт приємний і корисний.",
+                ru: "UI (User Interface) — визуальная часть: кнопки, цвета, типографика, сетки. UX (User Experience) — общий опыт пользователя: удобство, логика, эмоции, достижение целей. Вместе они определяют, насколько продукт приятен и полезен.",
+                en: "UI (User Interface) is the visual part: buttons, colors, typography, grids. UX (User Experience) is the overall user experience: usability, logic, emotions, goal achievement. Together they determine how pleasant and useful a product is."
+            },
+            traits: {
+                uk: "Інтерфейс, Досвід, Зручність, Емоції, Корисність, Візуал",
+                ru: "Интерфейс, Опыт, Удобство, Эмоции, Полезность, Визуал",
+                en: "Interface, Experience, Usability, Emotions, Usefulness, Visuals"
+            },
+            spec: {
+                uk: "UI без UX — красиво, але незручно",
+                ru: "UI без UX — красиво, но неудобно",
+                en: "UI without UX looks good but feels bad"
+            },
+            links: [
+                { name: "NN/g — UX Basics", url: "https://www.nngroup.com/articles/definition-user-experience/" },
+                { name: "Interaction Design Foundation", url: "https://www.interaction-design.org" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "📐",
+            name: {
+                uk: "Принципи хорошого дизайну",
+                ru: "Принципы хорошего дизайна",
+                en: "Principles of Good Design"
+            },
+            desc: {
+                uk: "Класичні принципи: ієрархія, контраст, вирівнювання, близькість, повторення, баланс. Також — простота, послідовність, зворотний зв’язок, запобігання помилкам (за Нілсеном і Норманом).",
+                ru: "Классические принципы: иерархия, контраст, выравнивание, близость, повторение, баланс. Также — простота, последовательность, обратная связь, предотвращение ошибок (по Нильсену и Норману).",
+                en: "Classic principles: hierarchy, contrast, alignment, proximity, repetition, balance. Also — simplicity, consistency, feedback, error prevention (Nielsen and Norman)."
+            },
+            traits: {
+                uk: "Ієрархія, Контраст, Вирівнювання, Послідовність, Зворотний зв’язок",
+                ru: "Иерархия, Контраст, Выравнивание, Последовательность, Обратная связь",
+                en: "Hierarchy, Contrast, Alignment, Consistency, Feedback"
+            },
+            spec: {
+                uk: "Принципи важливіші за тренди",
+                ru: "Принципы важнее трендов",
+                en: "Principles matter more than trends"
+            },
+            links: [
+                { name: "Laws of UX", url: "https://lawsofux.com" },
+                { name: "10 Usability Heuristics", url: "https://www.nngroup.com/articles/ten-usability-heuristics/" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "👤",
+            name: {
+                uk: "Користувацько-центрований дизайн",
+                ru: "Пользовательски-центрированный дизайн",
+                en: "User-Centered Design"
+            },
+            desc: {
+                uk: "Підхід, за якого потреби, цілі та обмеження користувачів ставляться в центр процесу. Включає дослідження, ітерації, тестування з реальними людьми та постійне покращення на основі зворотного зв’язку.",
+                ru: "Подход, при котором потребности, цели и ограничения пользователей ставятся в центр процесса. Включает исследования, итерации, тестирование с реальными людьми и постоянное улучшение на основе обратной связи.",
+                en: "An approach that puts users’ needs, goals and constraints at the center of the process. Includes research, iteration, testing with real people and continuous improvement based on feedback."
+            },
+            traits: {
+                uk: "Користувач у центрі, Ітерації, Тестування, Емпатія, Зворотний зв’язок",
+                ru: "Пользователь в центре, Итерации, Тестирование, Эмпатия, Обратная связь",
+                en: "User at the center, Iteration, Testing, Empathy, Feedback"
+            },
+            spec: {
+                uk: "Дизайн для людей, а не для портфоліо",
+                ru: "Дизайн для людей, а не для портфолио",
+                en: "Design for people, not for the portfolio"
+            },
+            links: [
+                { name: "IDEO Design Kit", url: "https://www.designkit.org" },
+                { name: "Don Norman — Design of Everyday Things", url: "https://www.nngroup.com/books/design-everyday-things/" }
+            ]
+        },
+        {
+            cat: "process",
+            icon: "🔎",
+            name: {
+                uk: "Користувацькі дослідження",
+                ru: "Пользовательские исследования",
+                en: "User Research"
+            },
+            desc: {
+                uk: "Інтерв’ю, опитування, спостереження, юзабіліті-тести, аналіз аналітики. Мета — зрозуміти, хто користувачі, які в них задачі, болі та контекст використання продукту.",
+                ru: "Интервью, опросы, наблюдение, юзабилити-тесты, анализ аналитики. Цель — понять, кто пользователи, какие у них задачи, боли и контекст использования продукта.",
+                en: "Interviews, surveys, observation, usability tests, analytics analysis. The goal is to understand who the users are, their tasks, pain points and context of use."
+            },
+            traits: {
+                uk: "Інтерв’ю, Опитування, Юзабіліті-тести, Персони, Jobs-to-be-Done",
+                ru: "Интервью, Опросы, Юзабилити-тесты, Персоны, Jobs-to-be-Done",
+                en: "Interviews, Surveys, Usability tests, Personas, Jobs-to-be-Done"
+            },
+            spec: {
+                uk: "Дослідження зменшує ризик «дизайн навмання»",
+                ru: "Исследования снижают риск «дизайна наугад»",
+                en: "Research reduces the risk of designing in the dark"
+            },
+            links: [
+                { name: "NN/g Research Methods", url: "https://www.nngroup.com/articles/which-ux-research-methods/" },
+                { name: "User Interviews", url: "https://www.userinterviews.com" }
+            ]
+        },
+        {
+            cat: "process",
+            icon: "🗺️",
+            name: {
+                uk: "Інформаційна архітектура та user flows",
+                ru: "Информационная архитектура и user flows",
+                en: "Information Architecture and User Flows"
+            },
+            desc: {
+                uk: "Структура контенту, навігація, категорії, шляхи користувача. User flows показують послідовність кроків для досягнення цілі. Хороша IA зменшує плутанину і кількість кліків.",
+                ru: "Структура контента, навигация, категории, пути пользователя. User flows показывают последовательность шагов для достижения цели. Хорошая IA уменьшает путаницу и количество кликов.",
+                en: "Content structure, navigation, categories, user paths. User flows show the sequence of steps to achieve a goal. Good IA reduces confusion and number of clicks."
+            },
+            traits: {
+                uk: "Навігація, Карти сайту, User flows, Категорії, Пошук",
+                ru: "Навигация, Карты сайта, User flows, Категории, Поиск",
+                en: "Navigation, Sitemaps, User flows, Categories, Search"
+            },
+            spec: {
+                uk: "Структура важливіша за колір кнопок",
+                ru: "Структура важнее цвета кнопок",
+                en: "Structure matters more than button color"
+            },
+            links: [
+                { name: "IA Institute", url: "https://www.iainstitute.org" },
+                { name: "User Flow examples", url: "https://www.nngroup.com/articles/user-flow/" }
+            ]
+        },
+        {
+            cat: "process",
+            icon: "🧪",
+            name: {
+                uk: "Юзабіліті-тестування",
+                ru: "Юзабилити-тестирование",
+                en: "Usability Testing"
+            },
+            desc: {
+                uk: "Спостереження за тим, як реальні користувачі виконують завдання в продукті. Виявляє проблеми, які команда «не бачить». Може бути модерованим, немодерованим, очним або віддаленим.",
+                ru: "Наблюдение за тем, как реальные пользователи выполняют задачи в продукте. Выявляет проблемы, которые команда «не видит». Может быть модерируемым, немодерируемым, очным или удаленным.",
+                en: "Observing real users performing tasks in the product. Reveals problems the team “doesn’t see”. Can be moderated, unmoderated, in-person or remote."
+            },
+            traits: {
+                uk: "Завдання, Спостереження, Think-aloud, Метрики, Ітерації",
+                ru: "Задачи, Наблюдение, Think-aloud, Метрики, Итерации",
+                en: "Tasks, Observation, Think-aloud, Metrics, Iteration"
+            },
+            spec: {
+                uk: "5 користувачів уже показують більшість проблем",
+                ru: "5 пользователей уже показывают большинство проблем",
+                en: "5 users already reveal most problems"
+            },
+            links: [
+                { name: "NN/g Usability Testing", url: "https://www.nngroup.com/articles/usability-testing-101/" },
+                { name: "Maze", url: "https://maze.co" },
+                { name: "UserTesting", url: "https://www.usertesting.com" }
+            ]
+        },
+        {
+            cat: "design",
+            icon: "🖼️",
+            name: {
+                uk: "Візуальний дизайн і типографіка",
+                ru: "Визуальный дизайн и типографика",
+                en: "Visual Design and Typography"
+            },
+            desc: {
+                uk: "Колір, шрифти, інтервали, іконки, зображення. Типографіка впливає на читабельність і тон. Візуальна ієрархія допомагає користувачу швидко знаходити головне.",
+                ru: "Цвет, шрифты, интервалы, иконки, изображения. Типографика влияет на читаемость и тон. Визуальная иерархия помогает пользователю быстро находить главное.",
+                en: "Color, fonts, spacing, icons, images. Typography affects readability and tone. Visual hierarchy helps users quickly find what matters."
+            },
+            traits: {
+                uk: "Колір, Шрифти, Інтервали, Ієрархія, Іконки, Контраст",
+                ru: "Цвет, Шрифты, Интервалы, Иерархия, Иконки, Контраст",
+                en: "Color, Fonts, Spacing, Hierarchy, Icons, Contrast"
+            },
+            spec: {
+                uk: "Типографіка — половина інтерфейсу",
+                ru: "Типографика — половина интерфейса",
+                en: "Typography is half of the interface"
+            },
+            links: [
+                { name: "Type Scale", url: "https://typescale.com" },
+                { name: "Material Design — Typography", url: "https://m3.material.io/styles/typography" },
+                { name: "Refactoring UI", url: "https://www.refactoringui.com" }
+            ]
+        },
+        {
+            cat: "design",
+            icon: "📱",
+            name: {
+                uk: "Адаптивний і мобільний дизайн",
+                ru: "Адаптивный и мобильный дизайн",
+                en: "Responsive and Mobile Design"
+            },
+            desc: {
+                uk: "Інтерфейси мають добре працювати на різних екранах: від телефону до десктопа. Mobile-first, breakpoints, гнучкі сітки, touch-friendly елементи — стандарт сучасного веб- і мобільного дизайну.",
+                ru: "Интерфейсы должны хорошо работать на разных экранах: от телефона до десктопа. Mobile-first, breakpoints, гибкие сетки, touch-friendly элементы — стандарт современного веб- и мобильного дизайна.",
+                en: "Interfaces must work well on different screens: from phone to desktop. Mobile-first, breakpoints, flexible grids, touch-friendly elements — the standard of modern web and mobile design."
+            },
+            traits: {
+                uk: "Mobile-first, Breakpoints, Flex/Grid, Touch targets, Viewport",
+                ru: "Mobile-first, Breakpoints, Flex/Grid, Touch targets, Viewport",
+                en: "Mobile-first, Breakpoints, Flex/Grid, Touch targets, Viewport"
+            },
+            spec: {
+                uk: "Більшість трафіку — з мобільних",
+                ru: "Большинство трафика — с мобильных",
+                en: "Most traffic comes from mobile"
+            },
+            links: [
+                { name: "Responsive Design", url: "https://web.dev/responsive-web-design-basics/" },
+                { name: "Material Design — Layout", url: "https://m3.material.io/foundations/layout" }
+            ]
+        },
+        {
+            cat: "design",
+            icon: "✨",
+            name: {
+                uk: "Мікровзаємодії та анімація",
+                ru: "Микровзаимодействия и анимация",
+                en: "Microinteractions and Animation"
+            },
+            desc: {
+                uk: "Невеликі відгуки системи на дії користувача: анімація кнопок, завантаження, переходи, жести. Правильна анімація пояснює, що відбувається, і робить інтерфейс «живим», але не повинна відволікати.",
+                ru: "Небольшие отзывы системы на действия пользователя: анимация кнопок, загрузка, переходы, жесты. Правильная анимация объясняет, что происходит, и делает интерфейс «живым», но не должна отвлекать.",
+                en: "Small system responses to user actions: button animation, loading, transitions, gestures. Good animation explains what is happening and makes the interface feel alive, but should not distract."
+            },
+            traits: {
+                uk: "Feedback, Переходи, Завантаження, Жести, Motion design",
+                ru: "Feedback, Переходы, Загрузка, Жесты, Motion design",
+                en: "Feedback, Transitions, Loading, Gestures, Motion design"
+            },
+            spec: {
+                uk: "Анімація має пояснювати, а не розважати",
+                ru: "Анимация должна объяснять, а не развлекать",
+                en: "Animation should explain, not entertain"
+            },
+            links: [
+                { name: "Microinteractions", url: "https://www.oreilly.com/library/view/microinteractions-full/9781491951635/" },
+                { name: "Material Motion", url: "https://m3.material.io/styles/motion" }
+            ]
+        },
+        {
+            cat: "systems",
+            icon: "🧩",
+            name: {
+                uk: "Design Systems",
+                ru: "Design Systems",
+                en: "Design Systems"
+            },
+            desc: {
+                uk: "Набір повторно використовуваних компонентів, правил і токенів (кольори, відступи, шрифти), який забезпечує єдність продукту і прискорює роботу команди. Приклади: Material Design, Ant Design, Carbon, власні системи компаній.",
+                ru: "Набор повторно используемых компонентов, правил и токенов (цвета, отступы, шрифты), который обеспечивает единство продукта и ускоряет работу команды. Примеры: Material Design, Ant Design, Carbon, собственные системы компаний.",
+                en: "A set of reusable components, rules and tokens (colors, spacing, fonts) that ensures product consistency and speeds up team work. Examples: Material Design, Ant Design, Carbon, company-specific systems."
+            },
+            traits: {
+                uk: "Компоненти, Токени, Документація, Єдність, Масштабування",
+                ru: "Компоненты, Токены, Документация, Единство, Масштабирование",
+                en: "Components, Tokens, Documentation, Consistency, Scaling"
+            },
+            spec: {
+                uk: "Design System — інвестиція в швидкість і якість",
+                ru: "Design System — инвестиция в скорость и качество",
+                en: "A Design System is an investment in speed and quality"
+            },
+            links: [
+                { name: "Material Design 3", url: "https://m3.material.io" },
+                { name: "Ant Design", url: "https://ant.design" },
+                { name: "Design Systems Repo", url: "https://designsystemsrepo.com" }
+            ]
+        },
+        {
+            cat: "systems",
+            icon: "♿",
+            name: {
+                uk: "Доступність (Accessibility, a11y)",
+                ru: "Доступность (Accessibility, a11y)",
+                en: "Accessibility (a11y)"
+            },
+            desc: {
+                uk: "Дизайн і розробка так, щоб продукт могли використовувати люди з різними можливостями: зір, слух, моторика, когнітивні особливості. WCAG, семантична розмітка, контраст, клавіатурна навігація, screen readers.",
+                ru: "Дизайн и разработка так, чтобы продукт могли использовать люди с разными возможностями: зрение, слух, моторика, когнитивные особенности. WCAG, семантическая разметка, контраст, клавиатурная навигация, screen readers.",
+                en: "Designing and building so people with different abilities can use the product: vision, hearing, motor, cognitive. WCAG, semantic markup, contrast, keyboard navigation, screen readers."
+            },
+            traits: {
+                uk: "WCAG, Контраст, Клавіатура, Screen readers, Семантика, ARIA",
+                ru: "WCAG, Контраст, Клавиатура, Screen readers, Семантика, ARIA",
+                en: "WCAG, Contrast, Keyboard, Screen readers, Semantics, ARIA"
+            },
+            spec: {
+                uk: "Доступність — не опція, а вимога",
+                ru: "Доступность — не опция, а требование",
+                en: "Accessibility is not optional, it is a requirement"
+            },
+            links: [
+                { name: "WCAG", url: "https://www.w3.org/WAI/standards-guidelines/wcag/" },
+                { name: "a11y Project", url: "https://www.a11yproject.com" },
+                { name: "WebAIM", url: "https://webaim.org" }
+            ]
+        },
+        {
+            cat: "systems",
+            icon: "🌙",
+            name: {
+                uk: "Темні теми та режимні інтерфейси",
+                ru: "Темные темы и режимные интерфейсы",
+                en: "Dark Themes and Mode-aware Interfaces"
+            },
+            desc: {
+                uk: "Підтримка світлої/темної теми, високого контрасту, зменшення руху. Користувачі очікують, що інтерфейс поважатиме системні налаштування і не буде «сліпити» вночі.",
+                ru: "Поддержка светлой/темной темы, высокого контраста, уменьшения движения. Пользователи ожидают, что интерфейс будет уважать системные настройки и не будет «слепить» ночью.",
+                en: "Support for light/dark theme, high contrast, reduced motion. Users expect the interface to respect system settings and not “blind” them at night."
+            },
+            traits: {
+                uk: "Dark mode, prefers-color-scheme, Контраст, Reduced motion",
+                ru: "Dark mode, prefers-color-scheme, Контраст, Reduced motion",
+                en: "Dark mode, prefers-color-scheme, Contrast, Reduced motion"
+            },
+            spec: {
+                uk: "Поважайте системні вподобання користувача",
+                ru: "Уважайте системные предпочтения пользователя",
+                en: "Respect the user’s system preferences"
+            },
+            links: [
+                { name: "Material Dark Theme", url: "https://m3.material.io/styles/color/dark-theme" },
+                { name: "CSS prefers-color-scheme", url: "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme" }
+            ]
+        },
+        {
+            cat: "tools",
+            icon: "🖌️",
+            name: {
+                uk: "Figma та сучасні дизайн-інструменти",
+                ru: "Figma и современные дизайн-инструменты",
+                en: "Figma and Modern Design Tools"
+            },
+            desc: {
+                uk: "Figma стала стандартом для UI-дизайну: спільна робота в реальному часі, компоненти, автолейаут, прототипи, Dev Mode. Альтернативи: Sketch, Adobe XD, Penpot (open source).",
+                ru: "Figma стала стандартом для UI-дизайна: совместная работа в реальном времени, компоненты, автолейаут, прототипы, Dev Mode. Альтернативы: Sketch, Adobe XD, Penpot (open source).",
+                en: "Figma has become the standard for UI design: real-time collaboration, components, auto-layout, prototypes, Dev Mode. Alternatives: Sketch, Adobe XD, Penpot (open source)."
+            },
+            traits: {
+                uk: "Figma, Компоненти, Auto Layout, Прототипи, Dev Mode, Плагіни",
+                ru: "Figma, Компоненты, Auto Layout, Прототипы, Dev Mode, Плагины",
+                en: "Figma, Components, Auto Layout, Prototypes, Dev Mode, Plugins"
+            },
+            spec: {
+                uk: "Figma — де-факто стандарт індустрії",
+                ru: "Figma — де-факто стандарт индустрии",
+                en: "Figma is the de-facto industry standard"
+            },
+            links: [
+                { name: "Figma", url: "https://www.figma.com" },
+                { name: "Penpot", url: "https://penpot.app" },
+                { name: "Figma Community", url: "https://www.figma.com/community" }
+            ]
+        },
+        {
+            cat: "tools",
+            icon: "🔗",
+            name: {
+                uk: "Прототипування та передача в розробку",
+                ru: "Прототипирование и передача в разработку",
+                en: "Prototyping and Handoff"
+            },
+            desc: {
+                uk: "Інтерактивні прототипи допомагають перевірити ідеї до написання коду. Handoff (Dev Mode, Zeplin, токени, специфікації) зменшує розрив між дизайном і розробкою.",
+                ru: "Интерактивные прототипы помогают проверить идеи до написания кода. Handoff (Dev Mode, Zeplin, токены, спецификации) уменьшает разрыв между дизайном и разработкой.",
+                en: "Interactive prototypes help validate ideas before writing code. Handoff (Dev Mode, Zeplin, tokens, specs) reduces the gap between design and development."
+            },
+            traits: {
+                uk: "Прототипи, Handoff, Токени, Специфікації, Dev Mode",
+                ru: "Прототипы, Handoff, Токены, Спецификации, Dev Mode",
+                en: "Prototypes, Handoff, Tokens, Specs, Dev Mode"
+            },
+            spec: {
+                uk: "Хороший handoff економить години розробки",
+                ru: "Хороший handoff экономит часы разработки",
+                en: "Good handoff saves hours of development"
+            },
+            links: [
+                { name: "Figma Prototyping", url: "https://help.figma.com/hc/en-us/articles/360040328614" },
+                { name: "Storybook", url: "https://storybook.js.org" }
+            ]
+        },
+        {
+            cat: "tools",
+            icon: "📐",
+            name: {
+                uk: "Дизайн + код: спільна мова",
+                ru: "Дизайн + код: общий язык",
+                en: "Design + Code: Shared Language"
+            },
+            desc: {
+                uk: "Токени дизайну, Storybook, компонентні бібліотеки в коді, дизайн-токени в CSS/JS — допомагають дизайнерам і розробникам говорити однією мовою і уникати «майже як у макеті».",
+                ru: "Токены дизайна, Storybook, компонентные библиотеки в коде, дизайн-токены в CSS/JS — помогают дизайнерам и разработчикам говорить на одном языке и избегать «почти как в макете».",
+                en: "Design tokens, Storybook, component libraries in code, design tokens in CSS/JS — help designers and developers speak the same language and avoid “almost like the mockup”."
+            },
+            traits: {
+                uk: "Design tokens, Storybook, Component libraries, Синхронізація",
+                ru: "Design tokens, Storybook, Component libraries, Синхронизация",
+                en: "Design tokens, Storybook, Component libraries, Synchronization"
+            },
+            spec: {
+                uk: "Єдина система — менше розбіжностей",
+                ru: "Единая система — меньше расхождений",
+                en: "One system — fewer discrepancies"
+            },
+            links: [
+                { name: "Design Tokens Community Group", url: "https://www.w3.org/community/design-tokens/" },
+                { name: "Storybook", url: "https://storybook.js.org" }
+            ]
+        }
+    ];
+
+    const ui = {
+        uk: {
+            title: "UI/UX та дизайн інтерфейсів — Довідник",
+            pageTitle: "🎨 UI/UX та дизайн інтерфейсів",
+            home: "Головна сторінка",
+            all: "Усі розділи",
+            traits: "Ключові елементи та поняття",
+            mfgText: "Корисні ресурси:",
+            noResults: "Нічого не знайдено.",
+            footer: "🎨 UI/UX та дизайн інтерфейсів | Довідник 2026",
+            introTitle: "Що таке UI/UX та дизайн інтерфейсів?",
+            intro1: "UI (User Interface) відповідає за те, як продукт виглядає: кнопки, кольори, шрифти, сітки. UX (User Experience) — за те, як користувач себе почуває і чи легко досягає своїх цілей. Разом вони створюють зручні, зрозумілі та приємні цифрові продукти.",
+            intro2: "Сучасний дизайн інтерфейсів включає дослідження користувачів, інформаційну архітектуру, візуальний дизайн, прототипування, design systems, доступність і тісну співпрацю з розробкою. Розуміння цих рівнів допомагає робити продукти, якими хочеться користуватися."
+        },
+        ru: {
+            title: "UI/UX и дизайн интерфейсов — Справочник",
+            pageTitle: "🎨 UI/UX и дизайн интерфейсов",
+            home: "Главная страница",
+            all: "Все разделы",
+            traits: "Ключевые элементы и понятия",
+            mfgText: "Полезные ресурсы:",
+            noResults: "Ничего не найдено.",
+            footer: "🎨 UI/UX и дизайн интерфейсов | Справочник 2026",
+            introTitle: "Что такое UI/UX и дизайн интерфейсов?",
+            intro1: "UI (User Interface) отвечает за то, как продукт выглядит: кнопки, цвета, шрифты, сетки. UX (User Experience) — за то, как пользователь себя чувствует и легко ли достигает своих целей. Вместе они создают удобные, понятные и приятные цифровые продукты.",
+            intro2: "Современный дизайн интерфейсов включает исследования пользователей, информационную архитектуру, визуальный дизайн, прототипирование, design systems, доступность и тесное сотрудничество с разработкой. Понимание этих уровней помогает делать продукты, которыми хочется пользоваться."
+        },
+        en: {
+            title: "UI/UX and Interface Design — Guide",
+            pageTitle: "🎨 UI/UX & Interface Design",
+            home: "Home page",
+            all: "All sections",
+            traits: "Key concepts and elements",
+            mfgText: "Useful resources:",
+            noResults: "Nothing found.",
+            footer: "🎨 UI/UX and Interface Design | Guide 2026",
+            introTitle: "What are UI/UX and Interface Design?",
+            intro1: "UI (User Interface) is about how the product looks: buttons, colors, fonts, grids. UX (User Experience) is about how the user feels and how easily they achieve their goals. Together they create convenient, clear and pleasant digital products.",
+            intro2: "Modern interface design includes user research, information architecture, visual design, prototyping, design systems, accessibility and close collaboration with development. Understanding these layers helps build products people actually want to use."
+        }
+    };
+
+    let currentLang = safeGet("lang-uiux", "uk");
+    let activeCategory = "all";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-uiux", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + "</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) { return e.cat === catKey; });
+            if (!list.length) return;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        main.innerHTML = html || ('<div class="no-results">' + ui[currentLang].noResults + "</div>");
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

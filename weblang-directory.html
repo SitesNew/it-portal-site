@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Довідник мов веб-програмування (для сайтів)</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #00e5b0;
+            --accent-2: #7c3aed;
+            --accent-3: #ff9f43;
+            --gradient: linear-gradient(135deg, #00e5b0, #7c3aed);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.6rem 1.8rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.35rem; margin-bottom: 0.8rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro h3 {
+            font-size: 1.05rem; margin: 1.25rem 0 0.45rem; color: var(--accent);
+        }
+        .intro p { margin-bottom: 0.7rem; }
+        .intro ul { margin: 0.4rem 0 0.8rem 1.25rem; }
+        .intro li { margin-bottom: 0.35rem; }
+        .intro strong { color: var(--text); }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #000; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #000; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(0,229,176,0.2);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.7rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; flex-shrink: 0;
+        }
+        .card-title {
+            font-weight: 700; font-size: 1.05rem;
+        }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.5; margin-bottom: 0.3rem;
+        }
+        .card-section {
+            margin-top: 0.7rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .card-section strong {
+            color: var(--text);
+            display: block;
+            margin-bottom: 0.15rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(124,58,237,0.1); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin-top: 0.2rem;
+        }
+        .fw-tag {
+            display: inline-block;
+            background: rgba(0,229,176,0.1); color: var(--accent);
+            padding: 0.2rem 0.6rem; border-radius: 0.5rem;
+            font-size: 0.78rem; font-weight: 600; margin: 0.15rem 0.15rem 0 0;
+        }
+        .card-link {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            color: var(--accent); text-decoration: none;
+            font-weight: 600; font-size: 0.85rem;
+            transition: gap 0.2s; margin-top: 0.8rem;
+        }
+        .card-link:hover { gap: 0.7rem; }
+        .card-link::after { content: "→"; }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1rem; }
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-hover); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">🌐 Довідник мов веб-програмування (для сайтів)</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+
+<footer id="footer"></footer>
+
+<script>
+// ===================== ДАНІ =====================
+const categories = {
+    frontend: { uk: "🎨 Frontend (клієнт)", ru: "🎨 Frontend (клиент)", en: "🎨 Frontend (Client)" },
+    backend:  { uk: "⚙️ Backend (сервер)", ru: "⚙️ Backend (сервер)", en: "⚙️ Backend (Server)" },
+    markup:   { uk: "📝 Розмітка та стилі", ru: "📝 Разметка и стили", en: "📝 Markup & Styling" },
+    compile:  { uk: "🔧 Компіляція в JS", ru: "🔧 Компиляция в JS", en: "🔧 Compile-to-JS" }
+};
+
+const langList = [
+    // === FRONTEND ===
+    { id:"js", cat:"frontend", icon:"🟨", name:"JavaScript (ES2024+)",
+      url:"https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+      desc:{ uk:"Універсальна мова програмування для веб. Стандарт де-факто для фронтенду та бекенду (Node.js).",
+             ru:"Универсальный язык программирования для веб. Стандарт де-факто для фронтенда и бэкенда (Node.js).",
+             en:"Universal programming language for the web. De facto standard for frontend and backend (Node.js)." },
+      features:{ uk:"Події, async/await, замикання, прототипне успадкування, DOM API, модулі ES6+, сумісність із TypeScript.",
+                ru:"События, async/await, замыкания, прототипное наследование, DOM API, модули ES6+, совместимость с TypeScript.",
+                en:"Events, async/await, closures, prototype inheritance, DOM API, ES6+ modules, TypeScript compatibility." },
+      paradigm:{ uk:"Мультипарадигмальна (ООП, функціональна, імперативна, подійна)", ru:"Мультипарадигмальный (ООП, функциональный, императивный, событийный)", en:"Multi-paradigm (OOP, functional, imperative, event-driven)" },
+      frameworks:"React, Vue, Angular, Svelte, Next.js, Node.js, Express, NestJS, Deno" },
+
+    { id:"ts", cat:"frontend", icon:"🔷", name:"TypeScript",
+      url:"https://www.typescriptlang.org",
+      desc:{ uk:"Надбудова над JavaScript від Microsoft. Додає статичну типізацію, інтерфейси та generics.",
+             ru:"Надстройка над JavaScript от Microsoft. Добавляет статическую типизацию, интерфейсы и generics.",
+             en:"Microsoft's superset of JavaScript. Adds static typing, interfaces and generics." },
+      features:{ uk:"Статична типізація, IntelliSense, компіляція в чистий JS, строгий режим, декоратори, сучасні стандарти ES.",
+                ru:"Статическая типизация, IntelliSense, компиляция в чистый JS, строгий режим, декораторы, современные стандарты ES.",
+                en:"Static typing, IntelliSense, compiles to plain JS, strict mode, decorators, modern ES standards." },
+      paradigm:{ uk:"Мультипарадигмальна (ООП, функціональна, структурна)", ru:"Мультипарадигмальный (ООП, функциональный, структурный)", en:"Multi-paradigm (OOP, functional, structural)" },
+      frameworks:"React, Angular, Vue, Next.js, NestJS, tRPC, Deno, Bun" },
+
+    { id:"dart", cat:"frontend", icon:"💙", name:"Dart",
+      url:"https://dart.dev",
+      desc:{ uk:"Мова від Google для кросплатформної розробки. Flutter Web дозволяє створювати веб-додатки.",
+             ru:"Язык от Google для кроссплатформенной разработки. Flutter Web позволяет создавать веб-приложения.",
+             en:"Google's language for cross-platform development. Flutter Web allows building web applications." },
+      features:{ uk:"Strong typing, JIT/AOT компіляція, Flutter framework, dart2js, null-safety, isolates, hot reload.",
+                ru:"Strong typing, JIT/AOT компиляция, Flutter framework, dart2js, null-safety, isolates, hot reload.",
+                en:"Strong typing, JIT/AOT compilation, Flutter framework, dart2js, null-safety, isolates, hot reload." },
+      paradigm:{ uk:"Об'єктно-орієнтована, функціональна", ru:"Объектно-ориентированный, функциональный", en:"Object-oriented, functional" },
+      frameworks:"Flutter Web, AngularDart" },
+
+    // === BACKEND ===
+    { id:"python", cat:"backend", icon:"🐍", name:"Python",
+      url:"https://www.python.org",
+      desc:{ uk:"Універсальна мова з чистим синтаксисом. Лідер для бекенду, AI та автоматизації веб-проєктів.",
+             ru:"Универсальный язык с чистым синтаксисом. Лидер для бэкенда, ИИ и автоматизации веб-проектов.",
+             en:"Universal language with clean syntax. Leader for backend, AI and web automation." },
+      features:{ uk:"Django ORM, Flask, FastAPI (швидкість), asyncio, велика екосистема, Jupyter, простий синтаксис.",
+                ru:"Django ORM, Flask, FastAPI (скорость), asyncio, большая экосистема, Jupyter, простой синтаксис.",
+                en:"Django ORM, Flask, FastAPI (speed), asyncio, vast ecosystem, Jupyter, simple syntax." },
+      paradigm:{ uk:"Об'єктно-орієнтована, функціональна, імперативна", ru:"Объектно-ориентированный, функциональный, императивный", en:"Object-oriented, functional, imperative" },
+      frameworks:"Django, Flask, FastAPI, Pyramid, Tornado, aiohttp" },
+
+    { id:"php", cat:"backend", icon:"🐘", name:"PHP",
+      url:"https://www.php.net",
+      desc:{ uk:"Мова, створена спеціально для веб. Понад 75% сайтів у світі працюють на PHP.",
+             ru:"Язык, созданный специально для веб. Более 75% сайтов в мире работают на PHP.",
+             en:"Language created specifically for the web. Over 75% of world's websites run on PHP." },
+      features:{ uk:"Вбудована підтримка HTTP, сесії, cookies, обробка форм, PDO, Composer, JIT (PHP 8+).",
+                ru:"Встроенная поддержка HTTP, сессии, cookies, обработка форм, PDO, Composer, JIT (PHP 8+).",
+                en:"Built-in HTTP support, sessions, cookies, form handling, PDO, Composer, JIT (PHP 8+)." },
+      paradigm:{ uk:"Імперативна, об'єктно-орієнтована, функціональна", ru:"Императивный, объектно-ориентированный, функциональный", en:"Imperative, object-oriented, functional" },
+      frameworks:"Laravel, Symfony, CodeIgniter, Yii, WordPress, Drupal" },
+
+    { id:"ruby", cat:"backend", icon:"💎", name:"Ruby",
+      url:"https://www.ruby-lang.org",
+      desc:{ uk:"Елегантна мова з фокусом на простоту та продуктивність розробника. Популярна для стартапів.",
+             ru:"Элегантный язык с фокусом на простоту и продуктивность разработчика. Популярен для стартапов.",
+             en:"Elegant language focused on simplicity and developer productivity. Popular for startups." },
+      features:{ uk:"Чистий синтаксис, метапрограмування, blocks/procs/lambdas, garbage collection, RubyGems, інтерактивна консоль (irb).",
+                ru:"Чистый синтаксис, метапрограммирование, blocks/procs/lambdas, garbage collection, RubyGems, интерактивная консоль (irb).",
+                en:"Clean syntax, metaprogramming, blocks/procs/lambdas, garbage collection, RubyGems, interactive console (irb)." },
+      paradigm:{ uk:"Об'єктно-орієнтована, функціональна, імперативна", ru:"Объектно-ориентированный, функциональный, императивный", en:"Object-oriented, functional, imperative" },
+      frameworks:"Ruby on Rails, Sinatra, Hanami, Grape" },
+
+    { id:"go", cat:"backend", icon:"🐹", name:"Go (Golang)",
+      url:"https://go.dev",
+      desc:{ uk:"Мова від Google для високопродуктивних систем. Простота, швидкість компіляції та виконання.",
+             ru:"Язык от Google для высокопроизводительных систем. Простота, скорость компиляции и выполнения.",
+             en:"Google's language for high-performance systems. Simplicity, fast compilation and execution." },
+      features:{ uk:"Goroutines, channels, garbage collection, статична типізація, вбудований HTTP-сервер, кросплатформна.",
+                ru:"Goroutines, channels, garbage collection, статическая типизация, встроенный HTTP-сервер, кроссплатформенный.",
+                en:"Goroutines, channels, garbage collection, static typing, built-in HTTP server, cross-platform." },
+      paradigm:{ uk:"Імперативна, структурна, конкурентна", ru:"Императивный, структурный, конкурентный", en:"Imperative, structured, concurrent" },
+      frameworks:"Gin, Echo, Fiber, Beego, Revel, Buffalo, net/http" },
+
+    { id:"java", cat:"backend", icon:"☕", name:"Java",
+      url:"https://www.java.com",
+      desc:{ uk:"Корпоративна мова для великих веб-додатків. Платформонезалежність через JVM.",
+             ru:"Корпоративный язык для больших веб-приложений. Платформонезависимость через JVM.",
+             en:"Enterprise language for large web applications. Platform independence via JVM." },
+      features:{ uk:"JVM, сильна типізація, багатопоточність, Spring, JDBC, Servlets, Jakarta EE, GraalVM.",
+                ru:"JVM, строгая типизация, многопоточность, Spring, JDBC, Servlets, Jakarta EE, GraalVM.",
+                en:"JVM, strong typing, multithreading, Spring, JDBC, Servlets, Jakarta EE, GraalVM." },
+      paradigm:{ uk:"Об'єктно-орієнтована, імперативна, функціональна", ru:"Объектно-ориентированный, императивный, функциональный", en:"Object-oriented, imperative, functional" },
+      frameworks:"Spring Boot, Jakarta EE, Micronaut, Quarkus, Vert.x, Play" },
+
+    { id:"csharp", cat:"backend", icon:"🟪", name:"C#",
+      url:"https://dotnet.microsoft.com",
+      desc:{ uk:"Сучасна мова від Microsoft для веб, десктопу та ігор. Глибока інтеграція з .NET.",
+             ru:"Современный язык от Microsoft для веб, десктопа и игр. Глубокая интеграция с .NET.",
+             en:"Modern Microsoft language for web, desktop and games. Deep integration with .NET." },
+      features:{ uk:"LINQ, async/await, generics, Roslyn, кросплатформна .NET Core, Razor Pages, SignalR, Blazor.",
+                ru:"LINQ, async/await, generics, Roslyn, кроссплатформенный .NET Core, Razor Pages, SignalR, Blazor.",
+                en:"LINQ, async/await, generics, Roslyn, cross-platform .NET Core, Razor Pages, SignalR, Blazor." },
+      paradigm:{ uk:"Об'єктно-орієнтована, функціональна, імперативна, подійна", ru:"Объектно-ориентированный, функциональный, императивный, событийный", en:"Object-oriented, functional, imperative, event-driven" },
+      frameworks:"ASP.NET Core, Blazor, Razor Pages, SignalR, Entity Framework" },
+
+    { id:"rust", cat:"backend", icon:"⚙️", name:"Rust",
+      url:"https://www.rust-lang.org",
+      desc:{ uk:"Системна мова з безпекою пам'яті без GC. Висока продуктивність для веб-серверів та WASM.",
+             ru:"Системный язык с безопасностью памяти без GC. Высокая производительность для веб-серверов и WASM.",
+             en:"Systems language with memory safety without GC. High performance for web servers and WASM." },
+      features:{ uk:"Ownership/borrowing, zero-cost abstractions, Cargo, WASM підтримка, безпека потоків, high performance.",
+                ru:"Ownership/borrowing, zero-cost abstractions, Cargo, WASM поддержка, безопасность потоков, high performance.",
+                en:"Ownership/borrowing, zero-cost abstractions, Cargo, WASM support, thread safety, high performance." },
+      paradigm:{ uk:"Мультипарадигмальна (функціональна, імперативна, структурна)", ru:"Мультипарадигмальный (функциональный, императивный, структурный)", en:"Multi-paradigm (functional, imperative, structural)" },
+      frameworks:"Actix Web, Axum, Rocket, Tide, Warp, Yew (WASM)" },
+
+    { id:"kotlin", cat:"backend", icon:"🟣", name:"Kotlin",
+      url:"https://kotlinlang.org",
+      desc:{ uk:"Сучасна мова для JVM від JetBrains. Сумісна з Java, але зручніша та безпечніша.",
+             ru:"Современный язык для JVM от JetBrains. Совместим с Java, но удобнее и безопаснее.",
+             en:"Modern JVM language by JetBrains. Compatible with Java but more convenient and safer." },
+      features:{ uk:"Null-safety, coroutines, extension functions, data classes, multiplatform (JVM, Native, JS), DSL.",
+                ru:"Null-safety, coroutines, extension functions, data classes, multiplatform (JVM, Native, JS), DSL.",
+                en:"Null-safety, coroutines, extension functions, data classes, multiplatform (JVM, Native, JS), DSL." },
+      paradigm:{ uk:"Об'єктно-орієнтована, функціональна, імперативна", ru:"Объектно-ориентированный, функциональный, императивный", en:"Object-oriented, functional, imperative" },
+      frameworks:"Ktor, Spring Boot, Vert.x, kotlinx.html" },
+
+    { id:"swift", cat:"backend", icon:"🦅", name:"Swift",
+      url:"https://www.swift.org",
+      desc:{ uk:"Мова від Apple, що розширюється на серверний бекенд через Vapor та інші фреймворки.",
+             ru:"Язык от Apple, расширяющийся на серверный бэкенд через Vapor и другие фреймворки.",
+             en:"Apple's language expanding to server backend via Vapor and other frameworks." },
+      features:{ uk:"Безпека типів, ARC, protocol-oriented programming, SwiftNIO (мережевий рівень), кросплатформна (Linux).",
+                ru:"Безопасность типов, ARC, protocol-oriented programming, SwiftNIO (сетевой уровень), кроссплатформенный (Linux).",
+                en:"Type safety, ARC, protocol-oriented programming, SwiftNIO networking, cross-platform (Linux)." },
+      paradigm:{ uk:"Протоколо-орієнтована, об'єктно-орієнтована, функціональна", ru:"Протоколо-ориентированный, объектно-ориентированный, функциональный", en:"Protocol-oriented, object-oriented, functional" },
+      frameworks:"Vapor, Perfect, SwiftNIO" },
+
+    { id:"elixir", cat:"backend", icon:"💧", name:"Elixir",
+      url:"https://elixir-lang.org",
+      desc:{ uk:"Функціональна мова на базі Erlang VM (BEAM). Відома відмовостійкістю та real-time можливостями.",
+             ru:"Функциональный язык на базе Erlang VM (BEAM). Известен отказоустойчивостью и real-time возможностями.",
+             en:"Functional language on Erlang VM (BEAM). Known for fault tolerance and real-time capabilities." },
+      features:{ uk:"Процесси BEAM, OTP, hot code reloading, pattern matching, макроси, Phoenix Channels (WebSocket).",
+                ru:"Процессы BEAM, OTP, hot code reloading, pattern matching, макросы, Phoenix Channels (WebSocket).",
+                en:"BEAM processes, OTP, hot code reloading, pattern matching, macros, Phoenix Channels (WebSocket)." },
+      paradigm:{ uk:"Функціональна, конкурентна, розподілена", ru:"Функциональный, конкурентный, распределённый", en:"Functional, concurrent, distributed" },
+      frameworks:"Phoenix, Absinthe (GraphQL), Ecto, Nerves" },
+
+    { id:"scala", cat:"backend", icon:"🔴", name:"Scala",
+      url:"https://www.scala-lang.org",
+      desc:{ uk:"Мова, що поєднує ООП та функціональне програмування на JVM. Для великих розподілених систем.",
+             ru:"Язык, сочетающий ООП и функциональное программирование на JVM. Для больших распределённых систем.",
+             en:"Language combining OOP and functional programming on JVM. For large distributed systems." },
+      features:{ uk:"Pattern matching, case classes, implicits, Akka актори, Play Framework, Scala.js, Spark інтеграція.",
+                ru:"Pattern matching, case classes, implicits, Akka актеры, Play Framework, Scala.js, Spark интеграция.",
+                en:"Pattern matching, case classes, implicits, Akka actors, Play Framework, Scala.js, Spark integration." },
+      paradigm:{ uk:"Об'єктно-орієнтована, функціональна", ru:"Объектно-ориентированный, функциональный", en:"Object-oriented, functional" },
+      frameworks:"Play Framework, Akka HTTP, http4s, Lagom, Scalatra" },
+
+    { id:"perl", cat:"backend", icon:"🐪", name:"Perl",
+      url:"https://www.perl.org",
+      desc:{ uk:"Класична мова для CGI-скриптів та веб. Досі використовується для legacy систем та адміністрування.",
+             ru:"Классический язык для CGI-скриптов и веб. Всё ещё используется для legacy систем и администрирования.",
+             en:"Classic language for CGI scripts and web. Still used for legacy systems and administration." },
+      features:{ uk:"Потужна обробка тексту (regex), CPAN, CGI/PSGI, DBI, Moose (ООП), одноразова лапка ('тут документи').",
+                ru:"Мощная обработка текста (regex), CPAN, CGI/PSGI, DBI, Moose (ООП), одноразовая кавычка ('here documents').",
+                en:"Powerful text processing (regex), CPAN, CGI/PSGI, DBI, Moose OOP, single quote ('here documents')." },
+      paradigm:{ uk:"Мультипарадигмальна", ru:"Мультипарадигмальный", en:"Multi-paradigm" },
+      frameworks:"Dancer, Mojolicious, Catalyst" },
+
+    { id:"cpp", cat:"backend", icon:"➕", name:"C++",
+      url:"https://isocpp.org",
+      desc:{ uk:"Системна мова для високопродуктивних веб-серверів, ігрових серверів та CGI-додатків.",
+             ru:"Системный язык для высокопроизводительных веб-серверов, игровых серверов и CGI-приложений.",
+             en:"Systems language for high-performance web servers, game servers and CGI applications." },
+      features:{ uk:"Zero-overhead abstractions, повний контроль пам'яті, STL, Boost, WebAssembly (Emscripten), висока продуктивність.",
+                ru:"Zero-overhead abstractions, полный контроль памяти, STL, Boost, WebAssembly (Emscripten), высокая производительность.",
+                en:"Zero-overhead abstractions, full memory control, STL, Boost, WebAssembly (Emscripten), high performance." },
+      paradigm:{ uk:"Мультипарадигмальна (ООП, процедурна, функціональна)", ru:"Мультипарадигмальный (ООП, процедурный, функциональный)", en:"Multi-paradigm (OOP, procedural, functional)" },
+      frameworks:"Crow, Pistache, CPPCMS, Wt, TreeFrog, Boost.Beast" },
+
+    // === РОЗМІТКА ТА СТИЛІ ===
+    { id:"html", cat:"markup", icon:"🌐", name:"HTML5",
+      url:"https://developer.mozilla.org/en-US/docs/Web/HTML",
+      desc:{ uk:"Стандартна мова розмітки веб-сторінок. Скелет будь-якого сайту у Всесвітній павутині.",
+             ru:"Стандартный язык разметки веб-страниц. Скелет любого сайта во Всемирной паутине.",
+             en:"Standard markup language for web pages. The skeleton of any website on the World Wide Web." },
+      features:{ uk:"Семантичні теги, медіа (audio/video), Canvas, Web Storage, Geolocation, WebSockets, Service Workers.",
+                ru:"Семантические теги, медиа (audio/video), Canvas, Web Storage, Geolocation, WebSockets, Service Workers.",
+                en:"Semantic tags, media (audio/video), Canvas, Web Storage, Geolocation, WebSockets, Service Workers." },
+      paradigm:{ uk:"Декларативна (мова розмітки)", ru:"Декларативный (язык разметки)", en:"Declarative (markup language)" },
+      frameworks:"Pug, Haml, Handlebars, EJS, JSX, Vue SFC" },
+
+    { id:"css", cat:"markup", icon:"🎨", name:"CSS3",
+      url:"https://developer.mozilla.org/en-US/docs/Web/CSS",
+      desc:{ uk:"Мова стилів для опису зовнішнього вигляду веб-сторінок. Анімації, адаптивний дизайн та Grid.",
+             ru:"Язык стилей для описания внешнего вида веб-страниц. Анимации, адаптивный дизайн и Grid.",
+             en:"Style sheet language for describing web page appearance. Animations, responsive design and Grid." },
+      features:{ uk:"Flexbox, Grid, анімації, transitions, media queries, CSS Variables, container queries, @layers.",
+                ru:"Flexbox, Grid, анимации, transitions, media queries, CSS Variables, container queries, @layers.",
+                en:"Flexbox, Grid, animations, transitions, media queries, CSS Variables, container queries, @layers." },
+      paradigm:{ uk:"Декларативна (мова стилів)", ru:"Декларативный (язык стилей)", en:"Declarative (stylesheet language)" },
+      frameworks:"Tailwind CSS, Bootstrap, Bulma, Foundation, Materialize" },
+
+    { id:"sass", cat:"markup", icon:"💅", name:"Sass / SCSS",
+      url:"https://sass-lang.com",
+      desc:{ uk:"Препроцесор CSS. Додає змінні, вкладеність, міксіни, успадкування та часткові файли.",
+             ru:"Препроцессор CSS. Добавляет переменные, вложенность, миксины, наследование и частичные файлы.",
+             en:"CSS preprocessor. Adds variables, nesting, mixins, inheritance and partials." },
+      features:{ uk:"Змінні, nesting, mixins, @extend, @import (partials), функції, оператори, компіляція в чистий CSS.",
+                ru:"Переменные, nesting, mixins, @extend, @import (partials), функции, операторы, компиляция в чистый CSS.",
+                en:"Variables, nesting, mixins, @extend, @import (partials), functions, operators, compiles to plain CSS." },
+      paradigm:{ uk:"Декларативна (препроцесор)", ru:"Декларативный (препроцессор)", en:"Declarative (preprocessor)" },
+      frameworks:"Compass, Bourbon, Susy" },
+
+    { id:"less", cat:"markup", icon:"📉", name:"Less",
+      url:"https://lesscss.org",
+      desc:{ uk:"Динамічна мова стилів, натхненна Sass. Проста у вивченні альтернатива для CSS.",
+             ru:"Динамический язык стилей, вдохновлённый Sass. Простая в изучении альтернатива для CSS.",
+             en:"Dynamic stylesheet language inspired by Sass. Easy-to-learn alternative to CSS." },
+      features:{ uk:"Змінні, mixins, nesting, операції, функції, guards (умовні вирази), компіляція в CSS.",
+                ru:"Переменные, mixins, nesting, операции, функции, guards (условные выражения), компиляция в CSS.",
+                en:"Variables, mixins, nesting, operations, functions, guards (conditional expressions), compiles to CSS." },
+      paradigm:{ uk:"Декларативна (препроцесор)", ru:"Декларативный (препроцессор)", en:"Declarative (preprocessor)" },
+      frameworks:"Less.js, Bootstrap (раніше)" },
+
+    { id:"stylus", cat:"markup", icon:"✏️", name:"Stylus",
+      url:"https://stylus-lang.com",
+      desc:{ uk:"Гнучкий препроцесор CSS з мінімалістичним синтаксисом. Без фігурних дужок та крапок з комою.",
+             ru:"Гибкий препроцессор CSS с минималистичным синтаксисом. Без фигурных скобок и точек с запятой.",
+             en:"Flexible CSS preprocessor with minimalistic syntax. No curly braces or semicolons." },
+      features:{ uk:"Опціональні дужки/крапки з комою, змінні, mixins, функції, transparent mixins, sourcemaps.",
+                ru:"Опциональные скобки/точки с запятой, переменные, mixins, функции, transparent mixins, sourcemaps.",
+                en:"Optional braces/semicolons, variables, mixins, functions, transparent mixins, sourcemaps." },
+      paradigm:{ uk:"Декларативна (препроцесор)", ru:"Декларативный (препроцессор)", en:"Declarative (preprocessor)" },
+      frameworks:"Nib" },
+
+    { id:"postcss", cat:"markup", icon:"⚡", name:"PostCSS",
+      url:"https://postcss.org",
+      desc:{ uk:"Інструмент для трансформації CSS плагінами. Автопрефіксер, мініфікація, future CSS.",
+             ru:"Инструмент для трансформации CSS плагинами. Автопрефиксер, минификация, future CSS.",
+             en:"Tool for transforming CSS with plugins. Autoprefixer, minification, future CSS." },
+      features:{ uk:"Модульна архітектура, autoprefixer, cssnano, postcss-preset-env, custom properties, nesting.",
+                ru:"Модульная архитектура, autoprefixer, cssnano, postcss-preset-env, custom properties, nesting.",
+                en:"Modular architecture, autoprefixer, cssnano, postcss-preset-env, future CSS, custom properties, nesting." },
+      paradigm:{ uk:"Інструмент / трансформатор", ru:"Инструмент / трансформатор", en:"Tool / transformer" },
+      frameworks:"Autoprefixer, cssnano, Tailwind CSS, Stylelint" },
+
+    // === КОМПІЛЯЦІЯ В JS ===
+    { id:"elm", cat:"compile", icon:"🌳", name:"Elm",
+      url:"https://elm-lang.org",
+      desc:{ uk:"Функціональна мова для фронтенду. Компілюється в JS з гарантією відсутності runtime-помилок.",
+             ru:"Функциональный язык для фронтенда. Компилируется в JS с гарантией отсутства runtime-ошибок.",
+             en:"Functional language for frontend. Compiles to JS with a guarantee of no runtime errors." },
+      features:{ uk:"Архітектура Elm (Model-Update-View), no runtime exceptions, time-travel debugging, чисті функції, strong typing.",
+                ru:"Архитектура Elm (Model-Update-View), no runtime exceptions, time-travel debugging, чистые функции, strong typing.",
+                en:"Elm Architecture (Model-Update-View), no runtime exceptions, time-travel debugging, pure functions, strong typing." },
+      paradigm:{ uk:"Функціональна, реактивна", ru:"Функциональный, реактивный", en:"Functional, reactive" },
+      frameworks:"Elm Architecture (вбудована), elm-ui, elm-css" },
+
+    { id:"purescript", cat:"compile", icon:"📘", name:"PureScript",
+      url:"https://www.purescript.org",
+      desc:{ uk:"Строго типізована функціональна мова, що компілюється в JS. Натхненна Haskell.",
+             ru:"Строго типизированный функциональный язык, компилируемый в JS. Вдохновлён Haskell.",
+             en:"Strongly typed functional language compiling to JS. Inspired by Haskell." },
+      features:{ uk:"Haskell-подібний синтаксис, row polymorphism, ефекти через monads, FFI до JS, чиста функціональна парадигма.",
+                ru:"Haskell-подобный синтаксис, row polymorphism, эффекты через monads, FFI в JS, чистая функциональная парадигма.",
+                en:"Haskell-like syntax, row polymorphism, effects via monads, FFI to JS, pure functional paradigm." },
+      paradigm:{ uk:"Функціональна, чиста", ru:"Функциональный, чистый", en:"Functional, pure" },
+      frameworks:"Halogen, PureScript React Bindings, Spork" },
+
+    { id:"clojurescript", cat:"compile", icon:"🌿", name:"ClojureScript",
+      url:"https://clojurescript.org",
+      desc:{ uk:"Діалект Lisp, що компілюється в JavaScript. Функціональний, з акцентом на незмінні дані.",
+             ru:"Диалект Lisp, компилируемый в JavaScript. Функциональный, с акцентом на неизменяемые данные.",
+             en:"Lisp dialect compiling to JavaScript. Functional, with emphasis on immutable data." },
+      features:{ uk:"Lisp-синтаксис, незмінні структури даних, macros, React інтеграція (Reagent, Om), Figwheel (hot reload).",
+                ru:"Lisp-синтаксис, неизменяемые структуры данных, macros, React интеграция (Reagent, Om), Figwheel (hot reload).",
+                en:"Lisp syntax, immutable data structures, macros, React integration (Reagent, Om), Figwheel hot reload." },
+      paradigm:{ uk:"Функціональна, Lisp", ru:"Функциональный, Lisp", en:"Functional, Lisp" },
+      frameworks:"Reagent, Om, Fulcro, Shadow CLJS" },
+
+    { id:"fsharp", cat:"compile", icon:"🔷", name:"F# / Fable",
+      url:"https://fable.io",
+      desc:{ uk:"Функціонально-орієнтована мова на .NET, що компілюється в JS через Fable. Для фронтенду та бекенду.",
+             ru:"Функционально-ориентированный язык на .NET, компилируемый в JS через Fable. Для фронтенда и бэкенда.",
+             en:"Functional-first language on .NET compiling to JS via Fable. For frontend and backend." },
+      features:{ uk:"F# + .NET ecosystem, Fable (компіляція в JS), Elmish архітектура, type providers, pattern matching, async workflows.",
+                ru:"F# + .NET ecosystem, Fable (компиляция в JS), Elmish архитектура, type providers, pattern matching, async workflows.",
+                en:"F# + .NET ecosystem, Fable (compile to JS), Elmish architecture, type providers, pattern matching, async workflows." },
+      paradigm:{ uk:"Функціональна, об'єктно-орієнтована", ru:"Функциональный, объектно-ориентированный", en:"Functional, object-oriented" },
+      frameworks:"Fable, Elmish, Feliz (React), Saturn (backend)" },
+
+    { id:"rescript", cat:"compile", icon:"🟠", name:"ReScript",
+      url:"https://rescript-lang.org",
+      desc:{ uk:"Сучасна мова, що компілюється в JS. Раніше ReasonML (OCaml). Швидка, типобезпечна, проста.",
+             ru:"Современный язык, компилируемый в JS. Ранее ReasonML (OCaml). Быстрый, типобезопасный, простой.",
+             en:"Modern language compiling to JS. Formerly ReasonML (OCaml). Fast, type-safe, simple." },
+      features:{ uk:"OCaml-подібна типізація, React-подібний синтаксис (JSX), zero-cost abstractions, чистий JS вивід, швидка компіляція.",
+                ru:"OCaml-подобная типизация, React-подобный синтаксис (JSX), zero-cost abstractions, чистый JS вывод, быстрая компиляция.",
+                en:"OCaml-like typing, React-like syntax (JSX), zero-cost abstractions, clean JS output, fast compilation." },
+      paradigm:{ uk:"Функціональна, об'єктно-орієнтована", ru:"Функциональный, объектно-ориентированный", en:"Functional, object-oriented" },
+      frameworks:"ReScript React, ReScript Native" },
+
+    { id:"coffeescript", cat:"compile", icon:"☕", name:"CoffeeScript",
+      url:"https://coffeescript.org",
+      desc:{ uk:"Мова, що компілюється в JS з 'солодким' синтаксисом. Популярна в 2010-х, зараз поступилася TypeScript.",
+             ru:"Язык, компилируемый в JS с 'сладким' синтаксисом. Популярен в 2010-х, сейчас уступил TypeScript.",
+             en:"Language compiling to JS with 'sugary' syntax. Popular in the 2010s, now largely superseded by TypeScript." },
+      features:{ uk:"Мінімалістичний синтаксис, класи, стрілочні функції (до ES6), comprehensions, destructuring, chain syntax.",
+                ru:"Минималистичный синтаксис, классы, стрелочные функции (до ES6), comprehensions, destructuring, chain syntax.",
+                en:"Minimalist syntax, classes, arrow functions (before ES6), comprehensions, destructuring, chain syntax." },
+      paradigm:{ uk:"Мультипарадигмальна", ru:"Мультипарадигмальный", en:"Multi-paradigm" },
+      frameworks:"Rails (був вбудований), Backbone.js" }
+];
+
+// ===================== ЛОКАЛІЗАЦІЯ =====================
+const whatIsWebLang = {
+    uk: {
+        title: "Що таке мови веб-програмування?",
+        body: `
+<p><strong>Мови веб-програмування</strong> — інструменти, якими створюють сайти й веб-додатки: те, що бачить користувач у браузері, і те, що працює на сервері.</p>
+
+<h3>Чим вони відрізняються від «класичних» мов</h3>
+<ul>
+<li><strong>Середовище виконання</strong> — у центрі браузер (DOM, події, HTTP) або веб-сервер, а не лише локальна консоль чи настільна програма.</li>
+<li><strong>Клієнт і сервер</strong> — часто два світи: фронтенд (HTML/CSS/JS у браузері) і бекенд (PHP, Python, Go, Java, Node… на сервері).</li>
+<li><strong>Мережа за замовчуванням</strong> — запити, відповіді, cookies, CORS, безпека (XSS, CSRF) — частина повсякденної роботи.</li>
+<li><strong>Швидка ітерація</strong> — зміни на сторінці видно одразу; деплой може бути «за хвилини», а не «раз на реліз». </li>
+</ul>
+
+<h3>Як створення сайту залежить від цих мов</h3>
+<p>Без <strong>HTML</strong> немає структури сторінки. Без <strong>CSS</strong> — вигляду. Без <strong>JavaScript</strong> (або мови, що компілюється в JS) — інтерактивності в браузері. Без серверної мови — динамічних даних, акаунтів, кошика, API. Фреймворки (React, Laravel, Django…) прискорюють роботу, але під ними все одно лежать ці мови.</p>
+
+<p>Цей довідник зібрав мови саме <strong>для WEB і створення сайтів</strong>: фронтенд, бекенд, розмітка/стилі та мови, що компілюються в JavaScript.</p>
+`
+    },
+    ru: {
+        title: "Что такое языки веб-программирования?",
+        body: `
+<p><strong>Языки веб-программирования</strong> — инструменты для создания сайтов и веб-приложений: того, что видит пользователь в браузере, и того, что работает на сервере.</p>
+
+<h3>Чем они отличаются от «классических» языков</h3>
+<ul>
+<li><strong>Среда выполнения</strong> — в центре браузер (DOM, события, HTTP) или веб-сервер, а не только локальная консоль или десктоп-программа.</li>
+<li><strong>Клиент и сервер</strong> — часто два мира: фронтенд (HTML/CSS/JS в браузере) и бэкенд (PHP, Python, Go, Java, Node… на сервере).</li>
+<li><strong>Сеть по умолчанию</strong> — запросы, ответы, cookies, CORS, безопасность (XSS, CSRF) — часть повседневной работы.</li>
+<li><strong>Быстрая итерация</strong> — изменения на странице видны сразу; деплой может быть «за минуты», а не «раз в релиз».</li>
+</ul>
+
+<h3>Как создание сайта зависит от этих языков</h3>
+<p>Без <strong>HTML</strong> нет структуры страницы. Без <strong>CSS</strong> — внешнего вида. Без <strong>JavaScript</strong> (или языка, компилируемого в JS) — интерактивности в браузере. Без серверного языка — динамических данных, аккаунтов, корзины, API. Фреймворки (React, Laravel, Django…) ускоряют работу, но под ними всё равно лежат эти языки.</p>
+
+<p>Этот справочник собрал языки именно <strong>для WEB и создания сайтов</strong>: фронтенд, бэкенд, разметка/стили и языки, компилируемые в JavaScript.</p>
+`
+    },
+    en: {
+        title: "What are web programming languages?",
+        body: `
+<p><strong>Web programming languages</strong> are the tools used to build websites and web apps: what the user sees in the browser and what runs on the server.</p>
+
+<h3>How they differ from “classical” languages</h3>
+<ul>
+<li><strong>Runtime</strong> — the browser (DOM, events, HTTP) or a web server is central, not only a local console or desktop app.</li>
+<li><strong>Client and server</strong> — often two worlds: frontend (HTML/CSS/JS in the browser) and backend (PHP, Python, Go, Java, Node… on the server).</li>
+<li><strong>Network by default</strong> — requests, responses, cookies, CORS, security (XSS, CSRF) are part of everyday work.</li>
+<li><strong>Fast iteration</strong> — page changes show up immediately; deploy can be “in minutes”, not “once per release”.</li>
+</ul>
+
+<h3>How building a site depends on these languages</h3>
+<p>Without <strong>HTML</strong> there is no page structure. Without <strong>CSS</strong> — no look. Without <strong>JavaScript</strong> (or a language that compiles to JS) — no interactivity in the browser. Without a server language — no dynamic data, accounts, carts, APIs. Frameworks (React, Laravel, Django…) speed things up, but underneath them these languages still sit.</p>
+
+<p>This catalog focuses on languages <strong>for the WEB and building sites</strong>: frontend, backend, markup/styles, and languages that compile to JavaScript.</p>
+`
+    }
+};
+
+const whatIsSites = {
+    uk: {
+        title: "Що таке створення сайтів, етапи та хостинг",
+        body: `
+<p><strong>Створення сайту</strong> — це шлях від ідеї до сторінок у браузері користувача: дизайн, код, контент, публікація в інтернеті та подальше просування.</p>
+
+<h3>Основні етапи</h3>
+<ul>
+<li><strong>Ціль і структура</strong> — для кого сайт, які сторінки, які дії користувача (купити, записатися, прочитати).</li>
+<li><strong>Дизайн (UX/UI)</strong> — макети, адаптивність під телефон і десктоп, доступність.</li>
+<li><strong>Верстка і фронтенд</strong> — HTML, CSS, JavaScript (або фреймворк): те, що малює сторінку в браузері.</li>
+<li><strong>Бекенд і дані</strong> — серверна логіка, база даних, API, авторизація (якщо сайт динамічний).</li>
+<li><strong>Контент</strong> — тексти, зображення, відео; зручна система оновлення (CMS або свій адмін).</li>
+<li><strong>Тестування</strong> — різні браузери, швидкість, форми, безпека.</li>
+<li><strong>Публікація</strong> — доменне ім’я + <strong>хостинг</strong> (див. нижче).</li>
+<li><strong>Просування (SEO, реклама)</strong> — пошукова оптимізація, аналітика, рекламні кампанії, соцмережі.</li>
+<li><strong>Підтримка</strong> — оновлення, резервні копії, моніторинг, виправлення помилок.</li>
+</ul>
+
+<h3>Що таке хостинг</h3>
+<p><strong>Хостинг</strong> — послуга розміщення файлів і програм сайту на сервері, який постійно підключений до інтернету. Користувач відкриває ваш домен (наприклад <em>example.com</em>), DNS вказує на сервер хостера, і браузер отримує сторінки.</p>
+<ul>
+<li><strong>Shared</strong> — багато сайтів на одному сервері, дешево, для простих проєктів.</li>
+<li><strong>VPS / хмара</strong> — виділені ресурси, більше контролю (Docker, Node, Python…).</li>
+<li><strong>Статичний хостинг</strong> — лише HTML/CSS/JS (GitHub Pages, Netlify, Cloudflare Pages) — ідеально для статичних сайтів і JAMstack.</li>
+<li><strong>Спеціалізований</strong> — платформи на кшталт WordPress.com, або PaaS (Heroku, Railway, Render).</li>
+</ul>
+<p>Без хостингу (або власного сервера) сайт існує лише на вашому комп’ютері. Мови з цього довідника якраз і «оживляють» код на хостингу — від простої HTML-сторінки до складного веб-додатку.</p>
+`
+    },
+    ru: {
+        title: "Что такое создание сайтов, этапы и хостинг",
+        body: `
+<p><strong>Создание сайта</strong> — путь от идеи до страниц в браузере пользователя: дизайн, код, контент, публикация в интернете и дальнейшее продвижение.</p>
+
+<h3>Основные этапы</h3>
+<ul>
+<li><strong>Цель и структура</strong> — для кого сайт, какие страницы, какие действия пользователя.</li>
+<li><strong>Дизайн (UX/UI)</strong> — макеты, адаптивность под телефон и десктоп, доступность.</li>
+<li><strong>Вёрстка и фронтенд</strong> — HTML, CSS, JavaScript (или фреймворк): то, что рисует страницу в браузере.</li>
+<li><strong>Бэкенд и данные</strong> — серверная логика, база данных, API, авторизация (если сайт динамический).</li>
+<li><strong>Контент</strong> — тексты, изображения, видео; удобная система обновления.</li>
+<li><strong>Тестирование</strong> — разные браузеры, скорость, формы, безопасность.</li>
+<li><strong>Публикация</strong> — доменное имя + <strong>хостинг</strong>.</li>
+<li><strong>Продвижение (SEO, реклама)</strong> — поисковая оптимизация, аналитика, реклама, соцсети.</li>
+<li><strong>Поддержка</strong> — обновления, резервные копии, мониторинг, исправление ошибок.</li>
+</ul>
+
+<h3>Что такое хостинг</h3>
+<p><strong>Хостинг</strong> — услуга размещения файлов и программ сайта на сервере, постоянно подключённом к интернету. Пользователь открывает ваш домен, DNS указывает на сервер хостера, браузер получает страницы.</p>
+<ul>
+<li><strong>Shared</strong> — много сайтов на одном сервере, дёшево, для простых проектов.</li>
+<li><strong>VPS / облако</strong> — выделенные ресурсы, больше контроля.</li>
+<li><strong>Статический хостинг</strong> — только HTML/CSS/JS (GitHub Pages, Netlify, Cloudflare Pages).</li>
+<li><strong>Специализированный</strong> — WordPress.com, PaaS (Heroku, Railway, Render).</li>
+</ul>
+<p>Без хостинга (или своего сервера) сайт существует только на вашем компьютере. Языки из этого справочника как раз «оживляют» код на хостинге — от простой HTML-страницы до сложного веб-приложения.</p>
+`
+    },
+    en: {
+        title: "What is building a website, stages and hosting",
+        body: `
+<p><strong>Building a website</strong> is the path from an idea to pages in the user’s browser: design, code, content, publishing on the internet and ongoing promotion.</p>
+
+<h3>Main stages</h3>
+<ul>
+<li><strong>Goals and structure</strong> — who it is for, which pages, which user actions.</li>
+<li><strong>Design (UX/UI)</strong> — layouts, responsive layouts, accessibility.</li>
+<li><strong>Markup and frontend</strong> — HTML, CSS, JavaScript (or a framework): what paints the page in the browser.</li>
+<li><strong>Backend and data</strong> — server logic, database, API, auth (if the site is dynamic).</li>
+<li><strong>Content</strong> — text, images, video; a way to update them easily.</li>
+<li><strong>Testing</strong> — browsers, speed, forms, security.</li>
+<li><strong>Publishing</strong> — domain name + <strong>hosting</strong>.</li>
+<li><strong>Promotion (SEO, ads)</strong> — search optimization, analytics, ads, social media.</li>
+<li><strong>Maintenance</strong> — updates, backups, monitoring, bug fixes.</li>
+</ul>
+
+<h3>What is hosting</h3>
+<p><strong>Hosting</strong> is a service that keeps your site’s files and programs on a server always connected to the internet. The user opens your domain; DNS points to the host; the browser receives the pages.</p>
+<ul>
+<li><strong>Shared</strong> — many sites on one server; cheap; fine for simple projects.</li>
+<li><strong>VPS / cloud</strong> — dedicated resources and more control.</li>
+<li><strong>Static hosting</strong> — HTML/CSS/JS only (GitHub Pages, Netlify, Cloudflare Pages).</li>
+<li><strong>Specialized</strong> — WordPress.com, PaaS (Heroku, Railway, Render).</li>
+</ul>
+<p>Without hosting (or your own server) the site lives only on your computer. The languages in this catalog are what bring the code to life on that host — from a simple HTML page to a full web app.</p>
+`
+    }
+};
+
+const ui = {
+    uk: {
+        title: "Довідник мов веб-програмування (для сайтів)",
+        pageTitle: "🌐 Довідник мов веб-програмування (для сайтів)",
+        home: "Головна сторінка",
+        all: "Усі категорії",
+        whatis: "💡 Мови веб-програмування",
+        sites: "🏗️ Створення сайтів і хостинг",
+        open: "Офіційний сайт →",
+        footer: "🌐 Довідник мов веб-програмування (для сайтів) | 2026 | Код вільний для редагування",
+        features: "Особливості",
+        paradigm: "Парадигма",
+        frameworks: "Популярні фреймворки / застосування"
+    },
+    ru: {
+        title: "Справочник языков веб-программирования (для сайтов)",
+        pageTitle: "🌐 Справочник языков веб-программирования (для сайтов)",
+        home: "Главная страница",
+        all: "Все категории",
+        whatis: "💡 Языки веб-программирования",
+        sites: "🏗️ Создание сайтов и хостинг",
+        open: "Официальный сайт →",
+        footer: "🌐 Справочник языков веб-программирования (для сайтов) | 2026 | Код свободен для редактирования",
+        features: "Особенности",
+        paradigm: "Парадигма",
+        frameworks: "Популярные фреймворки / применение"
+    },
+    en: {
+        title: "Web Programming Languages Catalog (for websites)",
+        pageTitle: "🌐 Web Programming Languages Catalog (for websites)",
+        home: "Home page",
+        all: "All Categories",
+        whatis: "💡 Web programming languages",
+        sites: "🏗️ Building sites & hosting",
+        open: "Official Website →",
+        footer: "🌐 Web Programming Languages Directory (for websites) | 2026 | Code is free to edit",
+        features: "Features",
+        paradigm: "Paradigm",
+        frameworks: "Popular Frameworks / Usage"
+    }
+};
+
+let currentLang = localStorage.getItem('weblang-dir-lang') || 'uk';
+let activeCategory = 'all';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('weblang-dir-lang', lang);
+    document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+    ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+    document.title = ui[lang].title;
+    document.getElementById('home-link').textContent = ui[lang].home;
+    document.getElementById('page-title').textContent = ui[lang].pageTitle;
+    renderFilters();
+    render();
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const cur = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+function renderFilters() {
+    const container = document.getElementById('filters');
+    let html = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+    html += `<button class="filter-btn ${activeCategory==='whatis'?'active':''}" onclick="setCat('whatis')">${ui[currentLang].whatis}</button>`;
+    html += `<button class="filter-btn ${activeCategory==='sites'?'active':''}" onclick="setCat('sites')">${ui[currentLang].sites}</button>`;
+    for (const [key, val] of Object.entries(categories)) {
+        html += `<button class="filter-btn ${activeCategory===key?'active':''}" onclick="setCat('${key}')">${val[currentLang]}</button>`;
+    }
+    container.innerHTML = html;
+}
+
+function setCat(cat) {
+    activeCategory = cat;
+    renderFilters();
+    render();
+}
+
+function render() {
+    const main = document.getElementById('main');
+    let html = '';
+
+    if (activeCategory === 'whatis' || activeCategory === 'sites') {
+        const src = activeCategory === 'sites' ? whatIsSites : whatIsWebLang;
+        const o = src[currentLang];
+        main.innerHTML = `<div class="intro"><h2>${o.title}</h2>${o.body}</div>`;
+        document.getElementById('footer').textContent = ui[currentLang].footer;
+        return;
+    }
+
+    const catsToShow = (activeCategory === 'all') ? Object.keys(categories) : [activeCategory];
+
+    catsToShow.forEach(catKey => {
+        const catItems = langList.filter(l => l.cat === catKey);
+
+        if (catItems.length === 0) return;
+
+        html += `<div class="section-title">${categories[catKey][currentLang]}</div>`;
+        html += `<div class="grid">`;
+        catItems.forEach(l => {
+            const fwTags = l.frameworks.split(',').map(f => `<span class="fw-tag">${f.trim()}</span>`).join('');
+            html += `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">${l.icon}</div>
+                        <div>
+                            <div class="card-title">${l.name}</div>
+                        </div>
+                    </div>
+                    <div class="card-desc">${l.desc[currentLang]}</div>
+                    
+                    <div class="card-section">
+                        <strong>${ui[currentLang].features}</strong>
+                        ${l.features[currentLang]}
+                    </div>
+                    
+                    <div class="card-section">
+                        <strong>${ui[currentLang].paradigm}</strong>
+                        <div class="tag">${l.paradigm[currentLang]}</div>
+                    </div>
+                    
+                    <div class="card-section">
+                        <strong>${ui[currentLang].frameworks}</strong>
+                        <div style="margin-top:0.3rem">${fwTags}</div>
+                    </div>
+                    
+                    <a href="${l.url}" target="_blank" class="card-link">${ui[currentLang].open}</a>
+                </div>
+            `;
+        });
+        html += `</div>`;
+    });
+
+    main.innerHTML = html;
+    document.getElementById('footer').textContent = ui[currentLang].footer;
+}
+
+// Init
+setLang(currentLang);
+</script>
+</body>
+</html>

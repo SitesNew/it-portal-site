@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Основи DevOps & CI/CD — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #00e5b0;
+            --accent-2: #ff9f43;
+            --gradient: linear-gradient(135deg, #00e5b0, #00abff);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #000; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #000; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(0,229,176,0.3);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(0,229,176,0.12); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(255,159,67,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #000;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">♾️ Основи DevOps & CI/CD</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+const categories = {
+    vcs: { uk: "🌿 Версійність та Git", ru: "🌿 Версионность и Git", en: "🌿 VCS & Git" },
+    cicd: { uk: "🔄 CI/CD & Автоматизація", ru: "🔄 CI/CD и Автоматизация", en: "🔄 CI/CD Pipelines" },
+    containers: { uk: "🐳 Контейнеризація", ru: "🐳 Контейнеризация", en: "🐳 Containers & Docker" },
+    orchestration: { uk: "☸️ Оркестрація (Kubernetes)", ru: "☸️ Оркестрация (Kubernetes)", en: "☸️ Orchestration (K8s)" },
+    iac: { uk: "🏗️ Інфраструктура як код (IaC)", ru: "🏗️ Инфраструктура как код (IaC)", en: "🏗️ Infrastructure as Code" }
+};
+
+const items = [
+    { cat: "vcs", icon: "🌿", name: "Git & Система контролю версій",
+      desc: { uk: "Распределена система контролю версій для відстеження змін у коді, паралельної розробки у гілках та злиття рішень.",
+              ru: "Распределенная система контроля версий для отслеживания изменений в коде и параллельной разработки.",
+              en: "Distributed version control system designed to track changes in source code and enable collaborative development." },
+      traits: { uk: "Commits, Branches, Merge/Rebase, Pull Requests", ru: "Commits, Branches, Merge/Rebase, Pull Requests", en: "Commits, Branches, Merge/Rebase, Pull Requests" },
+      spec: "Ключ: Безперервна інтеграція коду",
+      links: [
+        { name: "Git Docs", url: "https://git-scm.com" },
+        { name: "GitHub", url: "https://github.com" },
+        { name: "GitLab", url: "https://gitlab.com" }
+      ]},
+
+    { cat: "cicd", icon: "🚀", name: "CI/CD Пайплайни",
+      desc: { uk: "Автоматизований конвеєр збірки, тестування та розгортання коду від розробника до продакшн-сервера.",
+              ru: "Автоматизированный конвейер сборки, тестирования и развертывания кода от разработчика к серверу.",
+              en: "Automated pipeline for building, testing, and deploying application code from repository to production." },
+      traits: { uk: "Build, Test, Release, Deploy, Rollback", ru: "Build, Test, Release, Deploy, Rollback", en: "Build, Test, Release, Deploy, Rollback" },
+      spec: "Концепція: Continuous Integration / Delivery",
+      links: [
+        { name: "GitHub Actions", url: "https://github.com/features/actions" },
+        { name: "Jenkins", url: "https://www.jenkins.io" },
+        { name: "GitLab CI/CD", url: "https://docs.gitlab.com/ee/ci/" }
+      ]},
+
+    { cat: "containers", icon: "🐳", name: "Docker & Контейнеризація",
+      desc: { uk: "Технологія упаковки додатку та всіх його залежностей у легкий ізольований контейнер для стандартизованого запуску.",
+              ru: "Технология упаковки приложения и его зависимостей в изолированный контейнер для стандартизованного запуска.",
+              en: "Containerization tool that packages applications and dependencies into a lightweight, portable runtime environment." },
+      traits: { uk: "Dockerfile, Images, Containers, Volumes, Networks", ru: "Dockerfile, Images, Containers, Volumes, Networks", en: "Dockerfile, Images, Containers, Volumes, Networks" },
+      spec: "Перевага: Ізоляція та портативність",
+      links: [
+        { name: "Docker", url: "https://www.docker.com" },
+        { name: "Docker Hub", url: "https://hub.docker.com" }
+      ]},
+
+    { cat: "orchestration", icon: "☸️", name: "Kubernetes (K8s)",
+      desc: { uk: "Платформа для автоматичного масштабування, розгортання та управління кластерами контейнеризованих додатків.",
+              ru: "Платформа для автоматического масштабирования, развертывания и управления кластерами контейнеров.",
+              en: "Production-grade container orchestration system for automating deployment, scaling, and management of containerized apps." },
+      traits: { uk: "Pods, Deployments, Services, Ingress, Helm", ru: "Pods, Deployments, Services, Ingress, Helm", en: "Pods, Deployments, Services, Ingress, Helm" },
+      spec: "Особливість: Auto-healing & Self-scaling",
+      links: [
+        { name: "Kubernetes", url: "https://kubernetes.io" },
+        { name: "CNCF", url: "https://www.cncf.io" }
+      ]},
+
+    { cat: "iac", icon: "🛠️", name: "Terraform & Ansible (IaC)",
+      desc: { uk: "Підхід декларативного опису серверів, мереж та налаштувань за допомогою тексту й коду замість ручних дій.",
+              ru: "Подход декларативного описания серверов, сетей и настроек с помощью кода вместо ручных действий.",
+              en: "Managing and provisioning computing infrastructure through machine-readable definition files rather than manual setup." },
+      traits: { uk: "State File, Declarative Syntax, Idempotency, Modules", ru: "State File, Declarative Syntax, Idempotency, Modules", en: "State File, Declarative Syntax, Idempotency, Modules" },
+      spec: "Принцип: Декларативна інфраструктура",
+      links: [
+        { name: "Terraform", url: "https://www.terraform.io" },
+        { name: "Ansible", url: "https://www.ansible.com" }
+      ]}
+];
+
+const ui = {
+    uk: {
+        title: "Основи DevOps & CI/CD — Довідник",
+        pageTitle: "♾️ Основи DevOps & CI/CD",
+        home: "Головна сторінка",
+        all: "Усі напрями",
+        traits: "Ключові компоненти",
+        mfgText: "Популярні інструменти:",
+        noResults: "Нічого не знайдено.",
+        footer: "♾️ Довідник DevOps & CI/CD | 2026"
+    },
+    ru: {
+        title: "Основы DevOps & CI/CD — Справочник",
+        pageTitle: "♾️ Основы DevOps & CI/CD",
+        home: "Главная страница",
+        all: "Все направления",
+        traits: "Ключевые компоненты",
+        mfgText: "Популярные инструменты:",
+        noResults: "Ничего не найдено.",
+        footer: "♾️ Справочник DevOps & CI/CD | 2026"
+    },
+    en: {
+        title: "DevOps & CI/CD Basics Guide",
+        pageTitle: "♾️ DevOps & CI/CD Essentials",
+        home: "Home page",
+        all: "All Topics",
+        traits: "Key Components",
+        mfgText: "Popular Tools:",
+        noResults: "Nothing found.",
+        footer: "♾️ DevOps & CI/CD Essentials | 2026"
+    }
+};
+
+let currentLang = localStorage.getItem('lang-devops') || 'uk';
+let activeCategory = 'all';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang-devops', lang);
+    document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+    ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+    document.title = ui[lang].title;
+    document.getElementById('home-link').textContent = ui[lang].home;
+    document.getElementById('page-title').textContent = ui[lang].pageTitle;
+    renderFilters();
+    render();
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const cur = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+function renderFilters() {
+    const c = document.getElementById('filters');
+    let h = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+    for (const [k,v] of Object.entries(categories)) {
+        h += `<button class="filter-btn ${activeCategory===k?'active':''}" onclick="setCat('${k}')">${v[currentLang]}</button>`;
+    }
+    c.innerHTML = h;
+}
+
+function setCat(cat) {
+    activeCategory = cat;
+    renderFilters();
+    render();
+}
+
+function render() {
+    const main = document.getElementById('main');
+    let html = '';
+    const cats = (activeCategory === 'all') ? Object.keys(categories) : [activeCategory];
+
+    cats.forEach(catKey => {
+        const list = items.filter(e => e.cat === catKey);
+        if (!list.length) return;
+        html += `<div class="section-title">${categories[catKey][currentLang]}</div><div class="grid">`;
+        list.forEach(e => {
+            const tags = e.traits[currentLang].split(',').map(t => `<span class="tag">${t.trim()}</span>`).join('');
+            
+            let linksHtml = '';
+            if (e.links && e.links.length) {
+                linksHtml = `<div class="mfg-links"><strong style="width:100%; font-size:0.7rem; color:var(--text-muted); margin-bottom:2px;">${ui[currentLang].mfgText}</strong>` +
+                    e.links.map(l => `<a href="${l.url}" target="_blank" rel="noopener" class="mfg-link">🔗 ${l.name}</a>`).join('') +
+                    `</div>`;
+            }
+
+            html += `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">${e.icon}</div>
+                        <div class="card-title">${e.name}</div>
+                    </div>
+                    <div class="card-desc">${e.desc[currentLang]}</div>
+                    <div class="card-meta">
+                        <strong>${ui[currentLang].traits}</strong>
+                        <div style="margin-top:0.25rem">${tags}</div>
+                    </div>
+                    <div class="spec-tag">📌 ${e.spec}</div>
+                    ${linksHtml}
+                </div>`;
+        });
+        html += `</div>`;
+    });
+
+    if (!html) html = `<div class="no-results">${ui[currentLang].noResults}</div>`;
+    main.innerHTML = html;
+    document.getElementById('footer').textContent = ui[currentLang].footer;
+}
+
+setLang(currentLang);
+</script>
+</body>
+</html>

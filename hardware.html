@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Класифікація обчислювальних систем — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #ff9f43;
+            --accent-2: #00e5b0;
+            --gradient: linear-gradient(135deg, #ff9f43, #ff5252);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #000; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #000; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(255,159,67,0.3);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(255,159,67,0.12); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(0,229,176,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #000;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">⚙️ Комп'ютерні системи та класи ПК</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+const categories = {
+    mobile: { uk: "📱 Смартфони та Планшети", ru: "📱 Смартфоны и Планшеты", en: "📱 Smartphones & Tablets" },
+    laptops: { uk: "💻 Ноутбуки та Лептопи", ru: "💻 Ноутбуки и Лэптопы", en: "💻 Laptops & Notebooks" },
+    desktop: { uk: "🖥️ Настільні ПК та Робочі станції", ru: "🖥️ Настольные ПК и Рабочие станции", en: "🖥️ Desktop PCs & Workstations" },
+    bigtech: { uk: "🏢 Мейнфрейми та Суперкомп'ютери", ru: "🏢 Мейнфреймы и Суперкомпьютеры", en: "🏢 Mainframes & Supercomputers" }
+};
+
+const items = [
+    { cat: "mobile", icon: "📱", name: "Смартфони та Планшети",
+      desc: { uk: "Компактні мобільні пристрої з високим рівнем інтеграції (SoC). Оптимізовані для автономності, сенсорного вводу та бездротового зв'язку.",
+              ru: "Компактные мобильные устройства с высоким уровнем интеграции (SoC). Оптимизированы для автономности и сенсорного ввода.",
+              en: "Highly integrated mobile devices (SoC) optimized for low power consumption, touch input, and wireless networking." },
+      traits: { uk: "SoC (ARM/Apple Silicon), OLED, Акумулятор, 5G/Wi-Fi 6E", ru: "SoC (ARM/Apple Silicon), OLED, Аккумулятор, 5G/Wi-Fi 6E", en: "SoC (ARM/Apple Silicon), OLED, Battery, 5G/Wi-Fi 6E" },
+      spec: "ОС: Android, iOS, iPadOS",
+      links: [
+        { name: "Apple", url: "https://www.apple.com" },
+        { name: "Samsung", url: "https://www.samsung.com" },
+        { name: "Xiaomi", url: "https://www.mi.com" }
+      ]},
+
+    { cat: "laptops", icon: "💻", name: "Ноутбуки та Ультрабуки",
+      desc: { uk: "Портативні комп'ютери, що об'єднують дисплей, клавіатуру, батарею та системні компоненти в єдиному корпусі.",
+              ru: "Портативные компьютеры, объединяющие дисплей, клавиатуру, батарею и компоненты в едином корпусе.",
+              en: "Portable computers integrating a display, keyboard, battery, and core computing elements in one chassis." },
+      traits: { uk: "Форм-фактор 13-17\", Енергоефективність, NVMe, Thunderbolt", ru: "Форм-фактор 13-17\", Энергоэффективность, NVMe, Thunderbolt", en: "Form-factor 13-17\", Power Efficiency, NVMe, Thunderbolt" },
+      spec: "Архітектура: x86 / ARM",
+      links: [
+        { name: "Lenovo", url: "https://www.lenovo.com" },
+        { name: "ASUS", url: "https://www.asus.com" },
+        { name: "HP", url: "https://www.hp.com" },
+        { name: "Dell", url: "https://www.dell.com" }
+      ]},
+
+    { cat: "desktop", icon: "🖥️", name: "Настільні ПК (Desktop) & Станції",
+      desc: { uk: "Модульні системи з максимальною продуктивністю, високим тепловиділенням та можливістю гнучкого апгрейду.",
+              ru: "Модульные системы с максимальной производительностью, высоким тепловыделением и возможностью апгрейда.",
+              en: "Modular computing systems optimized for high performance, thermal dissipation, and hardware upgradability." },
+      traits: { uk: "Дискретна відеокарта, Високий TDP, Модульність, PCIe 5.0", ru: "Дискретная видеокарта, Высокий TDP, Модульность, PCIe 5.0", en: "Discrete GPU, High TDP, Modular Design, PCIe 5.0" },
+      spec: "ОС: Windows, Linux, macOS",
+      links: [
+        { name: "Intel", url: "https://www.intel.com" },
+        { name: "AMD", url: "https://www.amd.com" },
+        { name: "NVIDIA", url: "https://www.nvidia.com" }
+      ]},
+
+    { cat: "bigtech", icon: "🏬", name: "Мейнфрейми (Mainframes)",
+      desc: { uk: "Великі відмовостійкі сервери, розраховані на безперервне опрацювання мільйонів транзакцій за секунду.",
+              ru: "Отказаустойчивые крупные серверы, рассчитанные на непрерывную обработку миллионов транзакций в секунду.",
+              en: "High-reliability, fault-tolerant enterprise systems designed for massive parallel transaction processing." },
+      traits: { uk: "99.9999% Надійність, Гаряча заміна, RAS-архітектура", ru: "99.9999% Надёжность, Горячая замена, RAS-архитектура", en: "99.9999% Availability, Hot Swapping, RAS Architecture" },
+      spec: "Сфера: Банки, Авіалінії, Держструктури",
+      links: [
+        { name: "IBM Mainframes", url: "https://www.ibm.com/products/z-systems" }
+      ]},
+
+    { cat: "bigtech", icon: "🌐", name: "Суперкомп'ютери та Кластери",
+      desc: { uk: "Кластери з тисяч обчислювальних вузлів, що працюють паралельно для розв'язання масштабних наукових задач.",
+              ru: "Кластеры из тысяч вычислительных узлов, работающие параллельно для научных задач и моделирования.",
+              en: "Massively parallel computing systems consisting of thousands of nodes designed for complex scientific simulation." },
+      traits: { uk: "FLOPS (Петафлопси), Tensor-ядра, InfiniBand мережі", ru: "FLOPS (Петафлопсы), Tensor-ядра, Сети InfiniBand", en: "FLOPS (Petaflops/Exaflops), Tensor Cores, InfiniBand Interconnects" },
+      spec: "Сфера: ШІ, Моделювання клімату, Фізика",
+      links: [
+        { name: "HPE Cray", url: "https://www.hpe.com" },
+        { name: "Fujitsu", url: "https://www.fujitsu.com" },
+        { name: "NVIDIA Supercomputing", url: "https://www.nvidia.com/en-us/high-performance-computing/" }
+      ]}
+];
+
+const ui = {
+    uk: {
+        title: "Класифікація обчислювальних систем",
+        pageTitle: "⚙️ Класифікація комп'ютерних систем",
+        home: "Головна сторінка",
+        all: "Усі класи систем",
+        traits: "Ключові риси",
+        mfgText: "Основні виробники:",
+        noResults: "Нічого не знайдено.",
+        footer: "⚙️ Класифікація обчислювальних систем | 2026"
+    },
+    ru: {
+        title: "Классификация вычислительных систем",
+        pageTitle: "⚙️ Классификация компьютерных систем",
+        home: "Главная страница",
+        all: "Все классы систем",
+        traits: "Ключевые черты",
+        mfgText: "Основные производители:",
+        noResults: "Ничего не найдено.",
+        footer: "⚙️ Классификация вычислительных систем | 2026"
+    },
+    en: {
+        title: "Computer Systems Classification",
+        pageTitle: "⚙️ Computer Systems & Classes",
+        home: "Home page",
+        all: "All Classes",
+        traits: "Key Characteristics",
+        mfgText: "Major Manufacturers:",
+        noResults: "Nothing found.",
+        footer: "⚙️ Computer Systems Classification | 2026"
+    }
+};
+
+let currentLang = localStorage.getItem('lang-hw') || 'uk';
+let activeCategory = 'all';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang-hw', lang);
+    document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+    ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+    document.title = ui[lang].title;
+    document.getElementById('home-link').textContent = ui[lang].home;
+    document.getElementById('page-title').textContent = ui[lang].pageTitle;
+    renderFilters();
+    render();
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const cur = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+function renderFilters() {
+    const c = document.getElementById('filters');
+    let h = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+    for (const [k,v] of Object.entries(categories)) {
+        h += `<button class="filter-btn ${activeCategory===k?'active':''}" onclick="setCat('${k}')">${v[currentLang]}</button>`;
+    }
+    c.innerHTML = h;
+}
+
+function setCat(cat) {
+    activeCategory = cat;
+    renderFilters();
+    render();
+}
+
+function render() {
+    const main = document.getElementById('main');
+    let html = '';
+    const cats = (activeCategory === 'all') ? Object.keys(categories) : [activeCategory];
+
+    cats.forEach(catKey => {
+        const list = items.filter(e => e.cat === catKey);
+        if (!list.length) return;
+        html += `<div class="section-title">${categories[catKey][currentLang]}</div><div class="grid">`;
+        list.forEach(e => {
+            const tags = e.traits[currentLang].split(',').map(t => `<span class="tag">${t.trim()}</span>`).join('');
+            
+            let linksHtml = '';
+            if (e.links && e.links.length) {
+                linksHtml = `<div class="mfg-links"><strong style="width:100%; font-size:0.7rem; color:var(--text-muted); margin-bottom:2px;">${ui[currentLang].mfgText}</strong>` +
+                    e.links.map(l => `<a href="${l.url}" target="_blank" rel="noopener" class="mfg-link">🔗 ${l.name}</a>`).join('') +
+                    `</div>`;
+            }
+
+            html += `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">${e.icon}</div>
+                        <div class="card-title">${e.name}</div>
+                    </div>
+                    <div class="card-desc">${e.desc[currentLang]}</div>
+                    <div class="card-meta">
+                        <strong>${ui[currentLang].traits}</strong>
+                        <div style="margin-top:0.25rem">${tags}</div>
+                    </div>
+                    <div class="spec-tag">📌 ${e.spec}</div>
+                    ${linksHtml}
+                </div>`;
+        });
+        html += `</div>`;
+    });
+
+    if (!html) html = `<div class="no-results">${ui[currentLang].noResults}</div>`;
+    main.innerHTML = html;
+    document.getElementById('footer').textContent = ui[currentLang].footer;
+}
+
+setLang(currentLang);
+</script>
+</body>
+</html>

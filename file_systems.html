@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-uk="Файлові системи" data-ru="Файловые системы" data-en="File Systems">Файлові системи</title>
+<style>
+:root {
+  --bg-gradient-start: #0f0c29; --bg-gradient-mid: #302b63; --bg-gradient-end: #24243e;
+  --text-primary: #e0e0e0; --text-secondary: #888; --text-muted: #666;
+  --accent-cyan: #00d4ff; --accent-red: #ff6b6b; --accent-yellow: #ffd93d;
+  --accent-green: #6bcb77; --accent-blue: #4d96ff; --accent-purple: #9b59b6;
+  --accent-orange: #e67e22; --accent-gray: #95a5a6;
+  --card-bg: rgba(255,255,255,0.05); --card-border: rgba(255,255,255,0.08);
+  --header-bg: rgba(0,0,0,0.4); --nav-bg: rgba(0,0,0,0.25);
+  --tip-bg: rgba(0,212,255,0.1); --tip-border: #00d4ff;
+  --code-bg: rgba(0,0,0,0.3); --shadow: rgba(0,212,255,0.1);
+}
+[data-theme="light"] {
+  --bg-gradient-start: #f0f2f5; --bg-gradient-mid: #e4e7ec; --bg-gradient-end: #d9dce5;
+  --text-primary: #1a1a2e; --text-secondary: #555; --text-muted: #888;
+  --accent-cyan: #0066cc; --accent-red: #cc3333; --accent-yellow: #cc9900;
+  --accent-green: #228b22; --accent-blue: #1a5276; --accent-purple: #7d3c98;
+  --accent-orange: #d35400; --accent-gray: #5d6d7e;
+  --card-bg: rgba(255,255,255,0.7); --card-border: rgba(0,0,0,0.1);
+  --header-bg: rgba(255,255,255,0.8); --nav-bg: rgba(255,255,255,0.6);
+  --tip-bg: rgba(0,102,204,0.1); --tip-border: #0066cc;
+  --code-bg: rgba(0,0,0,0.05); --shadow: rgba(0,0,0,0.1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  background: linear-gradient(135deg,var(--bg-gradient-start),var(--bg-gradient-mid),var(--bg-gradient-end));
+  color:var(--text-primary); min-height:100vh; line-height:1.7; transition:background 0.5s,color 0.5s;
+}
+.header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:15px 30px; background:var(--header-bg); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--card-border); position:sticky; top:0; z-index:1000; transition:background 0.5s;
+}
+.home-link { color:var(--accent-cyan); text-decoration:none; font-size:1.1rem; font-weight:600; transition:color 0.3s; display:flex; align-items:center; gap:8px; }
+.home-link:hover { color:var(--accent-red); }
+.home-link::before { content:"\2190"; font-size:1.2rem; }
+.header-controls { display:flex; align-items:center; gap:15px; }
+.theme-toggle { background:var(--card-bg); border:1px solid var(--card-border); border-radius:30px; padding:5px 15px; cursor:pointer; font-size:1.2rem; transition:all 0.3s; color:var(--text-primary); }
+.theme-toggle:hover { transform:scale(1.1); border-color:var(--accent-cyan); }
+.lang-switcher { display:flex; gap:8px; }
+.lang-btn { background:var(--card-bg); border:1px solid var(--card-border); color:var(--text-primary); padding:6px 14px; border-radius:20px; cursor:pointer; font-size:0.85rem; transition:all 0.3s; text-decoration:none; font-weight:500; }
+.lang-btn:hover,.lang-btn.active { background:var(--accent-cyan); color:#fff; border-color:var(--accent-cyan); }
+.nav-menu {
+  display:flex; justify-content:center; gap:4px; padding:12px 20px; background:var(--nav-bg);
+  border-bottom:1px solid var(--card-border); flex-wrap:wrap; transition:background 0.5s;
+  position:sticky; top:58px; z-index:999; backdrop-filter:blur(8px);
+}
+.nav-menu a { color:var(--text-secondary); text-decoration:none; padding:7px 14px; border-radius:8px; transition:all 0.3s; font-size:0.85rem; white-space:nowrap; }
+.nav-menu a:hover { color:var(--accent-cyan); background:rgba(0,212,255,0.1); }
+.nav-menu a.active { color:var(--accent-cyan); background:rgba(0,212,255,0.15); font-weight:600; }
+.main-content { max-width:1100px; margin:0 auto; padding:40px 30px 60px; }
+.page-title { text-align:center; font-size:2.4rem; margin-bottom:10px; background:linear-gradient(90deg,var(--accent-cyan),var(--accent-red),var(--accent-yellow)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.page-subtitle { text-align:center; color:var(--text-secondary); font-size:1.1rem; margin-bottom:50px; }
+.section { background:var(--card-bg); border:1px solid var(--card-border); border-radius:16px; padding:30px; margin-bottom:30px; transition:transform 0.3s,box-shadow 0.3s,background 0.5s,border-color 0.5s; scroll-margin-top:120px; }
+.section:hover { transform:translateY(-3px); box-shadow:0 10px 40px var(--shadow); }
+.section h2 { color:var(--accent-cyan); font-size:1.5rem; margin-bottom:20px; display:flex; align-items:center; gap:12px; }
+.section h2 .icon { font-size:1.8rem; }
+.section h3 { color:var(--accent-yellow); font-size:1.15rem; margin:25px 0 12px; }
+.section h4 { color:var(--accent-orange); font-size:1.05rem; margin:20px 0 10px; }
+.section p { margin-bottom:12px; text-align:justify; }
+.section ul,.section ol { margin-left:25px; margin-bottom:15px; }
+.section li { margin-bottom:8px; }
+.section li::marker { color:var(--accent-cyan); }
+.protocol-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px; margin-top:20px; }
+.protocol-card { background:var(--code-bg); border:1px solid var(--card-border); border-radius:12px; padding:20px; transition:all 0.3s; }
+.protocol-card:hover { border-color:var(--accent-cyan); }
+.protocol-card h4 { color:var(--accent-red); font-size:1.1rem; margin-bottom:10px; }
+.protocol-card p { font-size:0.9rem; color:var(--text-secondary); text-align:left; margin-bottom:0; }
+.tip { background:var(--tip-bg); border-left:4px solid var(--tip-border); padding:15px 20px; border-radius:0 8px 8px 0; margin:20px 0; font-size:0.95rem; transition:background 0.5s; }
+.tip strong { color:var(--accent-cyan); }
+.comparison-table { width:100%; border-collapse:collapse; margin:15px 0; font-size:0.95rem; }
+.comparison-table th,.comparison-table td { padding:12px 15px; text-align:left; border-bottom:1px solid var(--card-border); }
+.comparison-table th { background:var(--code-bg); color:var(--accent-cyan); font-weight:600; }
+.comparison-table tr:hover { background:rgba(0,212,255,0.03); }
+.footer { text-align:center; padding:30px; background:var(--header-bg); border-top:1px solid var(--card-border); color:var(--text-muted); font-size:0.9rem; transition:background 0.5s; }
+.footer a { color:var(--accent-cyan); text-decoration:none; }
+code { background:var(--code-bg); padding:2px 6px; border-radius:4px; font-family:'Consolas',monospace; font-size:0.9em; }
+.timeline { display:flex; flex-direction:column; gap:16px; margin:20px 0; position:relative; padding-left:30px; }
+.timeline::before { content:''; position:absolute; left:10px; top:8px; bottom:8px; width:3px; background:linear-gradient(180deg,var(--accent-cyan),var(--accent-purple)); border-radius:3px; }
+.timeline-item { position:relative; }
+.timeline-item::before { content:''; position:absolute; left:-26px; top:6px; width:14px; height:14px; background:var(--accent-cyan); border-radius:50%; border:3px solid var(--bg-gradient-mid); }
+.timeline-item h4 { color:var(--accent-cyan); font-size:1rem; margin-bottom:6px; }
+.timeline-item p { font-size:0.92rem; color:var(--text-secondary); margin-bottom:0; }
+@media(max-width:768px){
+  .header { flex-direction:column; gap:12px; padding:12px 15px; }
+  .header-controls { gap:10px; }
+  .page-title { font-size:1.7rem; }
+  .section { padding:20px; scroll-margin-top:150px; }
+  .nav-menu { gap:3px; padding:8px 10px; top:90px; }
+  .nav-menu a { padding:5px 10px; font-size:0.78rem; }
+  .comparison-table { font-size:0.85rem; }
+  .comparison-table th,.comparison-table td { padding:8px 10px; }
+  .timeline { padding-left:24px; }
+  .timeline-item::before { left:-22px; width:12px; height:12px; }
+}
+.page-hero { text-align:center; padding:30px 20px 5px; }
+.page-hero .hero-icon { font-size:3.5rem; margin-bottom:8px; animation:float 3s ease-in-out infinite; }
+.page-hero .hero-tagline { font-size:1.15rem; color:var(--text-secondary); font-style:italic; max-width:700px; margin:0 auto; line-height:1.5; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+@media(max-width:768px){ .page-hero .hero-icon{font-size:2.8rem} .page-hero .hero-tagline{font-size:1rem} }
+.page-name { font-size:1.1rem; font-weight:600; color:var(--accent-cyan); margin-left:15px; padding-left:15px; border-left:2px solid var(--card-border); transition:color 0.3s; }
+@media(max-width:768px){ .page-name{font-size:0.95rem;margin-left:10px;padding-left:10px} }
+</style>
+<base target="_blank">
+<base target="_blank">
+</head>
+<body>
+
+<header class="header">
+<a href="index.html" class="home-link" target="_self"><span data-uk="Головна сторінка" data-ru="Главная страница" data-en="Home page">Головна сторінка</span></a>
+<span class="page-name" data-uk="Файлові системи" data-ru="Файловые системы" data-en="File Systems">Файлові системи</span>
+<div class="header-controls">
+<button class="theme-toggle" onclick="toggleTheme()" title="Switch theme">&#127769;</button>
+<div class="lang-switcher">
+<button class="lang-btn active" onclick="setLang('uk')">UK</button>
+<button class="lang-btn" onclick="setLang('ru')">RU</button>
+<button class="lang-btn" onclick="setLang('en')">EN</button>
+</div>
+</div>
+</header>
+
+<nav class="nav-menu">
+<a href="#intro" target="_self" data-uk="Вступ" data-ru="Введение" data-en="Intro">Вступ</a>
+<a href="#evolution" target="_self" data-uk="Еволюція" data-ru="Эволюция" data-en="Evolution">Еволюція</a>
+<a href="#fat" target="_self" data-uk="FAT" data-ru="FAT" data-en="FAT">FAT</a>
+<a href="#ntfs" target="_self" data-uk="NTFS" data-ru="NTFS" data-en="NTFS">NTFS</a>
+<a href="#ext" target="_self" data-uk="ext" data-ru="ext" data-en="ext">ext</a>
+<a href="#apfs" target="_self" data-uk="APFS" data-ru="APFS" data-en="APFS">APFS</a>
+<a href="#zfs" target="_self" data-uk="ZFS" data-ru="ZFS" data-en="ZFS">ZFS</a>
+<a href="#compare" target="_self" data-uk="Порівняння" data-ru="Сравнение" data-en="Compare">Порівняння</a>
+<a href="#journal" target="_self" data-uk="Журналювання" data-ru="Журналирование" data-en="Journaling">Журналювання</a>
+<a href="#cloud" target="_self" data-uk="Хмари" data-ru="Облака" data-en="Cloud">Хмари</a>
+<a href="#summary" target="_self" data-uk="Підсумок" data-ru="Итог" data-en="Summary">Підсумок</a>
+</nav>
+
+<main class="main-content">
+<h1 class="page-title" data-uk="Файлові системи" data-ru="Файловые системы" data-en="File Systems">Файлові системи</h1>
+<p class="page-subtitle" data-uk="FAT, NTFS, ext, APFS, ZFS — еволюція способів зберігання даних від дискет до хмарних сховищ" data-ru="FAT, NTFS, ext, APFS, ZFS — эволюция способов хранения данных от дискет до облачных хранилищ" data-en="FAT, NTFS, ext, APFS, ZFS — the evolution of data storage from floppy disks to cloud storage">FAT, NTFS, ext, APFS, ZFS — еволюція способів зберігання даних від дискет до хмарних сховищ</p>
+
+<section class="section" id="intro">
+<h2><span class="icon">&#128193;</span> <span data-uk="Що таке файлова система?" data-ru="Что такое файловая система?" data-en="What is a file system?">Що таке файлова система?</span></h2>
+<p data-uk="Файлова система — це спосіб організації, зберігання, найменування, доступу та управління файлами на носіях даних (HDD, SSD, флеш-накопичувачі, оптичні диски). Вона визначає структуру метаданих, алгоритми розміщення файлів, механізми захисту та відновлення після збоїв." data-ru="Файловая система — это способ организации, хранения, именования, доступа и управления файлами на носителях данных (HDD, SSD, флеш-накопичувачи, оптические диски). Она определяет структуру метаданных, алгоритмы размещения файлов, механизмы защиты и восстановления после сбоев." data-en="A file system is a method of organizing, storing, naming, accessing and managing files on data storage media (HDD, SSD, flash drives, optical discs). It defines the metadata structure, file placement algorithms, protection mechanisms and recovery after failures.">Файлова система — це спосіб організації, зберігання, найменування, доступу та управління файлами на носіях даних (HDD, SSD, флеш-накопичувачі, оптичні диски). Вона визначає структуру метаданих, алгоритми розміщення файлів, механізми захисту та відновлення після збоїв.</p>
+<p data-uk="Без файлової системи операційна система не могла б відрізнити файл від «сирих» байтів на диску. ФС надає абстракцію: файли, каталоги, права доступу, атрибути — усе це реалізовано саме на рівні файлової системи." data-ru="Без файловой системы операционная система не могла бы отличить файл от «сырых» байтов на диске. ФС предоставляет абстракцию: файлы, каталоги, права доступа, атрибуты — всё это реализовано именно на уровне файловой системы." data-en="Without a file system, the operating system could not distinguish a file from raw bytes on the disk. The FS provides abstraction: files, directories, access rights, attributes — all of this is implemented at the file system level.">Без файлової системи операційна система не могла б відрізнити файл від «сирих» байтів на диску. ФС надає абстракцію: файли, каталоги, права доступу, атрибути — усе це реалізовано саме на рівні файлової системи.</p>
+<p data-uk="Основні завдання будь-якої ФС: просторове управління (розподіл блоків), іменування та ієрархія (каталоги), контроль доступу (права користувачів), журналювання операцій, перевірка цілісності та оптимізація швидкодії." data-ru="Основные задачи любой ФС: пространственное управление (распределение блоков), именование и иерархия (каталоги), контроль доступа (права пользователей), журналирование операций, проверка целостности и оптимизация производительности." data-en="The main tasks of any FS are: space management (block allocation), naming and hierarchy (directories), access control (user rights), operation journaling, integrity checking and performance optimization.">Основні завдання будь-якої ФС: просторове управління (розподіл блоків), іменування та ієрархія (каталоги), контроль доступу (права користувачів), журналювання операцій, перевірка цілісності та оптимізація швидкодії.</p>
+</section>
+
+<section class="section" id="evolution">
+<h2><span class="icon">&#128200;</span> <span data-uk="Еволюція файлових систем" data-ru="Эволюция файловых систем" data-en="Evolution of File Systems">Еволюція файлових систем</span></h2>
+<p data-uk="Історія файлових систем тісно пов'язана з еволюцією носіїв даних: від 5-дюймових дискет ємністю 160 КБ до сучасних SSD у кілька терабайт та розподілених хмарних сховищ." data-ru="История файловых систем тесно связана с эволюцией носителей данных: от 5-дюймовых дискет ёмкостью 160 КБ до современных SSD в несколько терабайт и распределённых облачных хранилищ." data-en="The history of file systems is closely linked to the evolution of storage media: from 5-inch floppy disks with a capacity of 160 KB to modern SSDs of several terabytes and distributed cloud storage.">Історія файлових систем тісно пов'язана з еволюцією носіїв даних: від 5-дюймових дискет ємністю 160 КБ до сучасних SSD у кілька терабайт та розподілених хмарних сховищ.</p>
+<div class="timeline">
+<div class="timeline-item">
+<h4>1977 — FAT</h4>
+<p data-uk="Розроблена для дискет. Проста таблиця розміщення файлів без підкаталогів (FAT12). Пізніше — FAT16 для жорстких дисків до 2 ГБ." data-ru="Разработана для дискет. Простая таблица размещения файлов без подкаталогов (FAT12). Позже — FAT16 для жёстких дисков до 2 ГБ." data-en="Developed for floppy disks. Simple file allocation table without subdirectories (FAT12). Later — FAT16 for hard drives up to 2 GB.">Розроблена для дискет. Проста таблиця розміщення файлів без підкаталогів (FAT12). Пізніше — FAT16 для жорстких дисків до 2 ГБ.</p>
+</div>
+<div class="timeline-item">
+<h4>1993 — NTFS</h4>
+<p data-uk="Microsoft представила New Technology File System разом із Windows NT 3.1. Журналювання, ACL, стиснення, шифрування, квоти диска." data-ru="Microsoft представила New Technology File System вместе с Windows NT 3.1. Журналирование, ACL, сжатие, шифрование, квоты диска." data-en="Microsoft introduced the New Technology File System with Windows NT 3.1. Journaling, ACL, compression, encryption, disk quotas.">Microsoft представила New Technology File System разом із Windows NT 3.1. Журналювання, ACL, стиснення, шифрування, квоти диска.</p>
+</div>
+<div class="timeline-item">
+<h4>1993 — ext2</h4>
+<p data-uk="Друга розширена файлова система для Linux. Без журналювання, але з індексними дескрипторами (inode) та підтримкою файлів до 2 ТБ." data-ru="Вторая расширенная файловая система для Linux. Без журналирования, но с индексными дескрипторами (inode) и поддержкой файлов до 2 ТБ." data-en="The second extended file system for Linux. No journaling, but with index descriptors (inodes) and support for files up to 2 TB.">Друга розширена файлова система для Linux. Без журналювання, але з індексними дескрипторами (inode) та підтримкою файлів до 2 ТБ.</p>
+</div>
+<div class="timeline-item">
+<h4>2001 — ext3 / ReiserFS</h4>
+<p data-uk="Журналювання прийшло у світ Linux. ext3 додала журнал до ext2 без зміни структури на диску. ReiserFS — перша журнальна ФС для Linux із B+-деревами." data-ru="Журналирование пришло в мир Linux. ext3 добавила журнал к ext2 без изменения структуры на диске. ReiserFS — первая журнальная ФС для Linux с B+-деревьями." data-en="Journaling came to the Linux world. ext3 added a journal to ext2 without changing the on-disk structure. ReiserFS — the first journaling FS for Linux with B+ trees.">Журналювання прийшло у світ Linux. ext3 додала журнал до ext2 без зміни структури на диску. ReiserFS — перша журнальна ФС для Linux із B+-деревами.</p>
+</div>
+<div class="timeline-item">
+<h4>2008 — ext4</h4>
+<p data-uk="Розширення для ext3: обсяги до 1 ЕБ, файли до 16 ТБ, екстенти (extents) замість класичних блоків, багатоблочне виділення, відкладене розміщення." data-ru="Расширение для ext3: объёмы до 1 ЭБ, файлы до 16 ТБ, экстенты (extents) вместо классических блоков, многоблочное выделение, отложенное размещение." data-en="Extension for ext3: volumes up to 1 EB, files up to 16 TB, extents instead of classic blocks, multiblock allocation, delayed allocation.">Розширення для ext3: обсяги до 1 ЕБ, файли до 16 ТБ, екстенти (extents) замість класичних блоків, багатоблочне виділення, відкладене розміщення.</p>
+</div>
+<div class="timeline-item">
+<h4>2017 — APFS</h4>
+<p data-uk="Apple File System замінила HFS+ на всіх пристроях Apple. Оптимізована для флеш-пам'яті та SSD, підтримує знімки (snapshots), клонування, шифрування." data-ru="Apple File System заменила HFS+ на всех устройствах Apple. Оптимизирована для флеш-памяти и SSD, поддерживает снимки (snapshots), клонирование, шифрование." data-en="Apple File System replaced HFS+ on all Apple devices. Optimized for flash memory and SSD, supports snapshots, cloning, encryption.">Apple File System замінила HFS+ на всіх пристроях Apple. Оптимізована для флеш-пам'яті та SSD, підтримує знімки (snapshots), клонування, шифрування.</p>
+</div>
+<div class="timeline-item">
+<h4>2005+ — ZFS / Btrfs</h4>
+<p data-uk="ФС нового покоління з копіюванням при записі (CoW), вбудованим RAID, контролем цілісності (checksums), дедуплікацією. ZFS від Sun/Oracle, Btrfs — для Linux." data-ru="ФС нового поколения с копированием при записи (CoW), встроенным RAID, контролем целостности (checksums), дедупликацией. ZFS от Sun/Oracle, Btrfs — для Linux." data-en="Next-generation FS with copy-on-write (CoW), built-in RAID, integrity control (checksums), deduplication. ZFS from Sun/Oracle, Btrfs for Linux.">ФС нового покоління з копіюванням при записі (CoW), вбудованим RAID, контролем цілісності (checksums), дедуплікацією. ZFS від Sun/Oracle, Btrfs — для Linux.</p>
+</div>
+</div>
+</section>
+
+<section class="section" id="fat">
+<h2><span class="icon">&#128459;</span> <span data-uk="FAT — від дискет до флешок" data-ru="FAT — от дискет до флешек" data-en="FAT — from floppy disks to flash drives">FAT — від дискет до флешок</span></h2>
+<p data-uk="FAT (File Allocation Table) — найстарша та найпростіша файлова система, яка досі широко використовується завдяки універсальній сумісності. Версії: FAT12 (для дискет), FAT16 (DOS/Windows 95), FAT32 (Windows 98+), exFAT (2006, для великих флеш-накопичувачів)." data-ru="FAT (File Allocation Table) — старейшая и простейшая файловая система, которая до сих пор широко используется благодаря универсальной совместимости. Версии: FAT12 (для дискет), FAT16 (DOS/Windows 95), FAT32 (Windows 98+), exFAT (2006, для больших флеш-накопителей)." data-en="FAT (File Allocation Table) — the oldest and simplest file system, still widely used due to universal compatibility. Versions: FAT12 (for floppy disks), FAT16 (DOS/Windows 95), FAT32 (Windows 98+), exFAT (2006, for large flash drives).">FAT (File Allocation Table) — найстарша та найпростіша файлова система, яка досі широко використовується завдяки універсальній сумісності. Версії: FAT12 (для дискет), FAT16 (DOS/Windows 95), FAT32 (Windows 98+), exFAT (2006, для великих флеш-накопичувачів).</p>
+
+<h3>&#128313; <span data-uk="Структура FAT" data-ru="Структура FAT" data-en="FAT Structure">Структура FAT</span></h3>
+<p data-uk="Диск поділено на кластери (групи секторів). Таблиця FAT містить ланцюжок кластерів для кожного файлу. Кореневий каталог — фіксована область з 32-байтними записами. Обмеження: імена файлів 8.3 (у старих версіях), відсутність журналювання, фрагментація." data-ru="Диск разбит на кластеры (группы секторов). Таблица FAT содержит цепочку кластеров для каждого файла. Корневой каталог — фиксированная область с 32-байтными записями. Ограничения: имена файлов 8.3 (в старых версиях), отсутствие журналирования, фрагментация." data-en="The disk is divided into clusters (groups of sectors). The FAT table contains a chain of clusters for each file. The root directory is a fixed area with 32-byte entries. Limitations: 8.3 file names (in old versions), no journaling, fragmentation.">Диск поділено на кластери (групи секторів). Таблиця FAT містить ланцюжок кластерів для кожного файлу. Кореневий каталог — фіксована область з 32-байтними записами. Обмеження: імена файлів 8.3 (у старих версіях), відсутність журналювання, фрагментація.</p>
+
+<h3>&#128313; FAT32</h3>
+<ul>
+<li data-uk="Максимальний розмір файлу: 4 ГБ (через 32-бітні поля розміру)." data-ru="Максимальный размер файла: 4 ГБ (из-за 32-битных полей размера)." data-en="Maximum file size: 4 GB (due to 32-bit size fields).">Максимальний розмір файлу: 4 ГБ (через 32-бітні поля розміру).</li>
+<li data-uk="Максимальний обсяг розділу: 2 ТБ (теоретично 16 ТБ з 64 КБ кластерами, але не підтримується більшістю ОС)." data-ru="Максимальный объём раздела: 2 ТБ (теоретически 16 ТБ с 64 КБ кластерами, но не поддерживается большинством ОС)." data-en="Maximum partition size: 2 TB (theoretically 16 TB with 64 KB clusters, but not supported by most OSes).">Максимальний обсяг розділу: 2 ТБ (теоретично 16 ТБ з 64 КБ кластерами, але не підтримується більшістю ОС).</li>
+<li data-uk="Підтримується всім: Windows, macOS, Linux, Android, камери, телевізори, автомагнітоли, ігрові консолі." data-ru="Поддерживается всеми: Windows, macOS, Linux, Android, камеры, телевизоры, автомагнитолы, игровые консоли." data-en="Supported by everything: Windows, macOS, Linux, Android, cameras, TVs, car stereos, game consoles.">Підтримується всім: Windows, macOS, Linux, Android, камери, телевізори, автомагнітоли, ігрові консолі.</li>
+<li data-uk="Немає журналювання — при відключенні живлення можливе пошкодження файлової таблиці." data-ru="Нет журналирования — при отключении питания возможно повреждение файловой таблицы." data-en="No journaling — power loss can corrupt the file table.">Немає журналювання — при відключенні живлення можливе пошкодження файлової таблиці.</li>
+</ul>
+
+<h3>&#128313; exFAT</h3>
+<p data-uk="Розширена FAT, розроблена Microsoft спеціально для флеш-накопичувачів великої ємності. Вирішує обмеження FAT32: файли > 4 ГБ, розділи > 2 ТБ. Зберегла простоту, але додала вільну таблицю розміщення (Free Space Bitmap) та підтримку ACL у деяких реалізаціях. Немає журналювання." data-ru="Расширенная FAT, разработанная Microsoft специально для флеш-накопителей большой ёмкости. Решает ограничения FAT32: файлы > 4 ГБ, разделы > 2 ТБ. Сохранила простоту, но добавила свободную таблицу размещения (Free Space Bitmap) и поддержку ACL в некоторых реализациях. Нет журналирования." data-en="Extended FAT, developed by Microsoft specifically for high-capacity flash drives. Solves FAT32 limitations: files > 4 GB, partitions > 2 TB. Retained simplicity but added a free space bitmap and ACL support in some implementations. No journaling.">exFAT — розширена FAT, розроблена Microsoft спеціально для флеш-накопичувачів великої ємності. Вирішує обмеження FAT32: файли > 4 ГБ, розділи > 2 ТБ. Зберегла простоту, але додала вільну таблицю розміщення (Free Space Bitmap) та підтримку ACL у деяких реалізаціях. Немає журналювання.</p>
+</section>
+
+<section class="section" id="ntfs">
+<h2><span class="icon">&#128190;</span> <span data-uk="NTFS — стандарт Windows" data-ru="NTFS — стандарт Windows" data-en="NTFS — the Windows Standard">NTFS — стандарт Windows</span></h2>
+<p data-uk="NTFS (New Technology File System) — журнальна файлова система від Microsoft, яка стала стандартом для Windows NT, 2000, XP, Vista, 7, 8, 10, 11. Розроблена з урахуванням надійності, безпеки та масштабованості." data-ru="NTFS (New Technology File System) — журнальная файловая система от Microsoft, ставшая стандартом для Windows NT, 2000, XP, Vista, 7, 8, 10, 11. Разработана с учётом надёжности, безопасности и масштабируемости." data-en="NTFS (New Technology File System) — a journaling file system from Microsoft that became the standard for Windows NT, 2000, XP, Vista, 7, 8, 10, 11. Designed with reliability, security and scalability in mind.">NTFS (New Technology File System) — журнальна файлова система від Microsoft, яка стала стандартом для Windows NT, 2000, XP, Vista, 7, 8, 10, 11. Розроблена з урахуванням надійності, безпеки та масштабованості.</p>
+
+<h3>&#128313; <span data-uk="Ключові особливості" data-ru="Ключевые особенности" data-en="Key Features">Ключові особливості</span></h3>
+<ul>
+<li data-uk="Журналювання (Journaling) — $LogFile записує метадані транзакцій перед їх виконанням. При збої система відкочується до консистентного стану." data-ru="Журналирование (Journaling) — $LogFile записывает метаданные транзакций перед их выполнением. При сбое система откатывается к консистентному состоянию." data-en="Journaling — $LogFile records transaction metadata before execution. On failure, the system rolls back to a consistent state.">Журналювання (Journaling) — <code>$LogFile</code> записує метадані транзакцій перед їх виконанням. При збої система відкочується до консистентного стану.</li>
+<li data-uk="ACL (Access Control Lists) — детальні права доступу на рівні файлів і каталогів для користувачів та груп." data-ru="ACL (Access Control Lists) — детальные права доступа на уровне файлов и каталогов для пользователей и групп." data-en="ACL (Access Control Lists) — granular access rights at the file and directory level for users and groups.">ACL (Access Control Lists) — детальні права доступу на рівні файлів і каталогів для користувачів та груп.</li>
+<li data-uk="EFS (Encrypting File System) — шифрування на рівні файлів за алгоритмом AES. Ключі зберігаються в сертифікатах користувача." data-ru="EFS (Encrypting File System) — шифрование на уровне файлов по алгоритму AES. Ключи хранятся в сертификатах пользователя." data-en="EFS (Encrypting File System) — file-level encryption using AES. Keys are stored in user certificates.">EFS (Encrypting File System) — шифрування на рівні файлів за алгоритмом AES. Ключі зберігаються в сертифікатах користувача.</li>
+<li data-uk="Стиснення файлів та каталогів (LZNT1), sparse files, альтернативні потоки даних (ADS), точки повторного аналізу (junctions, symbolic links)." data-ru="Сжатие файлов и каталогов (LZNT1), разреженные файлы (sparse), альтернативные потоки данных (ADS), точки повторного анализа (junctions, символические ссылки)." data-en="File and folder compression (LZNT1), sparse files, alternate data streams (ADS), reparse points (junctions, symbolic links).">Стиснення файлів та каталогів (LZNT1), sparse files, альтернативні потоки даних (ADS), точки повторного аналізу (junctions, symbolic links).</li>
+<li data-uk="Квоти диска (Disk Quotas) — обмеження місця для конкретних користувачів." data-ru="Квоты диска (Disk Quotas) — ограничение места для конкретных пользователей." data-en="Disk Quotas — limiting space for specific users.">Квоти диска (Disk Quotas) — обмеження місця для конкретних користувачів.</li>
+<li data-uk="Тіньові копії (VSS — Volume Shadow Copy Service) — знімки стану тома для відновлення файлів та резервного копіювання." data-ru="Теневые копии (VSS — Volume Shadow Copy Service) — снимки состояния тома для восстановления файлов и резервного копирования." data-en="Shadow copies (VSS — Volume Shadow Copy Service) — volume state snapshots for file recovery and backup.">Тіньові копії (VSS — Volume Shadow Copy Service) — знімки стану тома для відновлення файлів та резервного копіювання.</li>
+</ul>
+
+<h3>&#128313; <span data-uk="Метафайли NTFS" data-ru="Метафайлы NTFS" data-en="NTFS Metafiles">Метафайли NTFS</span></h3>
+<p data-uk="NTFS зберігає службову інформацію у прихованих системних файлах (метафайлах), які починаються зі знака долара: $MFT (Master File Table), $LogFile, $Bitmap, $Boot, $BadClus, $Secure, $UpCase тощо. $MFT — це «база даних» усіх файлів тома." data-ru="NTFS хранит служебную информацию в скрытых системных файлах (метафайлах), начинающихся со знака доллара: $MFT (Master File Table), $LogFile, $Bitmap, $Boot, $BadClus, $Secure, $UpCase и т.д. $MFT — это «база данных» всех файлов тома." data-en="NTFS stores service information in hidden system files (metafiles) starting with a dollar sign: $MFT (Master File Table), $LogFile, $Bitmap, $Boot, $BadClus, $Secure, $UpCase, etc. $MFT is the 'database' of all volume files.">NTFS зберігає службову інформацію у прихованих системних файлах (метафайлах), які починаються зі знака долара: <code>$MFT</code> (Master File Table), <code>$LogFile</code>, <code>$Bitmap</code>, <code>$Boot</code>, <code>$BadClus</code>, <code>$Secure</code>, <code>$UpCase</code> тощо. <code>$MFT</code> — це «база даних» усіх файлів тома.</p>
+<div class="tip">
+<strong data-uk="Цікаво:" data-ru="Интересно:" data-en="Fun fact:">Цікаво:</strong>
+<span data-uk=" NTFS дозволяє створити файл довжиною до 16 ЕБ (ексабайт), хоча Windows обмежує його 256 ТБ. Обсяг тома — до 256 ТБ із 64 КБ кластерами." data-ru=" NTFS позволяет создать файл длиной до 16 ЭБ (эксабайт), хотя Windows ограничивает его 256 ТБ. Объём тома — до 256 ТБ с 64 КБ кластерами." data-en=" NTFS allows creating a file up to 16 EB (exabytes), although Windows limits it to 256 TB. Volume size — up to 256 TB with 64 KB clusters."> NTFS дозволяє створити файл довжиною до 16 ЕБ (ексабайт), хоча Windows обмежує його 256 ТБ. Обсяг тома — до 256 ТБ із 64 КБ кластерами.</span>
+</div>
+</section>
+
+<section class="section" id="ext">
+<h2><span class="icon">&#128039;</span> <span data-uk="ext — родина Linux" data-ru="ext — семейство Linux" data-en="ext — the Linux Family">ext — родина Linux</span></h2>
+<p data-uk="Сімейство ext (extended file system) — нативні файлові системи для ядра Linux. Сьогодні ext4 — стандарт де-факто для більшості дистрибутивів, хоча поступово поступається місцем Btrfs та іншим сучасним ФС." data-ru="Семейство ext (extended file system) — нативные файловые системы для ядра Linux. Сегодня ext4 — стандарт де-факто для большинства дистрибутивов, хотя постепенно уступает место Btrfs и другим современным ФС." data-en="The ext family (extended file system) — native file systems for the Linux kernel. Today ext4 is the de facto standard for most distributions, although it is gradually giving way to Btrfs and other modern FS.">Сімейство ext (extended file system) — нативні файлові системи для ядра Linux. Сьогодні ext4 — стандарт де-факто для більшості дистрибутивів, хоча поступово поступається місцем Btrfs та іншим сучасним ФС.</p>
+
+<h3>&#128313; ext2</h3>
+<p data-uk="Перша «сучасна» ФС для Linux. Використовує inode (індексні дескриптори) для зберігання метаданих файлів. Суперблок містить глобальні параметри ФС. Немає журналювання — після збою потрібна повна перевірка fsck. Підходить для невеликих флешок та RAM-дисків, де журналювання зайве." data-ru="Первая «современная» ФС для Linux. Использует inode (индексные дескрипторы) для хранения метаданных файлов. Суперблок содержит глобальные параметры ФС. Нет журналирования — после сбоя нужна полная проверка fsck. Подходит для небольших флешек и RAM-дисков, где журналирование лишнее." data-en="The first 'modern' FS for Linux. Uses inodes (index descriptors) to store file metadata. The superblock contains global FS parameters. No journaling — after a failure, a full fsck check is required. Suitable for small flash drives and RAM disks where journaling is unnecessary.">Перша «сучасна» ФС для Linux. Використовує inode (індексні дескриптори) для зберігання метаданих файлів. Суперблок містить глобальні параметри ФС. Немає журналювання — після збою потрібна повна перевірка <code>fsck</code>. Підходить для невеликих флешок та RAM-дисків, де журналювання зайве.</p>
+
+<h3>&#128313; ext3</h3>
+<p data-uk="Додала журналювання до ext2 без зміни формату на диску. Можна було оновити ext2 до ext3 навіть без переформатування. Три режими журналювання: journal (дані + метадані), ordered (метадані + гарантія запису даних перед inode), writeback (лише метадані, найшвидший)." data-ru="Добавила журналирование к ext2 без изменения формата на диске. Можно было обновить ext2 до ext3 даже без переформатирования. Три режима журналирования: journal (данные + метаданные), ordered (метаданные + гарантия записи данных перед inode), writeback (только метаданные, самый быстрый)." data-en="Added journaling to ext2 without changing the on-disk format. It was possible to upgrade ext2 to ext3 even without reformatting. Three journaling modes: journal (data + metadata), ordered (metadata + guaranteed data write before inode), writeback (metadata only, fastest).">ext3 додала журналювання до ext2 без зміни формату на диску. Можна було оновити ext2 до ext3 навіть без переформатування. Три режими журналювання: <code>journal</code> (дані + метадані), <code>ordered</code> (метадані + гарантія запису даних перед inode), <code>writeback</code> (лише метадані, найшвидший).</p>
+
+<h3>&#128313; ext4</h3>
+<ul>
+<li data-uk="Екстенти (extents) — замість списку блоків файл описується початковим блоком і довжиною, що зменшує фрагментацію та накладні витрати." data-ru="Экстенты (extents) — вместо списка блоков файл описывается начальным блоком и длиной, что уменьшает фрагментацию и накладные расходы." data-en="Extents — instead of a block list, a file is described by a starting block and length, reducing fragmentation and overhead.">Екстенти (extents) — замість списку блоків файл описується початковим блоком і довжиною, що зменшує фрагментацію та накладні витрати.</li>
+<li data-uk="Багатоблочне виділення (multiblock allocator) — виділення кількох блоків за один раз для зменшення фрагментації." data-ru="Многоблочное выделение (multiblock allocator) — выделение нескольких блоков за один раз для уменьшения фрагментации." data-en="Multiblock allocator — allocating multiple blocks at once to reduce fragmentation.">Багатоблочне виділення (multiblock allocator) — виділення кількох блоків за один раз для зменшення фрагментації.</li>
+<li data-uk="Відкладене розміщення (delayed allocation) — ФС відкладає вибір блоків до моменту фактичного запису на диск, що покращує розміщення." data-ru="Отложенное размещение (delayed allocation) — ФС откладывает выбор блоков до момента фактической записи на диск, что улучшает размещение." data-en="Delayed allocation — the FS delays block selection until the actual write to disk, improving placement.">Відкладене розміщення (delayed allocation) — ФС відкладає вибір блоків до моменту фактичного запису на диск, що покращує розміщення.</li>
+<li data-uk="Журнал з контрольними сумами (journal checksums) — захист від пошкодження самого журналу." data-ru="Журнал с контрольными сумами (journal checksums) — защита от повреждения самого журнала." data-en="Journal checksums — protection against corruption of the journal itself.">Журнал з контрольними сумами (journal checksums) — захист від пошкодження самого журналу.</li>
+<li data-uk="Наносекундні мітки часу, постійне попереднє виділення (preallocation), дефрагментація «на льоту» (e4defrag)." data-ru="Наносекундные метки времени, постоянное предварительное выделение (preallocation), дефрагментация «на лету» (e4defrag)." data-en="Nanosecond timestamps, persistent preallocation, online defragmentation (e4defrag).">Наносекундні мітки часу, постійне попереднє виділення (preallocation), дефрагментація «на льоту» (e4defrag).</li>
+</ul>
+<p data-uk="Обмеження ext4: максимальний обсяг тома — 1 ЕБ, файл — 16 ТБ, кількість підкаталогів у каталозі — до 64 000." data-ru="Ограничения ext4: максимальный объём тома — 1 ЭБ, файл — 16 ТБ, количество подкаталогов в каталоге — до 64 000." data-en="ext4 limitations: maximum volume size — 1 EB, file — 16 TB, number of subdirectories in a directory — up to 64,000.">Обмеження ext4: максимальний обсяг тома — 1 ЕБ, файл — 16 ТБ, кількість підкаталогів у каталозі — до 64 000.</p>
+</section>
+
+<section class="section" id="apfs">
+<h2><span class="icon">&#127822;</span> <span data-uk="APFS — революція Apple" data-ru="APFS — революция Apple" data-en="APFS — Apple's Revolution">APFS — революція Apple</span></h2>
+<p data-uk="APFS (Apple File System) представлена у 2017 році з macOS High Sierra та iOS 10.3. Замінила застарілу HFS+, яка використовувалася з 1998 року. APFS спроектована спеціально для флеш-пам'яті та SSD." data-ru="APFS (Apple File System) представлена в 2017 году с macOS High Sierra и iOS 10.3. Заменила устаревшую HFS+, использовавшуюся с 1998 года. APFS спроектирована специально для флеш-памяти и SSD." data-en="APFS (Apple File System) was introduced in 2017 with macOS High Sierra and iOS 10.3. It replaced the outdated HFS+, which had been used since 1998. APFS is designed specifically for flash memory and SSDs.">APFS (Apple File System) представлена у 2017 році з macOS High Sierra та iOS 10.3. Замінила застарілу HFS+, яка використовувалася з 1998 року. APFS спроектована спеціально для флеш-пам'яті та SSD.</p>
+
+<h3>&#128313; <span data-uk="Ключові інновації" data-ru="Ключевые инновации" data-en="Key Innovations">Ключові інновації</span></h3>
+<ul>
+<li data-uk="Copy-on-Write (CoW) — дані не перезаписуються на місці; замість цього створюється нова копія блоку, а старий вказівник оновлюється атомарно. Це гарантує цілісність навіть при збої живлення." data-ru="Copy-on-Write (CoW) — данные не перезаписываются на месте; вместо этого создаётся новая копия блока, а старый указатель обновляется атомарно. Это гарантирует целостность даже при сбое питания." data-en="Copy-on-Write (CoW) — data is not overwritten in place; instead, a new copy of the block is created and the old pointer is updated atomically. This guarantees integrity even on power failure.">Copy-on-Write (CoW) — дані не перезаписуються на місці; замість цього створюється нова копія блоку, а старий вказівник оновлюється атомарно. Це гарантує цілісність навіть при збої живлення.</li>
+<li data-uk="Знімки (Snapshots) — миттєві «фотографії» стану файлової системи, які займають мінімум місця завдяки CoW. Використовуються для Time Machine та резервного копіювання." data-ru="Снимки (Snapshots) — мгновенные «фотографии» состояния файловой системы, занимающие минимум места благодаря CoW. Используются для Time Machine и резервного копирования." data-en="Snapshots — instant 'photos' of the file system state that take up minimal space thanks to CoW. Used for Time Machine and backup.">Знімки (Snapshots) — миттєві «фотографії» стану файлової системи, які займають мінімум місця завдяки CoW. Використовуються для Time Machine та резервного копіювання.</li>
+<li data-uk="Клонування файлів — миттєве створення повної копії файлу без дублювання даних (спільне використання блоків до першої зміни)." data-ru="Клонирование файлов — мгновенное создание полной копии файла без дублирования данных (совместное использование блоков до первого изменения)." data-en="File cloning — instant creation of a full file copy without duplicating data (shared block usage until the first change).">Клонування файлів — миттєве створення повної копії файлу без дублювання даних (спільне використання блоків до першої зміни).</li>
+<li data-uk="Просторовий обмін (Space Sharing) — гнучкий розподіл вільного місця між томами в межах контейнера. Томи динамічно займають стільки місця, скільки потрібно." data-ru="Пространственный обмен (Space Sharing) — гибкое распределение свободного места между томами в пределах контейнера. Тома динамически занимают столько места, сколько нужно." data-en="Space Sharing — flexible allocation of free space between volumes within a container. Volumes dynamically take up as much space as needed.">Просторовий обмін (Space Sharing) — гнучкий розподіл вільного місця між томами в межах контейнера. Томи динамічно займають стільки місця, скільки потрібно.</li>
+<li data-uk="Нативне шифрування — підтримка AES-XTS на рівні тома, файлу або навіть окремих секторів. Інтеграція з Secure Enclave на Apple Silicon." data-ru="Нативное шифрование — поддержка AES-XTS на уровне тома, файла или даже отдельных секторов. Интеграция с Secure Enclave на Apple Silicon." data-en="Native encryption — AES-XTS support at the volume, file or even individual sector level. Integration with Secure Enclave on Apple Silicon.">Нативне шифрування — підтримка AES-XTS на рівні тома, файлу або навіть окремих секторів. Інтеграція з Secure Enclave на Apple Silicon.</li>
+<li data-uk="Оптимізація для SSD: TRIM, вирівнювання запису (write alignment), зменшення зносу флеш-пам'яті." data-ru="Оптимизация для SSD: TRIM, выравнивание записи (write alignment), уменьшение износа флеш-памяти." data-en="SSD optimization: TRIM, write alignment, reduced flash memory wear.">Оптимізація для SSD: TRIM, вирівнювання запису (write alignment), зменшення зносу флеш-пам'яті.</li>
+</ul>
+<div class="tip">
+<strong data-uk="Примітка:" data-ru="Примечание:" data-en="Note:">Примітка:</strong>
+<span data-uk=" APFS не підтримує диски з механічними HDD як завантажувальні на старих Mac (до T2 чипа), але чудово працює на фюжн-драйвах (Fusion Drive) та зовнішніх SSD." data-ru=" APFS не поддерживает диски с механическими HDD как загрузочные на старых Mac (до чипа T2), но отлично работает на Fusion Drive и внешних SSD." data-en=" APFS does not support mechanical HDDs as boot disks on older Macs (before the T2 chip), but works great on Fusion Drives and external SSDs."> APFS не підтримує диски з механічними HDD як завантажувальні на старих Mac (до T2 чипа), але чудово працює на фюжн-драйвах (Fusion Drive) та зовнішніх SSD.</span>
+</div>
+</section>
+
+<section class="section" id="zfs">
+<h2><span class="icon">&#128225;</span> <span data-uk="ZFS — файлова система майбутнього" data-ru="ZFS — файловая система будущего" data-en="ZFS — the File System of the Future">ZFS — файлова система майбутнього</span></h2>
+<p data-uk="ZFS (Zettabyte File System) розроблена Sun Microsystems у 2001 році. Це 128-бітна файлова система, яка поєднує в собі менеджер томів (volume manager) і саму ФС. Сьогодні підтримується у FreeBSD, Linux (через ZFS on Linux / OpenZFS), illumos та macOS (неофіційно)." data-ru="ZFS (Zettabyte File System) разработана Sun Microsystems в 2001 году. Это 128-битная файловая система, которая объединяет в себе менеджер томов (volume manager) и саму ФС. Сегодня поддерживается в FreeBSD, Linux (через ZFS on Linux / OpenZFS), illumos и macOS (неофициально)." data-en="ZFS (Zettabyte File System) was developed by Sun Microsystems in 2001. It is a 128-bit file system that combines a volume manager and the FS itself. Today it is supported on FreeBSD, Linux (via ZFS on Linux / OpenZFS), illumos and macOS (unofficially).">ZFS (Zettabyte File System) розроблена Sun Microsystems у 2001 році. Це 128-бітна файлова система, яка поєднує в собі менеджер томів (volume manager) і саму ФС. Сьогодні підтримується у FreeBSD, Linux (через ZFS on Linux / OpenZFS), illumos та macOS (неофіційно).</p>
+
+<h3>&#128313; <span data-uk="Архітектурні принципи" data-ru="Архитектурные принципы" data-en="Architectural Principles">Архітектурні принципи</span></h3>
+<ul>
+<li data-uk="Copy-on-Write (CoW) — жоден блок даних ніколи не перезаписується на місці. Зміни записуються у нові блоки, а старі залишаються недоторканими до очищення (garbage collection)." data-ru="Copy-on-Write (CoW) — ни один блок данных никогда не перезаписывается на месте. Изменения записываются в новые блоки, а старые остаются нетронутыми до очистки (garbage collection)." data-en="Copy-on-Write (CoW) — no data block is ever overwritten in place. Changes are written to new blocks, while old ones remain untouched until garbage collection.">Copy-on-Write (CoW) — жоден блок даних ніколи не перезаписується на місці. Зміни записуються у нові блоки, а старі залишаються недоторканими до очищення (garbage collection).</li>
+<li data-uk="Контроль цілісності на рівні блоків (checksums) — кожен блок даних і метаданих має контрольну суму (fletcher4, sha256). ZFS автоматично виявляє «тихе» пошкодження даних (silent data corruption) і відновлює їх з резервної копії (self-healing)." data-ru="Контроль целостности на уровне блоков (checksums) — каждый блок данных и метаданных имеет контрольную сумму (fletcher4, sha256). ZFS автоматически обнаруживает «тихое» повреждение данных (silent data corruption) и восстанавливает их из резервной копии (self-healing)." data-en="Block-level integrity control (checksums) — every data and metadata block has a checksum (fletcher4, sha256). ZFS automatically detects silent data corruption and restores from a redundant copy (self-healing).">Контроль цілісності на рівні блоків (checksums) — кожен блок даних і метаданих має контрольну суму (fletcher4, sha256). ZFS автоматично виявляє «тихе» пошкодження даних (silent data corruption) і відновлює їх з резервної копії (self-healing).</li>
+<li data-uk="Вбудований RAID-Z — аналог RAID 5/6 без проблеми «дірки запису» (write hole). RAID-Z1 (1 диск на червоність), RAID-Z2 (2 диски), RAID-Z3 (3 диски)." data-ru="Встроенный RAID-Z — аналог RAID 5/6 без проблемы «дырки записи» (write hole). RAID-Z1 (1 диск на чётность), RAID-Z2 (2 диска), RAID-Z3 (3 диска)." data-en="Built-in RAID-Z — an analogue of RAID 5/6 without the write hole problem. RAID-Z1 (1 parity disk), RAID-Z2 (2 disks), RAID-Z3 (3 disks).">Вбудований RAID-Z — аналог RAID 5/6 без проблеми «дірки запису» (write hole). RAID-Z1 (1 диск на червоність), RAID-Z2 (2 диски), RAID-Z3 (3 диски).</li>
+<li data-uk="Дедуплікація (deduplication) — автоматичне видалення дублікатів блоків на рівні всього пулу. Економить місце, але вимагає багато RAM (таблиця дедуплікації)." data-ru="Дедупликация (deduplication) — автоматическое удаление дубликатов блоков на уровне всего пула. Экономит место, но требует много RAM (таблица дедупликации)." data-en="Deduplication — automatic removal of duplicate blocks at the pool level. Saves space but requires a lot of RAM (deduplication table).">Дедуплікація (deduplication) — автоматичне видалення дублікатів блоків на рівні всього пулу. Економить місце, але вимагає багато RAM (таблиця дедуплікації).</li>
+<li data-uk="Стиснення (gzip, lz4, zle) та тонке підготовлення (thin provisioning) — виділення місця лише при фактичному записі." data-ru="Сжатие (gzip, lz4, zle) и тонкое предоставление (thin provisioning) — выделение места только при фактической записи." data-en="Compression (gzip, lz4, zle) and thin provisioning — space is allocated only on actual write.">Стиснення (gzip, lz4, zle) та тонке підготовлення (thin provisioning) — виділення місця лише при фактичному записі.</li>
+<li data-uk="Знімки (snapshots) та клонування — миттєві знімки всього пулу з нульовими накладними витратами завдяки CoW." data-ru="Снимки (snapshots) и клонирование — мгновенные снимки всего пула с нулевыми накладными расходами благодаря CoW." data-en="Snapshots and cloning — instant snapshots of the entire pool with zero overhead thanks to CoW.">Знімки (snapshots) та клонування — миттєві знімки всього пулу з нульовими накладними витратами завдяки CoW.</li>
+</ul>
+<div class="tip">
+<strong data-uk="Важливо:" data-ru="Важно:" data-en="Important:">Важливо:</strong>
+<span data-uk=" ZFS — це 128-бітна ФС. Теоретичний ліміт: 256 квадильйонів зетабайт. Навіть якщо заповнювати по 1 ТБ щосекунди, на вичерпання місця знадобиться більше часу, ніж існує Всесвіт." data-ru=" ZFS — это 128-битная ФС. Теоретический лимит: 256 квадриллионов зеттабайт. Даже если заполнять по 1 ТБ каждую секунду, на исчерпание места потребуется больше времени, чем существует Вселенная." data-en=" ZFS is a 128-bit FS. Theoretical limit: 256 quadrillion zettabytes. Even filling at 1 TB per second, it would take longer than the age of the universe to run out of space."> ZFS — це 128-бітна ФС. Теоретичний ліміт: 256 квадильйонів зетабайт. Навіть якщо заповнювати по 1 ТБ щосекунди, на вичерпання місця знадобиться більше часу, ніж існує Всесвіт.</span>
+</div>
+</section>
+
+<section class="section" id="compare">
+<h2><span class="icon">&#128202;</span> <span data-uk="Порівняльна таблиця" data-ru="Сравнительная таблица" data-en="Comparison Table">Порівняльна таблиця</span></h2>
+<table class="comparison-table">
+<tr>
+<th data-uk="Особливість" data-ru="Особенность" data-en="Feature">Особливість</th>
+<th>FAT32</th>
+<th>NTFS</th>
+<th>ext4</th>
+<th>APFS</th>
+<th>ZFS</th>
+</tr>
+<tr>
+<td data-uk="Розробник" data-ru="Разработчик" data-en="Developer">Розробник</td>
+<td>Microsoft</td>
+<td>Microsoft</td>
+<td>Linux Community</td>
+<td>Apple</td>
+<td>Sun/Oracle/OpenZFS</td>
+</tr>
+<tr>
+<td data-uk="Макс. файл" data-ru="Макс. файл" data-en="Max file">Макс. файл</td>
+<td>4 ГБ</td>
+<td>16 ЕБ (256 ТБ в Windows)</td>
+<td>16 ТБ</td>
+<td>8 ЕБ</td>
+<td>16 ЕБ</td>
+</tr>
+<tr>
+<td data-uk="Макс. том" data-ru="Макс. том" data-en="Max volume">Макс. том</td>
+<td>2 ТБ</td>
+<td>256 ТБ</td>
+<td>1 ЕБ</td>
+<td>8 ЕБ</td>
+<td>256 квадр. зетабайт</td>
+</tr>
+<tr>
+<td data-uk="Журналювання" data-ru="Журналирование" data-en="Journaling">Журналювання</td>
+<td data-uk="Ні" data-ru="Нет" data-en="No">Ні</td>
+<td data-uk="Так (метадані)" data-ru="Да (метаданные)" data-en="Yes (metadata)">Так (метадані)</td>
+<td data-uk="Так (3 режими)" data-ru="Да (3 режима)" data-en="Yes (3 modes)">Так (3 режими)</td>
+<td data-uk="CoW (атомарно)" data-ru="CoW (атомарно)" data-en="CoW (atomic)">CoW (атомарно)</td>
+<td data-uk="CoW + checksums" data-ru="CoW + checksums" data-en="CoW + checksums">CoW + checksums</td>
+</tr>
+<tr>
+<td data-uk="Права доступу" data-ru="Права доступа" data-en="Access rights">Права доступу</td>
+<td data-uk="Обмежені (R/O)" data-ru="Ограниченные (R/O)" data-en="Limited (R/O)">Обмежені (R/O)</td>
+<td data-uk="ACL, квоти" data-ru="ACL, квоты" data-en="ACL, quotas">ACL, квоти</td>
+<td data-uk="Unix rwx, ACL" data-ru="Unix rwx, ACL" data-en="Unix rwx, ACL">Unix rwx, ACL</td>
+<td data-uk="Unix + шифрування" data-ru="Unix + шифрование" data-en="Unix + encryption">Unix + шифрування</td>
+<td data-uk="ACL, шифрування" data-ru="ACL, шифрование" data-en="ACL, encryption">ACL, шифрування</td>
+</tr>
+<tr>
+<td data-uk="Стиснення" data-ru="Сжатие" data-en="Compression">Стиснення</td>
+<td data-uk="Ні" data-ru="Нет" data-en="No">Ні</td>
+<td data-uk="Так (LZNT1)" data-ru="Да (LZNT1)" data-en="Yes (LZNT1)">Так (LZNT1)</td>
+<td data-uk="Ні" data-ru="Нет" data-en="No">Ні</td>
+<td data-uk="Ні" data-ru="Нет" data-en="No">Ні</td>
+<td data-uk="Так (gzip, lz4)" data-ru="Да (gzip, lz4)" data-en="Yes (gzip, lz4)">Так (gzip, lz4)</td>
+</tr>
+<tr>
+<td data-uk="Сумісність" data-ru="Совместимость" data-en="Compatibility">Сумісність</td>
+<td data-uk="Універсальна" data-ru="Универсальная" data-en="Universal">Універсальна</td>
+<td data-uk="Windows, лише читання на macOS/Linux" data-ru="Windows, только чтение на macOS/Linux" data-en="Windows, read-only on macOS/Linux">Windows, лише читання на macOS/Linux</td>
+<td data-uk="Linux, лише читання на Windows/macOS" data-ru="Linux, только чтение на Windows/macOS" data-en="Linux, read-only on Windows/macOS">Linux, лише читання на Windows/macOS</td>
+<td data-uk="Тільки Apple" data-ru="Только Apple" data-en="Apple only">Тільки Apple</td>
+<td data-uk="FreeBSD, Linux, illumos" data-ru="FreeBSD, Linux, illumos" data-en="FreeBSD, Linux, illumos">FreeBSD, Linux, illumos</td>
+</tr>
+<tr>
+<td data-uk="Оптимально для" data-ru="Оптимально для" data-en="Best for">Оптимально для</td>
+<td data-uk="Флешки, SD-карти, обмін даними" data-ru="Флешки, SD-карты, обмен данными" data-en="Flash drives, SD cards, data exchange">Флешки, SD-карти, обмін даними</td>
+<td data-uk="Windows-системи, корп. середовища" data-ru="Windows-системы, корп. среды" data-en="Windows systems, corporate environments">Windows-системи, корп. середовища</td>
+<td data-uk="Linux-сервери, робочі станції" data-ru="Linux-серверы, рабочие станции" data-en="Linux servers, workstations">Linux-сервери, робочі станції</td>
+<td data-uk="Mac, iPhone, iPad, Apple Watch" data-ru="Mac, iPhone, iPad, Apple Watch" data-en="Mac, iPhone, iPad, Apple Watch">Mac, iPhone, iPad, Apple Watch</td>
+<td data-uk="NAS, дата-центри, enterprise" data-ru="NAS, дата-центры, enterprise" data-en="NAS, data centers, enterprise">NAS, дата-центри, enterprise</td>
+</tr>
+</table>
+</section>
+
+<section class="section" id="journal">
+<h2><span class="icon">&#128220;</span> <span data-uk="Журналювання, права доступу та шифрування" data-ru="Журналирование, права доступа и шифрование" data-en="Journaling, Access Rights and Encryption">Журналювання, права доступу та шифрування</span></h2>
+
+<h3>&#128313; <span data-uk="Журналювання (Journaling)" data-ru="Журналирование (Journaling)" data-en="Journaling">Журналювання (Journaling)</span></h3>
+<p data-uk="Журнал — це спеціальна область на диску, куди ФС спочатку записує плановані зміни метаданих (а іноді й даних). Якщо під час запису сталася аварія, система при наступному завантаженні відкочує або завершує транзакцію з журналу, не перевіряючи весь диск. Це скорочує час відновлення з годин до секунд." data-ru="Журнал — это специальная область на диске, куда ФС сначала записывает планируемые изменения метаданных (а иногда и данных). Если во время записи произошёл сбой, система при следующей загрузке откатывает или завершает транзакцию из журнала, не проверяя весь диск. Это сокращает время восстановления с часов до секунд." data-en="A journal is a special area on the disk where the FS first writes planned metadata changes (and sometimes data). If a crash occurs during writing, the system on next boot rolls back or completes the transaction from the journal without checking the entire disk. This reduces recovery time from hours to seconds.">Журнал — це спеціальна область на диску, куди ФС спочатку записує плановані зміни метаданих (а іноді й даних). Якщо під час запису сталася аварія, система при наступному завантаженні відкочує або завершує транзакцію з журналу, не перевіряючи весь диск. Це скорочує час відновлення з годин до секунд.</p>
+
+<h3>&#128313; <span data-uk="Права доступу" data-ru="Права доступа" data-en="Access Rights">Права доступу</span></h3>
+<p data-uk="Unix-модель (ext, APFS, ZFS): три класи — власник (owner), група (group), інші (others); три права — читання (r), запис (w), виконання (x). NTFS використовує ACL — списки контролю доступу з детальними правами для кожного користувача/групи: повний доступ, зміна, читання, виконання, записування атрибутів тощо." data-ru="Unix-модель (ext, APFS, ZFS): три класса — владелец (owner), группа (group), другие (others); три права — чтение (r), запись (w), выполнение (x). NTFS использует ACL — списки контроля доступа с детальными правами для каждого пользователя/группы: полный доступ, изменение, чтение, выполнение, запись атрибутов и т.д." data-en="Unix model (ext, APFS, ZFS): three classes — owner, group, others; three rights — read (r), write (w), execute (x). NTFS uses ACLs — access control lists with granular rights for each user/group: full control, modify, read, execute, write attributes, etc.">Unix-модель (ext, APFS, ZFS): три класи — власник (owner), група (group), інші (others); три права — читання (r), запис (w), виконання (x). NTFS використовує ACL — списки контролю доступу з детальними правами для кожного користувача/групи: повний доступ, зміна, читання, виконання, записування атрибутів тощо.</p>
+
+<h3>&#128313; <span data-uk="Шифрування" data-ru="Шифрование" data-en="Encryption">Шифрування</span></h3>
+<ul>
+<li data-uk="NTFS: EFS (Encrypting File System) — шифрування окремих файлів/каталогів через AES. Також BitLocker для шифрування всього тома." data-ru="NTFS: EFS (Encrypting File System) — шифрование отдельных файлов/каталогов через AES. Также BitLocker для шифрования всего тома." data-en="NTFS: EFS (Encrypting File System) — encryption of individual files/directories via AES. Also BitLocker for full volume encryption.">NTFS: EFS (Encrypting File System) — шифрування окремих файлів/каталогів через AES. Також BitLocker для шифрування всього тома.</li>
+<li data-uk="ext4: шифрування на рівні каталогів через fscrypt (в ядрі Linux 4.1+)." data-ru="ext4: шифрование на уровне каталогов через fscrypt (в ядре Linux 4.1+)." data-en="ext4: directory-level encryption via fscrypt (in Linux kernel 4.1+).">ext4: шифрування на рівні каталогів через fscrypt (в ядрі Linux 4.1+).</li>
+<li data-uk="APFS: нативне шифрування AES-XTS на рівні тома, файлу або сектора. Інтеграція з T2 / Secure Enclave." data-ru="APFS: нативное шифрование AES-XTS на уровне тома, файла или сектора. Интеграция с T2 / Secure Enclave." data-en="APFS: native AES-XTS encryption at the volume, file or sector level. Integration with T2 / Secure Enclave.">APFS: нативне шифрування AES-XTS на рівні тома, файлу або сектора. Інтеграція з T2 / Secure Enclave.</li>
+<li data-uk="ZFS: шифрування на рівні набору даних (dataset) через AES-256-GCM, з окремими ключами для кожного dataset." data-ru="ZFS: шифрование на уровне набора данных (dataset) через AES-256-GCM, с отдельными ключами для каждого dataset." data-en="ZFS: encryption at the dataset level via AES-256-GCM, with separate keys for each dataset.">ZFS: шифрування на рівні набору даних (dataset) через AES-256-GCM, з окремими ключами для кожного dataset.</li>
+</ul>
+</section>
+
+<section class="section" id="cloud">
+<h2><span class="icon">&#9729;</span> <span data-uk="Хмарні сховища та розподілені ФС" data-ru="Облачные хранилища и распределённые ФС" data-en="Cloud Storage and Distributed FS">Хмарні сховища та розподілені ФС</span></h2>
+<p data-uk="Сучасні дата-центри та хмарні провайдери використовують не класичні монолітні ФС, а розподілені та об'єктні сховища, які працюють на тисячах серверів одночасно." data-ru="Современные дата-центры и облачные провайдеры используют не классические монолитные ФС, а распределённые и объектные хранилища, работающие на тысячах серверов одновременно." data-en="Modern data centers and cloud providers do not use classic monolithic FS, but distributed and object storage that operates on thousands of servers simultaneously.">Сучасні дата-центри та хмарні провайдери використовують не класичні монолітні ФС, а розподілені та об'єктні сховища, які працюють на тисячах серверів одночасно.</p>
+
+<div class="protocol-grid">
+<div class="protocol-card">
+<h4 data-uk="Об'єктне сховище" data-ru="Объектное хранилище" data-en="Object Storage">Об'єктне сховище</h4>
+<p data-uk="Дані зберігаються як об'єкти (файл + метадані + унікальний ідентифікатор), а не у файловій ієрархії. Приклади: Amazon S3, Google Cloud Storage, Azure Blob Storage, MinIO. Масштабуються до ексабайт, забезпечують 99,999999999% durability." data-ru="Данные хранятся как объекты (файл + метаданные + уникальный идентификатор), а не в файловой иерархии. Примеры: Amazon S3, Google Cloud Storage, Azure Blob Storage, MinIO. Масштабируются до эксабайт, обеспечивают 99,999999999% durability." data-en="Data is stored as objects (file + metadata + unique identifier), not in a file hierarchy. Examples: Amazon S3, Google Cloud Storage, Azure Blob Storage, MinIO. Scale to exabytes, provide 99.999999999% durability.">Дані зберігаються як об'єкти (файл + метадані + унікальний ідентифікатор), а не у файловій ієрархії. Приклади: Amazon S3, Google Cloud Storage, Azure Blob Storage, MinIO. Масштабуються до ексабайт, забезпечують 99,999999999% durability.</p>
+</div>
+<div class="protocol-card">
+<h4 data-uk="Розподілені ФС" data-ru="Распределённые ФС" data-en="Distributed FS">Розподілені ФС</h4>
+<p data-uk="Файлова система, яка об'єднує диски багатьох серверів у єдиний простір імен. Приклади: HDFS (Hadoop), CephFS, GlusterFS, Lustre, Google File System (GFS). Використовують реплікацію та erasure coding для відмовостійкості." data-ru="Файловая система, которая объединяет диски многих серверов в единое пространство имён. Примеры: HDFS (Hadoop), CephFS, GlusterFS, Lustre, Google File System (GFS). Используют репликацию и erasure coding для отказоустойчивости." data-en="A file system that combines the disks of many servers into a single namespace. Examples: HDFS (Hadoop), CephFS, GlusterFS, Lustre, Google File System (GFS). Use replication and erasure coding for fault tolerance.">Файлова система, яка об'єднує диски багатьох серверів у єдиний простір імен. Приклади: HDFS (Hadoop), CephFS, GlusterFS, Lustre, Google File System (GFS). Використовують реплікацію та erasure coding для відмовостійкості.</p>
+</div>
+<div class="protocol-card">
+<h4 data-uk="NVMe over Fabrics" data-ru="NVMe over Fabrics" data-en="NVMe over Fabrics">NVMe over Fabrics</h4>
+<p data-uk="Протокол доступу до NVMe-накопичувачів через мережу (Ethernet, Fibre Channel, InfiniBand). Затримка зменшується до 10-50 мкс. Використовується у high-performance хмарних сховищах та AI/ML кластерах." data-ru="Протокол доступа к NVMe-накопителям через сеть (Ethernet, Fibre Channel, InfiniBand). Задержка уменьшается до 10-50 мкс. Используется в high-performance облачных хранилищах и AI/ML кластерах." data-en="A protocol for accessing NVMe drives over a network (Ethernet, Fibre Channel, InfiniBand). Latency is reduced to 10-50 µs. Used in high-performance cloud storage and AI/ML clusters.">Протокол доступу до NVMe-накопичувачів через мережу (Ethernet, Fibre Channel, InfiniBand). Затримка зменшується до 10-50 мкс. Використовується у high-performance хмарних сховищах та AI/ML кластерах.</p>
+</div>
+<div class="protocol-card">
+<h4 data-uk="Файлові системи нового покоління" data-ru="Файловые системы нового поколения" data-en="Next-Gen File Systems">Файлові системи нового покоління</h4>
+<p data-uk="Btrfs (Linux) — CoW, субтоми, RAID, стиснення. F2FS — оптимізована для флеш-пам'яті NAND. bcachefs — експериментальна ФС з шифруванням, стисненням, реплікацією." data-ru="Btrfs (Linux) — CoW, субтома, RAID, сжатие. F2FS — оптимизирована для флеш-памяти NAND. bcachefs — экспериментальная ФС с шифрованием, сжатием, репликацией." data-en="Btrfs (Linux) — CoW, subvolumes, RAID, compression. F2FS — optimized for NAND flash memory. bcachefs — experimental FS with encryption, compression, replication.">Btrfs (Linux) — CoW, субтоми, RAID, стиснення. F2FS — оптимізована для флеш-пам'яті NAND. bcachefs — експериментальна ФС з шифруванням, стисненням, реплікацією.</p>
+</div>
+</div>
+</section>
+
+<section class="section" id="summary">
+<h2><span class="icon">&#127919;</span> <span data-uk="Підсумок" data-ru="Итог" data-en="Summary">Підсумок</span></h2>
+<p data-uk="Файлові системи пройшли шлях від простих таблиць розміщення на дискетах до складних 128-бітних структур з самовідновленням, шифруванням та дедуплікацією. Кожна епоха носіїв даних породжувала нові вимоги: швидкість SSD вимагає TRIM і вирівнювання запису, обсяги петабайт — erasure coding і розподілені архітектури, безпека — нативне шифрування та контроль цілісності." data-ru="Файловые системы прошли путь от простых таблиц размещения на дискетах до сложных 128-битных структур с самовосстановлением, шифрованием и дедупликацией. Каждая эпоха носителей данных порождала новые требования: скорость SSD требует TRIM и выравнивания записи, объёмы петабайт — erasure coding и распределённые архитектуры, безопасность — нативное шифрование и контроль целостности." data-en="File systems have come a long way from simple allocation tables on floppy disks to complex 128-bit structures with self-healing, encryption and deduplication. Each era of storage media spawned new requirements: SSD speed requires TRIM and write alignment, petabyte volumes require erasure coding and distributed architectures, security requires native encryption and integrity control.">Файлові системи пройшли шлях від простих таблиць розміщення на дискетах до складних 128-бітних структур з самовідновленням, шифруванням та дедуплікацією. Кожна епоха носіїв даних породжувала нові вимоги: швидкість SSD вимагає TRIM і вирівнювання запису, обсяги петабайт — erasure coding і розподілені архітектури, безпека — нативне шифрування та контроль цілісності.</p>
+<p data-uk="Вибір файлової системи залежить від задачі: FAT32/exFAT — для обміну даними між пристроями; NTFS — для Windows-інфраструктури; ext4 — для Linux-серверів і робочих станцій; APFS — для екосистеми Apple; ZFS — для NAS, дата-центрів і критичних сховищ, де важлива цілісність даних." data-ru="Выбор файловой системы зависит от задачи: FAT32/exFAT — для обмена данными между устройствами; NTFS — для Windows-инфраструктуры; ext4 — для Linux-серверов и рабочих станций; APFS — для экосистемы Apple; ZFS — для NAS, дата-центров и критичных хранилищ, где важна целостность данных." data-en="The choice of file system depends on the task: FAT32/exFAT — for data exchange between devices; NTFS — for Windows infrastructure; ext4 — for Linux servers and workstations; APFS — for the Apple ecosystem; ZFS — for NAS, data centers and critical storage where data integrity matters.">Вибір файлової системи залежить від задачі: FAT32/exFAT — для обміну даними між пристроями; NTFS — для Windows-інфраструктури; ext4 — для Linux-серверів і робочих станцій; APFS — для екосистеми Apple; ZFS — для NAS, дата-центрів і критичних сховищ, де важлива цілісність даних.</p>
+<p data-uk="Ключові тренди на найближче десятиліття: повсюдне поширення CoW-ФС (APFS, ZFS, Btrfs), інтеграція шифрування на рівні ядра, розвиток об'єктних сховищ для AI/ML робочих навантажень, NVMe over Fabrics як стандарт мережевого сховища, а також квантово-стійкі алгоритми шифрування для захисту даних у довгостроковій перспективі." data-ru="Ключевые тренды на ближайшее десятилетие: повсеместное распространение CoW-ФС (APFS, ZFS, Btrfs), интеграция шифрования на уровне ядра, развитие объектных хранилищ для AI/ML рабочих нагрузок, NVMe over Fabrics как стандарт сетевого хранения, а также квантово-устойчивые алгоритмы шифрования для защиты данных в долгосрочной перспективе." data-en="Key trends for the coming decade: widespread adoption of CoW FS (APFS, ZFS, Btrfs), kernel-level encryption integration, development of object storage for AI/ML workloads, NVMe over Fabrics as the network storage standard, and quantum-resistant encryption algorithms for long-term data protection.">Ключові тренди на найближче десятиліття: повсюдне поширення CoW-ФС (APFS, ZFS, Btrfs), інтеграція шифрування на рівні ядра, розвиток об'єктних сховищ для AI/ML робочих навантажень, NVMe over Fabrics як стандарт мережевого сховища, а також квантово-стійкі алгоритми шифрування для захисту даних у довгостроковій перспективі.</p>
+</section>
+</main>
+
+<footer class="footer">
+<p>&larr; <a href="index.html" data-uk="Повернутися на головну сторінку" data-ru="Вернуться на главную страницу" data-en="Return to home page">Повернутися на головну сторінку</a></p>
+<p style="margin-top:10px; font-size:0.8rem;">&copy; 2026 — <span data-uk="Навчальний проєкт. Файлові системи." data-ru="Учебный проект. Файловые системы." data-en="Educational project. File Systems.">Навчальний проєкт. Файлові системи.</span></p>
+</footer>
+
+<script>
+function toggleTheme() {
+  var body = document.body;
+  var btn = document.querySelector('.theme-toggle');
+  var current = body.getAttribute('data-theme');
+  if (current === 'light') {
+    body.removeAttribute('data-theme');
+    btn.innerHTML = '&#127769;';
+    localStorage.setItem('theme', 'dark');
+  } else {
+    body.setAttribute('data-theme', 'light');
+    btn.innerHTML = '&#9728;';
+    localStorage.setItem('theme', 'light');
+  }
+}
+(function(){
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') {
+    document.body.setAttribute('data-theme', 'light');
+    document.querySelector('.theme-toggle').innerHTML = '&#9728;';
+  }
+})();
+
+function setLang(lang) {
+  document.querySelectorAll('.lang-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.querySelectorAll('.lang-btn').forEach(function(btn){
+    if (btn.textContent.toLowerCase() === lang) btn.classList.add('active');
+  });
+  document.querySelectorAll('[data-uk][data-ru][data-en]').forEach(function(el){
+    var text = el.getAttribute('data-' + lang);
+    if (text) el.textContent = text;
+  });
+  var titleEl = document.querySelector('title');
+  if (titleEl) {
+    var titleText = titleEl.getAttribute('data-' + lang);
+    if (titleText) document.title = titleText;
+  }
+  document.querySelector('html').setAttribute('lang', lang === 'uk' ? 'uk' : lang === 'ru' ? 'ru' : 'en');
+  localStorage.setItem('lang', lang);
+}
+(function(){
+  var saved = localStorage.getItem('lang');
+  if (saved && saved !== 'uk') setLang(saved);
+})();
+
+// === SCROLL SPY ===
+(function(){
+  var sections = document.querySelectorAll('.section[id]');
+  var navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
+  function onScroll() {
+    var scrollPos = window.scrollY + 150;
+    sections.forEach(function(sec){
+      var top = sec.offsetTop;
+      var bottom = top + sec.offsetHeight;
+      var id = sec.getAttribute('id');
+      if (scrollPos >= top && scrollPos < bottom) {
+        navLinks.forEach(function(link){
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + id) link.classList.add('active');
+        });
+      }
+    });
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+})();
+</script>
+</body>
+</html>

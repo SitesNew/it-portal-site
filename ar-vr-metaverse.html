@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR/VR / метавсесвіти — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">🥽 AR/VR / метавсесвіти</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    const categories = {
+        foundations: {
+            uk: "📘 Основи XR",
+            ru: "📘 Основы XR",
+            en: "📘 XR Foundations"
+        },
+        hardware: {
+            uk: "🥽 Пристрої та апаратура",
+            ru: "🥽 Устройства и аппаратура",
+            en: "🥽 Devices & Hardware"
+        },
+        development: {
+            uk: "💻 Розробка та платформи",
+            ru: "💻 Разработка и платформы",
+            en: "💻 Development & Platforms"
+        },
+        metaverse: {
+            uk: "🌐 Метавсесвіти",
+            ru: "🌐 Метавселенные",
+            en: "🌐 Metaverses"
+        },
+        applications: {
+            uk: "🎯 Застосування та виклики",
+            ru: "🎯 Применение и вызовы",
+            en: "🎯 Applications & Challenges"
+        }
+    };
+
+    const items = [
+        {
+            cat: "foundations",
+            icon: "🥽",
+            name: {
+                uk: "VR — віртуальна реальність",
+                ru: "VR — виртуальная реальность",
+                en: "VR — Virtual Reality"
+            },
+            desc: {
+                uk: "Повне занурення в комп’ютерне середовище: користувач бачить і чує синтетичний світ замість реального. Потрібні шолом (HMD), трекінг голови/рук, низька затримка. Ігри, тренажери, симуляції.",
+                ru: "Полное погружение в компьютерную среду: пользователь видит и слышит синтетический мир вместо реального. Нужны шлем (HMD), трекинг головы/рук, низкая задержка. Игры, тренажёры, симуляции.",
+                en: "Full immersion in a computer environment: the user sees and hears a synthetic world instead of the real one. Requires a headset (HMD), head/hand tracking, low latency. Games, trainers, simulations."
+            },
+            traits: {
+                uk: "HMD, Імерсія, Трекінг, Latency, Presence",
+                ru: "HMD, Иммерсия, Трекинг, Latency, Presence",
+                en: "HMD, Immersion, Tracking, Latency, Presence"
+            },
+            spec: {
+                uk: "Presence — відчуття «я там»",
+                ru: "Presence — ощущение «я там»",
+                en: "Presence — the feeling of “being there”"
+            },
+            links: [
+                { name: "XR Association", url: "https://xra.org" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "📱",
+            name: {
+                uk: "AR — доповнена реальність",
+                ru: "AR — дополненная реальность",
+                en: "AR — Augmented Reality"
+            },
+            desc: {
+                uk: "Накладання цифрового контенту на реальний світ через камеру телефону, окуляри або шолом. Користувач залишається в реальному середовищі. Навігація, інструкції, маркетинг, ігри (Pokémon GO).",
+                ru: "Наложение цифрового контента на реальный мир через камеру телефона, очки или шлем. Пользователь остаётся в реальной среде. Навигация, инструкции, маркетинг, игры (Pokémon GO).",
+                en: "Overlaying digital content on the real world via phone camera, glasses or headset. The user stays in the real environment. Navigation, instructions, marketing, games (Pokémon GO)."
+            },
+            traits: {
+                uk: "Overlay, Camera, Маркери, SLAM, Mobile AR",
+                ru: "Overlay, Camera, Маркеры, SLAM, Mobile AR",
+                en: "Overlay, Camera, Markers, SLAM, Mobile AR"
+            },
+            spec: {
+                uk: "Реальний світ + цифровий шар",
+                ru: "Реальный мир + цифровой слой",
+                en: "Real world + digital layer"
+            },
+            links: [
+                { name: "ARCore", url: "https://developers.google.com/ar" },
+                { name: "ARKit", url: "https://developer.apple.com/augmented-reality/" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "🔀",
+            name: {
+                uk: "MR / XR — змішана та розширена реальність",
+                ru: "MR / XR — смешанная и расширенная реальность",
+                en: "MR / XR — Mixed and Extended Reality"
+            },
+            desc: {
+                uk: "MR (Mixed Reality) — поєднання VR і AR: цифрові об’єкти «взаємодіють» з реальним простором (HoloLens, Quest passthrough). XR (Extended Reality) — загальний термін для VR + AR + MR.",
+                ru: "MR (Mixed Reality) — сочетание VR и AR: цифровые объекты «взаимодействуют» с реальным пространством (HoloLens, Quest passthrough). XR (Extended Reality) — общий термин для VR + AR + MR.",
+                en: "MR (Mixed Reality) combines VR and AR: digital objects “interact” with real space (HoloLens, Quest passthrough). XR (Extended Reality) is the umbrella term for VR + AR + MR."
+            },
+            traits: {
+                uk: "MR, XR, Passthrough, Spatial computing, HoloLens",
+                ru: "MR, XR, Passthrough, Spatial computing, HoloLens",
+                en: "MR, XR, Passthrough, Spatial computing, HoloLens"
+            },
+            spec: {
+                uk: "XR — зручна «парасолька» для всієї галузі",
+                ru: "XR — удобный «зонтик» для всей отрасли",
+                en: "XR is a convenient umbrella for the whole field"
+            },
+            links: [
+                { name: "OpenXR", url: "https://www.khronos.org/openxr/" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "👁️",
+            name: {
+                uk: "Presence, immersion, cybersickness",
+                ru: "Presence, immersion, cybersickness",
+                en: "Presence, Immersion, Cybersickness"
+            },
+            desc: {
+                uk: "Presence — психологічне відчуття присутності. Immersion — технічна глибина занурення. Cybersickness — нудота через розсинхрон руху і зображення. Критичні метрики якості XR-досвіду.",
+                ru: "Presence — психологическое ощущение присутствия. Immersion — техническая глубина погружения. Cybersickness — тошнота из-за рассинхрона движения и изображения. Критические метрики качества XR-опыта.",
+                en: "Presence is the psychological sense of being there. Immersion is technical depth of immersion. Cybersickness is nausea from motion–visual mismatch. Critical quality metrics for XR experience."
+            },
+            traits: {
+                uk: "Presence, Immersion, Motion sickness, FPS, Latency",
+                ru: "Presence, Immersion, Motion sickness, FPS, Latency",
+                en: "Presence, Immersion, Motion sickness, FPS, Latency"
+            },
+            spec: {
+                uk: "Високий FPS і низький latency зменшують нудоту",
+                ru: "Высокий FPS и низкий latency снижают тошноту",
+                en: "High FPS and low latency reduce sickness"
+            },
+            links: []
+        },
+        {
+            cat: "hardware",
+            icon: "🕶️",
+            name: {
+                uk: "VR-шоломи (HMD)",
+                ru: "VR-шлемы (HMD)",
+                en: "VR Headsets (HMD)"
+            },
+            desc: {
+                uk: "Meta Quest, PlayStation VR, Valve Index, HTC Vive, Pico, Apple Vision Pro (spatial). Standalone (всередині чип) vs PCVR (підключення до ПК). Роздільна здатність, FOV, частота оновлення, трекінг.",
+                ru: "Meta Quest, PlayStation VR, Valve Index, HTC Vive, Pico, Apple Vision Pro (spatial). Standalone (чип внутри) vs PCVR (подключение к ПК). Разрешение, FOV, частота обновления, трекинг.",
+                en: "Meta Quest, PlayStation VR, Valve Index, HTC Vive, Pico, Apple Vision Pro (spatial). Standalone (chip inside) vs PCVR (PC-tethered). Resolution, FOV, refresh rate, tracking."
+            },
+            traits: {
+                uk: "Quest, PCVR, FOV, Refresh rate, Standalone",
+                ru: "Quest, PCVR, FOV, Refresh rate, Standalone",
+                en: "Quest, PCVR, FOV, Refresh rate, Standalone"
+            },
+            spec: {
+                uk: "Standalone зробив VR масовішим",
+                ru: "Standalone сделал VR массовее",
+                en: "Standalone made VR more mainstream"
+            },
+            links: [
+                { name: "Meta Quest", url: "https://www.meta.com/quest/" },
+                { name: "Apple Vision Pro", url: "https://www.apple.com/apple-vision-pro/" }
+            ]
+        },
+        {
+            cat: "hardware",
+            icon: "👓",
+            name: {
+                uk: "AR-окуляри та spatial computing",
+                ru: "AR-очки и spatial computing",
+                en: "AR Glasses and Spatial Computing"
+            },
+            desc: {
+                uk: "Окуляри з прозорими дисплеями або passthrough: HoloLens, Magic Leap, foresight на «повсякденні» окуляри. Spatial computing — взаємодія з цифровим контентом у фізичному просторі (жести, погляд, голос).",
+                ru: "Очки с прозрачными дисплеями или passthrough: HoloLens, Magic Leap, перспективы «повседневных» очков. Spatial computing — взаимодействие с цифровым контентом в физическом пространстве (жесты, взгляд, голос).",
+                en: "Glasses with transparent displays or passthrough: HoloLens, Magic Leap, the prospect of everyday glasses. Spatial computing — interacting with digital content in physical space (gestures, gaze, voice)."
+            },
+            traits: {
+                uk: "HoloLens, Passthrough, Жести, Gaze, Spatial",
+                ru: "HoloLens, Passthrough, Жесты, Gaze, Spatial",
+                en: "HoloLens, Passthrough, Gestures, Gaze, Spatial"
+            },
+            spec: {
+                uk: "Мета — окуляри, які носять щодня",
+                ru: "Цель — очки, которые носят каждый день",
+                en: "The goal is glasses worn every day"
+            },
+            links: [
+                { name: "Microsoft HoloLens", url: "https://www.microsoft.com/hololens" }
+            ]
+        },
+        {
+            cat: "hardware",
+            icon: "✋",
+            name: {
+                uk: "Трекінг і контролери",
+                ru: "Трекинг и контроллеры",
+                en: "Tracking and Controllers"
+            },
+            desc: {
+                uk: "6DoF (позиція + орієнтація) vs 3DoF. Inside-out (камери на шоломі) vs outside-in (базові станції). Контролери, hand tracking, eye tracking, full-body — різні рівні «тілесності» в XR.",
+                ru: "6DoF (позиция + ориентация) vs 3DoF. Inside-out (камеры на шлеме) vs outside-in (базовые станции). Контроллеры, hand tracking, eye tracking, full-body — разные уровни «телесности» в XR.",
+                en: "6DoF (position + orientation) vs 3DoF. Inside-out (cameras on headset) vs outside-in (base stations). Controllers, hand tracking, eye tracking, full-body — different levels of “embodiment” in XR."
+            },
+            traits: {
+                uk: "6DoF, Inside-out, Hand tracking, Eye tracking",
+                ru: "6DoF, Inside-out, Hand tracking, Eye tracking",
+                en: "6DoF, Inside-out, Hand tracking, Eye tracking"
+            },
+            spec: {
+                uk: "Точний трекінг = менше нудоти і кращий presence",
+                ru: "Точный трекинг = меньше тошноты и лучше presence",
+                en: "Accurate tracking = less sickness and better presence"
+            },
+            links: []
+        },
+        {
+            cat: "hardware",
+            icon: "🔊",
+            name: {
+                uk: "Просторовий звук і гаптика",
+                ru: "Пространственный звук и гаптика",
+                en: "Spatial Audio and Haptics"
+            },
+            desc: {
+                uk: "3D-аудіо підсилює presence (звук «ззаду», «зверху»). Гаптика — вібрація контролерів, рукавички, жилети — тактильний зворотний зв’язок. Разом з візуалом формують імерсію.",
+                ru: "3D-аудио усиливает presence (звук «сзади», «сверху»). Гаптика — вибрация контроллеров, перчатки, жилеты — тактильная обратная связь. Вместе с визуалом формируют иммерсию.",
+                en: "3D audio strengthens presence (sound “from behind”, “above”). Haptics — controller vibration, gloves, vests — tactile feedback. Together with visuals they form immersion."
+            },
+            traits: {
+                uk: "Spatial audio, Haptics, Feedback, Імерсія",
+                ru: "Spatial audio, Haptics, Feedback, Иммерсия",
+                en: "Spatial audio, Haptics, Feedback, Immersion"
+            },
+            spec: {
+                uk: "Звук і дотик часто недооцінюють",
+                ru: "Звук и касание часто недооценивают",
+                en: "Sound and touch are often underestimated"
+            },
+            links: []
+        },
+        {
+            cat: "development",
+            icon: "⚙️",
+            name: {
+                uk: "Рушії для XR: Unity, Unreal, OpenXR",
+                ru: "Движки для XR: Unity, Unreal, OpenXR",
+                en: "XR Engines: Unity, Unreal, OpenXR"
+            },
+            desc: {
+                uk: "Unity і Unreal — основні рушії для VR/AR-контенту. OpenXR — відкритий стандарт API від Khronos, щоб один код працював на різних шоломах. WebXR — XR у браузері.",
+                ru: "Unity и Unreal — основные движки для VR/AR-контента. OpenXR — открытый стандарт API от Khronos, чтобы один код работал на разных шлемах. WebXR — XR в браузере.",
+                en: "Unity and Unreal are the main engines for VR/AR content. OpenXR is Khronos’s open API standard so one codebase works across headsets. WebXR is XR in the browser."
+            },
+            traits: {
+                uk: "Unity, Unreal, OpenXR, WebXR, Cross-device",
+                ru: "Unity, Unreal, OpenXR, WebXR, Cross-device",
+                en: "Unity, Unreal, OpenXR, WebXR, Cross-device"
+            },
+            spec: {
+                uk: "OpenXR зменшує фрагментацію платформ",
+                ru: "OpenXR снижает фрагментацию платформ",
+                en: "OpenXR reduces platform fragmentation"
+            },
+            links: [
+                { name: "OpenXR", url: "https://www.khronos.org/openxr/" },
+                { name: "WebXR", url: "https://www.w3.org/TR/webxr/" }
+            ]
+        },
+        {
+            cat: "development",
+            icon: "📐",
+            name: {
+                uk: "SLAM, tracking, spatial anchors",
+                ru: "SLAM, tracking, spatial anchors",
+                en: "SLAM, Tracking, Spatial Anchors"
+            },
+            desc: {
+                uk: "SLAM (Simultaneous Localization and Mapping) — побудова карти середовища і позиції пристрою одночасно. Spatial anchors — «прив’язка» об’єктів до місць у просторі, щоб вони залишались на місці між сесіями.",
+                ru: "SLAM (Simultaneous Localization and Mapping) — построение карты среды и позиции устройства одновременно. Spatial anchors — «привязка» объектов к местам в пространстве, чтобы они оставались на месте между сессиями.",
+                en: "SLAM (Simultaneous Localization and Mapping) builds a map of the environment and device pose at once. Spatial anchors pin objects to places in space so they stay put across sessions."
+            },
+            traits: {
+                uk: "SLAM, Anchors, Mapping, Persistence, AR",
+                ru: "SLAM, Anchors, Mapping, Persistence, AR",
+                en: "SLAM, Anchors, Mapping, Persistence, AR"
+            },
+            spec: {
+                uk: "Без якісного tracking AR «пливе»",
+                ru: "Без качественного tracking AR «плывёт»",
+                en: "Without solid tracking, AR drifts"
+            },
+            links: []
+        },
+        {
+            cat: "development",
+            icon: "🎨",
+            name: {
+                uk: "UX у XR: комфорт і інтерфейси",
+                ru: "UX в XR: комфорт и интерфейсы",
+                en: "XR UX: Comfort and Interfaces"
+            },
+            desc: {
+                uk: "Інтерфейси в 3D-просторі: жести, промені (ray), погляд, голос. Важливі: комфорт (уникнення нудоти), безпека в реальному просторі, доступність, уникнення «VR fatigue». Дизайн відрізняється від 2D-екранів.",
+                ru: "Интерфейсы в 3D-пространстве: жесты, лучи (ray), взгляд, голос. Важны: комфорт (избежание тошноты), безопасность в реальном пространстве, доступность, избежание «VR fatigue». Дизайн отличается от 2D-экранов.",
+                en: "Interfaces in 3D space: gestures, rays, gaze, voice. Critical: comfort (avoid sickness), safety in real space, accessibility, avoiding “VR fatigue”. Design differs from 2D screens."
+            },
+            traits: {
+                uk: "Gestures, Ray, Gaze, Comfort, Accessibility",
+                ru: "Gestures, Ray, Gaze, Comfort, Accessibility",
+                en: "Gestures, Ray, Gaze, Comfort, Accessibility"
+            },
+            spec: {
+                uk: "XR UX — окрема дисципліна",
+                ru: "XR UX — отдельная дисциплина",
+                en: "XR UX is a discipline of its own"
+            },
+            links: [
+                { name: "Oculus design guidelines", url: "https://developer.oculus.com/design/" }
+            ]
+        },
+        {
+            cat: "development",
+            icon: "📡",
+            name: {
+                uk: "Мультиплеєр і мережа в XR",
+                ru: "Мультиплеер и сеть в XR",
+                en: "Multiplayer and Networking in XR"
+            },
+            desc: {
+                uk: "Спільні сесії, аватари, синхронізація поз і жестів, voice chat. Низька latency критична. Платформи: Photon, Normcore, Unity Netcode, кастомні рішення. Social VR — окремий сегмент.",
+                ru: "Совместные сессии, аватары, синхронизация поз и жестов, voice chat. Низкая latency критична. Платформы: Photon, Normcore, Unity Netcode, кастомные решения. Social VR — отдельный сегмент.",
+                en: "Shared sessions, avatars, pose and gesture sync, voice chat. Low latency is critical. Platforms: Photon, Normcore, Unity Netcode, custom solutions. Social VR is a segment of its own."
+            },
+            traits: {
+                uk: "Avatars, Sync, Voice, Latency, Social VR",
+                ru: "Avatars, Sync, Voice, Latency, Social VR",
+                en: "Avatars, Sync, Voice, Latency, Social VR"
+            },
+            spec: {
+                uk: "Спільна присутність — сильний ефект XR",
+                ru: "Совместное присутствие — сильный эффект XR",
+                en: "Shared presence is a strong XR effect"
+            },
+            links: []
+        },
+        {
+            cat: "metaverse",
+            icon: "🌐",
+            name: {
+                uk: "Що таке метавсесвіт",
+                ru: "Что такое метавселенная",
+                en: "What is the Metaverse"
+            },
+            desc: {
+                uk: "Бачення стійких, спільних, часто 3D-просторів, де люди взаємодіють, працюють, грають і володіють цифровими активами. Не одна платформа, а екосистема (і поки що радше напрям, ніж готова реальність).",
+                ru: "Видение устойчивых, совместных, часто 3D-пространств, где люди взаимодействуют, работают, играют и владеют цифровыми активами. Не одна платформа, а экосистема (и пока скорее направление, чем готовая реальность).",
+                en: "A vision of persistent, shared, often 3D spaces where people interact, work, play and own digital assets. Not one platform but an ecosystem (and still more a direction than a finished reality)."
+            },
+            traits: {
+                uk: "Persistence, Shared, Identity, Assets, Interop",
+                ru: "Persistence, Shared, Identity, Assets, Interop",
+                en: "Persistence, Shared, Identity, Assets, Interop"
+            },
+            spec: {
+                uk: "Метавсесвіт — мета, а не продукт «з коробки»",
+                ru: "Метавселенная — цель, а не продукт «из коробки»",
+                en: "The metaverse is a goal, not an out-of-the-box product"
+            },
+            links: [
+                { name: "Metaverse standards", url: "https://metaverse-standards.org" }
+            ]
+        },
+        {
+            cat: "metaverse",
+            icon: "🪪",
+            name: {
+                uk: "Ідентичність, аватари, власність",
+                ru: "Идентичность, аватары, собственность",
+                en: "Identity, Avatars, Ownership"
+            },
+            desc: {
+                uk: "Хто ви в цифровому просторі: аватар, акаунт, можливо — децентралізована ідентичність. Цифрові активи (скіни, земля, NFT) і питання справжньої власності та переносимості між світами.",
+                ru: "Кто вы в цифровом пространстве: аватар, аккаунт, возможно — децентрализованная идентичность. Цифровые активы (скины, земля, NFT) и вопросы настоящей собственности и переносимости между мирами.",
+                en: "Who you are in digital space: avatar, account, possibly decentralized identity. Digital assets (skins, land, NFTs) and questions of real ownership and portability across worlds."
+            },
+            traits: {
+                uk: "Avatar, Identity, NFT, Ownership, Portability",
+                ru: "Avatar, Identity, NFT, Ownership, Portability",
+                en: "Avatar, Identity, NFT, Ownership, Portability"
+            },
+            spec: {
+                uk: "Без interop «всесвіти» залишаються островами",
+                ru: "Без interop «вселенные» остаются островами",
+                en: "Without interop, “universes” stay islands"
+            },
+            links: []
+        },
+        {
+            cat: "metaverse",
+            icon: "🔗",
+            name: {
+                uk: "Платформи та екосистеми",
+                ru: "Платформы и экосистемы",
+                en: "Platforms and Ecosystems"
+            },
+            desc: {
+                uk: "Roblox, Fortnite, VRChat, Horizon Worlds, Second Life, Decentraland, spatial platforms для роботи (Mesh, Spatial). Різний акцент: ігри, соцмережі, робота, креатив user-generated контенту.",
+                ru: "Roblox, Fortnite, VRChat, Horizon Worlds, Second Life, Decentraland, spatial-платформы для работы (Mesh, Spatial). Разный акцент: игры, соцсети, работа, креатив user-generated контента.",
+                en: "Roblox, Fortnite, VRChat, Horizon Worlds, Second Life, Decentraland, spatial work platforms (Mesh, Spatial). Different focus: games, social, work, user-generated creative content."
+            },
+            traits: {
+                uk: "Roblox, VRChat, UGC, Social, Workspaces",
+                ru: "Roblox, VRChat, UGC, Social, Workspaces",
+                en: "Roblox, VRChat, UGC, Social, Workspaces"
+            },
+            spec: {
+                uk: "UGC часто важливіший за «готовий» контент студії",
+                ru: "UGC часто важнее «готового» контента студии",
+                en: "UGC is often more important than studio-made content"
+            },
+            links: [
+                { name: "VRChat", url: "https://hello.vrchat.com" },
+                { name: "Roblox", url: "https://www.roblox.com" }
+            ]
+        },
+        {
+            cat: "metaverse",
+            icon: "⚖️",
+            name: {
+                uk: "Стандарти, interop, відкритість",
+                ru: "Стандарты, interop, открытость",
+                en: "Standards, Interop, Openness"
+            },
+            desc: {
+                uk: "Щоб метавсесвіт не був набором закритих «садів», потрібні стандарти ідентичності, активів, сцен (glTF, OpenXR, USD). Metaverse Standards Forum та інші ініціативи працюють над цим.",
+                ru: "Чтобы метавселенная не была набором закрытых «садов», нужны стандарты идентичности, активов, сцен (glTF, OpenXR, USD). Metaverse Standards Forum и другие инициативы работают над этим.",
+                en: "For the metaverse not to be a set of closed gardens, standards for identity, assets and scenes are needed (glTF, OpenXR, USD). The Metaverse Standards Forum and others work on this."
+            },
+            traits: {
+                uk: "glTF, OpenXR, USD, Standards, Interop",
+                ru: "glTF, OpenXR, USD, Standards, Interop",
+                en: "glTF, OpenXR, USD, Standards, Interop"
+            },
+            spec: {
+                uk: "Без стандартів не буде єдиного «всесвіту»",
+                ru: "Без стандартов не будет единой «вселенной»",
+                en: "Without standards there will be no single “universe”"
+            },
+            links: [
+                { name: "Metaverse Standards Forum", url: "https://metaverse-standards.org" }
+            ]
+        },
+        {
+            cat: "applications",
+            icon: "🎓",
+            name: {
+                uk: "Освіта, тренінги, медицина",
+                ru: "Образование, тренинги, медицина",
+                en: "Education, Training, Medicine"
+            },
+            desc: {
+                uk: "Симуляції операцій, тренування пілотів і рятувальників, віртуальні класи, терапія фобій. XR дає безпечне середовище для практики дорогих або небезпечних навичок.",
+                ru: "Симуляции операций, тренировки пилотов и спасателей, виртуальные классы, терапия фобий. XR даёт безопасную среду для практики дорогих или опасных навыков.",
+                en: "Surgery simulations, pilot and rescue training, virtual classrooms, phobia therapy. XR provides a safe environment to practice expensive or dangerous skills."
+            },
+            traits: {
+                uk: "Simulation, Training, Therapy, Safety, Skills",
+                ru: "Simulation, Training, Therapy, Safety, Skills",
+                en: "Simulation, Training, Therapy, Safety, Skills"
+            },
+            spec: {
+                uk: "Один з найзріліших бізнес-кейсів XR",
+                ru: "Один из самых зрелых бизнес-кейсов XR",
+                en: "One of the most mature XR business cases"
+            },
+            links: []
+        },
+        {
+            cat: "applications",
+            icon: "🏭",
+            name: {
+                uk: "Промисловість, дизайн, retail",
+                ru: "Промышленность, дизайн, retail",
+                en: "Industry, Design, Retail"
+            },
+            desc: {
+                uk: "Цифрові двійники, інструкції поверх обладнання (AR), спільний 3D-дизайн, віртуальні примірочні. ROI часто вимірюється економією часу, помилок і логістики.",
+                ru: "Цифровые двойники, инструкции поверх оборудования (AR), совместный 3D-дизайн, виртуальные примерочные. ROI часто измеряется экономией времени, ошибок и логистики.",
+                en: "Digital twins, instructions overlaid on equipment (AR), collaborative 3D design, virtual try-on. ROI is often measured in time, error and logistics savings."
+            },
+            traits: {
+                uk: "Digital twin, AR instructions, Collaboration, Retail",
+                ru: "Digital twin, AR instructions, Collaboration, Retail",
+                en: "Digital twin, AR instructions, Collaboration, Retail"
+            },
+            spec: {
+                uk: "Enterprise XR часто випереджає consumer",
+                ru: "Enterprise XR часто опережает consumer",
+                en: "Enterprise XR often leads consumer"
+            },
+            links: []
+        },
+        {
+            cat: "applications",
+            icon: "🎮",
+            name: {
+                uk: "Ігри та розваги",
+                ru: "Игры и развлечения",
+                en: "Games and Entertainment"
+            },
+            desc: {
+                uk: "Найвидиміший сегмент VR: Beat Saber, Half-Life: Alyx, соц. простори. AR-ігри на мобільних. Live-події, концерти, кіно в VR. Контент і комфорт визначають утримання.",
+                ru: "Самый видимый сегмент VR: Beat Saber, Half-Life: Alyx, соц. пространства. AR-игры на мобильных. Live-события, концерты, кино в VR. Контент и комфорт определяют удержание.",
+                en: "The most visible VR segment: Beat Saber, Half-Life: Alyx, social spaces. Mobile AR games. Live events, concerts, VR cinema. Content and comfort drive retention."
+            },
+            traits: {
+                uk: "VR games, Social, Live events, Retention, Content",
+                ru: "VR games, Social, Live events, Retention, Content",
+                en: "VR games, Social, Live events, Retention, Content"
+            },
+            spec: {
+                uk: "Контент — головний драйвер прийняття VR",
+                ru: "Контент — главный драйвер принятия VR",
+                en: "Content is the main driver of VR adoption"
+            },
+            links: []
+        },
+        {
+            cat: "applications",
+            icon: "⚠️",
+            name: {
+                uk: "Виклики: здоров’я, приватність, етика",
+                ru: "Вызовы: здоровье, приватность, этика",
+                en: "Challenges: Health, Privacy, Ethics"
+            },
+            desc: {
+                uk: "Cybersickness, втома очей, ізоляція, збір біометричних і просторових даних, маніпуляції в імерсивних середовищах, доступність. Регуляція і дизайн «з відповідальністю» тільки формуються.",
+                ru: "Cybersickness, усталость глаз, изоляция, сбор биометрических и пространственных данных, манипуляции в иммерсивных средах, доступность. Регуляция и дизайн «с ответственностью» только формируются.",
+                en: "Cybersickness, eye strain, isolation, collection of biometric and spatial data, manipulation in immersive environments, accessibility. Regulation and responsible design are still forming."
+            },
+            traits: {
+                uk: "Health, Privacy, Biometrics, Ethics, Accessibility",
+                ru: "Health, Privacy, Biometrics, Ethics, Accessibility",
+                en: "Health, Privacy, Biometrics, Ethics, Accessibility"
+            },
+            spec: {
+                uk: "Імерсія підсилює і користь, і ризики",
+                ru: "Иммерсия усиливает и пользу, и риски",
+                en: "Immersion amplifies both benefits and risks"
+            },
+            links: [
+                { name: "XRSI", url: "https://xrsi.org" }
+            ]
+        }
+    ];
+
+    const ui = {
+        uk: {
+            title: "AR/VR / метавсесвіти — Довідник",
+            pageTitle: "🥽 AR/VR / метавсесвіти",
+            home: "Головна сторінка",
+            all: "Усі розділи",
+            traits: "Ключові елементи та поняття",
+            mfgText: "Корисні ресурси:",
+            noResults: "Нічого не знайдено.",
+            footer: "🥽 AR/VR / метавсесвіти | Довідник 2026",
+            introTitle: "Що таке AR, VR і метавсесвіти?",
+            intro1: "VR занурює у повністю цифровий світ, AR доповнює реальний цифровим шаром, MR/XR об’єднують підходи. Метавсесвіт — бачення стійких спільних просторів для роботи, гри та соціальної взаємодії; поки що це радше напрям розвитку, ніж єдина готова платформа.",
+            intro2: "Сторінка охоплює основи, пристрої, розробку, концепції метавсесвіту, застосування та виклики — від технічних до етичних."
+        },
+        ru: {
+            title: "AR/VR / метавселенные — Справочник",
+            pageTitle: "🥽 AR/VR / метавселенные",
+            home: "Главная страница",
+            all: "Все разделы",
+            traits: "Ключевые элементы и понятия",
+            mfgText: "Полезные ресурсы:",
+            noResults: "Ничего не найдено.",
+            footer: "🥽 AR/VR / метавселенные | Справочник 2026",
+            introTitle: "Что такое AR, VR и метавселенные?",
+            intro1: "VR погружает в полностью цифровой мир, AR дополняет реальный цифровым слоем, MR/XR объединяют подходы. Метавселенная — видение устойчивых совместных пространств для работы, игры и социального взаимодействия; пока это скорее направление развития, чем единая готовая платформа.",
+            intro2: "Страница охватывает основы, устройства, разработку, концепции метавселенной, применение и вызовы — от технических до этических."
+        },
+        en: {
+            title: "AR/VR / Metaverses — Guide",
+            pageTitle: "🥽 AR/VR / Metaverses",
+            home: "Home page",
+            all: "All sections",
+            traits: "Key concepts and elements",
+            mfgText: "Useful resources:",
+            noResults: "Nothing found.",
+            footer: "🥽 AR/VR / Metaverses | Guide 2026",
+            introTitle: "What are AR, VR and metaverses?",
+            intro1: "VR immerses you in a fully digital world, AR overlays digital content on the real world, MR/XR combine the approaches. The metaverse is a vision of persistent shared spaces for work, play and social interaction; for now it is more a direction of development than a single finished platform.",
+            intro2: "This page covers foundations, devices, development, metaverse concepts, applications and challenges — from technical to ethical."
+        }
+    };
+
+    let currentLang = safeGet("lang-xr", "uk");
+    let activeCategory = "all";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-xr", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + "</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) { return e.cat === catKey; });
+            if (!list.length) return;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        main.innerHTML = html || ('<div class="no-results">' + ui[currentLang].noResults + "</div>");
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

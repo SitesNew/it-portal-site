@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Portal — Головна</title>
+    <style>
+        :root {
+            --bg: #08080f;
+            --surface: #0f0f1a;
+            --surface-elevated: #16162a;
+            --card: #1c1c35;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #00e5b0;
+            --accent-2: #7c3aed;
+            --accent-3: #ff9f43;
+            --gradient: linear-gradient(135deg, #00e5b0, #7c3aed, #ff9f43);
+            --shadow: 0 8px 32px rgba(0,0,0,0.5);
+            --radius: 1.2rem;
+            --transition: 0.3s ease;
+        }
+        [data-theme="light"] {
+            --bg: #f0f2f8;
+            --surface: #ffffff;
+            --surface-elevated: #f8f9fc;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 8px 32px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: background var(--transition), color var(--transition);
+            overflow-x: hidden;
+        }
+
+        /* Background effect */
+        .bg-glow {
+            position: fixed;
+            top: -20%; left: -10%;
+            width: 50%; height: 50%;
+            background: radial-gradient(circle, rgba(0,229,176,0.08) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        .bg-glow-2 {
+            position: fixed;
+            bottom: -20%; right: -10%;
+            width: 50%; height: 50%;
+            background: radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(8,8,15,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5%;
+        }
+        [data-theme="light"] header {
+            background: rgba(255,255,255,0.85);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-elevated); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.4rem 0.8rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.8rem; font-weight: 700; transition: var(--transition);
+        }
+        .lang-switcher button.active { background: var(--accent); color: #000; }
+        .theme-btn {
+            width: 38px; height: 38px; border-radius: 50%; border: none;
+            background: var(--surface-elevated); color: var(--text); cursor: pointer;
+            font-size: 1.1rem; transition: var(--transition);
+        }
+        .theme-btn:hover { transform: scale(1.1) rotate(15deg); }
+
+        /* Hero */
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 5% 3rem;
+            text-align: center;
+        }
+        .hero-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: rgba(0,229,176,0.1);
+            color: var(--accent);
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(0,229,176,0.2);
+        }
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+        .hero h1 span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-num {
+            font-size: 2rem;
+            font-weight: 900;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+
+        /* About IT Section */
+        .about-it {
+            background: var(--surface);
+            border-top: 1px solid rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            padding: 4rem 5%;
+        }
+        [data-theme="light"] .about-it {
+            border-top: 1px solid rgba(0,0,0,0.04);
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+        }
+        .about-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .about-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.2rem;
+        }
+        .about-card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.8rem;
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+        [data-theme="light"] .about-card {
+            border-color: rgba(0,0,0,0.06);
+        }
+        .about-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+        .about-icon {
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
+        }
+        .about-card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+        }
+        .about-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        .about-fact {
+            margin-top: 2rem;
+            background: linear-gradient(135deg, rgba(0,229,176,0.06), rgba(124,58,237,0.06));
+            border: 1px solid rgba(0,229,176,0.12);
+            border-radius: var(--radius);
+            padding: 1.8rem;
+            text-align: center;
+        }
+        .about-fact p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            font-style: italic;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .about-fact .fact-highlight {
+            color: var(--accent);
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        /* Sections */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 5% 4rem;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 3rem 0 1.2rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .section-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Grid */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        .bento-grid .card-large {
+            grid-column: span 2;
+        }
+        @media (max-width: 640px) {
+            .bento-grid .card-large {
+                grid-column: span 1;
+            }
+        }
+
+        /* Portal Cards */
+        .portal-card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        [data-theme="light"] .portal-card {
+            border-color: rgba(0,0,0,0.06);
+        }
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transition: transform var(--transition);
+        }
+        .portal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+            border-color: rgba(0,229,176,0.15);
+        }
+        .portal-card:hover::before {
+            transform: scaleX(1);
+        }
+        .portal-card.coming-soon {
+            opacity: 0.7;
+            cursor: default;
+        }
+        .portal-card.coming-soon:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255,159,67,0.2);
+        }
+        .portal-card.coming-soon::before {
+            background: linear-gradient(90deg, var(--accent-3), var(--accent-2));
+        }
+
+        .card-icon {
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
+        }
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .card-badge {
+            font-size: 0.65rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .badge-live {
+            background: rgba(0,229,176,0.15);
+            color: var(--accent);
+        }
+        .badge-soon {
+            background: rgba(255,159,67,0.15);
+            color: var(--accent-3);
+        }
+        .card-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            flex: 1;
+        }
+        .card-meta {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* Quote block */
+        .quote-block {
+            background: var(--gradient);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 3rem 0;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        .quote-block::before {
+            content: '"';
+            position: absolute;
+            top: -1rem; right: 2rem;
+            font-size: 10rem;
+            opacity: 0.15;
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+        .quote-block p {
+            font-size: 1.1rem;
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+        .quote-block .author {
+            margin-top: 1rem;
+            font-weight: 700;
+            font-style: normal;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 5%;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        [data-theme="light"] footer {
+            border-top: 1px solid rgba(0,0,0,0.06);
+        }
+        footer .heart {
+            color: #ff6b6b;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-elevated); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+    <div class="bg-glow-2"></div>
+
+    <header>
+        <div class="header-inner">
+            <div class="logo">🌐 IT Portal</div>
+            <div class="controls">
+                <div class="lang-switcher">
+                    <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                    <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                    <button onclick="setLang('en')" id="btn-en">EN</button>
+                </div>
+                <button class="theme-btn" onclick="toggleTheme()">🌓</button>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-badge" data-key="badge">Освітній проєкт</div>
+        <h1 data-key="hero_title">Енциклопедія сучасних <span>ІТ-технологій</span></h1>
+        <p data-key="hero_desc">Універсальний портал для вивчення, дослідження та тестування технологій штучного інтелекту, операційних систем, баз даних, мов програмування та інфраструктури. Створено з досвідом, що охоплює всю історію обчислювальної техніки.</p>
+        <div class="hero-stats">
+            <div class="stat">
+                <div class="stat-num">5</div>
+                <div class="stat-label" data-key="stat_ready">готових довідників</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">100+</div>
+                <div class="stat-label" data-key="stat_tools">інструментів і сервісів</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">3</div>
+                <div class="stat-label" data-key="stat_lang">мови інтерфейсу</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">∞</div>
+                <div class="stat-label" data-key="stat_exp">років досвіду</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW: About IT Section -->
+    <section class="about-it" id="about-it">
+        <div class="about-inner">
+            <h2 class="about-title" data-key="about_title">💡 Що таке ІТ та чому вони важливі?</h2>
+            <div class="about-grid">
+                <div class="about-card">
+                    <div class="about-icon">🧠</div>
+                    <h3 data-key="about_what_title">Визначення</h3>
+                    <p data-key="about_what_text">Інформаційні технології (ІТ) — це сукупність методів, процесів і засобів для збирання, зберігання, обробки та передачі інформації за допомогою комп'ютерів і телекомунікацій. Це не просто «комп'ютери» — це нервова система сучасної цивілізації, що поєднує мільярди пристроїв та людей у єдине цифрове середовище.</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon">🎯</div>
+                    <h3 data-key="about_why_title">Для чого потрібні?</h3>
+                    <p data-key="about_why_text">Від лікування пацієнтів і запуску супутників до управління фінансами та навчання дітей. ІТ автоматизують рутину, аналізують величезні масиви даних, з'єднують людей через континенти та відкривають можливості, про які ми не мріяли пів століття тому. Без ІТ сучасна медицина, наука, транспорт і економіка просто неможливі.</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon">🌍</div>
+                    <h3 data-key="about_place_title">Місце в житті</h3>
+                    <p data-key="about_place_text">Сьогодні ІТ проникли в кожну сферу — медицину, транспорт, сільське господарство, мистецтво, політику. Смартфон у кишені, безконтактна оплата, відеозв'язок з рідними, прогноз погоди — усе це результат праці мільйонів фахівців, що розвивали технології десятиліттями. ІТ перетворилися з привілею обраних на базову інфраструктуру, як електрика чи водопостачання.</p>
+                </div>
+            </div>
+            <div class="about-fact">
+                <p data-key="about_fact_text">Сьогодні <span class="fact-highlight">кожен другий житель планети</span> має доступ до Інтернету, а обсяг цифрових даних у світі <span class="fact-highlight">подвоюється кожні два роки</span>. Ми живемо в епоху, коли інформація стала важливішою за золото, а швидкість її обробки визначає конкурентоспроможність цілих країн.</p>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <!-- READY -->
+        <div class="section-header">
+            <div>
+                <div class="section-title" data-key="ready_title">✅ Готові довідники</div>
+                <div class="section-subtitle" data-key="ready_subtitle">Перейдіть до розділу, щоб дослідити та протестувати</div>
+            </div>
+        </div>
+        <div class="bento-grid" id="ready-grid"></div>
+
+        <!-- HISTORY -->
+        <div class="section-header">
+            <div>
+                <div class="section-title" data-key="hist_title">📜 Історія та еволюція</div>
+                <div class="section-subtitle" data-key="hist_subtitle">Від перших обчислень до сучасних технологій</div>
+            </div>
+        </div>
+        <div class="bento-grid" id="history-grid"></div>
+
+        <!-- INFRASTRUCTURE -->
+        <div class="section-header">
+            <div>
+                <div class="section-title" data-key="infra_title">🖥️ Інфраструктура та апаратне забезпечення</div>
+                <div class="section-subtitle" data-key="infra_subtitle">Мережі, архітектури, порти та протоколи</div>
+            </div>
+        </div>
+        <div class="bento-grid" id="infra-grid"></div>
+
+        <!-- PRACTICE -->
+        <div class="section-header">
+            <div>
+                <div class="section-title" data-key="prac_title">🛠️ Практика та розробка</div>
+                <div class="section-subtitle" data-key="prac_subtitle">Інструменти, безпека та методології</div>
+            </div>
+        </div>
+        <div class="bento-grid" id="practice-grid"></div>
+
+        <!-- Quote -->
+        <div class="quote-block">
+            <p data-key="quote_text">Програмування — це не просто написання коду. Це розуміння еволюції думки, що перетворила математичні ідеї на мову, якою говорять машини. Кожна нова мова — це новий спосіб мислити про світ.</p>
+            <div class="author" data-key="quote_author">— З досвіду 76 років у світі ІТ</div>
+        </div>
+    </main>
+
+    <footer>
+        <p data-key="footer_main">🌐 IT Portal — Енциклопедія ІТ-технологій</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;" data-key="footer_sub">Створено з <span class="heart">❤️</span> та глибокою повагою до історії обчислювальної техніки | 2026</p>
+    </footer>
+
+    <script>
+        const i18n = {
+            uk: {
+                badge: "Освітній проєкт",
+                hero_title: "Енциклопедія сучасних <span>ІТ-технологій</span>",
+                hero_desc: "Універсальний портал для вивчення, дослідження та тестування технологій штучного інтелекту, операційних систем, баз даних, мов програмування та інфраструктури. Створено з досвідом, що охоплює всю історію обчислювальної техніки.",
+                stat_ready: "готових довідників",
+                stat_tools: "інструментів і сервісів",
+                stat_lang: "мови інтерфейсу",
+                stat_exp: "років досвіду",
+                about_title: "💡 Що таке ІТ та чому вони важливі?",
+                about_what_title: "Визначення",
+                about_what_text: "Інформаційні технології (ІТ) — це сукупність методів, процесів і засобів для збирання, зберігання, обробки та передачі інформації за допомогою комп'ютерів і телекомунікацій. Це не просто «комп'ютери» — це нервова система сучасної цивілізації, що поєднує мільярди пристроїв та людей у єдине цифрове середовище.",
+                about_why_title: "Для чого потрібні?",
+                about_why_text: "Від лікування пацієнтів і запуску супутників до управління фінансами та навчання дітей. ІТ автоматизують рутину, аналізують величезні масиви даних, з'єднують людей через континенти та відкривають можливості, про які ми не мріяли пів століття тому. Без ІТ сучасна медицина, наука, транспорт і економіка просто неможливі.",
+                about_place_title: "Місце в житті",
+                about_place_text: "Сьогодні ІТ проникли в кожну сферу — медицину, транспорт, сільське господарство, мистецтво, політику. Смартфон у кишені, безконтактна оплата, відеозв'язок з рідними, прогноз погоди — усе це результат праці мільйонів фахівців, що розвивали технології десятиліттями. ІТ перетворилися з привілею обраних на базову інфраструктуру, як електрика чи водопостачання.",
+                about_fact_text: "Сьогодні <span class='fact-highlight'>кожен другий житель планети</span> має доступ до Інтернету, а обсяг цифрових даних у світі <span class='fact-highlight'>подвоюється кожні два роки</span>. Ми живемо в епоху, коли інформація стала важливішою за золото, а швидкість її обробки визначає конкурентоспроможність цілих країн.",
+                ready_title: "✅ Готові довідники",
+                ready_subtitle: "Перейдіть до розділу, щоб дослідити та протестувати",
+                hist_title: "📜 Історія та еволюція",
+                hist_subtitle: "Від перших обчислень до сучасних технологій",
+                infra_title: "🖥️ Інфраструктура та апаратне забезпечення",
+                infra_subtitle: "Мережі, архітектури, порти та протоколи",
+                prac_title: "🛠️ Практика та розробка",
+                prac_subtitle: "Інструменти, безпека та методології",
+                quote_text: "Програмування — це не просто написання коду. Це розуміння еволюції думки, що перетворила математичні ідеї на мову, якою говорять машини. Кожна нова мова — це новий спосіб мислити про світ.",
+                quote_author: "— З досвіду 76 років у світі ІТ",
+                footer_main: "🌐 IT Portal — Енциклопедія ІТ-технологій",
+                footer_sub: "Створено з <span class='heart'>❤️</span> та глибокою повагою до історії обчислювальної техніки | 2026",
+                live: "готовий",
+                soon: "скоро",
+                entries: "записів"
+            },
+            ru: {
+                badge: "Образовательный проект",
+                hero_title: "Энциклопедия современных <span>ИТ-технологий</span>",
+                hero_desc: "Универсальный портал для изучения, исследования и тестирования технологий искусственного интеллекта, операционных систем, баз данных, языков программирования и инфраструктуры. Создано с опытом, охватывающим всю историю вычислительной техники.",
+                stat_ready: "готовых справочников",
+                stat_tools: "инструментов и сервисов",
+                stat_lang: "языка интерфейса",
+                stat_exp: "лет опыта",
+                about_title: "💡 Что такое ИТ и почему они важны?",
+                about_what_title: "Определение",
+                about_what_text: "Информационные технологии (ИТ) — это совокупность методов, процессов и средств для сбора, хранения, обработки и передачи информации с помощью компьютеров и телекоммуникаций. Это не просто «компьютеры» — это нервная система современной цивилизации, объединяющая миллиарды устройств и людей в единую цифровую среду.",
+                about_why_title: "Для чего нужны?",
+                about_why_text: "От лечения пациентов и запуска спутников до управления финансами и обучения детей. ИТ автоматизируют рутину, анализируют огромные массивы данных, соединяют людей через континенты и открывают возможности, о которых мы не мечтали полвека назад. Без ИТ современная медицина, наука, транспорт и экономика просто невозможны.",
+                about_place_title: "Место в жизни",
+                about_place_text: "Сегодня ИТ проникли в каждую сферу — медицину, транспорт, сельское хозяйство, искусство, политику. Смартфон в кармане, бесконтактная оплата, видеосвязь с близкими, прогноз погоды — всё это результат труда миллионов специалистов, развивавших технологии десятилетиями. ИТ превратились из привилегии избранных в базовую инфраструктуру, как электричество или водоснабжение.",
+                about_fact_text: "Сегодня <span class='fact-highlight'>каждый второй житель планеты</span> имеет доступ к Интернету, а объём цифровых данных в мире <span class='fact-highlight'>удваивается каждые два года</span>. Мы живём в эпоху, когда информация стала важнее золота, а скорость её обработки определяет конкурентоспособность целых стран.",
+                ready_title: "✅ Готовые справочники",
+                ready_subtitle: "Перейдите в раздел, чтобы исследовать и протестировать",
+                hist_title: "📜 История и эволюция",
+                hist_subtitle: "От первых вычислений до современных технологий",
+                infra_title: "🖥️ Инфраструктура и аппаратное обеспечение",
+                infra_subtitle: "Сети, архитектуры, порты и протоколы",
+                prac_title: "🛠️ Практика и разработка",
+                prac_subtitle: "Инструменты, безопасность и методологии",
+                quote_text: "Программирование — это не просто написание кода. Это понимание эволюции мысли, превратившей математические идеи в язык, на котором говорят машины. Каждый новый язык — это новый способ мыслить о мире.",
+                quote_author: "— Из опыта 76 лет в мире ИТ",
+                footer_main: "🌐 IT Portal — Энциклопедия ИТ-технологий",
+                footer_sub: "Создано с <span class='heart'>❤️</span> и глубоким уважением к истории вычислительной техники | 2026",
+                live: "готов",
+                soon: "скоро",
+                entries: "записей"
+            },
+            en: {
+                badge: "Educational Project",
+                hero_title: "Encyclopedia of Modern <span>IT Technologies</span>",
+                hero_desc: "Universal portal for learning, exploring and testing artificial intelligence technologies, operating systems, databases, programming languages and infrastructure. Created with experience spanning the entire history of computing.",
+                stat_ready: "ready directories",
+                stat_tools: "tools and services",
+                stat_lang: "interface languages",
+                stat_exp: "years of experience",
+                about_title: "💡 What is IT and Why Does It Matter?",
+                about_what_title: "Definition",
+                about_what_text: "Information Technology (IT) is the collection of methods, processes and tools for gathering, storing, processing and transmitting information using computers and telecommunications. It is not just \"computers\" — it is the nervous system of modern civilization, connecting billions of devices and people into a single digital environment.",
+                about_why_title: "Why Do We Need It?",
+                about_why_text: "From treating patients and launching satellites to managing finances and educating children. IT automates routine, analyzes massive data sets, connects people across continents and opens possibilities we could not dream of half a century ago. Without IT, modern medicine, science, transport and economy are simply impossible.",
+                about_place_title: "Place in Life",
+                about_place_text: "Today IT has permeated every sphere — medicine, transport, agriculture, art, politics. The smartphone in your pocket, contactless payment, video calls with loved ones, weather forecasts — all are the result of the work of millions of professionals who developed technologies over decades. IT has transformed from a privilege of the chosen few into basic infrastructure, like electricity or water supply.",
+                about_fact_text: "Today <span class='fact-highlight'>every second person on the planet</span> has access to the Internet, and the volume of digital data in the world <span class='fact-highlight'>doubles every two years</span>. We live in an era when information has become more valuable than gold, and the speed of its processing determines the competitiveness of entire nations.",
+                ready_title: "✅ Ready Directories",
+                ready_subtitle: "Go to the section to explore and test",
+                hist_title: "📜 History & Evolution",
+                hist_subtitle: "From the first computations to modern technologies",
+                infra_title: "🖥️ Infrastructure & Hardware",
+                infra_subtitle: "Networks, architectures, ports and protocols",
+                prac_title: "🛠️ Practice & Development",
+                prac_subtitle: "Tools, security and methodologies",
+                quote_text: "Programming is not just about writing code. It is understanding the evolution of thought that transformed mathematical ideas into the language spoken by machines. Each new language is a new way of thinking about the world.",
+                quote_author: "— From 76 years of experience in IT",
+                footer_main: "🌐 IT Portal — Encyclopedia of IT Technologies",
+                footer_sub: "Created with <span class='heart'>❤️</span> and deep respect for the history of computing | 2026",
+                live: "live",
+                soon: "soon",
+                entries: "entries"
+            }
+        };
+
+        const portals = {
+            ready: [
+                { id: "ai", icon: "🧠", title: "AI Directory", file: "ai-directory.html", count: "70+", desc: { uk: "Штучний інтелект: чат-боти, генератори зображень, відео, музики, коду та аналітичні сервіси.", ru: "Искусственный интеллект: чат-боты, генераторы изображений, видео, музыки, кода и аналитические сервисы.", en: "Artificial Intelligence: chatbots, image, video, music, code generators and analytics services." } },
+                { id: "os", icon: "🖥️", title: "OS Directory", file: "os-directory.html", count: "30+", desc: { uk: "Операційні системи: десктопні, серверні, мобільні та спеціальні ОС з описом архітектури.", ru: "Операционные системы: десктопные, серверные, мобильные и специальные ОС с описанием архитектуры.", en: "Operating Systems: desktop, server, mobile and specialized OS with architecture descriptions." } },
+                { id: "db", icon: "🗄️", title: "DB Directory", file: "db-directory.html", count: "35+", desc: { uk: "Системи управління базами даних: SQL, NoSQL, графові, часові ряди, пошукові та хмарні СУБД.", ru: "Системы управления базами данных: SQL, NoSQL, графовые, временные ряды, поисковые и облачные СУБД.", en: "Database Management Systems: SQL, NoSQL, graph, time-series, search and cloud databases." } },
+                { id: "weblang", icon: "🌐", title: "WebLang Directory", file: "weblang-directory.html", count: "25+", desc: { uk: "Мови веб-програмування: frontend, backend, розмітка, стилі та компілятори в JavaScript.", ru: "Языки веб-программирования: frontend, backend, разметка, стили и компиляторы в JavaScript.", en: "Web programming languages: frontend, backend, markup, styling and compile-to-JS languages." } },
+                { id: "proglang", icon: "💻", title: "ProgLang Directory", file: "proglang-directory.html", count: "37+", desc: { uk: "Інші мови програмування: системні, ігрові, наукові, функціональні, скрипти та blockchain.", ru: "Другие языки программирования: системные, игровые, научные, функциональные, скрипты и blockchain.", en: "Other programming languages: systems, game dev, scientific, functional, scripting and blockchain." } }
+            ],
+            history: [
+                { id: "langhist", icon: "📜", title: { uk: "Історія мов програмування", ru: "История языков программирования", en: "History of Programming Languages" }, count: "1950—2026", desc: { uk: "Від машинних кодів і перфокарт до сучасних LLM та AI-генерації коду. Жива хронологія через досвід.", ru: "От машинных кодов и перфокарт до современных LLM и ИИ-генерации кода. Живая хронология через опыт.", en: "From machine code and punch cards to modern LLMs and AI code generation. A living chronicle through experience." } },
+                { id: "comphist", icon: "🏛️", title: { uk: "Історія обчислювальної техніки", ru: "История вычислительной техники", en: "History of Computing Hardware" }, count: "ENIAC—Apple", desc: { uk: "Від вакуумних ламп і мейнфреймів до квантових процесорів. Покоління комп'ютерів та їхні архітектури.", ru: "От вакуумных ламп и мейнфреймов до квантовых процессоров. Поколения компьютеров и их архитектуры.", en: "From vacuum tubes and mainframes to quantum processors. Generations of computers and their architectures." } }
+            ],
+            infra: [
+                { id: "networks", icon: "🌐", title: { uk: "Мережі та протоколи", ru: "Сети и протоколы", en: "Networks & Protocols" }, count: "LAN→5G", desc: { uk: "Від локальних мереж і модемів до Інтернету, хмар та edge computing. OSI, TCP/IP, HTTP, WebSocket.", ru: "От локальных сетей и модемов до Интернета, облаков и edge computing. OSI, TCP/IP, HTTP, WebSocket.", en: "From local networks and modems to the Internet, cloud and edge computing. OSI, TCP/IP, HTTP, WebSocket." } },
+                { id: "arch", icon: "🏗️", title: { uk: "Архітектури ІТ", ru: "Архитектуры ИТ", en: "IT Architectures" }, count: "Mono→Mesh", desc: { uk: "Von Neumann, Harvard, мікросервіси, serverless, event-driven, мікрофронтенди та service mesh.", ru: "Von Neumann, Harvard, микросервисы, serverless, event-driven, микрофронтенды и service mesh.", en: "Von Neumann, Harvard, microservices, serverless, event-driven, micro-frontends and service mesh." } },
+                { id: "ports", icon: "🔌", title: { uk: "Порти та інтерфейси", ru: "Порты и интерфейсы", en: "Ports & Interfaces" }, count: "COM→USB-C", desc: { uk: "Від послідовних портів, LPT, PS/2 до USB4, Thunderbolt, NVMe та бездротових інтерфейсів.", ru: "От последовательных портов, LPT, PS/2 до USB4, Thunderbolt, NVMe и беспроводных интерфейсов.", en: "From serial ports, LPT, PS/2 to USB4, Thunderbolt, NVMe and wireless interfaces." } },
+                { id: "fs", icon: "💾", title: { uk: "Файлові системи", ru: "Файловые системы", en: "File Systems" }, count: "FAT→ZFS", desc: { uk: "FAT, NTFS, ext, APFS, ZFS — еволюція способів зберігання даних від дискет до хмарних сховищ.", ru: "FAT, NTFS, ext, APFS, ZFS — эволюция способов хранения данных от дискет до облачных хранилищ.", en: "FAT, NTFS, ext, APFS, ZFS — evolution of data storage from floppy disks to cloud storage." } }
+            ],
+            practice: [
+                { id: "cloud", icon: "☁️", title: { uk: "Хмари та віртуалізація", ru: "Облака и виртуализация", en: "Cloud & Virtualization" }, count: "VM→K8s", desc: { uk: "Віртуальні машини, контейнери, Docker, Kubernetes, serverless та хмарні платформи.", ru: "Виртуальные машины, контейнеры, Docker, Kubernetes, serverless и облачные платформы.", en: "Virtual machines, containers, Docker, Kubernetes, serverless and cloud platforms." } },
+                { id: "security", icon: "🔒", title: { uk: "Кібербезпека", ru: "Кибербезопасность", en: "Cybersecurity" }, count: "Crypto→Zero", desc: { uk: "Шифрування, хешування, TLS, сертифікати, аутентифікація, Zero Trust та основи захисту даних.", ru: "Шифрование, хеширование, TLS, сертификаты, аутентификация, Zero Trust и основы защиты данных.", en: "Encryption, hashing, TLS, certificates, authentication, Zero Trust and data protection fundamentals." } },
+                { id: "patterns", icon: "📐", title: { uk: "Патерни проєктування", ru: "Паттерны проектирования", en: "Design Patterns" }, count: "GoF→Cloud", desc: { uk: "Породжувальні, структурні, поведінкові патерни, архітектурні стилі та антипатерни.", ru: "Порождающие, структурные, поведенческие паттерны, архитектурные стили и антипаттерны.", en: "Creational, structural, behavioral patterns, architectural styles and anti-patterns." } },
+                { id: "devtools", icon: "🛠️", title: { uk: "Інструменти розробника", ru: "Инструменты разработчика", en: "Developer Tools" }, count: "Git→CI/CD", desc: { uk: "Git, Docker, CI/CD, IDE, лінтери, тестування, моніторинг та інфраструктура як код.", ru: "Git, Docker, CI/CD, IDE, линтеры, тестирование, мониторинг и инфраструктура как код.", en: "Git, Docker, CI/CD, IDE, linters, testing, monitoring and infrastructure as code." } }
+            ]
+        };
+
+        let currentLang = localStorage.getItem('portal-lang') || 'uk';
+
+        function setLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('portal-lang', lang);
+            document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+            ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+            
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (i18n[lang][key]) {
+                    if (key === 'hero_title' || key === 'about_fact_text' || key === 'footer_sub') el.innerHTML = i18n[lang][key];
+                    else el.textContent = i18n[lang][key];
+                }
+            });
+            
+            renderGrids();
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const cur = html.getAttribute('data-theme');
+            html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+            localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+        }
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+        function renderCard(item, isLink) {
+            const title = typeof item.title === 'string' ? item.title : item.title[currentLang];
+            const desc = item.desc[currentLang];
+            const badgeClass = isLink ? 'badge-live' : 'badge-soon';
+            const badgeText = isLink ? i18n[currentLang].live : i18n[currentLang].soon;
+            const href = isLink ? `href="${item.file}"` : '';
+            const cls = isLink ? 'portal-card' : 'portal-card coming-soon';
+            
+            return `
+                <a ${href} class="${cls}" ${!isLink ? 'onclick="return false;"' : ''}>
+                    <div class="card-icon">${item.icon}</div>
+                    <div class="card-title">
+                        ${title}
+                        <span class="card-badge ${badgeClass}">${badgeText}</span>
+                    </div>
+                    <div class="card-desc">${desc}</div>
+                    <div class="card-meta">
+                        <span>📋 ${item.count} ${i18n[currentLang].entries}</span>
+                        ${isLink ? '<span>↗ Перейти</span>' : '<span>⏳ В розробці</span>'}
+                    </div>
+                </a>
+            `;
+        }
+
+        function renderGrids() {
+            document.getElementById('ready-grid').innerHTML = portals.ready.map(p => renderCard(p, true)).join('');
+            document.getElementById('history-grid').innerHTML = portals.history.map(p => renderCard(p, false)).join('');
+            document.getElementById('infra-grid').innerHTML = portals.infra.map(p => renderCard(p, false)).join('');
+            document.getElementById('practice-grid').innerHTML = portals.practice.map(p => renderCard(p, false)).join('');
+        }
+
+        // Init
+        setLang(currentLang);
+    </script>
+</body>
+</html>

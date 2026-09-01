@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Світ Штучного Інтелекту</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-light: #1e1e32;
+            --card-hover: #252540;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #00e5b0;
+            --accent-secondary: #7c3aed;
+            --accent-tertiary: #ff6b6b;
+            --gradient: linear-gradient(135deg, #00e5b0 0%, #7c3aed 50%, #ff6b6b 100%);
+            --shadow: 0 8px 32px rgba(0,0,0,0.5);
+            --radius: 1.2rem;
+            --transition: 0.3s ease;
+        }
+
+        [data-theme="light"] {
+            --bg: #f0f2f8;
+            --surface: #ffffff;
+            --surface-light: #eef1f6;
+            --card-hover: #e8ecf2;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 8px 32px rgba(0,0,0,0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background var(--transition), color var(--transition);
+        }
+
+        /* Фон */
+        .hero-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: 
+                radial-gradient(circle at 15% 40%, rgba(0,229,176,0.06) 0%, transparent 50%),
+                radial-gradient(circle at 85% 60%, rgba(124,58,237,0.06) 0%, transparent 50%),
+                radial-gradient(circle at 50% 90%, rgba(255,107,107,0.04) 0%, transparent 50%);
+        }
+
+        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
+        .particle { position: absolute; width: 3px; height: 3px; background: var(--accent); border-radius: 50%; opacity: 0.25; animation: float 25s infinite linear; }
+        @keyframes float { from { transform: translateY(110vh) translateX(0); } to { transform: translateY(-10vh) translateX(80px); } }
+
+        /* Навігація */
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: rgba(10,10,18,0.88); backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 0.8rem 5%;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        [data-theme="light"] nav { background: rgba(255,255,255,0.88); border-bottom: 1px solid rgba(0,0,0,0.06); }
+
+        .logo { font-size: 1.4rem; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .nav-center { display: flex; gap: 2rem; list-style: none; }
+        .nav-center a { color: var(--text-muted); text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: color var(--transition); }
+        .nav-center a:hover { color: var(--accent); }
+
+        .nav-right { display: flex; align-items: center; gap: 1rem; }
+
+        .lang-switcher {
+            display: flex; background: var(--surface-light); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.4rem 0.8rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.8rem; font-weight: 600; transition: all var(--transition);
+        }
+        .lang-switcher button.active { background: var(--accent); color: #000; }
+
+        .theme-toggle {
+            background: var(--surface-light); border: none; color: var(--text);
+            width: 38px; height: 38px; border-radius: 50%; cursor: pointer;
+            font-size: 1.1rem; transition: transform var(--transition);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .theme-toggle:hover { transform: scale(1.1) rotate(15deg); }
+
+        .mobile-menu-btn { display: none; background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; }
+
+        /* Hero */
+        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 7rem 1rem 4rem; }
+        .hero-content h1 { font-size: clamp(2.2rem, 5.5vw, 4.5rem); font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem; }
+        .hero-content h1 span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .typewriter { font-size: 1.15rem; color: var(--text-muted); min-height: 3rem; margin-bottom: 2.5rem; }
+        .cursor { display: inline-block; width: 2px; height: 1.1em; background: var(--accent); animation: blink 1s infinite; vertical-align: text-bottom; margin-left: 2px; }
+        @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+
+        .btn {
+            display: inline-block; padding: 0.9rem 2.2rem; background: var(--gradient);
+            color: #fff; text-decoration: none; border-radius: 3rem; font-weight: 700;
+            border: none; cursor: pointer; transition: transform var(--transition), box-shadow var(--transition);
+            box-shadow: 0 4px 20px rgba(0,229,176,0.3); font-size: 1rem;
+        }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,229,176,0.4); }
+        .btn-outline {
+            background: transparent; border: 2px solid var(--accent); color: var(--accent);
+            box-shadow: none; margin-left: 1rem;
+        }
+        .btn-outline:hover { background: var(--accent); color: #000; }
+
+        /* Секції */
+        section { padding: 5rem 5%; max-width: 1200px; margin: 0 auto; }
+        .section-title { font-size: 2.3rem; font-weight: 800; text-align: center; margin-bottom: 0.8rem; }
+        .section-subtitle { text-align: center; color: var(--text-muted); font-size: 1.05rem; margin-bottom: 3rem; max-width: 650px; margin-left: auto; margin-right: auto; }
+
+        /* Картки можливостей */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 1.5rem; }
+        .card {
+            background: var(--surface); border-radius: var(--radius); padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.04); transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+            position: relative; overflow: hidden;
+        }
+        [data-theme="light"] .card { border: 1px solid rgba(0,0,0,0.05); }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient); transform: scaleX(0); transition: transform var(--transition); }
+        .card:hover { transform: translateY(-6px); box-shadow: var(--shadow); background: var(--card-hover); }
+        .card:hover::before { transform: scaleX(1); }
+        .card-icon { font-size: 2.2rem; margin-bottom: 0.8rem; }
+        .card h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+        .card p { color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; }
+
+        /* AI-інструменти */
+        .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.2rem; }
+        .tool-card {
+            background: var(--surface); border-radius: var(--radius); padding: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.04); display: flex; flex-direction: column;
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+        .tool-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+        .tool-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.8rem; }
+        .tool-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: var(--surface-light); }
+        .tool-info h4 { font-size: 1.1rem; margin-bottom: 0.2rem; }
+        .tool-info .tool-tag { font-size: 0.75rem; color: var(--accent); background: rgba(0,229,176,0.1); padding: 0.15rem 0.6rem; border-radius: 1rem; display: inline-block; }
+        .tool-desc { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; flex: 1; }
+        .tool-link {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.9rem;
+            transition: gap var(--transition);
+        }
+        .tool-link:hover { gap: 0.7rem; }
+
+        /* Демо-чат */
+        .demo-box { background: var(--surface); border-radius: var(--radius); padding: 2rem; max-width: 700px; margin: 0 auto; border: 1px solid rgba(255,255,255,0.04); }
+        .chat-window { background: var(--bg); border-radius: 1rem; padding: 1.5rem; height: 320px; overflow-y: auto; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.04); }
+        .message { margin-bottom: 1rem; padding: 0.8rem 1.2rem; border-radius: 1rem; max-width: 80%; animation: fadeIn 0.3s ease; line-height: 1.5; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .message.user { background: var(--accent); color: #000; margin-left: auto; border-bottom-right-radius: 0.3rem; font-weight: 500; }
+        .message.ai { background: var(--surface-light); border-bottom-left-radius: 0.3rem; }
+        .chat-input { display: flex; gap: 0.5rem; }
+        .chat-input input { flex: 1; padding: 0.8rem 1.2rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08); background: var(--bg); color: var(--text); font-size: 1rem; outline: none; }
+        .chat-input input:focus { border-color: var(--accent); }
+        [data-theme="light"] .chat-input input { border: 1px solid rgba(0,0,0,0.1); }
+
+        /* Статистика */
+        .stats { display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; margin: 3rem 0; }
+        .stat-item { text-align: center; }
+        .stat-number { font-size: 2.8rem; font-weight: 900; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-label { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.3rem; }
+
+        /* Таймлайн */
+        .timeline { position: relative; padding-left: 2rem; }
+        .timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--gradient); }
+        .timeline-item { position: relative; margin-bottom: 2rem; padding-left: 2rem; }
+        .timeline-item::before { content: ''; position: absolute; left: -2rem; top: 0.3rem; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; transform: translateX(-4px); }
+        .timeline-item h4 { color: var(--accent); margin-bottom: 0.3rem; font-size: 1.05rem; }
+        .timeline-item p { color: var(--text-muted); font-size: 0.92rem; }
+
+        /* Footer */
+        footer { text-align: center; padding: 3rem 1rem; border-top: 1px solid rgba(255,255,255,0.04); color: var(--text-muted); }
+        footer p { margin-bottom: 0.5rem; }
+        footer .footer-links { display: flex; justify-content: center; gap: 1.5rem; margin-top: 1rem; flex-wrap: wrap; }
+        footer .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; transition: color var(--transition); }
+        footer .footer-links a:hover { color: var(--accent); }
+
+        /* Адаптивність */
+        @media (max-width: 768px) {
+            .nav-center { display: none; }
+            .mobile-menu-btn { display: block; }
+            .hero-content h1 { font-size: 2.2rem; }
+            .btn-outline { margin-left: 0; margin-top: 1rem; display: block; }
+            section { padding: 3rem 1.2rem; }
+            .stats { gap: 1.5rem; }
+            .lang-switcher button { padding: 0.3rem 0.6rem; font-size: 0.75rem; }
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-light); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <div class="hero-bg"></div>
+    <div class="particles" id="particles"></div>
+
+    <nav>
+        <div class="logo">🧠 AI World</div>
+        <ul class="nav-center">
+            <li><a href="#about" data-key="nav_about">Що таке AI</a></li>
+            <li><a href="#capabilities" data-key="nav_caps">Можливості</a></li>
+            <li><a href="#tools" data-key="nav_tools">Інструменти</a></li>
+            <li><a href="#demo" data-key="nav_demo">Демо</a></li>
+            <li><a href="#future" data-key="nav_future">Майбутнє</a></li>
+        </ul>
+        <div class="nav-right">
+            <div class="lang-switcher">
+                <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌓</button>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1 data-key="hero_title">Ласкаво просимо у світ <span>Штучного Інтелекту</span></h1>
+            <div class="typewriter" id="typewriter"></div>
+            <div>
+                <a href="#capabilities" class="btn" data-key="hero_btn1">Дослідити можливості →</a>
+                <a href="#tools" class="btn btn-outline" data-key="hero_btn2">Спробувати інструменти</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="about" class="reveal">
+        <h2 class="section-title" data-key="about_title">Що таке Штучний Інтелект?</h2>
+        <p class="section-subtitle" data-key="about_subtitle">Штучний інтелект (AI) — це галузь комп'ютерних наук, яка створює системи, здатні виконувати завдання, що зазвичай потребують людського інтелекту.</p>
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number" data-target="200">0</div>
+                <div class="stat-label" data-key="stat1">млрд $ інвестицій у 2026</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="85">0</div>
+                <div class="stat-label" data-key="stat2">% компаній використовують AI</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="400">0</div>
+                <div class="stat-label" data-key="stat3">млн користувачів щодня</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="capabilities" class="reveal">
+        <h2 class="section-title" data-key="caps_title">Ключові можливості AI</h2>
+        <p class="section-subtitle" data-key="caps_subtitle">Сучасні системи штучного інтелекту здатні на дивовижні речі</p>
+        <div class="grid" id="capabilities-grid">
+            <!-- Заповнюється JS -->
+        </div>
+    </section>
+
+    <section id="tools" class="reveal">
+        <h2 class="section-title" data-key="tools_title">Популярні AI-сервіси</h2>
+        <p class="section-subtitle" data-key="tools_subtitle">Ознайомтеся та протестуйте найкращі інструменти штучного інтелекту прямо зараз</p>
+        <div class="tools-grid" id="tools-grid">
+            <!-- Заповнюється JS -->
+        </div>
+    </section>
+
+    <section id="demo" class="reveal">
+        <h2 class="section-title" data-key="demo_title">Інтерактивна демонстрація</h2>
+        <p class="section-subtitle" data-key="demo_subtitle">Спробуйте поспілкуватися з демо-чатом, щоб відчути можливості AI</p>
+        <div class="demo-box">
+            <div class="chat-window" id="chatWindow">
+                <div class="message ai" data-key="chat_welcome">👋 Привіт! Я AI-асистент. Запитайте мене про можливості штучного інтелекту!</div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="userInput" data-placeholder="chat_placeholder" placeholder="Наприклад: Що таке машинне навчання?" onkeypress="if(event.key==='Enter') sendMessage()">
+                <button class="btn" onclick="sendMessage()" data-key="chat_send">Надіслати</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="future" class="reveal">
+        <h2 class="section-title" data-key="future_title">Еволюція AI</h2>
+        <p class="section-subtitle" data-key="future_subtitle">Від перших алгоритмів до сучасних великих мовних моделей</p>
+        <div class="timeline" id="timeline">
+            <!-- Заповнюється JS -->
+        </div>
+    </section>
+
+    <footer>
+        <p data-key="footer_copy">🧠 Створено для освітніх цілей | AI World &copy; 2026</p>
+        <p style="font-size: 0.8rem;" data-key="footer_free">Код вільний для редагування та використання</p>
+        <div class="footer-links">
+            <a href="https://openai.com" target="_blank">OpenAI</a>
+            <a href="https://deepmind.google" target="_blank">DeepMind</a>
+            <a href="https://huggingface.co" target="_blank">HuggingFace</a>
+            <a href="https://github.com" target="_blank">GitHub</a>
+        </div>
+    </footer>
+
+    <script>
+        // ==================== ЛОКАЛІЗАЦІЯ ====================
+        const i18n = {
+            uk: {
+                nav_about: "Що таке AI", nav_caps: "Можливості", nav_tools: "Інструменти", nav_demo: "Демо", nav_future: "Майбутнє",
+                hero_title: "Ласкаво просимо у світ <span>Штучного Інтелекту</span>",
+                hero_btn1: "Дослідити можливості →", hero_btn2: "Спробувати інструменти",
+                about_title: "Що таке Штучний Інтелект?",
+                about_subtitle: "Штучний інтелект (AI) — це галузь комп'ютерних наук, яка створює системи, здатні виконувати завдання, що зазвичай потребують людського інтелекту.",
+                stat1: "млрд $ інвестицій у 2026", stat2: "% компаній використовують AI", stat3: "млн користувачів щодня",
+                caps_title: "Ключові можливості AI", caps_subtitle: "Сучасні системи штучного інтелекту здатні на дивовижні речі",
+                tools_title: "Популярні AI-сервіси", tools_subtitle: "Ознайомтеся та протестуйте найкращі інструменти штучного інтелекту прямо зараз",
+                demo_title: "Інтерактивна демонстрація", demo_subtitle: "Спробуйте поспілкуватися з демо-чатом, щоб відчути можливості AI",
+                chat_welcome: "👋 Привіт! Я AI-асистент. Запитайте мене про можливості штучного інтелекту!",
+                chat_placeholder: "Наприклад: Що таке машинне навчання?", chat_send: "Надіслати",
+                future_title: "Еволюція AI", future_subtitle: "Від перших алгоритмів до сучасних великих мовних моделей",
+                footer_copy: "🧠 Створено для освітніх цілей | AI World © 2026", footer_free: "Код вільний для редагування та використання",
+                typewriter: ["Генерація тексту, зображень та музики...", "Аналіз великих даних у реальному часі...", "Автономні системи та робототехніка...", "Медична діагностика та наукові відкриття..."],
+                capabilities: [
+                    { icon: "💬", title: "Обробка природної мови", desc: "AI розуміє, генерує та перекладає тексти на десятках мов. Від простих чат-ботів до складних аналітичних систем." },
+                    { icon: "🎨", title: "Генерація зображень", desc: "Моделі як DALL-E, Midjourney та Stable Diffusion створюють унікальні зображення за текстовим описом за лічені секунди." },
+                    { icon: "🎵", title: "Створення музики", desc: "Нейромережі компонують мелодії, гармонії та аранжування у різних жанрах — від класики до електроніки." },
+                    { icon: "🔬", title: "Аналіз даних", desc: "Обробка величезних масивів інформації для прогнозування трендів, виявлення аномалій та прийняття рішень." },
+                    { icon: "🚗", title: "Автономні системи", desc: "Самокеровані автомобілі, дрони та роботи, що навчаються навколишньому середовищу та приймають рішення в реальному часі." },
+                    { icon: "🏥", title: "Медицина та діагностика", desc: "AI допомагає лікарям виявляти хвороби на ранніх стадіях, аналізувати МРТ та розробляти персоналізовані плани лікування." }
+                ],
+                timeline: [
+                    { year: "1950-ті — Зародження", text: "Алан Тюрінг запропонував тест на інтелект. Перші нейронні мережі та алгоритми машинного навчання." },
+                    { year: "1997 — Перемога над чемпіоном", text: "Комп'ютер Deep Blue від IBM переміг світового чемпіона з шахів Гаррі Каспарова." },
+                    { year: "2012 — Ера Deep Learning", text: "Нейромережа AlexNet революціонізувала комп'ютерний зір, показавши силу глибокого навчання." },
+                    { year: "2022 — Ера генеративного AI", text: "ChatGPT, Midjourney та інші моделі зробили AI доступним для кожного. Почалася нова ера творчості." },
+                    { year: "2026+ — Майбутнє", text: "Мультимодальні агенти, AI-асистенти з розумінням контексту та інтеграція AI у всі сфери життя." }
+                ]
+            },
+            ru: {
+                nav_about: "Что такое ИИ", nav_caps: "Возможности", nav_tools: "Инструменты", nav_demo: "Демо", nav_future: "Будущее",
+                hero_title: "Добро пожаловать в мир <span>Искусственного Интеллекта</span>",
+                hero_btn1: "Исследовать возможности →", hero_btn2: "Попробовать инструменты",
+                about_title: "Что такое Искусственный Интеллект?",
+                about_subtitle: "Искусственный интеллект (ИИ) — это область компьютерных наук, создающая системы, способные выполнять задачи, обычно требующие человеческого интеллекта.",
+                stat1: "млрд $ инвестиций в 2026", stat2: "% компаний используют ИИ", stat3: "млн пользователей ежедневно",
+                caps_title: "Ключевые возможности ИИ", caps_subtitle: "Современные системы искусственного интеллекта способны на удивительные вещи",
+                tools_title: "Популярные AI-сервисы", tools_subtitle: "Ознакомьтесь и протестируйте лучшие инструменты искусственного интеллекта прямо сейчас",
+                demo_title: "Интерактивная демонстрация", demo_subtitle: "Попробуйте пообщаться с демо-чатом, чтобы ощутить возможности ИИ",
+                chat_welcome: "👋 Привет! Я AI-ассистент. Спросите меня о возможностях искусственного интеллекта!",
+                chat_placeholder: "Например: Что такое машинное обучение?", chat_send: "Отправить",
+                future_title: "Эволюция ИИ", future_subtitle: "От первых алгоритмов до современных больших языковых моделей",
+                footer_copy: "🧠 Создано для образовательных целей | AI World © 2026", footer_free: "Код свободен для редактирования и использования",
+                typewriter: ["Генерация текста, изображений и музыки...", "Анализ больших данных в реальном времени...", "Автономные системы и робототехника...", "Медицинская диагностика и научные открытия..."],
+                capabilities: [
+                    { icon: "💬", title: "Обработка естественного языка", desc: "ИИ понимает, генерирует и переводит тексты на десятках языков. От простых чат-ботов до сложных аналитических систем." },
+                    { icon: "🎨", title: "Генерация изображений", desc: "Модели как DALL-E, Midjourney и Stable Diffusion создают уникальные изображения по текстовому описанию за считанные секунды." },
+                    { icon: "🎵", title: "Создание музыки", desc: "Нейросети компонуют мелодии, гармонии и аранжировки в разных жанрах — от классики до электроники." },
+                    { icon: "🔬", title: "Анализ данных", desc: "Обработка огромных массивов информации для прогнозирования трендов, выявления аномалий и принятия решений." },
+                    { icon: "🚗", title: "Автономные системы", desc: "Беспилотные автомобили, дроны и роботы, обучающиеся окружающей среде и принимающие решения в реальном времени." },
+                    { icon: "🏥", title: "Медицина и диагностика", desc: "ИИ помогает врачам выявлять болезни на ранних стадиях, анализировать МРТ и разрабатывать персонализированные планы лечения." }
+                ],
+                timeline: [
+                    { year: "1950-е — Зарождение", text: "Алан Тьюринг предложил тест на интеллект. Первые нейронные сети и алгоритмы машинного обучения." },
+                    { year: "1997 — Победа над чемпионом", text: "Компьютер Deep Blue от IBM победил чемпиона мира по шахматам Гарри Каспарова." },
+                    { year: "2012 — Эра Deep Learning", text: "Нейросеть AlexNet революционизировала компьютерное зрение, показав силу глубокого обучения." },
+                    { year: "2022 — Эра генеративного ИИ", text: "ChatGPT, Midjourney и другие модели сделали ИИ доступным для каждого. Началась новая эра творчества." },
+                    { year: "2026+ — Будущее", text: "Мультимодальные агенты, ИИ-ассистенты с пониманием контекста и интеграция ИИ во все сферы жизни." }
+                ]
+            },
+            en: {
+                nav_about: "What is AI", nav_caps: "Capabilities", nav_tools: "Tools", nav_demo: "Demo", nav_future: "Future",
+                hero_title: "Welcome to the World of <span>Artificial Intelligence</span>",
+                hero_btn1: "Explore Capabilities →", hero_btn2: "Try AI Tools",
+                about_title: "What is Artificial Intelligence?",
+                about_subtitle: "Artificial Intelligence (AI) is a branch of computer science that creates systems capable of performing tasks that typically require human intelligence.",
+                stat1: "bln $ invested in 2026", stat2: "% of companies use AI", stat3: "mln daily users",
+                caps_title: "Key AI Capabilities", caps_subtitle: "Modern artificial intelligence systems are capable of amazing things",
+                tools_title: "Popular AI Services", tools_subtitle: "Explore and test the best artificial intelligence tools right now",
+                demo_title: "Interactive Demo", demo_subtitle: "Try chatting with the demo bot to feel the power of AI",
+                chat_welcome: "👋 Hi! I'm an AI assistant. Ask me about the capabilities of artificial intelligence!",
+                chat_placeholder: "E.g.: What is machine learning?", chat_send: "Send",
+                future_title: "Evolution of AI", future_subtitle: "From the first algorithms to modern large language models",
+                footer_copy: "🧠 Created for educational purposes | AI World © 2026", footer_free: "Code is free to edit and use",
+                typewriter: ["Text, image and music generation...", "Big data analysis in real time...", "Autonomous systems and robotics...", "Medical diagnostics and scientific discoveries..."],
+                capabilities: [
+                    { icon: "💬", title: "Natural Language Processing", desc: "AI understands, generates and translates texts in dozens of languages. From simple chatbots to complex analytical systems." },
+                    { icon: "🎨", title: "Image Generation", desc: "Models like DALL-E, Midjourney and Stable Diffusion create unique images from text descriptions in seconds." },
+                    { icon: "🎵", title: "Music Creation", desc: "Neural networks compose melodies, harmonies and arrangements in various genres — from classical to electronic." },
+                    { icon: "🔬", title: "Data Analysis", desc: "Processing huge arrays of information to predict trends, detect anomalies and make decisions." },
+                    { icon: "🚗", title: "Autonomous Systems", desc: "Self-driving cars, drones and robots that learn from their environment and make real-time decisions." },
+                    { icon: "🏥", title: "Medicine & Diagnostics", desc: "AI helps doctors detect diseases at early stages, analyze MRI scans and develop personalized treatment plans." }
+                ],
+                timeline: [
+                    { year: "1950s — Origins", text: "Alan Turing proposed the intelligence test. First neural networks and machine learning algorithms." },
+                    { year: "1997 — Defeating the Champion", text: "IBM's Deep Blue computer defeated world chess champion Garry Kasparov." },
+                    { year: "2012 — Deep Learning Era", text: "AlexNet neural network revolutionized computer vision, demonstrating the power of deep learning." },
+                    { year: "2022 — Generative AI Era", text: "ChatGPT, Midjourney and other models made AI accessible to everyone. A new era of creativity began." },
+                    { year: "2026+ — The Future", text: "Multimodal agents, context-aware AI assistants and integration of AI into all areas of life." }
+                ]
+            }
+        };
+
+        let currentLang = localStorage.getItem('ai-site-lang') || 'uk';
+
+        // AI-інструменти (універсальні для всіх мов)
+        const tools = [
+            { name: "ChatGPT", url: "https://chat.openai.com", icon: "💬", tag: "LLM / Chat", desc: { uk: "Найпопулярніший чат-бот на базі GPT-4. Відповідає на запитання, пише код, аналізує документи.", ru: "Самый популярный чат-бот на базе GPT-4. Отвечает на вопросы, пишет код, анализирует документы.", en: "The most popular chatbot based on GPT-4. Answers questions, writes code, analyzes documents." } },
+            { name: "Claude", url: "https://claude.ai", icon: "🧠", tag: "LLM / Chat", desc: { uk: "AI-асистент від Anthropic з великим контекстним вікном. Відмінно працює з довгими документами та аналізом.", ru: "AI-ассистент от Anthropic с большим контекстным окном. Отлично работает с длинными документами и анализом.", en: "Anthropic's AI assistant with a large context window. Excellent for long documents and analysis." } },
+            { name: "Gemini", url: "https://gemini.google.com", icon: "♊", tag: "LLM / Multimodal", desc: { uk: "Google AI з підтримкою тексту, зображень та відео. Інтегрований у екосистему Google.", ru: "Google ИИ с поддержкой текста, изображений и видео. Интегрирован в экосистему Google.", en: "Google AI supporting text, images and video. Integrated into the Google ecosystem." } },
+            { name: "Midjourney", url: "https://www.midjourney.com", icon: "🎨", tag: "Image Gen", desc: { uk: "Один із найпотужніших генераторів зображень за текстовим описом. Створює художні та реалістичні візуалізації.", ru: "Один из самых мощных генераторов изображений по текстовому описанию. Создает художественные и реалистичные визуализации.", en: "One of the most powerful text-to-image generators. Creates artistic and realistic visuals." } },
+            { name: "DALL-E 3", url: "https://openai.com/dall-e-3", icon: "🖼️", tag: "Image Gen", desc: { uk: "Генератор зображень від OpenAI з точним дотриманням текстового запиту. Доступний через ChatGPT.", ru: "Генератор изображений от OpenAI с точным соблюдением текстового запроса. Доступен через ChatGPT.", en: "OpenAI's image generator with precise text prompt adherence. Available via ChatGPT." } },
+            { name: "Stable Diffusion", url: "https://stability.ai", icon: "⚡", tag: "Image Gen / Open", desc: { uk: "Відкрита модель для генерації зображень. Можна запускати локально або через онлайн-сервіси.", ru: "Открытая модель для генерации изображений. Можно запускать локально или через онлайн-сервисы.", en: "Open-source image generation model. Can be run locally or via online services." } },
+            { name: "GitHub Copilot", url: "https://github.com/features/copilot", icon: "💻", tag: "Code / Dev", desc: { uk: "AI-помічник для написання коду. Працює у VS Code, підтримує десятки мов програмування.", ru: "AI-помощник для написания кода. Работает в VS Code, поддерживает десятки языков программирования.", en: "AI coding assistant. Works in VS Code, supports dozens of programming languages." } },
+            { name: "Perplexity", url: "https://www.perplexity.ai", icon: "🔍", tag: "Search / Research", desc: { uk: "AI-пошуковик, який дає відповіді з посиланнями на джерела. Ідеальний для досліджень.", ru: "AI-поисковик, который дает ответы со ссылками на источники. Идеален для исследований.", en: "AI search engine that provides answers with source citations. Ideal for research." } },
+            { name: "Canva AI", url: "https://www.canva.com/ai-image-generator/", icon: "✏️", tag: "Design / Image", desc: { uk: "Інтегровані AI-функції для дизайну: генерація зображень, редагування фото, створення презентацій.", ru: "Интегрированные AI-функции для дизайна: генерация изображений, редактирование фото, создание презентаций.", en: "Integrated AI features for design: image generation, photo editing, presentation creation." } },
+            { name: "ElevenLabs", url: "https://elevenlabs.io", icon: "🎙️", tag: "Voice / Audio", desc: { uk: "Реалістичний синтез мовлення та клонування голосу. Підтримує багато мов, включно з українською.", ru: "Реалистичный синтез речи и клонирование голоса. Поддерживает множество языков, включая русский.", en: "Realistic speech synthesis and voice cloning. Supports many languages including English." } },
+            { name: "Runway", url: "https://runwayml.com", icon: "🎬", tag: "Video / Gen-2", desc: { uk: "AI-платформа для генерації та редагування відео. Створює кліпи за текстовим описом.", ru: "AI-платформа для генерации и редактирования видео. Создает клипы по текстовому описанию.", en: "AI platform for video generation and editing. Creates clips from text descriptions." } },
+            { name: "Sora", url: "https://openai.com/sora", icon: "🎥", tag: "Video Gen", desc: { uk: "Відеогенератор від OpenAI. Створює реалістичні та творчі відеоролики до 60 секунд за текстом.", ru: "Видеогенератор от OpenAI. Создает реалистичные и творческие видеоролики до 60 секунд по тексту.", en: "OpenAI's video generator. Creates realistic and creative videos up to 60 seconds from text." }
+            }
+        ];
+
+        function setLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('ai-site-lang', lang);
+            document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+            
+            // Оновлення кнопок
+            ['uk','ru','en'].forEach(l => {
+                document.getElementById('btn-' + l).classList.toggle('active', l === lang);
+            });
+
+            // Оновлення текстів
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (i18n[lang][key]) {
+                    if (key === 'hero_title') el.innerHTML = i18n[lang][key];
+                    else el.textContent = i18n[lang][key];
+                }
+            });
+
+            // Placeholder
+            const input = document.getElementById('userInput');
+            if (input) input.placeholder = i18n[lang].chat_placeholder;
+
+            // Заголовок
+            document.getElementById('page-title').textContent = 
+                lang === 'uk' ? 'Світ Штучного Інтелекту' : 
+                (lang === 'ru' ? 'Мир Искусственного Интеллекта' : 'World of Artificial Intelligence');
+
+            renderCapabilities();
+            renderTools();
+            renderTimeline();
+            resetChat();
+            resetTypewriter();
+        }
+
+        function renderCapabilities() {
+            const grid = document.getElementById('capabilities-grid');
+            grid.innerHTML = i18n[currentLang].capabilities.map(c => `
+                <div class="card">
+                    <div class="card-icon">${c.icon}</div>
+                    <h3>${c.title}</h3>
+                    <p>${c.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderTools() {
+            const grid = document.getElementById('tools-grid');
+            grid.innerHTML = tools.map(t => `
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">${t.icon}</div>
+                        <div class="tool-info">
+                            <h4>${t.name}</h4>
+                            <span class="tool-tag">${t.tag}</span>
+                        </div>
+                    </div>
+                    <p class="tool-desc">${t.desc[currentLang]}</p>
+                    <a href="${t.url}" target="_blank" class="tool-link">
+                        ${currentLang === 'uk' ? 'Відкрити сервіс →' : (currentLang === 'ru' ? 'Открыть сервис →' : 'Open service →')}
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        function renderTimeline() {
+            const container = document.getElementById('timeline');
+            container.innerHTML = i18n[currentLang].timeline.map(t => `
+                <div class="timeline-item">
+                    <h4>${t.year}</h4>
+                    <p>${t.text}</p>
+                </div>
+            `).join('');
+        }
+
+        function resetChat() {
+            const chat = document.getElementById('chatWindow');
+            chat.innerHTML = `<div class="message ai">${i18n[currentLang].chat_welcome}</div>`;
+        }
+
+        function resetTypewriter() {
+            phraseIndex = 0; charIndex = 0; isDeleting = false;
+        }
+
+        // ==================== ТЕМА ====================
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            html.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+            localStorage.setItem('theme', current === 'light' ? 'dark' : 'light');
+        }
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // ==================== ЧАСТИНКИ ====================
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 25; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDuration = (18 + Math.random() * 20) + 's';
+            p.style.animationDelay = Math.random() * 20 + 's';
+            p.style.opacity = Math.random() * 0.4;
+            particlesContainer.appendChild(p);
+        }
+
+        // ==================== ДРУКАРСЬКА МАШИНКА ====================
+        let phraseIndex = 0, charIndex = 0, isDeleting = false;
+        const typewriterEl = document.getElementById('typewriter');
+
+        function type() {
+            const phrases = i18n[currentLang].typewriter;
+            const current = phrases[phraseIndex];
+            if (isDeleting) {
+                typewriterEl.innerHTML = current.substring(0, charIndex - 1) + '<span class="cursor"></span>';
+                charIndex--;
+            } else {
+                typewriterEl.innerHTML = current.substring(0, charIndex + 1) + '<span class="cursor"></span>';
+                charIndex++;
+            }
+            let speed = isDeleting ? 40 : 90;
+            if (!isDeleting && charIndex === current.length) {
+                speed = 2000; isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false; phraseIndex = (phraseIndex + 1) % phrases.length; speed = 500;
+            }
+            setTimeout(type, speed);
+        }
+
+        // ==================== ЧАТ-ДЕМО ====================
+        const responses = {
+            uk: {
+                "привіт": "Привіт! Радий вас бачити. Про що хотіли б дізнатися?",
+                "що таке ai": "AI (Artificial Intelligence) — це здатність машин імітувати людський інтелект: навчатися, розв'язувати задачі та приймати рішення.",
+                "машинне навчання": "Машинне навчання (ML) — підгалузь AI, де системи навчаються на даних без явного програмування кожного правила.",
+                "нейромережа": "Нейронна мережа — математична модель, натхненна роботою людського мозку. Складається з шарів взаємопов'язаних 'нейронів'.",
+                "chatgpt": "ChatGPT — велика мовна модель від OpenAI, яка генерує тексти, відповідає на запитання та допомагає в різних задачах.",
+                "зображення": "Для генерації зображень використовують моделі як DALL-E, Midjourney та Stable Diffusion. Вони перетворюють текст у візуальні образи.",
+                "медицина": "AI у медицині аналізує знімки, прогнозує спалахи хвороб, прискорює розробку ліків та створює персоналізовані плани лікування.",
+                "роботи": "Сучасні роботи з AI можуть навчатися, адаптуватися до нових умов та виконувати складні завдання від складування до хірургії.",
+                "небезпека": "Етичні ризики AI включають упередженість алгоритмів, втрату робочих місць, приватність даних та потребу у прозорому регулюванні."
+            },
+            ru: {
+                "привет": "Привет! Рад вас видеть. О чём хотели бы узнать?",
+                "что такое ai": "AI (Artificial Intelligence) — это способность машин имитировать человеческий интеллект: учиться, решать задачи и принимать решения.",
+                "машинное обучение": "Машинное обучение (ML) — подраздел ИИ, где системы обучаются на данных без явного программирования каждого правила.",
+                "нейросеть": "Нейронная сеть — математическая модель, вдохновлённая работой человеческого мозга. Состоит из слоёв взаимосвязанных 'нейронов'.",
+                "chatgpt": "ChatGPT — большая языковая модель от OpenAI, которая генерирует тексты, отвечает на вопросы и помогает в разных задачах.",
+                "изображения": "Для генерации изображений используют модели как DALL-E, Midjourney и Stable Diffusion. Они превращают текст в визуальные образы.",
+                "медицина": "ИИ в медицине анализирует снимки, прогнозирует вспышки болезней, ускоряет разработку лекарств и создаёт персонализированные планы лечения.",
+                "роботы": "Современные роботы с ИИ могут учиться, адаптироваться к новым условиям и выполнять сложные задачи от складирования до хирургии.",
+                "опасность": "Этические риски ИИ включают предвзятость алгоритмов, потерю рабочих мест, приватность данных и потребность в прозрачном регулировании."
+            },
+            en: {
+                "hello": "Hello! Nice to meet you. What would you like to know about?",
+                "what is ai": "AI (Artificial Intelligence) is the ability of machines to mimic human intelligence: learn, solve problems and make decisions.",
+                "machine learning": "Machine Learning (ML) is an AI subfield where systems learn from data without explicitly programming every rule.",
+                "neural network": "A neural network is a mathematical model inspired by the human brain. It consists of layers of interconnected 'neurons'.",
+                "chatgpt": "ChatGPT is a large language model by OpenAI that generates text, answers questions and helps with various tasks.",
+                "images": "For image generation, models like DALL-E, Midjourney and Stable Diffusion are used. They turn text into visual imagery.",
+                "medicine": "AI in medicine analyzes scans, predicts disease outbreaks, accelerates drug development and creates personalized treatment plans.",
+                "robots": "Modern robots with AI can learn, adapt to new conditions and perform complex tasks from warehousing to surgery.",
+                "danger": "Ethical AI risks include algorithmic bias, job displacement, data privacy and the need for transparent regulation."
+            }
+        };
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chat = document.getElementById('chatWindow');
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.textContent = text;
+            chat.appendChild(userMsg);
+            input.value = '';
+            chat.scrollTop = chat.scrollHeight;
+
+            setTimeout(() => {
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'message ai';
+                aiMsg.innerHTML = '<span class="cursor"></span>';
+                chat.appendChild(aiMsg);
+                chat.scrollTop = chat.scrollHeight;
+
+                const lower = text.toLowerCase();
+                const langResponses = responses[currentLang];
+                let response = currentLang === 'uk' 
+                    ? "Це цікаве питання! AI охоплює багато сфер — від обробки мови до робототехніки. Спробуйте запитати конкретніше."
+                    : (currentLang === 'ru' 
+                        ? "Это интересный вопрос! ИИ охватывает множество сфер — от обработки языка до робототехники. Попробуйте спросить конкретнее."
+                        : "That's an interesting question! AI covers many areas — from language processing to robotics. Try asking something more specific.");
+
+                for (const key in langResponses) {
+                    if (lower.includes(key)) { response = langResponses[key]; break; }
+                }
+
+                let i = 0;
+                function typeAI() {
+                    if (i < response.length) {
+                        aiMsg.innerHTML = response.substring(0, i + 1) + '<span class="cursor"></span>';
+                        i++; setTimeout(typeAI, 25);
+                    } else { aiMsg.textContent = response; }
+                    chat.scrollTop = chat.scrollHeight;
+                }
+                typeAI();
+            }, 500);
+        }
+
+        // ==================== ЛІЧИЛЬНИКИ ====================
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = parseInt(entry.target.getAttribute('data-target'));
+                    let current = 0;
+                    const increment = target / 60;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            entry.target.textContent = target;
+                            clearInterval(timer);
+                        } else { entry.target.textContent = Math.floor(current); }
+                    }, 25);
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        document.querySelectorAll('.stat-number').forEach(c => counterObserver.observe(c));
+
+        // ==================== ПОЯВА ПРИ СКРОЛІ ====================
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(r => revealObserver.observe(r));
+
+        // ==================== ПЛАВНА ПРОКРУТКА ====================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        function toggleMobileMenu() {
+            const nav = document.querySelector('.nav-center');
+            nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+            if (nav.style.display === 'flex') {
+                nav.style.position = 'absolute';
+                nav.style.top = '60px';
+                nav.style.left = '0';
+                nav.style.right = '0';
+                nav.style.flexDirection = 'column';
+                nav.style.background = 'var(--surface)';
+                nav.style.padding = '1rem';
+                nav.style.gap = '1rem';
+                nav.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
+            }
+        }
+
+        // ==================== ІНІЦІАЛІЗАЦІЯ ====================
+        setLang(currentLang);
+        type();
+    </script>
+</body>
+</html>

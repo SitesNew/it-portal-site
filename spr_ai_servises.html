@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Довідник сервісів Штучного Інтелекту</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #00e5b0;
+            --accent-2: #7c3aed;
+            --accent-3: #ff6b6b;
+            --gradient: linear-gradient(135deg, #00e5b0, #7c3aed);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        /* Header */
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro {
+            max-width: 1200px;
+            margin: 1.5rem auto 0;
+            padding: 1.3rem 1.5rem;
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro strong { color: var(--text); }
+        .intro h2 {
+            font-size: 1.15rem;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro ul { margin: 0.5rem 0 0.8rem 1.2rem; }
+        .intro li { margin-bottom: 0.35rem; }
+        .intro h3 {
+            font-size: 1.05rem;
+            margin: 1.2rem 0 0.45rem;
+            color: var(--accent);
+        }
+        .intro p { margin-bottom: 0.7rem; }
+        main .intro {
+            margin: 0;
+            max-width: none;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #000; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        /* Filters */
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #000; border-color: var(--accent);
+        }
+
+        /* Grid */
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.2rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(0,229,176,0.2);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.6rem;
+        }
+        .card-icon {
+            width: 42px; height: 42px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title {
+            font-weight: 700; font-size: 1rem;
+        }
+        .card-tag {
+            font-size: 0.7rem; color: var(--accent-2);
+            background: rgba(124,58,237,0.1);
+            padding: 0.15rem 0.5rem; border-radius: 1rem;
+            display: inline-block; margin-top: 0.2rem;
+        }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.88rem;
+            margin: 0.6rem 0 1rem; line-height: 1.5; flex: 1;
+        }
+        .card-link {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            color: var(--accent); text-decoration: none;
+            font-weight: 600; font-size: 0.85rem;
+            transition: gap 0.2s;
+        }
+        .card-link:hover { gap: 0.7rem; }
+        .card-link::after { content: "→"; }
+
+        .no-results {
+            text-align: center; color: var(--text-muted);
+            padding: 3rem; font-size: 1.1rem; grid-column: 1 / -1;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.05rem; }
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-hover); border-radius: 4px; }
+    </style>
+</head>
+<body>
+ 
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">🧠 Довідник сервісів Штучного Інтелекту</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+
+<footer id="footer"></footer>
+
+<script>
+// ===================== ДАНІ =====================
+const categories = {
+    chat:   { uk: "💬 Чат-боти та LLM",      ru: "💬 Чат-боты и LLM",        en: "💬 Chatbots & LLMs" },
+    image:  { uk: "🎨 Генерація зображень",   ru: "🎨 Генерация изображений", en: "🎨 Image Generation" },
+    video:  { uk: "🎬 Відео та аватари",      ru: "🎬 Видео и аватары",       en: "🎬 Video & Avatars" },
+    audio:  { uk: "🎵 Аудіо, голос і музика", ru: "🎵 Аудио, голос и музыка", en: "🎵 Audio, Voice & Music" },
+    code:   { uk: "💻 Код та розробка",       ru: "💻 Код и разработка",      en: "💻 Code & Development" },
+    prod:   { uk: "📊 Продуктивність",        ru: "📊 Продуктивность",        en: "📊 Productivity" },
+    research:{uk: "🔬 Дослідження",           ru: "🔬 Исследования",          en: "🔬 Research & Science" },
+    design: { uk: "✏️ Дизайн та фото",        ru: "✏️ Дизайн и фото",         en: "✏️ Design & Photo" }
+};
+
+const services = [
+    // === ЧАТ-БОТИ ТА LLM ===
+    { id:"chatgpt",    cat:"chat", icon:"💬", name:"ChatGPT",       url:"https://chat.openai.com",
+      desc:{ uk:"Найпопулярніший AI-чат від OpenAI. Генерує текст, пише код, аналізує документи, створює зображення.", 
+             ru:"Самый популярный AI-чат от OpenAI. Генерирует текст, пишет код, анализирует документы, создаёт изображения.", 
+             en:"The most popular AI chat by OpenAI. Generates text, writes code, analyzes documents, creates images." }},
+    { id:"claude",     cat:"chat", icon:"🧠", name:"Claude",        url:"https://claude.ai",
+      desc:{ uk:"AI-асистент від Anthropic з великим контекстним вікном. Відмінно працює з аналізом довгих документів.", 
+             ru:"AI-ассистент от Anthropic с большим контекстным окном. Отлично справляется с анализом длинных документов.", 
+             en:"Anthropic's AI assistant with a large context window. Excellent for analyzing long documents." }},
+    { id:"gemini",     cat:"chat", icon:"♊", name:"Gemini",        url:"https://gemini.google.com",
+      desc:{ uk:"Google AI з підтримкою тексту, зображень і відео. Інтегрований у пошук і екосистему Google.", 
+             ru:"Google ИИ с поддержкой текста, изображений и видео. Интегрирован в поиск и экосистему Google.", 
+             en:"Google AI supporting text, images and video. Integrated into Search and Google ecosystem." }},
+    { id:"grok",       cat:"chat", icon:"🚀", name:"Grok",          url:"https://grok.com",
+      desc:{ uk:"Чат-бот від xAI (Ілон Маск). Має доступ до даних X (Twitter), відповідає прямо і без цензури.", 
+             ru:"Чат-бот от xAI (Илон Маск). Имеет доступ к данным X (Twitter), отвечает прямо и без цензуры.", 
+             en:"Chatbot by xAI (Elon Musk). Has access to X (Twitter) data, answers directly and without heavy filtering." }},
+    { id:"deepseek",   cat:"chat", icon:"🔍", name:"DeepSeek",      url:"https://chat.deepseek.com",
+      desc:{ uk:"Потужна відкрита модель з Китаю. Відома глибокими аналітичними та програмістськими здібностями.", 
+             ru:"Мощная открытая модель из Китая. Известна глубокими аналитическими и программистскими способностями.", 
+             en:"Powerful open model from China. Known for deep analytical and coding capabilities." }},
+    { id:"qwen",       cat:"chat", icon:"🌐", name:"Qwen",          url:"https://chat.qwen.ai",
+      desc:{ uk:"Велика мовна модель від Alibaba. Підтримує багато мов, програмування та математичні задачі.", 
+             ru:"Большая языковая модель от Alibaba. Поддерживает множество языков, программирование и математические задачи.", 
+             en:"Large language model by Alibaba. Supports many languages, programming and mathematical tasks." }},
+    { id:"zai",        cat:"chat", icon:"🇨", name:"Z.ai",          url:"https://chat.z.ai",
+      desc:{ uk:"Чат-бот на базі моделі GLM від Zhipu AI (Китай). Сильний у діалогах та логічних задачах.", 
+             ru:"Чат-бот на базе модели GLM от Zhipu AI (Китай). Силён в диалогах и логических задачах.", 
+             en:"Chatbot based on GLM model by Zhipu AI (China). Strong in dialogue and logical reasoning." }},
+    { id:"perplexity", cat:"chat", icon:"❓", name:"Perplexity",    url:"https://www.perplexity.ai",
+      desc:{ uk:"AI-пошуковик, що дає відповіді з посиланнями на джерела. Ідеальний для досліджень і навчання.", 
+             ru:"AI-поисковик, который даёт ответы со ссылками на источники. Идеален для исследований и обучения.", 
+             en:"AI search engine providing answers with source citations. Ideal for research and learning." }},
+    { id:"copilot",    cat:"chat", icon:"🪟", name:"Copilot",       url:"https://copilot.microsoft.com",
+      desc:{ uk:"AI-асистент від Microsoft. Інтегрований у Windows, Office та Edge. Працює на базі GPT-4.", 
+             ru:"AI-ассистент от Microsoft. Интегрирован в Windows, Office и Edge. Работает на базе GPT-4.", 
+             en:"Microsoft's AI assistant. Integrated into Windows, Office and Edge. Powered by GPT-4." }},
+    { id:"poe",        cat:"chat", icon:"📚", name:"Poe",           url:"https://poe.com",
+      desc:{ uk:"Платформа від Quora для доступу до десятків AI-моделей: GPT-4, Claude, Gemini, Llama та інших.", 
+             ru:"Платформа от Quora для доступа к десяткам AI-моделей: GPT-4, Claude, Gemini, Llama и других.", 
+             en:"Quora's platform for accessing dozens of AI models: GPT-4, Claude, Gemini, Llama and more." }},
+    { id:"mistral",    cat:"chat", icon:"🌬", name:"Mistral AI",    url:"https://chat.mistral.ai",
+      desc:{ uk:"Європейська модель з Франції. Відома високою швидкістю, ефективністю та відкритими вагами.", 
+             ru:"Европейская модель из Франции. Известна высокой скоростью, эффективностью и открытыми весами.", 
+             en:"European model from France. Known for high speed, efficiency and open weights." }},
+    { id:"metaai",     cat:"chat", icon:"🇲", name:"Meta AI",       url:"https://meta.ai",
+      desc:{ uk:"AI-асистент від Meta (Facebook). Інтегрований у Messenger, Instagram і WhatsApp. Базується на Llama.", 
+             ru:"AI-ассистент от Meta (Facebook). Интегрирован в Messenger, Instagram и WhatsApp. Основан на Llama.", 
+             en:"AI assistant by Meta (Facebook). Integrated into Messenger, Instagram and WhatsApp. Based on Llama." }},
+    { id:"huggingchat",cat:"chat", icon:"🤗", name:"HuggingChat",   url:"https://huggingface.co/chat",
+      desc:{ uk:"Відкрита альтернатива від Hugging Face. Доступ до багатьох безкоштовних моделей без реєстрації.", 
+             ru:"Открытая альтернатива от Hugging Face. Доступ ко многим бесплатным моделям без регистрации.", 
+             en:"Open alternative by Hugging Face. Access to many free models without registration." }},
+    { id:"character",  cat:"chat", icon:"🎭", name:"Character.AI",  url:"https://character.ai",
+      desc:{ uk:"Платформа для спілкування з AI-персонажами. Можна створювати власних ботів з унікальними характерами.", 
+             ru:"Платформа для общения с AI-персонажами. Можно создавать собственных ботов с уникальными характерами.", 
+             en:"Platform for chatting with AI characters. Create custom bots with unique personalities." }},
+    { id:"you",        cat:"chat", icon:"🔎", name:"You.com",       url:"https://you.com",
+      desc:{ uk:"AI-пошуковик з акцентом на приватність. Має режими Smart, Genius, Research та Create.", 
+             ru:"AI-поисковик с акцентом на приватность. Имеет режимы Smart, Genius, Research и Create.", 
+             en:"AI search engine focused on privacy. Features Smart, Genius, Research and Create modes." }},
+
+    // === ЗОБРАЖЕННЯ ===
+    { id:"midjourney", cat:"image", icon:"🎨", name:"Midjourney",   url:"https://www.midjourney.com",
+      desc:{ uk:"Один із найпотужніших генераторів художніх зображень. Створює неймовірно деталізовані арти за текстом.", 
+             ru:"Один из самых мощных генераторов художественных изображений. Создаёт невероятно детализированные арты по тексту.", 
+             en:"One of the most powerful artistic image generators. Creates incredibly detailed art from text." }},
+    { id:"dalle",      cat:"image", icon:"🖼", name:"DALL-E 3",     url:"https://openai.com/dall-e-3",
+      desc:{ uk:"Генератор зображень від OpenAI. Точно дотримується текстового запиту, інтегрований у ChatGPT.", 
+             ru:"Генератор изображений от OpenAI. Точно следует текстовому запросу, интегрирован в ChatGPT.", 
+             en:"OpenAI's image generator. Precisely follows text prompts, integrated into ChatGPT." }},
+    { id:"sd",         cat:"image", icon:"⚡", name:"Stable Diffusion", url:"https://stability.ai",
+      desc:{ uk:"Відкрита модель для генерації зображень. Можна запускати локально або через сервіси типу DreamStudio.", 
+             ru:"Открытая модель для генерации изображений. Можно запускать локально или через сервисы типа DreamStudio.", 
+             en:"Open-source image generation model. Can be run locally or via services like DreamStudio." }},
+    { id:"firefly",    cat:"image", icon:"✨", name:"Adobe Firefly",url:"https://firefly.adobe.com",
+      desc:{ uk:"AI-інструменти від Adobe для генерації зображень, текстових ефектів і редагування фото. Безпечно для комерції.", 
+             ru:"AI-инструменты от Adobe для генерации изображений, текстовых эффектов и редактирования фото. Безопасно для коммерции.", 
+             en:"Adobe's AI tools for image generation, text effects and photo editing. Safe for commercial use." }},
+    { id:"leonardo",   cat:"image", icon:"🦁", name:"Leonardo.ai",  url:"https://leonardo.ai",
+      desc:{ uk:"Платформа для створення ігрових асетів, концепт-арту та ілюстрацій. Має власні моделі та безкоштовний план.", 
+             ru:"Платформа для создания игровых ассетов, концепт-арта и иллюстраций. Имеет собственные модели и бесплатный план.", 
+             en:"Platform for creating game assets, concept art and illustrations. Features custom models and a free plan." }},
+    { id:"ideogram",   cat:"image", icon:"📝", name:"Ideogram",     url:"https://ideogram.ai",
+      desc:{ uk:"Генератор зображень із чудовою підтримкою тексту на картинках. Ідеально для логотипів і мемів.", 
+             ru:"Генератор изображений с отличной поддержкой текста на картинках. Идеально для логотипов и мемов.", 
+             en:"Image generator with excellent text-on-image support. Ideal for logos and memes." }},
+    { id:"recraft",    cat:"image", icon:"🔄", name:"Recraft",      url:"https://www.recraft.ai",
+      desc:{ uk:"AI для створення векторних ілюстрацій, іконок та 3D-графіки. Підтримує редагування стилю і кольорів.", 
+             ru:"AI для создания векторных иллюстраций, иконок и 3D-графики. Поддерживает редактирование стиля и цветов.", 
+             en:"AI for creating vector illustrations, icons and 3D graphics. Supports style and color editing." }},
+    { id:"freepik",    cat:"image", icon:"🆓", name:"Freepik AI",   url:"https://www.freepik.com/ai",
+      desc:{ uk:"Генерація зображень, редагування фото та створення мокапів на базі популярної бібліотеки стоків.", 
+             ru:"Генерация изображений, редактирование фото и создание мокапов на базе популярной библиотеки стоков.", 
+             en:"Image generation, photo editing and mockup creation based on a popular stock library." }},
+    { id:"krea",       cat:"image", icon:"🖌", name:"Krea.ai",      url:"https://www.krea.ai",
+      desc:{ uk:"Реалтайм-генератор зображень з підтримкою малювання. Миттєво перетворює ескізи у готові арти.", 
+             ru:"Реалтайм-генератор изображений с поддержкой рисования. Мгновенно превращает эскизы в готовые арты.", 
+             en:"Real-time image generator with drawing support. Instantly turns sketches into finished art." }},
+    { id:"canvaai",    cat:"image", icon:"🎨", name:"Canva AI",     url:"https://www.canva.com/ai-image-generator/",
+      desc:{ uk:"Інтегровані AI-функції в Canva: генерація зображень, редагування фото, магічне розширення та переклад.", 
+             ru:"Интегрированные AI-функции в Canva: генерация изображений, редактирование фото, магическое расширение и перевод.", 
+             en:"Integrated AI features in Canva: image generation, photo editing, magic expand and translate." }},
+
+    // === ВІДЕО ===
+    { id:"sora",       cat:"video", icon:"🎥", name:"Sora",         url:"https://openai.com/sora",
+      desc:{ uk:"Відеогенератор від OpenAI. Створює реалістичні та творчі відеоролики до 60 секунд за текстовим описом.", 
+             ru:"Видеогенератор от OpenAI. Создаёт реалистичные и творческие видеоролики до 60 секунд по текстовому описанию.", 
+             en:"OpenAI's video generator. Creates realistic and creative videos up to 60 seconds from text descriptions." }},
+    { id:"runway",     cat:"video", icon:"🎬", name:"Runway",       url:"https://runwayml.com",
+      desc:{ uk:"Платформа для генерації та редагування відео. Інструменти Gen-3, Motion Brush та видалення фону.", 
+             ru:"Платформа для генерации и редактирования видео. Инструменты Gen-3, Motion Brush и удаление фона.", 
+             en:"Platform for video generation and editing. Gen-3, Motion Brush and background removal tools." }},
+    { id:"kling",      cat:"video", icon:"👑", name:"Kling AI",     url:"https://klingai.com",
+      desc:{ uk:"Відеогенератор від Kuaishou (Китай). Відомий високою реалістичністю рухів і фізики об'єктів.", 
+             ru:"Видеогенератор от Kuaishou (Китай). Известен высокой реалистичностью движений и физики объектов.", 
+             en:"Video generator by Kuaishou (China). Known for high realism of movement and object physics." }},
+    { id:"luma",       cat:"video", icon:"🌙", name:"Luma Dream Machine", url:"https://lumalabs.ai/dream-machine",
+      desc:{ uk:"Швидкий відеогенератор з реалістичною фізикою. Створює ролики до 5 секунд з неймовірною плавністю.", 
+             ru:"Быстрый видеогенератор с реалистичной физикой. Создаёт ролики до 5 секунд с невероятной плавностью.", 
+             en:"Fast video generator with realistic physics. Creates up to 5-second clips with incredible smoothness." }},
+    { id:"pika",       cat:"video", icon:"⚡", name:"Pika",         url:"https://pika.art",
+      desc:{ uk:"Генератор відео з акцентом на стилізацію та ефекти. Можна анімувати зображення та додавати звук.", 
+             ru:"Генератор видео с акцентом на стилизацию и эффекты. Можно анимировать изображения и добавлять звук.", 
+             en:"Video generator focused on stylization and effects. Can animate images and add sound." }},
+    { id:"hailuo",     cat:"video", icon:"🌊", name:"Hailuo AI",    url:"https://hailuoai.video",
+      desc:{ uk:"Відеогенератор від MiniMax. Створює короткі кліпи з відмінною якістю та розумінням фізики.", 
+             ru:"Видеогенератор от MiniMax. Создаёт короткие клипы с отличным качеством и пониманием физики.", 
+             en:"Video generator by MiniMax. Creates short clips with excellent quality and physics understanding." }},
+    { id:"heygen",     cat:"video", icon:"🗣", name:"HeyGen",       url:"https://www.heygen.com",
+      desc:{ uk:"Платформа для створення AI-аватарів і озвучення відео. Переклад голосом зі збереженням міміки.", 
+             ru:"Платформа для создания AI-аватаров и озвучки видео. Перевод голосом с сохранением мимики.", 
+             en:"Platform for creating AI avatars and video dubbing. Voice translation while preserving lip sync." }},
+    { id:"synthesia",  cat:"video", icon:"🤵", name:"Synthesia",    url:"https://www.synthesia.io",
+      desc:{ uk:"Професійна платформа для створення навчальних відео з AI-ведучими. Підтримує 130+ мов.", 
+             ru:"Профессиональная платформа для создания обучающих видео с AI-ведущими. Поддерживает 130+ языков.", 
+             en:"Professional platform for creating training videos with AI presenters. Supports 130+ languages." }},
+    { id:"invideo",    cat:"video", icon:"📹", name:"InVideo AI",   url:"https://invideo.io",
+      desc:{ uk:"AI для створення відео з тексту. Автоматично підбирає кадри, музику та монтує ролики.", 
+             ru:"AI для создания видео из текста. Автоматически подбирает кадры, музыку и монтирует ролики.", 
+             en:"AI for creating videos from text. Automatically selects footage, music and edits clips." }},
+    { id:"did",        cat:"video", icon:"🎭", name:"D-ID",         url:"https://www.d-id.com",
+      desc:{ uk:"Оживлення фотографій: перетворює статичні портрети на говорячих AI-персонажів.", 
+             ru:"Оживление фотографий: превращает статичные портреты в говорящих AI-персонажей.", 
+             en:"Photo animation: turns static portraits into talking AI characters." }},
+
+    // === АУДІО ===
+    { id:"elevenlabs", cat:"audio", icon:"🎙", name:"ElevenLabs",   url:"https://elevenlabs.io",
+      desc:{ uk:"Найреалістичніший синтез мовлення та клонування голосу. Підтримує десятки мов, включно з українською.", 
+             ru:"Самый реалистичный синтез речи и клонирование голоса. Поддерживает десятки языков, включая русский.", 
+             en:"The most realistic speech synthesis and voice cloning. Supports dozens of languages." }},
+    { id:"suno",       cat:"audio", icon:"☀", name:"Suno",         url:"https://suno.ai",
+      desc:{ uk:"Генератор пісень за текстовим описом. Створює вокал, музику та аранжування у різних стилях.", 
+             ru:"Генератор песен по текстовому описанию. Создаёт вокал, музыку и аранжировки в разных стилях.", 
+             en:"Song generator from text descriptions. Creates vocals, music and arrangements in various styles." }},
+    { id:"udio",       cat:"audio", icon:"🎵", name:"Udio",         url:"https://udio.com",
+      desc:{ uk:"AI для створення музики та пісень. Відомий високою якістю звучання та природністю вокалу.", 
+             ru:"AI для создания музыки и песен. Известен высоким качеством звучания и естественностью вокала.", 
+             en:"AI for creating music and songs. Known for high sound quality and natural vocals." }},
+    { id:"murf",       cat:"audio", icon:"🎤", name:"Murf.ai",      url:"https://murf.ai",
+      desc:{ uk:"Професійна платформа для озвучування тексту. 120+ голосів, підтримка відео та презентацій.", 
+             ru:"Профессиональная платформа для озвучивания текста. 120+ голосов, поддержка видео и презентаций.", 
+             en:"Professional text-to-speech platform. 120+ voices, supports video and presentations." }},
+    { id:"playht",     cat:"audio", icon:"▶", name:"Play.ht",      url:"https://play.ht",
+      desc:{ uk:"AI-озвучування з клонуванням голосу та підтримкою багатьох мов. Інтеграція з WordPress та API.", 
+             ru:"AI-озвучивание с клонированием голоса и поддержкой многих языков. Интеграция с WordPress и API.", 
+             en:"AI voiceover with voice cloning and multi-language support. WordPress and API integration." }},
+
+    // === КОД ===
+    { id:"githubcopilot",cat:"code", icon:"🐙", name:"GitHub Copilot", url:"https://github.com/features/copilot",
+      desc:{ uk:"AI-помічник від GitHub та OpenAI. Автодоповнення коду, генерація функцій та коментарів у VS Code.", 
+             ru:"AI-помощник от GitHub и OpenAI. Автодополнение кода, генерация функций и комментариев в VS Code.", 
+             en:"AI assistant by GitHub and OpenAI. Code autocompletion, function generation and comments in VS Code." }},
+    { id:"cursor",     cat:"code", icon:"🖱", name:"Cursor",       url:"https://cursor.com",
+      desc:{ uk:"AI-редактор коду на базі VS Code. Може редактувати цілі файли, відповідати на питання про кодбазу.", 
+             ru:"AI-редактор кода на базе VS Code. Может редактировать целые файлы, отвечать на вопросы о кодовой базе.", 
+             en:"AI code editor based on VS Code. Can edit entire files and answer questions about your codebase." }},
+    { id:"codeium",    cat:"code", icon:"⚛", name:"Codeium",      url:"https://codeium.com",
+      desc:{ uk:"Безкоштовна альтернатива Copilot. Швидке автодоповнення, чат із AI та пояснення коду.", 
+             ru:"Бесплатная альтернатива Copilot. Быстрое автодополнение, чат с AI и объяснение кода.", 
+             en:"Free alternative to Copilot. Fast autocompletion, AI chat and code explanation." }},
+    { id:"v0",         cat:"code", icon:"🅾", name:"v0 by Vercel", url:"https://v0.dev",
+      desc:{ uk:"Генератор UI-інтерфейсів за текстовим описом. Створює React-компоненти з Tailwind CSS одразу.", 
+             ru:"Генератор UI-интерфейсов по текстовому описанию. Создаёт React-компоненты с Tailwind CSS сразу.", 
+             en:"UI interface generator from text descriptions. Creates React components with Tailwind CSS instantly." }},
+    { id:"bolt",       cat:"code", icon:"⚡", name:"Bolt.new",     url:"https://bolt.new",
+      desc:{ uk:"AI для створення повноцінних веб-додатків за промптом. Пише код, налаштовує середовище та деплоїть.", 
+             ru:"AI для создания полноценных веб-приложений по промпту. Пишет код, настраивает среду и деплоит.", 
+             en:"AI for creating full web applications from prompts. Writes code, sets up environment and deploys." }},
+    { id:"lovable",    cat:"code", icon:"❤", name:"Lovable",      url:"https://lovable.dev",
+      desc:{ uk:"Перетворює описи ідеї на готові веб-додатки. Редагує код через діалог, як дизайнер-розробник.", 
+             ru:"Превращает описания идей в готовые веб-приложения. Редактирует код через диалог, как дизайнер-разработчик.", 
+             en:"Turns idea descriptions into ready web apps. Edits code through dialogue like a designer-developer." }},
+    { id:"replit",     cat:"code", icon:"🌀", name:"Replit AI",    url:"https://replit.com",
+      desc:{ uk:"Хмарне IDE з вбудованим AI. Генерація, пояснення та деплой коду в одному вікні.", 
+             ru:"Облачное IDE со встроенным AI. Генерация, объяснение и деплой кода в одном окне.", 
+             en:"Cloud IDE with built-in AI. Generate, explain and deploy code in one window." }},
+    { id:"cody",       cat:"code", icon:"🔱", name:"Sourcegraph Cody", url:"https://sourcegraph.com/cody",
+      desc:{ uk:"AI для роботи з великими кодовими базами. Розуміє контекст усього репозиторію та документації.", 
+             ru:"AI для работы с большими кодовыми базами. Понимает контекст всего репозитория и документации.", 
+             en:"AI for working with large codebases. Understands the context of the entire repository and docs." }},
+
+    // === ПРОДУКТИВНІСТЬ ===
+    { id:"notionai",   cat:"prod", icon:"📝", name:"Notion AI",    url:"https://www.notion.so/product/ai",
+      desc:{ uk:"AI всередині Notion. Пише нотатки, підсумовує зустрічі, перекладає та генерує ідеї.", 
+             ru:"AI внутри Notion. Пишет заметки, подводит итоги встреч, переводит и генерирует идеи.", 
+             en:"AI inside Notion. Writes notes, summarizes meetings, translates and generates ideas." }},
+    { id:"gamma",      cat:"prod", icon:"📊", name:"Gamma",        url:"https://gamma.app",
+      desc:{ uk:"Створення презентацій, документів і веб-сторінок за текстовим описом. Краще, ніж PowerPoint.", 
+             ru:"Создание презентаций, документов и веб-страниц по текстовому описанию. Лучше, чем PowerPoint.", 
+             en:"Create presentations, documents and web pages from text descriptions. Better than PowerPoint." }},
+    { id:"jasper",     cat:"prod", icon:"💎", name:"Jasper",       url:"https://www.jasper.ai",
+      desc:{ uk:"AI-платформа для маркетингових текстів. Створює пости, рекламу, листи та SEO-контент.", 
+             ru:"AI-платформа для маркетинговых текстов. Создаёт посты, рекламу, письма и SEO-контент.", 
+             en:"AI platform for marketing copy. Creates posts, ads, emails and SEO content." }},
+    { id:"copyai",     cat:"prod", icon:"✍", name:"Copy.ai",      url:"https://www.copy.ai",
+      desc:{ uk:"Генератор текстів для бізнесу. Шаблони для соцмереж, лендінгів, пропозицій та холодних листів.", 
+             ru:"Генератор текстов для бизнеса. Шаблоны для соцсетей, лендингов, предложений и холодных писем.", 
+             en:"Business text generator. Templates for social media, landing pages, proposals and cold emails." }},
+    { id:"grammarly",  cat:"prod", icon:"✅", name:"Grammarly",    url:"https://www.grammarly.com",
+      desc:{ uk:"AI-редактор текстів. Перевіряє граматику, стиль, тон і пропонує покращення англійської.", 
+             ru:"AI-редактор текстов. Проверяет грамматику, стиль, тон и предлагает улучшения английского.", 
+             en:"AI text editor. Checks grammar, style, tone and suggests improvements for English writing." }},
+    { id:"otter",      cat:"prod", icon:"🦦", name:"Otter.ai",     url:"https://otter.ai",
+      desc:{ uk:"AI-стенограф для зустрічей. Розпізнає мову, створює підсумки та ділиться нотатками.", 
+             ru:"AI-стенограф для встреч. Распознаёт речь, создаёт резюме и делится заметками.", 
+             en:"AI meeting scribe. Transcribes speech, creates summaries and shares notes." }},
+    { id:"fireflies",  cat:"prod", icon:"🪰", name:"Fireflies.ai", url:"https://fireflies.ai",
+      desc:{ uk:"Запис і аналіз зустрічей. Автоматично веде протоколи, виділяє дії та інтегрується з Zoom.", 
+             ru:"Запись и анализ встреч. Автоматически ведёт протоколы, выделяет действия и интегрируется с Zoom.", 
+             en:"Meeting recording and analysis. Automatically takes minutes, highlights action items and integrates with Zoom." }},
+
+    // === ДОСЛІДЖЕННЯ ===
+    { id:"elicit",     cat:"research", icon:"📑", name:"Elicit",     url:"https://elicit.org",
+      desc:{ uk:"AI для аналізу наукових статей. Знаходить відповіді у дослідженнях та створює літературний огляд.", 
+             ru:"AI для анализа научных статей. Находит ответы в исследованиях и создаёт литературный обзор.", 
+             en:"AI for analyzing scientific papers. Finds answers in research and creates literature reviews." }},
+    { id:"consensus",  cat:"research", icon:"🤝", name:"Consensus",  url:"https://consensus.app",
+      desc:{ uk:"Пошуковик, що шукає відповіді виключно в наукових публікаціях. Показує, наскільки питання вивчене.", 
+             ru:"Поисковик, который ищет ответы исключительно в научных публикациях. Показывает, насколько вопрос изучен.", 
+             en:"Search engine that finds answers exclusively in scientific publications. Shows how studied a question is." }},
+    { id:"scite",      cat:"research", icon:"📖", name:"Scite",      url:"https://scite.ai",
+      desc:{ uk:"Аналізує, як часто стаття цитується підтримуючи, спростовуючи або згадуючи аргументи.", 
+             ru:"Анализирует, как часто статья цитируется с поддержкой, опровержением или упоминанием аргументов.", 
+             en:"Analyzes how often a paper is cited supporting, contrasting or mentioning arguments." }},
+    { id:"semanticscholar", cat:"research", icon:"🎓", name:"Semantic Scholar", url:"https://www.semanticscholar.org",
+      desc:{ uk:"AI-пошуковик наукових статей від Allen Institute. Виділяє ключові фрази та зв'язки між роботами.", 
+             ru:"AI-поисковик научных статей от Allen Institute. Выделяет ключевые фразы и связи между работами.", 
+             en:"AI academic paper search by Allen Institute. Highlights key phrases and connections between works." }},
+    { id:"connected",  cat:"research", icon:"🔗", name:"Connected Papers", url:"https://www.connectedpapers.com",
+      desc:{ uk:"Візуальна карта зв'язків між науковими статтями. Знаходить схожі дослідження та джерела.", 
+             ru:"Визуальная карта связей между научными статьями. Находит похожие исследования и источники.", 
+             en:"Visual map of connections between scientific papers. Finds similar research and sources." }},
+    { id:"khanmigo",   cat:"research", icon:"📚", name:"Khanmigo",   url:"https://www.khanacademy.org/khanmigo",
+      desc:{ uk:"AI-репетитор від Khan Academy. Допомагає вивчати математику, програмування та науки через діалог.", 
+             ru:"AI-репетитор от Khan Academy. Помогает изучать математику, программирование и науки через диалог.", 
+             en:"AI tutor by Khan Academy. Helps learn math, programming and science through dialogue." }},
+
+    // === ДИЗАЙН ТА ФОТО ===
+    { id:"removebg",   cat:"design", icon:"🖼", name:"Remove.bg",    url:"https://www.remove.bg",
+      desc:{ uk:"Миттєве видалення фону з фото за допомогою AI. Працює автоматично і дуже точно.", 
+             ru:"Мгновенное удаление фона с фото с помощью AI. Работает автоматически и очень точно.", 
+             en:"Instant background removal from photos using AI. Works automatically and very accurately." }},
+    { id:"clipdrop",   cat:"design", icon:"📎", name:"Clipdrop",     url:"https://clipdrop.co",
+      desc:{ uk:"Набір AI-інструментів для фото: видалення об'єктів, заміна фону, апскейл, перенос стилю.", 
+             ru:"Набор AI-инструментов для фото: удаление объектов, замена фона, апскейл, перенос стиля.", 
+             en:"Suite of AI photo tools: object removal, background replacement, upscaling, style transfer." }},
+    { id:"uizard",     cat:"design", icon:"📐", name:"Uizard",       url:"https://uizard.io",
+      desc:{ uk:"AI для створення дизайну інтерфейсів. Перетворює ескізи на макети та генерує UI за текстом.", 
+             ru:"AI для создания дизайна интерфейсов. Превращает эскизы в макеты и генерирует UI по тексту.", 
+             en:"AI for interface design. Turns sketches into mockups and generates UI from text." }},
+    { id:"looka",      cat:"design", icon:"👁", name:"Looka",        url:"https://looka.com",
+      desc:{ uk:"Генератор логотипів та брендингу. Створює унікальні логотипи та фірмовий стиль за запитом.", 
+             ru:"Генератор логотипов и брендинга. Создаёт уникальные логотипы и фирменный стиль по запросу.", 
+             en:"Logo and branding generator. Creates unique logos and brand identity from your request." }},
+    { id:"autodraw",   cat:"design", icon:"✏", name:"Autodraw",     url:"https://www.autodraw.com",
+      desc:{ uk:"AI від Google, що перетворює каракулі на професійні іконки та малюнки в реальному часі.", 
+             ru:"AI от Google, который превращает каракули в профессиональные иконки и рисунки в реальном времени.", 
+             en:"Google AI that turns doodles into professional icons and drawings in real time." }}
+];
+
+// ===================== ЛОКАЛІЗАЦІЯ =====================
+const ui = {
+    uk: {
+        title: "Довідник сервісів Штучного Інтелекту",
+        pageTitle: "🧠 Довідник сервісів Штучного Інтелекту",
+        home: "Головна сторінка",
+        searchPlaceholder: "Пошук сервісів...",
+        all: "Усі категорії",
+        about: "📖 Що таке ШІ?",
+        open: "Відкрити →",
+        noResults: "Нічого не знайдено. Спробуйте інший запит.",
+        footer: "🧠 Універсальний довідник AI-сервісів | 2026 | Код вільний для редагування"
+    },
+    ru: {
+        title: "Справочник сервисов Искусственного Интеллекта",
+        pageTitle: "🧠 Справочник сервисов Искусственного Интеллекта",
+        home: "Главная страница",
+        searchPlaceholder: "Поиск сервисов...",
+        all: "Все категории",
+        about: "📖 Что такое ИИ?",
+        open: "Открыть →",
+        noResults: "Ничего не найдено. Попробуйте другой запрос.",
+        footer: "🧠 Универсальный справочник AI-сервисов | 2026 | Код свободен для редактирования"
+    },
+    en: {
+        title: "Artificial Intelligence Services Catalog",
+        pageTitle: "🧠 Artificial Intelligence Services Catalog",
+        home: "Home page",
+        searchPlaceholder: "Search services...",
+        all: "All Categories",
+        about: "📖 What is AI?",
+        open: "Open →",
+        noResults: "Nothing found. Try a different query.",
+        footer: "🧠 Universal AI Services Directory | 2026 | Code is free to edit"
+    }
+};
+
+const introContent = {
+    uk: {
+        title: "Що таке штучний інтелект?",
+        body: `
+<p><strong>Штучний інтелект (ШІ, англ. Artificial Intelligence, AI)</strong> — галузь інформатики та сукупність технологій, які дозволяють комп’ютерним системам виконувати завдання, що традиційно потребували людського інтелекту: розуміння й генерація мови, розпізнавання зображень і звуку, прийняття рішень, планування, навчання на даних і створення нового контенту.</p>
+
+<h3>Коротка історія</h3>
+<p>Термін «штучний інтелект» запропонував Джон Маккарті у 1956 році на конференції в Дартмуті. Перші десятиліття (символьний ШІ, експертні системи) чергувалися з «зимами ШІ» через обмеження обчислювальної потужності та даних. З 2010-х років прорив забезпечили <strong>глибоке навчання</strong> (deep learning), великі набори даних і графічні процесори (GPU). З 2022–2023 років масове поширення отримали <strong>великі мовні моделі (LLM)</strong> та генеративний ШІ (ChatGPT, Claude, Gemini, генератори зображень і відео).</p>
+
+<h3>Основні підходи</h3>
+<ul>
+<li><strong>Машинне навчання (ML)</strong> — система навчається на прикладах, а не за жорсткими правилами.</li>
+<li><strong>Нейронні мережі</strong> — моделі, натхнені структурою мозку; основа сучасного розпізнавання образів і мови.</li>
+<li><strong>Глибоке навчання</strong> — багатошарові мережі для складних задач (мова, зображення, відео).</li>
+<li><strong>Великі мовні моделі (LLM)</strong> — моделі, навчені на величезних текстових корпусах; розуміють і генерують текст, код, міркування.</li>
+<li><strong>Генеративний ШІ</strong> — створення нового контенту: текст, зображення, музика, відео, 3D, код.</li>
+</ul>
+
+<h3>Рівні «інтелекту»</h3>
+<ul>
+<li><strong>Вузький (або слабкий) ШІ</strong> — спеціалізовані системи під конкретну задачу (переклад, розпізнавання облич, рекомендації). Саме такі системи ми використовуємо щодня.</li>
+<li><strong>Загальний ШІ (AGI)</strong> — гіпотетична система з гнучкістю людського інтелекту в багатьох доменах; поки не існує.</li>
+<li><strong>Суперінтелект</strong> — теоретичний рівень, що перевершує людину в більшості когнітивних задач.</li>
+</ul>
+
+<h3>Можливості сучасного ШІ</h3>
+<ul>
+<li><strong>Текст і діалог</strong> — відповіді на запитання, написання й редагування текстів, переклад, підсумки, аналіз документів.</li>
+<li><strong>Зображення та дизайн</strong> — генерація картинок за описом, редагування фото, логотипи, ілюстрації, видалення фону.</li>
+<li><strong>Відео та аватари</strong> — короткі ролики з тексту, озвучення, AI-ведучі, анімація портретів.</li>
+<li><strong>Аудіо й музика</strong> — синтез і клонування голосу, генерація пісень і саундтреків.</li>
+<li><strong>Код і розробка</strong> — автодоповнення, пояснення коду, генерація UI та навіть цілих веб-додатків.</li>
+<li><strong>Продуктивність</strong> — нотатки, презентації, листи, протоколи зустрічей, SEO-тексти.</li>
+<li><strong>Наука й освіта</strong> — пошук у публікаціях, літературні огляди, репетитори, аналіз даних.</li>
+</ul>
+
+<h3>Обмеження та ризики</h3>
+<ul>
+<li>Моделі можуть <strong>вигадувати факти</strong> (галюцинації) — важливі рішення варто перевіряти.</li>
+<li>Якість залежить від <strong>даних навчання</strong>: упередження в даних переходять у відповіді.</li>
+<li>Питання <strong>приватності</strong>, авторських прав, безпеки та етики використання.</li>
+<li>Не всі задачі варто віддавати ШІ: критичні системи потребують людини «в контурі».</li>
+</ul>
+
+<h3>Як користуватися цим довідником</h3>
+<p>Нижче зібрано популярні онлайн-сервіси ШІ за категоріями. Оберіть пункт меню (чат-боти, зображення, відео тощо). Кожна картка містить короткий опис і посилання на офіційний сайт сервісу.</p>
+`
+    },
+    ru: {
+        title: "Что такое искусственный интеллект?",
+        body: `
+<p><strong>Искусственный интеллект (ИИ, англ. Artificial Intelligence, AI)</strong> — область информатики и совокупность технологий, которые позволяют компьютерным системам выполнять задачи, традиционно требовавшие человеческого интеллекта: понимание и генерация языка, распознавание изображений и звука, принятие решений, планирование, обучение на данных и создание нового контента.</p>
+
+<h3>Краткая история</h3>
+<p>Термин «искусственный интеллект» предложил Джон Маккарти в 1956 году на конференции в Дартмуте. Первые десятилетия (символьный ИИ, экспертные системы) чередовались с «зимами ИИ» из‑за ограничений вычислительной мощности и данных. С 2010‑х прорыв обеспечили <strong>глубокое обучение</strong> (deep learning), большие наборы данных и графические процессоры (GPU). С 2022–2023 годов массовое распространение получили <strong>большие языковые модели (LLM)</strong> и генеративный ИИ (ChatGPT, Claude, Gemini, генераторы изображений и видео).</p>
+
+<h3>Основные подходы</h3>
+<ul>
+<li><strong>Машинное обучение (ML)</strong> — система учится на примерах, а не по жёстким правилам.</li>
+<li><strong>Нейронные сети</strong> — модели, вдохновлённые структурой мозга; основа современного распознавания образов и речи.</li>
+<li><strong>Глубокое обучение</strong> — многослойные сети для сложных задач (язык, изображения, видео).</li>
+<li><strong>Большие языковые модели (LLM)</strong> — модели, обученные на огромных текстовых корпусах; понимают и генерируют текст, код, рассуждения.</li>
+<li><strong>Генеративный ИИ</strong> — создание нового контента: текст, изображения, музыка, видео, 3D, код.</li>
+</ul>
+
+<h3>Уровни «интеллекта»</h3>
+<ul>
+<li><strong>Узкий (или слабый) ИИ</strong> — специализированные системы под конкретную задачу (перевод, распознавание лиц, рекомендации). Именно такие системы мы используем ежедневно.</li>
+<li><strong>Общий ИИ (AGI)</strong> — гипотетическая система с гибкостью человеческого интеллекта во многих доменах; пока не существует.</li>
+<li><strong>Сверхразум</strong> — теоретический уровень, превосходящий человека в большинстве когнитивных задач.</li>
+</ul>
+
+<h3>Возможности современного ИИ</h3>
+<ul>
+<li><strong>Текст и диалог</strong> — ответы на вопросы, написание и редактирование текстов, перевод, резюме, анализ документов.</li>
+<li><strong>Изображения и дизайн</strong> — генерация картинок по описанию, редактирование фото, логотипы, иллюстрации, удаление фона.</li>
+<li><strong>Видео и аватары</strong> — короткие ролики из текста, озвучка, AI‑ведущие, анимация портретов.</li>
+<li><strong>Аудио и музыка</strong> — синтез и клонирование голоса, генерация песен и саундтреков.</li>
+<li><strong>Код и разработка</strong> — автодополнение, объяснение кода, генерация UI и даже целых веб‑приложений.</li>
+<li><strong>Продуктивность</strong> — заметки, презентации, письма, протоколы встреч, SEO‑тексты.</li>
+<li><strong>Наука и образование</strong> — поиск в публикациях, литературные обзоры, репетиторы, анализ данных.</li>
+</ul>
+
+<h3>Ограничения и риски</h3>
+<ul>
+<li>Модели могут <strong>выдумывать факты</strong> (галлюцинации) — важные решения стоит проверять.</li>
+<li>Качество зависит от <strong>данных обучения</strong>: предвзятость в данных переходит в ответы.</li>
+<li>Вопросы <strong>приватности</strong>, авторских прав, безопасности и этики использования.</li>
+<li>Не все задачи стоит отдавать ИИ: критические системы нуждаются в человеке «в контуре».</li>
+</ul>
+
+<h3>Как пользоваться этим справочником</h3>
+<p>Ниже собраны популярные онлайн‑сервисы ИИ по категориям. Выберите пункт меню (чат‑боты, изображения, видео и т.д.). Каждая карточка содержит краткое описание и ссылку на официальный сайт сервиса.</p>
+`
+    },
+    en: {
+        title: "What is artificial intelligence?",
+        body: `
+<p><strong>Artificial intelligence (AI)</strong> is a field of computer science and a set of technologies that enable computer systems to perform tasks that traditionally required human intelligence: understanding and generating language, recognizing images and sound, making decisions, planning, learning from data, and creating new content.</p>
+
+<h3>A brief history</h3>
+<p>The term “artificial intelligence” was coined by John McCarthy in 1956 at the Dartmouth conference. Early decades (symbolic AI, expert systems) alternated with “AI winters” due to limits in compute and data. From the 2010s, breakthroughs came from <strong>deep learning</strong>, large datasets and GPUs. Since 2022–2023, <strong>large language models (LLMs)</strong> and generative AI (ChatGPT, Claude, Gemini, image and video generators) have spread widely.</p>
+
+<h3>Main approaches</h3>
+<ul>
+<li><strong>Machine learning (ML)</strong> — systems learn from examples rather than hard-coded rules.</li>
+<li><strong>Neural networks</strong> — models inspired by the brain; the basis of modern vision and speech recognition.</li>
+<li><strong>Deep learning</strong> — multi-layer networks for complex tasks (language, images, video).</li>
+<li><strong>Large language models (LLMs)</strong> — models trained on vast text corpora; they understand and generate text, code and reasoning.</li>
+<li><strong>Generative AI</strong> — creating new content: text, images, music, video, 3D, code.</li>
+</ul>
+
+<h3>Levels of “intelligence”</h3>
+<ul>
+<li><strong>Narrow (or weak) AI</strong> — systems specialized for a concrete task (translation, face recognition, recommendations). These are the systems we use every day.</li>
+<li><strong>Artificial general intelligence (AGI)</strong> — a hypothetical system with human-like flexibility across many domains; does not exist yet.</li>
+<li><strong>Superintelligence</strong> — a theoretical level that surpasses humans in most cognitive tasks.</li>
+</ul>
+
+<h3>Capabilities of modern AI</h3>
+<ul>
+<li><strong>Text & dialogue</strong> — answering questions, writing and editing text, translation, summaries, document analysis.</li>
+<li><strong>Images & design</strong> — generating pictures from descriptions, photo editing, logos, illustrations, background removal.</li>
+<li><strong>Video & avatars</strong> — short clips from text, voiceover, AI presenters, portrait animation.</li>
+<li><strong>Audio & music</strong> — speech synthesis and cloning, song and soundtrack generation.</li>
+<li><strong>Code & development</strong> — completion, code explanation, UI generation and even full web apps.</li>
+<li><strong>Productivity</strong> — notes, presentations, emails, meeting minutes, SEO copy.</li>
+<li><strong>Science & education</strong> — literature search, reviews, tutoring, data analysis.</li>
+</ul>
+
+<h3>Limits and risks</h3>
+<ul>
+<li>Models can <strong>hallucinate facts</strong> — verify important decisions.</li>
+<li>Quality depends on <strong>training data</strong>: bias in data shows up in outputs.</li>
+<li>Issues of <strong>privacy</strong>, copyright, safety and ethics of use.</li>
+<li>Not every task should be left to AI: critical systems need a human in the loop.</li>
+</ul>
+
+<h3>How to use this catalog</h3>
+<p>Below are popular online AI services by category. Pick a menu item (chatbots, images, video, etc.). Each card has a short description and a link to the official site.</p>
+`
+    }
+};
+
+let currentLang = localStorage.getItem('ai-dir-lang') || 'uk';
+let activeCategory = 'all';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('ai-dir-lang', lang);
+    document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+    ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+    document.title = ui[lang].title;
+    document.getElementById('home-link').textContent = ui[lang].home;
+    document.getElementById('page-title').textContent = ui[lang].pageTitle;
+    renderFilters();
+    render();
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const cur = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+function renderFilters() {
+    const container = document.getElementById('filters');
+    let html = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+    html += `<button class="filter-btn ${activeCategory==='about'?'active':''}" onclick="setCat('about')">${ui[currentLang].about}</button>`;
+    for (const [key, val] of Object.entries(categories)) {
+        html += `<button class="filter-btn ${activeCategory===key?'active':''}" onclick="setCat('${key}')">${val[currentLang]}</button>`;
+    }
+    container.innerHTML = html;
+}
+
+function setCat(cat) {
+    activeCategory = cat;
+    renderFilters();
+    render();
+}
+
+function render() {
+    const main = document.getElementById('main');
+    let html = '';
+
+    if (activeCategory === 'about') {
+        const block = introContent[currentLang];
+        main.innerHTML = `<div class="intro"><h2>${block.title}</h2>${block.body}</div>`;
+        document.getElementById('footer').textContent = ui[currentLang].footer;
+        return;
+    }
+
+    const catsToShow = activeCategory === 'all' ? Object.keys(categories) : [activeCategory];
+
+    catsToShow.forEach(catKey => {
+        const catServices = services.filter(s => s.cat === catKey);
+
+        if (catServices.length === 0) return;
+
+        html += `<div class="section-title">${categories[catKey][currentLang]}</div>`;
+        html += `<div class="grid">`;
+        catServices.forEach(s => {
+            html += `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">${s.icon}</div>
+                        <div>
+                            <div class="card-title">${s.name}</div>
+                        </div>
+                    </div>
+                    <div class="card-desc">${s.desc[currentLang]}</div>
+                    <a href="${s.url}" target="_blank" class="card-link">${ui[currentLang].open}</a>
+                </div>
+            `;
+        });
+        html += `</div>`;
+    });
+
+    if (html === '') {
+        html = `<div class="no-results">${ui[currentLang].noResults}</div>`;
+    }
+
+    main.innerHTML = html;
+    document.getElementById('footer').textContent = ui[currentLang].footer;
+}
+
+// Init
+setLang(currentLang);
+</script>
+</body>
+</html>

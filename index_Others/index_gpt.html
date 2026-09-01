@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Учбово-методичний довідник «Що таке Інформаційні Технології?» — ІТ Портал">
+<title>ІТ Портал — Що таке Інформаційні Технології?</title>
+<style>
+:root{
+  --bg:#071426;--bg2:#0a1b31;--panel:#0d223d;--panel2:#102b4b;
+  --text:#f2f7ff;--muted:#b7c8dc;--line:#2b527b;
+  --blue:#46a6ff;--cyan:#4ee7ff;--violet:#a879ff;--gold:#ffd45a;
+  --shadow:0 12px 35px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+ margin:0;background:linear-gradient(180deg,var(--bg),#081a30 48%,#061324);
+ color:var(--text);font-family:Segoe UI,Arial,sans-serif;line-height:1.55
+}
+a{color:inherit}
+.container{width:min(1180px,calc(100% - 30px));margin:auto}
+.top{
+ position:sticky;top:0;z-index:100;
+ background:rgba(4,16,31,.94);backdrop-filter:blur(14px);
+ border-bottom:1px solid #214466
+}
+.head{min-height:76px;display:flex;align-items:center;gap:20px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;min-width:230px}
+.logo-mark{font-size:31px}.logo-main{font-size:21px;font-weight:800;letter-spacing:.7px}
+.logo-sub{font-size:12px;color:#b7c8dc}
+.head-title{flex:1;text-align:center;font-size:18px;font-weight:700;color:var(--gold)}
+.head-sub{font-size:12px;color:#b7c8dc;font-weight:400;margin-top:2px}
+.controls{display:flex;align-items:center;gap:7px}
+.lang button,.theme{
+ border:1px solid #28537d;background:#0c2038;color:#eaf5ff;
+ border-radius:9px;padding:8px 11px;cursor:pointer;font-weight:700
+}
+.lang button.active{background:#1261a5;border-color:#398bd0}
+.theme{font-size:18px;min-width:48px}
+.nav{
+ border-top:1px solid rgba(45,82,119,.45);
+ display:flex;overflow-x:auto;scrollbar-width:none
+}
+.nav::-webkit-scrollbar{display:none}
+.nav a{
+ text-decoration:none;padding:12px 17px;color:#d6e4f3;white-space:nowrap;
+ font-weight:650;font-size:14px;border-right:1px solid rgba(45,82,119,.25)
+}
+.nav a:hover,.nav a.active{background:#145fa1;color:#fff}
+.hero{padding:0 0 22px}
+.hero-img{
+ width:100%;display:block;max-height:400px;object-fit:cover;
+ border:1px solid #2d5b86;border-top:0;box-shadow:var(--shadow)
+}
+.hero-text{text-align:center;padding:22px 10px 12px}
+.hero-text h1{font-size:clamp(24px,3vw,35px);margin:0 0 7px;color:#56b8ff}
+.hero-text p{max-width:960px;margin:0 auto;color:#d1dfed;font-size:16px}
+.three{
+ display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+ margin:20px 0 35px;border:1px solid #28537d;border-radius:16px;
+ background:rgba(8,28,50,.8);overflow:hidden
+}
+.info{padding:20px 24px;display:flex;gap:16px}
+.info+ .info{border-left:1px solid #28537d}
+.info-icon{font-size:37px;min-width:44px;text-align:center}
+.info h2{font-size:18px;color:#61bdff;margin:0 0 5px}
+.info p{font-size:14px;color:#bdcee0;margin:0}
+.section-head{text-align:center;margin:38px 0 22px}
+.section-head h2{margin:0;font-size:27px;color:#e9f4ff}
+.section-head h2:before,.section-head h2:after{content:"◇";color:#4fb8ff;margin:0 28px}
+.section-head p{color:#aebfd3;margin:7px auto 0;max-width:820px}
+.map{
+ display:grid;grid-template-columns:repeat(5,1fr);gap:14px
+}
+.topic{
+ min-height:210px;padding:18px 15px;text-align:center;text-decoration:none;
+ border:1px solid #2f70a8;border-radius:15px;
+ background:linear-gradient(145deg,#0d2949,#091c33);
+ box-shadow:0 8px 20px rgba(0,0,0,.2);
+ transition:transform .18s,border-color .18s,box-shadow .18s
+}
+.topic:hover{transform:translateY(-4px);border-color:#61c4ff;box-shadow:0 15px 30px rgba(30,140,240,.18)}
+.topic:nth-child(2n){border-color:#287f71}.topic:nth-child(3n){border-color:#654e9c}
+.topic-icon{
+ width:62px;height:62px;margin:0 auto 10px;border-radius:50%;
+ display:grid;place-items:center;font-size:31px;
+ border:2px solid #48c1ff;background:#0b2c4b
+}
+.topic h3{font-size:16px;line-height:1.25;margin:5px 0 8px;color:#e9f5ff}
+.topic p{font-size:12.5px;color:#afc3d8;margin:0}
+.arrow{display:block;color:#57c8ff;font-size:20px;margin-top:8px}
+.future{
+ margin:42px 0;border:1px solid #315b82;border-radius:17px;
+ padding:25px;background:linear-gradient(105deg,#0b2038,#102b4a)
+}
+.future-grid{display:grid;grid-template-columns:1fr 1.8fr;gap:25px;align-items:center}
+.future-main{display:flex;gap:17px;align-items:center}
+.bulb{font-size:58px}.future h2{margin:0 0 6px;color:#f2f7ff;font-size:23px}
+.future p{margin:0;color:#c0d1e3;font-size:14px}
+.future-items{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+.future-item{text-align:center;padding:12px 5px;border:1px solid #28537d;border-radius:12px;background:#0b213a}
+.future-item b{display:block;font-size:25px;margin-bottom:4px}
+.future-item span{font-size:11px;color:#b8cce0}
+.cta{
+ display:inline-block;margin-top:15px;text-decoration:none;border:1px solid #3999e8;
+ padding:8px 13px;border-radius:9px;color:#fff;font-weight:700;font-size:13px
+}
+footer{
+ margin-top:45px;border-top:1px solid #284a6d;padding:27px 0 38px;
+ color:#9fb3c9;text-align:center;font-size:13px
+}
+footer strong{color:#dceafb;font-size:16px}
+footer a{color:#61baff}
+.disclaimer{max-width:980px;margin:15px auto 0}
+@media(max-width:1000px){
+ .map{grid-template-columns:repeat(3,1fr)}
+ .head-title{display:none}.logo{min-width:auto}.head{justify-content:space-between}
+ .future-grid{grid-template-columns:1fr}.future-items{grid-template-columns:repeat(5,1fr)}
+}
+@media(max-width:720px){
+ .three{grid-template-columns:1fr}.info+.info{border-left:0;border-top:1px solid #28537d}
+ .map{grid-template-columns:repeat(2,1fr)}
+ .future-items{grid-template-columns:repeat(2,1fr)}
+ .nav a{padding:10px 12px;font-size:13px}
+}
+@media(max-width:480px){
+ .container{width:calc(100% - 18px)}
+ .map{grid-template-columns:1fr}.hero-img{max-height:280px}
+ .logo-main{font-size:17px}.logo-sub{font-size:10px}
+ .lang button{padding:7px 8px}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+ <div class="container head">
+  <a class="logo" href="#home">
+   <span class="logo-mark">🎓</span>
+   <span><span class="logo-main">ІТ ПОРТАЛ</span><br><span class="logo-sub">Учбово-методичний довідник</span></span>
+  </a>
+  <div class="head-title">
+   Що таке Інформаційні Технології ?
+   <div class="head-sub">Знання сьогодні — технології завтра — можливості безмежні</div>
+  </div>
+  <div class="controls">
+   <div class="lang">
+    <button data-lang="uk" class="active">UA</button>
+    <button data-lang="ru">RU</button>
+    <button data-lang="en">EN</button>
+   </div>
+   <button class="theme" id="themeBtn" title="Змінити тему">☀️</button>
+  </div>
+ </div>
+ <nav class="nav">
+  <div class="container" style="display:flex">
+   <a href="#home" class="active">⌂ &nbsp;Головна</a>
+   <a href="#about">▣ &nbsp;Про ІТ</a>
+   <a href="#map">▤ &nbsp;Карта ІТ</a>
+   <a href="#history">◫ &nbsp;Історія</a>
+   <a href="#future">⌁ &nbsp;Майбутнє</a>
+   <a href="it-news.html">▦ &nbsp;Новини</a>
+   <a href="it-glossary.html">▧ &nbsp;Глосарій</a>
+   <a href="#footer">✉ &nbsp;Контакти</a>
+  </div>
+ </nav>
+</header>
+
+<main id="home">
+ <section class="hero">
+  <div class="container">
+   <img class="hero-img" src="rozvitok_it.png" alt="Історія розвитку інформаційних технологій">
+   <div class="hero-text">
+    <h1>Інформаційні технології (ІТ) — нервова система сучасної цивілізації</h1>
+    <p>ІТ — це не лише комп'ютери. Це люди, знання, дані, програми, мережі та процеси, які поєднують світ у єдине цифрове середовище.</p>
+   </div>
+  </div>
+ </section>
+
+ <section id="about" class="container">
+  <div class="three">
+   <div class="info">
+    <div class="info-icon">🚀</div><div>
+     <h2>Для чого потрібні?</h2>
+     <p>Автоматизація, аналіз даних, зв'язок між людьми, підтримка складних рішень і нові можливості.</p>
+    </div>
+   </div>
+   <div class="info">
+    <div class="info-icon">🌐</div><div>
+     <h2>Місце в житті</h2>
+     <p>Медицина, транспорт, фінанси, освіта, мистецтво, наука — ІТ стали базовою інфраструктурою.</p>
+    </div>
+   </div>
+   <div class="info">
+    <div class="info-icon">⭐</div><div>
+     <h2>Перспективи</h2>
+     <p>ШІ, хмари, кібербезпека, IoT, великі дані та нові інтерфейси відкривають шлях у майбутнє.</p>
+    </div>
+   </div>
+  </div>
+ </section>
+
+ <section id="map" class="container">
+  <div class="section-head">
+   <h2>Карта розділів ІТ Порталу</h2>
+   <p>Основні тематичні напрямки порталу. Кожна категорія є своєрідними «воротами» до відповідних довідників.</p>
+  </div>
+
+  <div class="map">
+   <a class="topic" href="#fundamentals"><div class="topic-icon">🏛️</div><h3>Основи, історія<br>та фундамент</h3><p>Історія, архітектури, алгоритми, теорія обчислень та базові поняття.</p><span class="arrow">→</span></a>
+   <a class="topic" href="#hardware"><div class="topic-icon">🖥️</div><h3>Апаратне забезпечення<br>та системи</h3><p>Комп'ютерні системи, компоненти, зберігання даних та операційні системи.</p><span class="arrow">→</span></a>
+   <a class="topic" href="#networks"><div class="topic-icon">☁️</div><h3>Мережі, хмари<br>та кібербезпека</h3><p>Мережі, протоколи, хмари, віртуалізація, захист інформації та IoT.</p><span class="arrow">→</span></a>
+   <a class="topic" href="#programming"><div class="topic-icon">‹/›</div><h3>Програмування<br>та інструменти</h3><p>Мови, алгоритми, патерни, компілятори, API, розробка та контроль версій.</p><span class="arrow">→</span></a>
+   <a class="topic" href="#engineering"><div class="topic-icon">♾️</div><h3>Програмна інженерія<br>та DevOps</h3><p>SDLC, тестування, QA, DevOps, CI/CD, командні процеси та якість ПЗ.</p><span class="arrow">→</span></a>
+   <a class="topic" href="#data"><div class="topic-icon">📊</div><h3>Дані, аналітика<br>та ШІ</h3><p>Бази даних, Big Data, Data Science, машинне навчання та штучний інтелект.</p><span class="arrow">→</span></a>
+   <a class="topic" href="#web"><div class="topic-icon">🌐</div><h3>Web, дизайн<br>та цифрова взаємодія</h3><p>Web-розробка, UI/UX, мобільні технології, AR/VR та доступність.</p><span class="arrow">→</span></a>
+   <a class="topic" href="#business"><div class="topic-icon">💼</div><h3>ІТ, бізнес<br>та управління</h3><p>Бізнес-процеси, проєктний менеджмент, професії та розвиток кар'єри.</p><span class="arrow">→</span></a>
+   <a class="topic" href="#information"><div class="topic-icon">🔎</div><h3>Пошук, SEO, соціальні<br>мережі та інформація</h3><p>Пошукові системи, SEO, соціальні платформи та новини ІТ.</p><span class="arrow">→</span></a>
+   <a class="topic" href="#newtech"><div class="topic-icon">🤖</div><h3>Робототехніка та нові<br>обчислювальні середовища</h3><p>Робототехніка, квантові та паралельні обчислення, блокчейн і нові технології.</p><span class="arrow">→</span></a>
+  </div>
+ </section>
+
+ <!-- The category anchors below turn the "map" into a real navigation menu.
+      They list the actual portal pages without making the home page visually overloaded. -->
+ <section class="container" style="margin-top:35px">
+  <div id="fundamentals"></div><div id="hardware"></div><div id="networks"></div>
+  <div id="programming"></div><div id="engineering"></div><div id="data"></div>
+  <div id="web"></div><div id="business"></div><div id="information"></div><div id="newtech"></div>
+  <details style="border:1px solid #28537d;border-radius:14px;background:#0b213a;padding:14px 18px">
+   <summary style="cursor:pointer;font-weight:750;color:#65bfff">📂 Відкрити повний перелік сторінок порталу</summary>
+   <div style="columns:3;column-gap:30px;padding-top:15px;color:#bcd0e4;font-size:14px">
+    <p><a href="history-computing.html">Історія обчислювальної техніки</a><br>
+    <a href="history-programming-languages.html">Історія мов програмування</a><br>
+    <a href="architecture_it.html">Архітектури ІТ</a><br>
+    <a href="formal-methods.html">Формальні методи / Теорія обчислень</a><br>
+    <a href="parallel-distributed-computing.html">Паралельні та розподілені обчислення</a><br>
+    <a href="quantum-computing.html">Квантові обчислення</a><br>
+    <a href="it-glossary.html">Глосарій термінів ІТ</a></p>
+    <p><a href="hardware.html">Класифікація комп'ютерних систем</a><br>
+    <a href="apparat.html">Апаратне забезпечення комп'ютерів</a><br>
+    <a href="storage-devices.html">Засоби збереження інформації</a><br>
+    <a href="file_systems.html">Файлові системи</a><br>
+    <a href="ports.html">Порти та інтерфейси</a><br>
+    <a href="spr_os.html">Довідник операційних систем</a><br>
+    <a href="legacy-mainframes.html">Легасі-системи та Мейнфрейми</a></p>
+    <p><a href="networks_and_protocols.html">Мережі та протоколи</a><br>
+    <a href="cloud_virtualization.html">Хмари та віртуалізація</a><br>
+    <a href="cybersecurity.html">Кібербезпека</a><br>
+    <a href="internet-of-things.html">Інтернет речей (IoT)</a><br>
+    <a href="blockchain-distributed-ledgers.html">Блокчейн та розподілені реєстри</a><br>
+    <a href="developer_tools.html">Інструменти розробника</a><br>
+    <a href="proglang-directory.html">Довідник мов програмування</a></p>
+    <p><a href="weblang-directory.html">Довідник мов веб-програмування</a><br>
+    <a href="data-structures-algorithms.html">Структури даних та алгоритми</a><br>
+    <a href="design_patterns.html">Патерни проєктування</a><br>
+    <a href="software-engineering-sdlc.html">Програмна інженерія / SDLC</a><br>
+    <a href="software-testing-qa.html">Тестування ПЗ</a><br>
+    <a href="version-control-systems.html">Системи контролю версій</a><br>
+    <a href="api-microservices-integrations.html">API, мікросервіси та інтеграції</a><br>
+    <a href="compilers-interpreters.html">Компілятори та інтерпретатори</a><br>
+    <a href="devops-basics.html">Основи DevOps & CI/CD</a></p>
+    <p><a href="spr_subd.html">Довідник СУБД</a><br>
+    <a href="data-science-bigdata.html">Data Science, Big Data та аналітика</a><br>
+    <a href="machine-learning-ai.html">Машинне навчання та ШІ</a><br>
+    <a href="spr_ai_servises.html">Довідник сервісів ШІ</a><br>
+    <a href="ui-ux-design.html">UI/UX та дизайн інтерфейсів</a><br>
+    <a href="mobile-development.html">Мобільна розробка</a><br>
+    <a href="ar-vr-metaverse.html">AR/VR / метавсесвіти</a><br>
+    <a href="accessibility.html">Доступність (Accessibility / a11y)</a></p>
+    <p><a href="it-and-business.html">ІТ та бізнес-процеси</a><br>
+    <a href="it-project-management.html">Управління ІТ-проєктами</a><br>
+    <a href="it-careers-specialties.html">Кар'єра в ІТ / спеціальності</a><br>
+    <a href="office_editors.html">Текстові редактори та офісні програми</a><br>
+    <a href="search-engines.html">Пошукові системи</a><br>
+    <a href="seo-tools.html">SEO-інструменти</a><br>
+    <a href="social_networks.html">Соціальні мережі</a><br>
+    <a href="it-news.html">Рух та новини ІТ</a><br>
+    <a href="robotics.html">Робототехніка</a><br>
+    <a href="game-development.html">Розробка ігор</a></p>
+   </div>
+  </details>
+ </section>
+
+ <section id="history" class="container">
+  <div class="section-head">
+   <h2>🕰️ Історія розвитку ІТ</h2>
+   <p>Від найпростіших засобів рахунку до глобального цифрового середовища — шлях, який показує стрімкість технологічних змін.</p>
+  </div>
+ </section>
+
+ <section id="future" class="container future">
+  <div class="future-grid">
+   <div class="future-main">
+    <div class="bulb">💡</div>
+    <div>
+     <h2>Майбутнє ІТ — це майбутнє людини</h2>
+     <p>Технології змінюються щодня, але головне — люди, які створюють, розвивають і застосовують їх для кращого завтра.</p>
+     <a class="cta" href="machine-learning-ai.html">Дізнатися більше про перспективи ІТ →</a>
+    </div>
+   </div>
+   <div class="future-items">
+    <div class="future-item"><b>🧠</b><span>Штучний інтелект</span></div>
+    <div class="future-item"><b>☁️</b><span>Хмарні технології</span></div>
+    <div class="future-item"><b>🛡️</b><span>Кібербезпека</span></div>
+    <div class="future-item"><b>📡</b><span>Інтернет речей</span></div>
+    <div class="future-item"><b>⚛️</b><span>Квантові обчислення</span></div>
+   </div>
+  </div>
+ </section>
+</main>
+
+<footer id="footer">
+ <div class="container">
+  <strong>Учбово-методичний довідник : « Що таке Інформаційні Технології ? »</strong>
+  <div>Copyright © 2025 - <span id="year"></span> рік.</div>
+  <div>E-mail: <a href="mailto:_pvi@ukr.net">_pvi@ukr.net</a></div>
+  <div class="disclaimer">
+   Всі матеріали, надані на цьому інформаційному ресурсі, призначені
+   <strong>ВИКЛЮЧНО з ОЗНАЙОМЧОЮ, НАВЧАЛЬНОЮ та ОСВІТНЬОЮ МЕТОЮ.</strong><br>
+   Адміністрація ресурсу не претендує на їх авторство і не несе відповідальності за їхній зміст.<br>
+   Створено з допомогою різних Сервісів Штучного Інтелекту.
+  </div>
+ </div>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+const themeBtn=document.getElementById('themeBtn');
+let theme=localStorage.getItem('it-theme')||'dark';
+function setTheme(v){
+  theme=v;
+  if(v==='light'){
+    document.documentElement.style.setProperty('--bg','#f2f6fb');
+    document.documentElement.style.setProperty('--bg2','#f2f6fb');
+    document.documentElement.style.setProperty('--panel','#fff');
+    document.documentElement.style.setProperty('--panel2','#eef4fb');
+    document.documentElement.style.setProperty('--text','#142238');
+    document.documentElement.style.setProperty('--muted','#5d6e83');
+    document.documentElement.style.setProperty('--line','#c9d7e7');
+    document.body.style.background='linear-gradient(180deg,#f5f8fc,#edf3f9)';
+    themeBtn.textContent='🌙';
+  }else{
+    location.reload();
+  }
+  localStorage.setItem('it-theme',v);
+}
+themeBtn.addEventListener('click',()=>{
+  if(theme==='dark'){
+    theme='light';
+    document.documentElement.style.setProperty('--bg','#f2f6fb');
+    document.documentElement.style.setProperty('--bg2','#f2f6fb');
+    document.documentElement.style.setProperty('--panel','#fff');
+    document.documentElement.style.setProperty('--panel2','#eef4fb');
+    document.documentElement.style.setProperty('--text','#142238');
+    document.documentElement.style.setProperty('--muted','#5d6e83');
+    document.documentElement.style.setProperty('--line','#c9d7e7');
+    document.body.style.background='linear-gradient(180deg,#f5f8fc,#edf3f9)';
+    themeBtn.textContent='🌙';
+  }else{
+    theme='dark'; location.reload();
+  }
+  localStorage.setItem('it-theme',theme);
+});
+if(theme==='light'){
+  document.documentElement.style.setProperty('--bg','#f2f6fb');
+  document.documentElement.style.setProperty('--bg2','#f2f6fb');
+  document.documentElement.style.setProperty('--panel','#fff');
+  document.documentElement.style.setProperty('--panel2','#eef4fb');
+  document.documentElement.style.setProperty('--text','#142238');
+  document.documentElement.style.setProperty('--muted','#5d6e83');
+  document.documentElement.style.setProperty('--line','#c9d7e7');
+  document.body.style.background='linear-gradient(180deg,#f5f8fc,#edf3f9)';
+  themeBtn.textContent='🌙';
+}
+
+document.querySelectorAll('[data-lang]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('[data-lang]').forEach(x=>x.classList.remove('active'));
+    btn.classList.add('active');
+    const lang=btn.dataset.lang;
+    localStorage.setItem('it-lang',lang);
+    if(lang!=='uk'){
+      alert(lang==='en'
+        ? 'EN version is prepared as the next localization step. The navigation and structure are already language-ready.'
+        : 'RU версія може бути додана наступним кроком. Структура сторінки вже підготовлена до багатомовності.');
+    }
+  });
+});
+const savedLang=localStorage.getItem('it-lang')||'uk';
+document.querySelectorAll('[data-lang]').forEach(x=>x.classList.toggle('active',x.dataset.lang===savedLang));
+</script>
+</body>
+</html>

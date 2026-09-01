@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тестування програмного забезпечення (QA / Testing) — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">🧪 Тестування ПЗ (QA / Testing)</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    const categories = {
+        levels: {
+            uk: "📊 Рівні тестування",
+            ru: "📊 Уровни тестирования",
+            en: "📊 Testing Levels"
+        },
+        types: {
+            uk: "🔍 Види та підходи",
+            ru: "🔍 Виды и подходы",
+            en: "🔍 Types & Approaches"
+        },
+        specialized: {
+            uk: "⚡ Спеціалізоване тестування",
+            ru: "⚡ Специализированное тестирование",
+            en: "⚡ Specialized Testing"
+        },
+        tools: {
+            uk: "🛠️ Інструменти та фреймворки",
+            ru: "🛠️ Инструменты и фреймворки",
+            en: "🛠️ Tools & Frameworks"
+        }
+    };
+
+    const items = [
+        {
+            cat: "levels",
+            icon: "🔬",
+            name: {
+                uk: "Модульне тестування (Unit Testing)",
+                ru: "Модульное тестирование (Unit Testing)",
+                en: "Unit Testing"
+            },
+            desc: {
+                uk: "Перевірка найменших частин коду (функцій, методів, класів) ізольовано від решти системи. Дозволяє швидко знаходити помилки на ранньому етапі розробки.",
+                ru: "Проверка самых маленьких частей кода (функций, методов, классов) изолированно от остальной системы. Помогает быстро находить ошибки на раннем этапе разработки.",
+                en: "Testing the smallest pieces of code (functions, methods, classes) in isolation from the rest of the system. Helps catch defects early in development."
+            },
+            traits: {
+                uk: "Ізоляція, Швидкість, Покриття коду, Моки та заглушки, Розробка через тестування",
+                ru: "Изоляция, Скорость, Покрытие кода, Моки и заглушки, Разработка через тестирование",
+                en: "Isolation, Speed, Code coverage, Mocks and stubs, Test-driven development"
+            },
+            spec: {
+                uk: "Зазвичай пишуть розробники",
+                ru: "Обычно пишут разработчики",
+                en: "Usually written by developers"
+            },
+            links: [
+                { name: "Jest", url: "https://jestjs.io" },
+                { name: "JUnit", url: "https://junit.org" },
+                { name: "pytest", url: "https://docs.pytest.org" },
+                { name: "xUnit", url: "https://xunit.net" }
+            ]
+        },
+        {
+            cat: "levels",
+            icon: "🔗",
+            name: {
+                uk: "Інтеграційне тестування",
+                ru: "Интеграционное тестирование",
+                en: "Integration Testing"
+            },
+            desc: {
+                uk: "Перевірка взаємодії між модулями, сервісами або системами. Виявляє помилки на стиках — у протоколах, форматах даних, контрактах API.",
+                ru: "Проверка взаимодействия между модулями, сервисами или системами. Выявляет ошибки на стыках — в протоколах, форматах данных, контрактах API.",
+                en: "Verifying interaction between modules, services or systems. Finds defects at the boundaries — protocols, data formats, API contracts."
+            },
+            traits: {
+                uk: "Взаємодія модулів, API-контракти, База даних, Повідомлення, Контрактне тестування",
+                ru: "Взаимодействие модулей, API-контракты, База данных, Сообщения, Контрактное тестирование",
+                en: "Module interaction, API contracts, Database, Messaging, Contract testing"
+            },
+            spec: {
+                uk: "Важливо після модульних тестів",
+                ru: "Важно после модульных тестов",
+                en: "Important after unit tests"
+            },
+            links: [
+                { name: "Testcontainers", url: "https://testcontainers.com" },
+                { name: "Pact", url: "https://docs.pact.io" },
+                { name: "Spring Test", url: "https://docs.spring.io/spring-framework/reference/testing.html" }
+            ]
+        },
+        {
+            cat: "levels",
+            icon: "🖥️",
+            name: {
+                uk: "Системне та наскрізне тестування (E2E)",
+                ru: "Системное и сквозное тестирование (E2E)",
+                en: "System & End-to-End (E2E) Testing"
+            },
+            desc: {
+                uk: "Перевірка всієї системи як єдиного цілого з точки зору користувача. Наскрізні (E2E) тести імітують реальні сценарії від початку до кінця.",
+                ru: "Проверка всей системы как единого целого с точки зрения пользователя. Сквозные (E2E) тесты имитируют реальные сценарии от начала до конца.",
+                en: "Testing the whole system as a single unit from the user’s perspective. End-to-end tests simulate real user journeys from start to finish."
+            },
+            traits: {
+                uk: "Повні сценарії, Реальний браузер, Користувацькі потоки, Повільніші тести, Висока цінність",
+                ru: "Полные сценарии, Реальный браузер, Пользовательские потоки, Более медленные тесты, Высокая ценность",
+                en: "Full scenarios, Real browser, User flows, Slower tests, High value"
+            },
+            spec: {
+                uk: "Близько до реального використання",
+                ru: "Близко к реальному использованию",
+                en: "Closest to real usage"
+            },
+            links: [
+                { name: "Cypress", url: "https://www.cypress.io" },
+                { name: "Playwright", url: "https://playwright.dev" },
+                { name: "Selenium", url: "https://www.selenium.dev" }
+            ]
+        },
+        {
+            cat: "levels",
+            icon: "✅",
+            name: {
+                uk: "Приймальне тестування (UAT)",
+                ru: "Приемочное тестирование (UAT)",
+                en: "Acceptance Testing (UAT)"
+            },
+            desc: {
+                uk: "Фінальна перевірка, чи відповідає система бізнес-вимогам і очікуванням замовника. Часто виконується представниками бізнесу або кінцевими користувачами.",
+                ru: "Финальная проверка, соответствует ли система бизнес-требованиям и ожиданиям заказчика. Часто выполняется представителями бизнеса или конечными пользователями.",
+                en: "Final verification that the system meets business requirements and stakeholder expectations. Often performed by business representatives or end users."
+            },
+            traits: {
+                uk: "Бізнес-критерії, Сценарії прийняття, Замовник, Критерії готовності, Підтвердження цінності",
+                ru: "Бизнес-критерии, Сценарии принятия, Заказчик, Критерии готовности, Подтверждение ценности",
+                en: "Business criteria, Acceptance scenarios, Stakeholder, Definition of Done, Value confirmation"
+            },
+            spec: {
+                uk: "Останній бар’єр перед релізом",
+                ru: "Последний барьер перед релизом",
+                en: "Last gate before release"
+            },
+            links: [
+                { name: "Cucumber", url: "https://cucumber.io" },
+                { name: "SpecFlow", url: "https://specflow.org" },
+                { name: "Gherkin", url: "https://cucumber.io/docs/gherkin/" }
+            ]
+        },
+        {
+            cat: "types",
+            icon: "📋",
+            name: {
+                uk: "Функціональне тестування",
+                ru: "Функциональное тестирование",
+                en: "Functional Testing"
+            },
+            desc: {
+                uk: "Перевірка, чи система робить те, що від неї очікується згідно з вимогами. Охоплює бізнес-логіку, інтерфейси, обробку даних та відповідність специфікаціям.",
+                ru: "Проверка, делает ли система то, что от нее ожидается согласно требованиям. Охватывает бизнес-логику, интерфейсы, обработку данных и соответствие спецификациям.",
+                en: "Checking whether the system does what is expected according to requirements. Covers business logic, interfaces, data handling and specification compliance."
+            },
+            traits: {
+                uk: "Бізнес-логіка, Вимоги, Позитивні та негативні сценарії, Граничні значення",
+                ru: "Бизнес-логика, Требования, Позитивные и негативные сценарии, Граничные значения",
+                en: "Business logic, Requirements, Positive and negative cases, Boundary values"
+            },
+            spec: {
+                uk: "Основа будь-якої стратегії тестування",
+                ru: "Основа любой стратегии тестирования",
+                en: "Foundation of any test strategy"
+            },
+            links: [
+                { name: "ISTQB Syllabus", url: "https://www.istqb.org" },
+                { name: "Equivalence Partitioning", url: "https://www.guru99.com/equivalence-partitioning-boundary-value-analysis.html" }
+            ]
+        },
+        {
+            cat: "types",
+            icon: "🔄",
+            name: {
+                uk: "Регресійне тестування",
+                ru: "Регрессионное тестирование",
+                en: "Regression Testing"
+            },
+            desc: {
+                uk: "Повторна перевірка вже протестованої функціональності після змін у коді. Гарантує, що нові виправлення чи функції не зламали те, що працювало раніше.",
+                ru: "Повторная проверка уже протестированной функциональности после изменений в коде. Гарантирует, что новые исправления или функции не сломали то, что работало раньше.",
+                en: "Re-testing already verified functionality after code changes. Ensures that new fixes or features have not broken what previously worked."
+            },
+            traits: {
+                uk: "Після змін, Автоматизація, Набір регресії, Швидкий зворотний зв’язок, Стабільність",
+                ru: "После изменений, Автоматизация, Набор регрессии, Быстрая обратная связь, Стабильность",
+                en: "After changes, Automation, Regression suite, Fast feedback, Stability"
+            },
+            spec: {
+                uk: "Найкраще підходить для автоматизації",
+                ru: "Лучше всего подходит для автоматизации",
+                en: "Best candidate for automation"
+            },
+            links: [
+                { name: "Regression testing guide", url: "https://www.browserstack.com/guide/regression-testing" }
+            ]
+        },
+        {
+            cat: "types",
+            icon: "🤖",
+            name: {
+                uk: "Автоматизоване vs ручне тестування",
+                ru: "Автоматизированное vs ручное тестирование",
+                en: "Automated vs Manual Testing"
+            },
+            desc: {
+                uk: "Ручне тестування виконує людина, автоматизоване — скрипти та інструменти. Автоматизація прискорює регресію та рутинні перевірки, ручне — краще для дослідницького та юзабіліті-тестування.",
+                ru: "Ручное тестирование выполняет человек, автоматизированное — скрипты и инструменты. Автоматизация ускоряет регрессию и рутинные проверки, ручное — лучше для исследовательского и юзабилити-тестирования.",
+                en: "Manual testing is done by a person; automated testing uses scripts and tools. Automation speeds up regression and repetitive checks; manual is better for exploratory and usability testing."
+            },
+            traits: {
+                uk: "Швидкість, Повторюваність, Вартість підтримки, Дослідницьке тестування, Людський фактор",
+                ru: "Скорость, Повторяемость, Стоимость поддержки, Исследовательское тестирование, Человеческий фактор",
+                en: "Speed, Repeatability, Maintenance cost, Exploratory testing, Human factor"
+            },
+            spec: {
+                uk: "Оптимально — розумне поєднання",
+                ru: "Оптимально — разумное сочетание",
+                en: "Best — a smart combination"
+            },
+            links: [
+                { name: "Test Automation Pyramid", url: "https://martinfowler.com/articles/practical-test-pyramid.html" }
+            ]
+        },
+        {
+            cat: "types",
+            icon: "🧠",
+            name: {
+                uk: "TDD, BDD та підходи до якості",
+                ru: "TDD, BDD и подходы к качеству",
+                en: "TDD, BDD and quality approaches"
+            },
+            desc: {
+                uk: "Розробка через тестування (TDD) і розробка через поведінку (BDD) змінюють порядок роботи: спочатку тести або сценарії, потім код. Це підвищує якість проєктування та зрозумілість вимог.",
+                ru: "Разработка через тестирование (TDD) и разработка через поведение (BDD) меняют порядок работы: сначала тесты или сценарии, потом код. Это повышает качество проектирования и понятность требований.",
+                en: "Test-Driven Development (TDD) and Behavior-Driven Development (BDD) reverse the order: tests or scenarios first, then code. This improves design quality and clarity of requirements."
+            },
+            traits: {
+                uk: "Червоний-зелений-рефакторинг, Сценарії Gherkin, Спільна мова, Жива документація",
+                ru: "Красный-зеленый-рефакторинг, Сценарии Gherkin, Общий язык, Живая документация",
+                en: "Red-green-refactor, Gherkin scenarios, Shared language, Living documentation"
+            },
+            spec: {
+                uk: "Тести стають частиною проєктування",
+                ru: "Тесты становятся частью проектирования",
+                en: "Tests become part of design"
+            },
+            links: [
+                { name: "Cucumber / Gherkin", url: "https://cucumber.io" },
+                { name: "Jest (TDD)", url: "https://jestjs.io" },
+                { name: "Martin Fowler — TDD", url: "https://martinfowler.com/bliki/TestDrivenDevelopment.html" }
+            ]
+        },
+        {
+            cat: "specialized",
+            icon: "⚡",
+            name: {
+                uk: "Тестування продуктивності",
+                ru: "Тестирование производительности",
+                en: "Performance Testing"
+            },
+            desc: {
+                uk: "Оцінка швидкодії, стабільності та масштабованості системи під навантаженням. Включає навантажувальне, стресове, об’ємне та тестування стабільності.",
+                ru: "Оценка быстродействия, стабильности и масштабируемости системы под нагрузкой. Включает нагрузочное, стрессовое, объемное тестирование и тестирование стабильности.",
+                en: "Evaluating speed, stability and scalability of the system under load. Includes load, stress, volume and endurance testing."
+            },
+            traits: {
+                uk: "Навантаження, Стрес, Час відгуку, Пропускна здатність, Вузькі місця",
+                ru: "Нагрузка, Стресс, Время отклика, Пропускная способность, Узкие места",
+                en: "Load, Stress, Response time, Throughput, Bottlenecks"
+            },
+            spec: {
+                uk: "Критично для високонавантажених систем",
+                ru: "Критично для высоконагруженных систем",
+                en: "Critical for high-load systems"
+            },
+            links: [
+                { name: "k6", url: "https://k6.io" },
+                { name: "JMeter", url: "https://jmeter.apache.org" },
+                { name: "Gatling", url: "https://gatling.io" }
+            ]
+        },
+        {
+            cat: "specialized",
+            icon: "🔒",
+            name: {
+                uk: "Тестування безпеки",
+                ru: "Тестирование безопасности",
+                en: "Security Testing"
+            },
+            desc: {
+                uk: "Пошук вразливостей, які можуть призвести до несанкціонованого доступу, витоку даних або порушення роботи системи. Включає аналіз коду, сканування та перевірку на типові атаки.",
+                ru: "Поиск уязвимостей, которые могут привести к несанкционированному доступу, утечке данных или нарушению работы системы. Включает анализ кода, сканирование и проверку на типичные атаки.",
+                en: "Finding vulnerabilities that could lead to unauthorized access, data leaks or system disruption. Includes code analysis, scanning and checks against common attacks."
+            },
+            traits: {
+                uk: "Вразливості, OWASP, Пентест, Статичний аналіз, Динамічний аналіз",
+                ru: "Уязвимости, OWASP, Пентест, Статический анализ, Динамический анализ",
+                en: "Vulnerabilities, OWASP, Pentest, Static analysis, Dynamic analysis"
+            },
+            spec: {
+                uk: "Обов’язково для систем з даними користувачів",
+                ru: "Обязательно для систем с данными пользователей",
+                en: "Essential for systems with user data"
+            },
+            links: [
+                { name: "OWASP", url: "https://owasp.org" },
+                { name: "OWASP ZAP", url: "https://www.zaproxy.org" },
+                { name: "Snyk", url: "https://snyk.io" }
+            ]
+        },
+        {
+            cat: "specialized",
+            icon: "📡",
+            name: {
+                uk: "API-тестування",
+                ru: "API-тестирование",
+                en: "API Testing"
+            },
+            desc: {
+                uk: "Перевірка програмних інтерфейсів (REST, GraphQL, gRPC) без графічного інтерфейсу. Швидше та стабільніше за UI-тести, добре підходить для автоматизації.",
+                ru: "Проверка программных интерфейсов (REST, GraphQL, gRPC) без графического интерфейса. Быстрее и стабильнее UI-тестов, хорошо подходит для автоматизации.",
+                en: "Testing programmatic interfaces (REST, GraphQL, gRPC) without a graphical UI. Faster and more stable than UI tests and well suited for automation."
+            },
+            traits: {
+                uk: "REST, GraphQL, Статус-коди, Схеми, Контракти, Автоматизація",
+                ru: "REST, GraphQL, Статус-коды, Схемы, Контракты, Автоматизация",
+                en: "REST, GraphQL, Status codes, Schemas, Contracts, Automation"
+            },
+            spec: {
+                uk: "Один з найефективніших видів автоматизації",
+                ru: "Один из самых эффективных видов автоматизации",
+                en: "One of the most effective automation types"
+            },
+            links: [
+                { name: "Postman", url: "https://www.postman.com" },
+                { name: "Insomnia", url: "https://insomnia.rest" },
+                { name: "REST Assured", url: "https://rest-assured.io" },
+                { name: "Karate", url: "https://karatelabs.github.io/karate/" }
+            ]
+        },
+        {
+            cat: "tools",
+            icon: "🌐",
+            name: {
+                uk: "Selenium, Cypress, Playwright",
+                ru: "Selenium, Cypress, Playwright",
+                en: "Selenium, Cypress, Playwright"
+            },
+            desc: {
+                uk: "Провідні інструменти для автоматизації тестування веб-інтерфейсів. Selenium — класика з підтримкою багатьох мов, Cypress і Playwright — сучасні рішення з кращою швидкістю та зручністю.",
+                ru: "Ведущие инструменты для автоматизации тестирования веб-интерфейсов. Selenium — классика с поддержкой многих языков, Cypress и Playwright — современные решения с лучшей скоростью и удобством.",
+                en: "Leading tools for web UI test automation. Selenium is the classic with multi-language support; Cypress and Playwright are modern solutions with better speed and developer experience."
+            },
+            traits: {
+                uk: "Браузерна автоматизація, Кросбраузерність, Стабільність, Швидкість, Зручність розробки",
+                ru: "Браузерная автоматизация, Кроссбраузерность, Стабильность, Скорость, Удобство разработки",
+                en: "Browser automation, Cross-browser, Stability, Speed, Developer experience"
+            },
+            spec: {
+                uk: "Основа E2E-автоматизації",
+                ru: "Основа E2E-автоматизации",
+                en: "Foundation of E2E automation"
+            },
+            links: [
+                { name: "Selenium", url: "https://www.selenium.dev" },
+                { name: "Cypress", url: "https://www.cypress.io" },
+                { name: "Playwright", url: "https://playwright.dev" }
+            ]
+        },
+        {
+            cat: "tools",
+            icon: "📦",
+            name: {
+                uk: "Jest, JUnit, pytest та інші unit-фреймворки",
+                ru: "Jest, JUnit, pytest и другие unit-фреймворки",
+                en: "Jest, JUnit, pytest and other unit frameworks"
+            },
+            desc: {
+                uk: "Фреймворки для модульного тестування в різних мовах: Jest (JavaScript/TypeScript), JUnit (Java), pytest (Python), xUnit (.NET), RSpec (Ruby) тощо. Забезпечують швидкий зворотний зв’язок розробнику.",
+                ru: "Фреймворки для модульного тестирования на разных языках: Jest (JavaScript/TypeScript), JUnit (Java), pytest (Python), xUnit (.NET), RSpec (Ruby) и др. Обеспечивают быструю обратную связь разработчику.",
+                en: "Frameworks for unit testing in different languages: Jest (JavaScript/TypeScript), JUnit (Java), pytest (Python), xUnit (.NET), RSpec (Ruby) and more. Provide fast feedback to developers."
+            },
+            traits: {
+                uk: "Швидкість, Ассерти, Моки, Покриття, Інтеграція з CI",
+                ru: "Скорость, Ассерты, Моки, Покрытие, Интеграция с CI",
+                en: "Speed, Assertions, Mocks, Coverage, CI integration"
+            },
+            spec: {
+                uk: "Основа піраміди тестування",
+                ru: "Основа пирамиды тестирования",
+                en: "Base of the testing pyramid"
+            },
+            links: [
+                { name: "Jest", url: "https://jestjs.io" },
+                { name: "JUnit 5", url: "https://junit.org/junit5/" },
+                { name: "pytest", url: "https://docs.pytest.org" }
+            ]
+        },
+        {
+            cat: "tools",
+            icon: "📬",
+            name: {
+                uk: "Postman та інструменти для API",
+                ru: "Postman и инструменты для API",
+                en: "Postman and API testing tools"
+            },
+            desc: {
+                uk: "Postman, Insomnia, Bruno та подібні інструменти дозволяють зручно створювати, запускати та автоматизувати запити до API, перевіряти відповіді, схеми та колекції.",
+                ru: "Postman, Insomnia, Bruno и подобные инструменты позволяют удобно создавать, запускать и автоматизировать запросы к API, проверять ответы, схемы и коллекции.",
+                en: "Postman, Insomnia, Bruno and similar tools make it easy to create, run and automate API requests, validate responses, schemas and collections."
+            },
+            traits: {
+                uk: "Колекції, Середовища, Автоматизація, Документація API, Моніторинг",
+                ru: "Коллекции, Окружения, Автоматизация, Документация API, Мониторинг",
+                en: "Collections, Environments, Automation, API documentation, Monitoring"
+            },
+            spec: {
+                uk: "Стандарт де-факто для роботи з API",
+                ru: "Стандарт де-факто для работы с API",
+                en: "De-facto standard for API work"
+            },
+            links: [
+                { name: "Postman", url: "https://www.postman.com" },
+                { name: "Insomnia", url: "https://insomnia.rest" },
+                { name: "Bruno", url: "https://www.usebruno.com" }
+            ]
+        },
+        {
+            cat: "tools",
+            icon: "📈",
+            name: {
+                uk: "Інструменти якості та звітності",
+                ru: "Инструменты качества и отчетности",
+                en: "Quality and reporting tools"
+            },
+            desc: {
+                uk: "SonarQube, Allure, ReportPortal, Codecov та подібні рішення допомагають вимірювати якість коду, покриття тестами та наочно показувати результати прогонів.",
+                ru: "SonarQube, Allure, ReportPortal, Codecov и подобные решения помогают измерять качество кода, покрытие тестами и наглядно показывать результаты прогонов.",
+                en: "SonarQube, Allure, ReportPortal, Codecov and similar solutions help measure code quality, test coverage and clearly present run results."
+            },
+            traits: {
+                uk: "Покриття, Статичний аналіз, Звіти, Дашборди, Технічний борг",
+                ru: "Покрытие, Статический анализ, Отчеты, Дашборды, Технический долг",
+                en: "Coverage, Static analysis, Reports, Dashboards, Technical debt"
+            },
+            spec: {
+                uk: "Роблять якість видимою",
+                ru: "Делают качество видимым",
+                en: "Make quality visible"
+            },
+            links: [
+                { name: "SonarQube", url: "https://www.sonarsource.com/products/sonarqube/" },
+                { name: "Allure Report", url: "https://allurereport.org" },
+                { name: "ReportPortal", url: "https://reportportal.io" }
+            ]
+        }
+    ];
+
+    const ui = {
+        uk: {
+            title: "Тестування програмного забезпечення (QA / Testing) — Довідник",
+            pageTitle: "🧪 Тестування ПЗ (QA / Testing)",
+            home: "Головна сторінка",
+            all: "Усі розділи",
+            traits: "Ключові елементи та поняття",
+            mfgText: "Корисні інструменти та ресурси:",
+            noResults: "Нічого не знайдено.",
+            footer: "🧪 Тестування програмного забезпечення | QA | Довідник 2026",
+            introTitle: "Що таке тестування ПЗ і навіщо воно потрібне?",
+            intro1: "Тестування програмного забезпечення (Quality Assurance / Testing) — це процес перевірки, чи відповідає система вимогам, чи правильно вона працює і чи готова до використання користувачами. Воно допомагає знаходити дефекти якомога раніше, зменшувати ризики та підвищувати довіру до продукту.",
+            intro2: "Сучасне тестування охоплює різні рівні (модульне, інтеграційне, системне, приймальне), види (функціональне, регресійне, продуктивності, безпеки) та підходи (ручне, автоматизоване, TDD, BDD). Правильно побудована стратегія тестування економить час і гроші та захищає репутацію продукту."
+        },
+        ru: {
+            title: "Тестирование программного обеспечения (QA / Testing) — Справочник",
+            pageTitle: "🧪 Тестирование ПО (QA / Testing)",
+            home: "Главная страница",
+            all: "Все разделы",
+            traits: "Ключевые элементы и понятия",
+            mfgText: "Полезные инструменты и ресурсы:",
+            noResults: "Ничего не найдено.",
+            footer: "🧪 Тестирование программного обеспечения | QA | Справочник 2026",
+            introTitle: "Что такое тестирование ПО и зачем оно нужно?",
+            intro1: "Тестирование программного обеспечения (Quality Assurance / Testing) — это процесс проверки, соответствует ли система требованиям, правильно ли она работает и готова ли к использованию пользователями. Оно помогает находить дефекты как можно раньше, снижать риски и повышать доверие к продукту.",
+            intro2: "Современное тестирование охватывает разные уровни (модульное, интеграционное, системное, приемочное), виды (функциональное, регрессионное, производительности, безопасности) и подходы (ручное, автоматизированное, TDD, BDD). Правильно построенная стратегия тестирования экономит время и деньги и защищает репутацию продукта."
+        },
+        en: {
+            title: "Software Testing (QA / Testing) — Guide",
+            pageTitle: "🧪 Software Testing (QA / Testing)",
+            home: "Home page",
+            all: "All sections",
+            traits: "Key concepts and elements",
+            mfgText: "Useful tools and resources:",
+            noResults: "Nothing found.",
+            footer: "🧪 Software Testing | QA | Guide 2026",
+            introTitle: "What is software testing and why does it matter?",
+            intro1: "Software testing (Quality Assurance / Testing) is the process of checking whether a system meets its requirements, works correctly and is ready for users. It helps find defects as early as possible, reduce risks and increase confidence in the product.",
+            intro2: "Modern testing covers different levels (unit, integration, system, acceptance), types (functional, regression, performance, security) and approaches (manual, automated, TDD, BDD). A well-designed test strategy saves time and money and protects the product’s reputation."
+        }
+    };
+
+    let currentLang = safeGet("lang-qa", "uk");
+    let activeCategory = "all";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-qa", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + "</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) { return e.cat === catKey; });
+            if (!list.length) return;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        main.innerHTML = html || ('<div class="no-results">' + ui[currentLang].noResults + "</div>");
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

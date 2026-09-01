@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT.Довідник — Що таке Інформаційні Технології?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --grad-1:#e8a33d; --grad-2:#4fd1c5; --grad-3:#8b5cf6; --grad-4:#ec4899;
+    --bg:#0b0f14; --panel:#121821; --panel-alt:#161d27; --panel-raised:#1b2330;
+    --text:#e7edf3; --muted:#8b98a8; --border:rgba(231,237,243,0.09);
+    --shadow: 0 20px 50px -20px rgba(0,0,0,0.6);
+    --radius: 14px;
+    --thread: linear-gradient(90deg,var(--grad-1),var(--grad-2) 40%,var(--grad-3) 72%,var(--grad-4));
+    --ff-display:'Space Grotesk',sans-serif;
+    --ff-body:'Inter',sans-serif;
+    --ff-mono:'JetBrains Mono',monospace;
+  }
+  body.theme-light{
+    --bg:#eef1f4; --panel:#ffffff; --panel-alt:#f4f6f8; --panel-raised:#ffffff;
+    --text:#121821; --muted:#5b6673; --border:rgba(18,24,33,0.09);
+    --shadow: 0 20px 40px -24px rgba(20,30,45,0.25);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--ff-body); line-height:1.55;
+    transition:background .25s ease,color .25s ease;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  h1,h2,h3{font-family:var(--ff-display); margin:0; letter-spacing:-0.01em;}
+  p{margin:0;}
+  .eyebrow{font-family:var(--ff-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted);}
+  img{max-width:100%; display:block;}
+  button{font-family:inherit; cursor:pointer;}
+  :focus-visible{outline:2px solid var(--grad-2); outline-offset:3px; border-radius:4px;}
+
+  .thread-bar{height:4px; width:100%; background:var(--thread); position:sticky; top:0; z-index:60;}
+
+  header.site-header{
+    position:sticky; top:4px; z-index:55;
+    background:color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+  }
+  .header-inner{
+    max-width:1280px; margin:0 auto; padding:14px 28px;
+    display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+  }
+  .header-top{display:flex; align-items:center; gap:20px; width:100%; flex-wrap:nowrap;}
+  .brand{display:flex; align-items:center; gap:10px; margin-right:auto; text-decoration:none; min-width:0; flex-shrink:1;}
+  .brand-mark{
+    width:34px; height:34px; border-radius:9px; flex:none;
+    background:var(--thread); display:flex; align-items:center; justify-content:center;
+    font-family:var(--ff-mono); font-weight:700; font-size:.85rem; color:#0b0f14;
+  }
+  .brand-text{display:flex; flex-direction:column; line-height:1.1; min-width:0; white-space:nowrap; overflow:hidden;}
+  .brand-title{font-family:var(--ff-display); font-weight:700; font-size:1.05rem; overflow:hidden; text-overflow:ellipsis;}
+  .brand-sub{font-family:var(--ff-mono); font-size:.66rem; color:var(--muted); letter-spacing:.04em; overflow:hidden; text-overflow:ellipsis;}
+
+  .header-controls{display:flex; align-items:center; gap:10px; flex-shrink:0;}
+
+  nav.main-nav{display:flex; flex-wrap:wrap; gap:4px; width:100%; padding-top:10px; border-top:1px solid var(--border); margin-top:12px;}
+  nav.main-nav a{
+    font-size:.8rem; padding:7px 12px; border-radius:8px; text-decoration:none;
+    color:var(--muted); white-space:nowrap; transition:.15s;
+  }
+  nav.main-nav a:hover{color:var(--text); background:var(--panel-alt);}
+  nav.main-nav a.nav-news{color:var(--grad-2); font-weight:600; border:1px solid var(--border);}
+  nav.main-nav a.nav-news:hover{background:var(--panel-alt);}
+
+  .lang-switch{display:flex; background:var(--panel-alt); border:1px solid var(--border); border-radius:999px; padding:3px;}
+  .lang-switch button{
+    border:none; background:transparent; color:var(--muted); font-family:var(--ff-mono);
+    font-size:.72rem; font-weight:500; padding:6px 11px; border-radius:999px; transition:.15s;
+  }
+  .lang-switch button.active{background:var(--thread); color:#0b0f14; font-weight:700;}
+  .theme-toggle{
+    width:36px; height:36px; border-radius:999px; border:1px solid var(--border);
+    background:var(--panel-alt); color:var(--text); display:flex; align-items:center; justify-content:center;
+    font-size:1rem;
+  }
+
+  /* HERO */
+  .hero{max-width:1280px; margin:0 auto; padding:56px 28px 40px; display:grid; grid-template-columns:1.05fr 1fr; gap:48px; align-items:center;}
+  .hero-eyebrow{margin-bottom:14px;}
+  .hero h1{font-size:clamp(2.1rem,4vw,3.1rem); font-weight:700; line-height:1.06;}
+  .hero-lead{margin-top:18px; color:var(--muted); font-size:1.05rem; max-width:52ch;}
+  .hero-figure{position:relative; border-radius:18px; overflow:hidden; border:1px solid var(--border); box-shadow:var(--shadow);}
+  .hero-figure img{width:100%; height:auto; display:block;}
+  .hero-figure figcaption{
+    font-family:var(--ff-mono); font-size:.72rem; color:var(--muted);
+    padding:10px 14px; border-top:1px solid var(--border); background:var(--panel);
+  }
+
+  /* INTRO CARDS */
+  .intro{max-width:1280px; margin:0 auto; padding:10px 28px 70px;}
+  .intro-grid{
+    margin-top:26px; display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+    background:var(--border); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;
+  }
+  .intro-card{background:var(--panel); padding:26px 24px;}
+  .intro-card .ic-icon{font-size:1.5rem;}
+  .intro-card h3{font-size:1.02rem; margin-top:12px;}
+  .intro-card p{margin-top:10px; color:var(--muted); font-size:.9rem;}
+  .intro-card.future{grid-column:1 / -1; background:var(--panel-raised);}
+  .future-lead{color:var(--muted); font-size:.92rem; margin-top:10px; max-width:80ch;}
+  .future-list{margin-top:20px; display:grid; grid-template-columns:repeat(5,1fr); gap:18px;}
+  .future-item .fi-icon{font-size:1.2rem;}
+  .future-item h4{font-family:var(--ff-display); font-size:.88rem; margin-top:8px;}
+  .future-item p{font-size:.8rem; color:var(--muted); margin-top:6px;}
+
+  /* GROUPS */
+  .group{border-top:1px solid var(--border); padding:52px 28px; scroll-margin-top:var(--header-h, 160px);}
+  .group:nth-of-type(odd){background:var(--panel);}
+  .group-inner{max-width:1280px; margin:0 auto;}
+  .group-head{display:flex; align-items:baseline; gap:14px; margin-bottom:6px;}
+  .group-head .g-icon{font-size:1.4rem;}
+  .group-head h2{font-size:1.5rem;}
+  .group-underline{width:64px; height:3px; background:var(--thread); border-radius:2px; margin:14px 0 28px;}
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:16px;}
+  .card{
+    background:var(--panel-raised); border:1px solid var(--border); border-radius:12px;
+    padding:20px; display:flex; flex-direction:column; gap:10px; text-decoration:none; color:var(--text);
+    border-left:3px solid transparent; transition:.18s ease;
+  }
+  .card:hover{border-left-color:var(--grad-2); transform:translateY(-2px); box-shadow:var(--shadow);}
+  .card .c-top{display:flex; align-items:center; gap:10px;}
+  .card .c-icon{font-size:1.25rem;}
+  .card h3{font-size:.95rem; line-height:1.3;}
+  .card p{font-size:.82rem; color:var(--muted); flex:1;}
+  .card .c-arrow{font-family:var(--ff-mono); font-size:.75rem; color:var(--grad-2); align-self:flex-end;}
+  .card.hidden{display:none;}
+  .group.hidden{display:none;}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--border); background:var(--panel-alt); padding:44px 28px 34px;}
+  .footer-inner{max-width:1280px; margin:0 auto; text-align:center;}
+  footer .f-title{font-family:var(--ff-display); font-weight:600; font-size:1rem;}
+  footer .f-copy{margin-top:10px; font-family:var(--ff-mono); font-size:.78rem; color:var(--muted);}
+  footer .f-mail{margin-top:6px; font-size:.85rem;}
+  footer .f-mail a{color:var(--grad-2); text-decoration:none;}
+  footer .f-disclaimer{
+    margin:22px auto 0; max-width:760px; font-size:.76rem; color:var(--muted);
+    border-top:1px solid var(--border); padding-top:18px;
+  }
+
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr;}
+    .intro-grid{grid-template-columns:1fr 1fr;}
+    .future-list{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:640px){
+    .header-inner{padding:12px 16px;}
+    nav.main-nav{order:3; width:100%;}
+    .hero{padding:36px 18px 30px;}
+    .intro{padding:0 18px 50px;}
+    .intro-grid{grid-template-columns:1fr;}
+    .future-list{grid-template-columns:1fr;}
+    .group{padding:38px 18px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .card{transition:none;}
+  }
+</style>
+</head>
+<body class="theme-light">
+
+<div class="thread-bar"></div>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-top">
+      <a href="#" class="brand" id="brandHome">
+        <span class="brand-mark">IT</span>
+        <span class="brand-text">
+          <span class="brand-title">IT.Довідник</span>
+          <span class="brand-sub" data-i18n="tagline">Учбово-методичний довідник</span>
+        </span>
+      </a>
+      <div class="header-controls">
+        <div class="lang-switch" id="langSwitch">
+          <button data-lang="ua" class="active">UA</button>
+          <button data-lang="ru">RU</button>
+          <button data-lang="en">EN</button>
+        </div>
+        <button class="theme-toggle" id="themeToggle" aria-label="Перемкнути тему">☀️</button>
+      </div>
+    </div>
+    <nav class="main-nav" id="mainNav"></nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div>
+      <div class="eyebrow hero-eyebrow" data-i18n="heroEyebrow">Учбово-методичний довідник</div>
+      <h1 data-i18n="heroTitle">Що таке Інформаційні Технології?</h1>
+      <p class="hero-lead" data-i18n="heroLead">Інформаційні технології (ІТ) — це сукупність методів, процесів і засобів для збирання, зберігання, обробки та передачі інформації за допомогою комп'ютерів і телекомунікацій. Це не просто «комп'ютери» — це нервова система сучасної цивілізації, що поєднує мільярди пристроїв та людей у єдине цифрове середовище.</p>
+    </div>
+    <figure class="hero-figure">
+      <img src="rozvitok_it.png" alt="Розвиток ІТ: від рахівниці до смартфонів, хмари та штучного інтелекту">
+      <figcaption data-i18n="heroCaption">Від рахівниці до штучного інтелекту — шлях інформаційних технологій</figcaption>
+    </figure>
+  </section>
+
+  <section class="intro">
+    <div class="intro-grid" id="introGrid">
+      <div class="intro-card">
+        <div class="ic-icon">🎯</div>
+        <h3 data-i18n="card1h">Для чого потрібні?</h3>
+        <p data-i18n="card1p">Від лікування пацієнтів і запуску супутників до управління фінансами та навчання дітей. ІТ автоматизують рутину, аналізують величезні масиви даних, з'єднують людей через континенти. Без ІТ сучасна медицина, наука, транспорт і економіка просто неможливі.</p>
+      </div>
+      <div class="intro-card">
+        <div class="ic-icon">🌍</div>
+        <h3 data-i18n="card2h">Місце в житті</h3>
+        <p data-i18n="card2p">Сьогодні ІТ проникли в кожну сферу — медицину, транспорт, сільське господарство, мистецтво, політику. Смартфон у кишені, безконтактна оплата, відеозв'язок з рідними — усе це результат праці мільйонів фахівців. ІТ стали базовою інфраструктурою, як електрика чи водопостачання.</p>
+      </div>
+      <div class="intro-card">
+        <div class="ic-icon">🧬</div>
+        <h3 data-i18n="card3h">Нервова система цивілізації</h3>
+        <p data-i18n="card3p">ІТ поєднують мільярди пристроїв та людей у єдине цифрове середовище — методи, процеси й засоби для збирання, зберігання, обробки та передачі інформації за допомогою комп'ютерів і телекомунікацій.</p>
+      </div>
+      <div class="intro-card">
+        <div class="ic-icon">📶</div>
+        <h3 data-i18n="card4h">Базова інфраструктура</h3>
+        <p data-i18n="card4p">Прогноз погоди, банкінг, навігація, освіта на відстані — усе тримається на непомітній, але критичній ІТ-інфраструктурі, яку розвивали десятиліттями.</p>
+      </div>
+
+      <div class="intro-card future">
+        <div class="ic-icon">🚀</div>
+        <h3 data-i18n="futureH">Перспективи та майбутнє</h3>
+        <p class="future-lead" data-i18n="futureLead">ІТ вже не лише «обслуговують» бізнес і побут — вони стають інфраструктурою суспільства: від охорони здоров'я й освіти до енергетики, транспорту та безпеки.</p>
+        <div class="future-list">
+          <div class="future-item">
+            <div class="fi-icon">🧠</div>
+            <h4 data-i18n="f1h">Штучний інтелект</h4>
+            <p data-i18n="f1p">Переходить від експериментів до щоденного інструменту — генерація коду й контенту, персоналізація, автономні агенти.</p>
+          </div>
+          <div class="future-item">
+            <div class="fi-icon">☁️</div>
+            <h4 data-i18n="f2h">Хмара та край (edge)</h4>
+            <p data-i18n="f2p">Обчислення ближче до користувача зменшують затримки, а гібридні архітектури стають нормою.</p>
+          </div>
+          <div class="future-item">
+            <div class="fi-icon">🔐</div>
+            <h4 data-i18n="f3h">Кібербезпека</h4>
+            <p data-i18n="f3p">Що більше систем онлайн, то вища ціна помилки — захист ідентичності й критичної інфраструктури обов'язковий.</p>
+          </div>
+          <div class="future-item">
+            <div class="fi-icon">🕶️</div>
+            <h4 data-i18n="f4h">Нові інтерфейси</h4>
+            <p data-i18n="f4p">Голосові й мультимодальні інтерфейси, доповнена реальність, IoT та відкрите апаратне забезпечення.</p>
+          </div>
+          <div class="future-item">
+            <div class="fi-icon">🤝</div>
+            <h4 data-i18n="f5h">Людський вимір</h4>
+            <p data-i18n="f5p">Потрібні фахівці, що поєднують техніку з розумінням домену, і цифрова грамотність суспільства.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="groupsContainer"></div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="f-title" data-i18n="footerTitle">Учбово-методичний довідник: «Що таке Інформаційні Технології?»</div>
+    <div class="f-copy" id="copyLine"></div>
+    <div class="f-mail">E-mail:&nbsp; <a href="mailto:_pvi@ukr.net" target="_blank" rel="noopener">_pvi@ukr.net</a></div>
+    <div class="f-disclaimer" data-i18n="disclaimer">Усі матеріали, надані на цьому інформаційному ресурсі, призначені ВИКЛЮЧНО з ОЗНАЙОМЧОЮ, НАВЧАЛЬНОЮ та ОСВІТНЬОЮ МЕТОЮ. Адміністрація ресурсу не претендує на їхнє авторство і не несе відповідальності за їхній зміст. Створено з допомогою різних сервісів Штучного Інтелекту.</div>
+  </div>
+</footer>
+
+<script>
+/* ---------- I18N (static UI strings) ---------- */
+const I18N = {
+  ua:{
+    tagline:"Учбово-методичний довідник",
+    searchPlaceholder:"Пошук розділу…",
+    heroEyebrow:"Учбово-методичний довідник",
+    heroTitle:"Що таке Інформаційні Технології?",
+    heroLead:"Інформаційні технології (ІТ) — це сукупність методів, процесів і засобів для збирання, зберігання, обробки та передачі інформації за допомогою комп'ютерів і телекомунікацій. Це не просто «комп'ютери» — це нервова система сучасної цивілізації, що поєднує мільярди пристроїв та людей у єдине цифрове середовище.",
+    heroCaption:"Від рахівниці до штучного інтелекту — шлях інформаційних технологій",
+    card1h:"Для чого потрібні?", card1p:"Від лікування пацієнтів і запуску супутників до управління фінансами та навчання дітей. ІТ автоматизують рутину, аналізують величезні масиви даних, з'єднують людей через континенти. Без ІТ сучасна медицина, наука, транспорт і економіка просто неможливі.",
+    card2h:"Місце в житті", card2p:"Сьогодні ІТ проникли в кожну сферу — медицину, транспорт, сільське господарство, мистецтво, політику. Смартфон у кишені, безконтактна оплата, відеозв'язок з рідними — усе це результат праці мільйонів фахівців. ІТ стали базовою інфраструктурою, як електрика чи водопостачання.",
+    card3h:"Нервова система цивілізації", card3p:"ІТ поєднують мільярди пристроїв та людей у єдине цифрове середовище — методи, процеси й засоби для збирання, зберігання, обробки та передачі інформації.",
+    card4h:"Базова інфраструктура", card4p:"Прогноз погоди, банкінг, навігація, освіта на відстані — усе тримається на непомітній, але критичній ІТ-інфраструктурі, яку розвивали десятиліттями.",
+    futureH:"Перспективи та майбутнє", futureLead:"ІТ вже не лише «обслуговують» бізнес і побут — вони стають інфраструктурою суспільства: від охорони здоров'я й освіти до енергетики, транспорту та безпеки.",
+    f1h:"Штучний інтелект", f1p:"Переходить від експериментів до щоденного інструменту — генерація коду й контенту, персоналізація, автономні агенти.",
+    f2h:"Хмара та край (edge)", f2p:"Обчислення ближче до користувача зменшують затримки, а гібридні архітектури стають нормою.",
+    f3h:"Кібербезпека", f3p:"Що більше систем онлайн, то вища ціна помилки — захист ідентичності й критичної інфраструктури обов'язковий.",
+    f4h:"Нові інтерфейси", f4p:"Голосові й мультимодальні інтерфейси, доповнена реальність, IoT та відкрите апаратне забезпечення.",
+    f5h:"Людський вимір", f5p:"Потрібні фахівці, що поєднують техніку з розумінням домену, і цифрова грамотність суспільства.",
+    footerTitle:"Учбово-методичний довідник: «Що таке Інформаційні Технології?»",
+    disclaimer:"Усі матеріали, надані на цьому інформаційному ресурсі, призначені ВИКЛЮЧНО з ОЗНАЙОМЧОЮ, НАВЧАЛЬНОЮ та ОСВІТНЬОЮ МЕТОЮ. Адміністрація ресурсу не претендує на їхнє авторство і не несе відповідальності за їхній зміст. Створено з допомогою різних сервісів Штучного Інтелекту.",
+    themeAria:"Перемкнути тему", copyWord:"рік.", readMore:"Відкрити →", sectionsNav:"Розділи", newsNav:"Новини"
+  },
+  ru:{
+    tagline:"Учебно-методический справочник",
+    searchPlaceholder:"Поиск раздела…",
+    heroEyebrow:"Учебно-методический справочник",
+    heroTitle:"Что такое Информационные Технологии?",
+    heroLead:"Информационные технологии (ИТ) — это совокупность методов, процессов и средств сбора, хранения, обработки и передачи информации с помощью компьютеров и телекоммуникаций. Это не просто «компьютеры» — это нервная система современной цивилизации, объединяющая миллиарды устройств и людей в единую цифровую среду.",
+    heroCaption:"От счётов до искусственного интеллекта — путь информационных технологий",
+    card1h:"Для чего нужны?", card1p:"От лечения пациентов и запуска спутников до управления финансами и обучения детей. ИТ автоматизируют рутину, анализируют огромные массивы данных, соединяют людей через континенты. Без ИТ современная медицина, наука, транспорт и экономика просто невозможны.",
+    card2h:"Место в жизни", card2p:"Сегодня ИТ проникли в каждую сферу — медицину, транспорт, сельское хозяйство, искусство, политику. Смартфон в кармане, бесконтактная оплата, видеосвязь с близкими — всё это результат труда миллионов специалистов. ИТ превратились в базовую инфраструктуру, как электричество или водоснабжение.",
+    card3h:"Нервная система цивилизации", card3p:"ИТ объединяют миллиарды устройств и людей в единую цифровую среду — методы, процессы и средства сбора, хранения, обработки и передачи информации.",
+    card4h:"Базовая инфраструктура", card4p:"Прогноз погоды, банкинг, навигация, дистанционное образование — всё держится на незаметной, но критичной ИТ-инфраструктуре, которую развивали десятилетиями.",
+    futureH:"Перспективы и будущее", futureLead:"ИТ уже не просто «обслуживают» бизнес и быт — они становятся инфраструктурой общества: от здравоохранения и образования до энергетики, транспорта и безопасности.",
+    f1h:"Искусственный интеллект", f1p:"Переходит от экспериментов к повседневному инструменту — генерация кода и контента, персонализация, автономные агенты.",
+    f2h:"Облако и край (edge)", f2p:"Вычисления ближе к пользователю снижают задержки, а гибридные архитектуры становятся нормой.",
+    f3h:"Кибербезопасность", f3p:"Чем больше систем онлайн, тем выше цена ошибки — защита идентичности и критической инфраструктуры обязательна.",
+    f4h:"Новые интерфейсы", f4p:"Голосовые и мультимодальные интерфейсы, дополненная реальность, IoT и открытое аппаратное обеспечение.",
+    f5h:"Человеческое измерение", f5p:"Нужны специалисты, сочетающие технику с пониманием домена, и цифровая грамотность общества.",
+    footerTitle:"Учебно-методический справочник: «Что такое Информационные Технологии?»",
+    disclaimer:"Все материалы, предоставленные на этом информационном ресурсе, предназначены ИСКЛЮЧИТЕЛЬНО в ОЗНАКОМИТЕЛЬНЫХ, УЧЕБНЫХ и ОБРАЗОВАТЕЛЬНЫХ ЦЕЛЯХ. Администрация ресурса не претендует на их авторство и не несёт ответственности за их содержание. Создано с помощью различных сервисов Искусственного Интеллекта.",
+    themeAria:"Переключить тему", copyWord:"год.", readMore:"Открыть →", sectionsNav:"Разделы", newsNav:"Новости"
+  },
+  en:{
+    tagline:"Educational Reference Guide",
+    searchPlaceholder:"Search sections…",
+    heroEyebrow:"Educational Reference Guide",
+    heroTitle:"What Is Information Technology?",
+    heroLead:"Information technology (IT) is the collection of methods, processes, and tools used to gather, store, process, and transmit information through computers and telecommunications. It's not just \"computers\" — it's the nervous system of modern civilization, linking billions of devices and people into one digital environment.",
+    heroCaption:"From the abacus to artificial intelligence — the path of information technology",
+    card1h:"Why It Matters", card1p:"From treating patients and launching satellites to managing finances and teaching children — IT automates routine work, analyzes vast datasets, and connects people across continents. Without IT, modern medicine, science, transport, and economics simply couldn't function.",
+    card2h:"Its Place In Life", card2p:"Today IT touches every field — medicine, transport, agriculture, art, politics. The smartphone in your pocket, contactless payment, video calls with family — all are the result of millions of specialists' work. IT has become basic infrastructure, like electricity or running water.",
+    card3h:"The Nervous System of Civilization", card3p:"IT links billions of devices and people into one digital environment — the methods, processes, and tools for gathering, storing, processing, and transmitting information.",
+    card4h:"Basic Infrastructure", card4p:"Weather forecasts, banking, navigation, remote learning — it all runs on an invisible but critical IT infrastructure built over decades.",
+    futureH:"Prospects & the Future", futureLead:"IT no longer just \"serves\" business and daily life — it's becoming the infrastructure of society itself: healthcare, education, energy, transport, and security.",
+    f1h:"Artificial Intelligence", f1p:"Moving from experiment to daily tool — code and content generation, personalization, autonomous agents.",
+    f2h:"Cloud & Edge", f2p:"Computing closer to the user cuts latency, and hybrid architectures are becoming the norm.",
+    f3h:"Cybersecurity", f3p:"The more systems go online, the higher the cost of a mistake — protecting identity and critical infrastructure is non-negotiable.",
+    f4h:"New Interfaces", f4p:"Voice and multimodal interfaces, augmented reality, IoT, and open hardware.",
+    f5h:"The Human Dimension", f5p:"We need specialists who pair technical skill with domain knowledge, and a digitally literate society.",
+    footerTitle:"Educational Reference Guide: \"What Is Information Technology?\"",
+    disclaimer:"All materials provided on this resource are intended SOLELY for INFORMATIONAL, EDUCATIONAL, and LEARNING PURPOSES. The site administration does not claim authorship and is not responsible for their content. Built with the help of various AI services.",
+    themeAria:"Toggle theme", copyWord:"", readMore:"Open →", sectionsNav:"Sections", newsNav:"News"
+  }
+};
+
+/* ---------- GROUPS ---------- */
+const GROUPS = [
+  {id:"history", icon:"🕰️", ua:"Історія та основи ІТ", ru:"История и основы ИТ", en:"History & Fundamentals"},
+  {id:"hardware", icon:"🔧", ua:"Апаратне забезпечення та системи", ru:"Аппаратное обеспечение и системы", en:"Hardware & Systems"},
+  {id:"network", icon:"🌐", ua:"Мережі, хмари та безпека", ru:"Сети, облака и безопасность", en:"Networks, Cloud & Security"},
+  {id:"dev", icon:"👨‍💻", ua:"Розробка ПЗ та архітектура", ru:"Разработка ПО и архитектура", en:"Software Development & Architecture"},
+  {id:"data", icon:"🤖", ua:"Дані, ШІ та бази даних", ru:"Данные, ИИ и базы данных", en:"Data, AI & Databases"},
+  {id:"web", icon:"🔍", ua:"Веб, пошук та цифрові сервіси", ru:"Веб, поиск и цифровые сервисы", en:"Web, Search & Digital Services"},
+  {id:"future", icon:"🚀", ua:"Платформи та інтерфейси майбутнього", ru:"Платформы и интерфейсы будущего", en:"Platforms & Interfaces of the Future"},
+  {id:"biz", icon:"💼", ua:"ІТ та бізнес / кар'єра", ru:"ИТ и бизнес / карьера", en:"IT, Business & Career"}
+];
+
+/* ---------- SECTIONS ---------- */
+const SECTIONS = [
+  {file:"history-computing.html", icon:"💾", group:"history",
+    ua:["Історія обчислювальної техніки","Шлях від рахівниць та лічильних машин до перших ЕОМ і мікропроцесорів, ключові винаходи та покоління комп'ютерів."],
+    ru:["История вычислительной техники","Путь от счётных машин до первых ЭВМ и микропроцессоров, ключевые изобретения и поколения компьютеров."],
+    en:["History of Computing","The journey from mechanical calculators to early mainframes and microprocessors, and the people behind them."]},
+  {file:"history-programming-languages.html", icon:"📜", group:"history",
+    ua:["Історія мов програмування","Еволюція мов від Фортрану й Кобол до сучасних Python і Rust, і чому кожна з'явилась не випадково."],
+    ru:["История языков программирования","Эволюция языков от Фортрана и Кобола до современных Python и Rust — и почему каждый появился неслучайно."],
+    en:["History of Programming Languages","How languages evolved from Fortran and Cobol to Python and Rust, each solving a problem of its time."]},
+  {file:"it-glossary.html", icon:"📚", group:"history",
+    ua:["Глосарій термінів ІТ","Пояснення абревіатур і жаргону — від API до Zero-day — простою мовою для початківців."],
+    ru:["Глоссарий терминов ИТ","Объяснение аббревиатур и жаргона — от API до Zero-day — простым языком для новичков."],
+    en:["IT Glossary","Plain-language explanations of acronyms and jargon, from API to zero-day, for newcomers to tech."]},
+  {file:"it-news.html", icon:"📰", group:"history",
+    ua:["Рух та новини ІТ","Огляд подій, релізів і трендів галузі — що відбувається в світі технологій прямо зараз."],
+    ru:["Движение и новости ИТ","Обзор событий, релизов и трендов отрасли — что происходит в мире технологий прямо сейчас."],
+    en:["IT News & Trends","A digest of releases, events, and industry trends — what's happening in tech right now."]},
+  {file:"legacy-mainframes.html", icon:"🖥️", group:"history",
+    ua:["Легасі-системи та Мейнфрейми","Чому старі системи на COBOL й досі керують банками та авіацією, і як з ними працюють сьогодні."],
+    ru:["Легаси-системы и Мейнфреймы","Почему старые системы на COBOL до сих пор управляют банками и авиацией, и как с ними работают сегодня."],
+    en:["Legacy Systems & Mainframes","Why decades-old COBOL systems still run banks and airlines, and how teams maintain them today."]},
+
+  {file:"hardware.html", icon:"🖥️", group:"hardware",
+    ua:["Класифікація комп'ютерних систем","Від смартфонів до суперкомп'ютерів — типи обчислювальних систем та їхнє призначення."],
+    ru:["Классификация компьютерных систем","От смартфонов до суперкомпьютеров — типы вычислительных систем и их назначение."],
+    en:["Classification of Computer Systems","From smartphones to supercomputers — the types of computing systems and what each is built for."]},
+  {file:"apparat.html", icon:"⚙️", group:"hardware",
+    ua:["Апаратне забезпечення комп'ютерів","Процесори, пам'ять, материнські плати — з чого фізично складається сучасний комп'ютер."],
+    ru:["Аппаратное обеспечение компьютеров","Процессоры, память, материнские платы — из чего физически состоит современный компьютер."],
+    en:["Computer Hardware","Processors, memory, motherboards — the physical components that make up a modern computer."]},
+  {file:"ports.html", icon:"🔌", group:"hardware",
+    ua:["Порти та інтерфейси","Довідник роз'ємів і стандартів підключення — від USB-C до HDMI та Thunderbolt."],
+    ru:["Порты и интерфейсы","Справочник разъёмов и стандартов подключения — от USB-C до HDMI и Thunderbolt."],
+    en:["Ports & Interfaces","A reference for connectors and connection standards, from USB-C to HDMI and Thunderbolt."]},
+  {file:"storage-devices.html", icon:"💽", group:"hardware",
+    ua:["Засоби збереження інформації","Від дискет і CD до SSD та хмарних сховищ — як еволюціонувала пам'ять даних."],
+    ru:["Средства хранения информации","От дискет и CD до SSD и облачных хранилищ — как эволюционировала память данных."],
+    en:["Data Storage Devices","From floppy disks and CDs to SSDs and cloud storage — the evolution of storing data."]},
+  {file:"file_systems.html", icon:"🗂️", group:"hardware",
+    ua:["Файлові системи","Як операційні системи організовують дані на диску — NTFS, ext4, APFS та інші."],
+    ru:["Файловые системы","Как операционные системы организуют данные на диске — NTFS, ext4, APFS и другие."],
+    en:["File Systems","How operating systems organize data on disk — NTFS, ext4, APFS, and more."]},
+  {file:"spr_os.html", icon:"🐧", group:"hardware",
+    ua:["Довідник операційних систем","Порівняння Windows, Linux, macOS та інших ОС — особливості, історія, сфери застосування."],
+    ru:["Справочник операционных систем","Сравнение Windows, Linux, macOS и других ОС — особенности, история, сферы применения."],
+    en:["OS Directory","A comparison of Windows, Linux, macOS and other systems — features, history, and use cases."]},
+
+  {file:"networks_and_protocols.html", icon:"📡", group:"network",
+    ua:["Мережі та протоколи","Як пристрої спілкуються одне з одним — TCP/IP, HTTP, DNS та архітектура інтернету."],
+    ru:["Сети и протоколы","Как устройства общаются друг с другом — TCP/IP, HTTP, DNS и архитектура интернета."],
+    en:["Networks & Protocols","How devices talk to each other — TCP/IP, HTTP, DNS, and the architecture of the internet."]},
+  {file:"cloud_virtualization.html", icon:"☁️", group:"network",
+    ua:["Хмари та віртуалізація","Що таке хмарні обчислення, контейнери й віртуальні машини, і навіщо вони бізнесу."],
+    ru:["Облака и виртуализация","Что такое облачные вычисления, контейнеры и виртуальные машины, и зачем они бизнесу."],
+    en:["Cloud & Virtualization","What cloud computing, containers, and virtual machines are — and why businesses rely on them."]},
+  {file:"cybersecurity.html", icon:"🔐", group:"network",
+    ua:["Кібербезпека","Захист даних і систем від атак — шифрування, фішинг, вразливості та практики захисту."],
+    ru:["Кибербезопасность","Защита данных и систем от атак — шифрование, фишинг, уязвимости и практики защиты."],
+    en:["Cybersecurity","Protecting data and systems from attacks — encryption, phishing, vulnerabilities, and defense practices."]},
+
+  {file:"architecture_it.html", icon:"🏗️", group:"dev",
+    ua:["Архітектури ІТ","Принципи побудови складних систем — монолiти, мікросервіси та архітектурні патерни."],
+    ru:["Архитектуры ИТ","Принципы построения сложных систем — монолиты, микросервисы и архитектурные паттерны."],
+    en:["IT Architectures","Principles of building complex systems — monoliths, microservices, and architectural patterns."]},
+  {file:"design_patterns.html", icon:"🧩", group:"dev",
+    ua:["Патерни проєктування","Перевірені рішення типових задач програмування — від Singleton до Observer."],
+    ru:["Паттерны проектирования","Проверенные решения типовых задач программирования — от Singleton до Observer."],
+    en:["Design Patterns","Proven solutions to common programming problems, from Singleton to Observer."]},
+  {file:"developer_tools.html", icon:"🛠️", group:"dev",
+    ua:["Інструменти розробника","IDE, дебагери, лінтери та інші інструменти, що прискорюють роботу програміста."],
+    ru:["Инструменты разработчика","IDE, дебаггеры, линтеры и другие инструменты, ускоряющие работу программиста."],
+    en:["Developer Tools","IDEs, debuggers, linters, and other tools that speed up a developer's daily work."]},
+  {file:"proglang-directory.html", icon:"📖", group:"dev",
+    ua:["Довідник мов програмування (не для WEB)","Огляд мов загального призначення — C++, Java, Python, Go та їхні сфери застосування."],
+    ru:["Справочник языков программирования (не для WEB)","Обзор языков общего назначения — C++, Java, Python, Go и их сферы применения."],
+    en:["Programming Languages Directory (non-web)","An overview of general-purpose languages — C++, Java, Python, Go — and where each fits."]},
+  {file:"weblang-directory.html", icon:"🌍", group:"dev",
+    ua:["Довідник мов веб-програмування (для сайтів)","HTML, CSS, JavaScript та серверні мови — все, з чого будуються сайти."],
+    ru:["Справочник языков веб-программирования (для сайтов)","HTML, CSS, JavaScript и серверные языки — всё, из чего строятся сайты."],
+    en:["Web Languages Directory","HTML, CSS, JavaScript, and server-side languages — the building blocks of websites."]},
+  {file:"data-structures-algorithms.html", icon:"🧮", group:"dev",
+    ua:["Структури даних та алгоритми","Основа програмної майстерності — масиви, дерева, графи, сортування та пошук."],
+    ru:["Структуры данных и алгоритмы","Основа программного мастерства — массивы, деревья, графы, сортировка и поиск."],
+    en:["Data Structures & Algorithms","The foundation of programming craft — arrays, trees, graphs, sorting, and search."]},
+  {file:"compilers-interpreters.html", icon:"⚡", group:"dev",
+    ua:["Компілятори та інтерпретатори","Як код перетворюється на машинні інструкції — лексери, парсери та оптимізація."],
+    ru:["Компиляторы и интерпретаторы","Как код превращается в машинные инструкции — лексеры, парсеры и оптимизация."],
+    en:["Compilers & Interpreters","How source code becomes machine instructions — lexers, parsers, and optimization."]},
+  {file:"formal-methods.html", icon:"🧠", group:"dev",
+    ua:["Формальні методи / Теорія обчислень","Математичні основи інформатики — автомати, складність та доведення коректності програм."],
+    ru:["Формальные методы / Теория вычислений","Математические основы информатики — автоматы, сложность и доказательство корректности программ."],
+    en:["Formal Methods / Theory of Computation","The mathematical foundations of computing — automata, complexity, and program correctness proofs."]},
+  {file:"software-engineering-sdlc.html", icon:"🔄", group:"dev",
+    ua:["Основи програмної інженерії / SDLC","Життєвий цикл розробки ПЗ — від вимог до релізу та підтримки продукту."],
+    ru:["Основы программной инженерии / SDLC","Жизненный цикл разработки ПО — от требований до релиза и поддержки продукта."],
+    en:["Software Engineering Basics / SDLC","The software development lifecycle — from requirements to release and ongoing support."]},
+  {file:"software-testing-qa.html", icon:"🧪", group:"dev",
+    ua:["Тестування ПЗ (QA / Testing)","Як перевіряють якість програм — ручне й автоматизоване тестування, баг-трекінг."],
+    ru:["Тестирование ПО (QA / Testing)","Как проверяют качество программ — ручное и автоматизированное тестирование, баг-трекинг."],
+    en:["Software Testing (QA)","How software quality is verified — manual and automated testing, and bug tracking."]},
+  {file:"version-control-systems.html", icon:"🌿", group:"dev",
+    ua:["Системи контролю версій","Git, GitHub і командна робота над кодом — гілки, злиття та історія змін."],
+    ru:["Системы контроля версий","Git, GitHub и командная работа над кодом — ветки, слияния и история изменений."],
+    en:["Version Control Systems","Git, GitHub, and collaborative coding — branches, merges, and the history of change."]},
+  {file:"api-microservices-integrations.html", icon:"🔗", group:"dev",
+    ua:["API, мікросервіси та інтеграції","Як системи обмінюються даними — REST, GraphQL та побудова розподілених сервісів."],
+    ru:["API, микросервисы и интеграции","Как системы обмениваются данными — REST, GraphQL и построение распределённых сервисов."],
+    en:["API, Microservices & Integrations","How systems exchange data — REST, GraphQL, and building distributed services."]},
+  {file:"devops-basics.html", icon:"🚀", group:"dev",
+    ua:["Основи DevOps & CI/CD","Автоматизація складання, тестування й доставки коду — конвеєри CI/CD та культура DevOps."],
+    ru:["Основы DevOps & CI/CD","Автоматизация сборки, тестирования и доставки кода — конвейеры CI/CD и культура DevOps."],
+    en:["DevOps & CI/CD Basics","Automating build, test, and delivery — CI/CD pipelines and the DevOps culture behind them."]},
+
+  {file:"spr_subd.html", icon:"🗄️", group:"data",
+    ua:["Довідник систем управління базами даних","SQL і NoSQL СУБД — від PostgreSQL до MongoDB — як обрати правильну для задачі."],
+    ru:["Справочник систем управления базами данных","SQL и NoSQL СУБД — от PostgreSQL до MongoDB — как выбрать подходящую для задачи."],
+    en:["Database Management Systems Directory","SQL and NoSQL databases, from PostgreSQL to MongoDB, and how to pick the right one."]},
+  {file:"data-science-bigdata.html", icon:"📊", group:"data",
+    ua:["Data Science, Big Data та аналітика","Як з великих масивів даних видобувають інсайти — статистика, обробка та візуалізація."],
+    ru:["Data Science, Big Data и аналитика","Как из больших массивов данных извлекают инсайты — статистика, обработка и визуализация."],
+    en:["Data Science, Big Data & Analytics","How insights are extracted from massive datasets — statistics, processing, and visualization."]},
+  {file:"machine-learning-ai.html", icon:"🤖", group:"data",
+    ua:["Машинне навчання та ШІ","Основи нейромереж, навчання моделей і застосування штучного інтелекту на практиці."],
+    ru:["Машинное обучение и ИИ","Основы нейросетей, обучения моделей и применения искусственного интеллекта на практике."],
+    en:["Machine Learning & AI","The basics of neural networks, model training, and practical applications of AI."]},
+  {file:"spr_ai_servises.html", icon:"✨", group:"data",
+    ua:["Довідник сервісів Штучного Інтелекту","Огляд популярних ШІ-сервісів — від чат-ботів до генераторів зображень і коду."],
+    ru:["Справочник сервисов Искусственного Интеллекта","Обзор популярных ИИ-сервисов — от чат-ботов до генераторов изображений и кода."],
+    en:["AI Services Directory","A tour of popular AI services, from chatbots to image and code generators."]},
+
+  {file:"search-engines.html", icon:"🔎", group:"web",
+    ua:["Пошукові системи","Як працюють Google та інші пошуковики — індексація, ранжування та алгоритми."],
+    ru:["Поисковые системы","Как работают Google и другие поисковики — индексация, ранжирование и алгоритмы."],
+    en:["Search Engines","How Google and other search engines work — indexing, ranking, and their algorithms."]},
+  {file:"seo-tools.html", icon:"📈", group:"web",
+    ua:["SEO-інструменти","Як зробити сайт помітним у пошуку — ключові слова, аналітика та оптимізація."],
+    ru:["SEO-инструменты","Как сделать сайт заметным в поиске — ключевые слова, аналитика и оптимизация."],
+    en:["SEO Tools","How to make a website visible in search — keywords, analytics, and optimization."]},
+  {file:"social_networks.html", icon:"💬", group:"web",
+    ua:["Соціальні мережі","Платформи, що змінили спілкування, — від Facebook до TikTok, їхній устрій та вплив."],
+    ru:["Социальные сети","Платформы, изменившие общение, — от Facebook до TikTok, их устройство и влияние."],
+    en:["Social Networks","The platforms that reshaped communication, from Facebook to TikTok — how they work and their impact."]},
+  {file:"office_editors.html", icon:"📝", group:"web",
+    ua:["Текстові редактори та офісні програми","Word, Excel, Google Docs та інші інструменти щоденної офісної роботи."],
+    ru:["Текстовые редакторы и офисные программы","Word, Excel, Google Docs и другие инструменты повседневной офисной работы."],
+    en:["Text Editors & Office Software","Word, Excel, Google Docs, and other tools for everyday office work."]},
+
+  {file:"mobile-development.html", icon:"📱", group:"future",
+    ua:["Мобільна розробка","Створення застосунків для Android та iOS — нативна й крос-платформна розробка."],
+    ru:["Мобильная разработка","Создание приложений для Android и iOS — нативная и кросс-платформенная разработка."],
+    en:["Mobile Development","Building apps for Android and iOS — native and cross-platform development."]},
+  {file:"ui-ux-design.html", icon:"🎨", group:"future",
+    ua:["UI/UX та дизайн інтерфейсів","Як створюють зручні й зрозумілі інтерфейси — принципи UX-дизайну та прототипування."],
+    ru:["UI/UX и дизайн интерфейсов","Как создают удобные и понятные интерфейсы — принципы UX-дизайна и прототипирования."],
+    en:["UI/UX & Interface Design","How usable, intuitive interfaces are made — UX principles and prototyping."]},
+  {file:"game-development.html", icon:"🎮", group:"future",
+    ua:["Розробка ігор (Game Development)","Ігрові рушії, геймдизайн і процес створення відеоігор — від ідеї до релізу."],
+    ru:["Разработка игр (Game Development)","Игровые движки, геймдизайн и процесс создания видеоигр — от идеи до релиза."],
+    en:["Game Development","Game engines, game design, and the process of building video games from idea to release."]},
+  {file:"ar-vr-metaverse.html", icon:"🥽", group:"future",
+    ua:["AR/VR / метавсесвіти","Доповнена й віртуальна реальність — технології, що змінюють спосіб взаємодії зі світом."],
+    ru:["AR/VR / метавселенные","Дополненная и виртуальная реальность — технологии, меняющие способ взаимодействия с миром."],
+    en:["AR/VR & Metaverse","Augmented and virtual reality — technologies changing how we interact with the world."]},
+  {file:"internet-of-things.html", icon:"📶", group:"future",
+    ua:["Інтернет речей (IoT)","Розумні пристрої й датчики, з'єднані в мережу, — від розумного дому до промисловості."],
+    ru:["Интернет вещей (IoT)","Умные устройства и датчики, объединённые в сеть, — от умного дома до промышленности."],
+    en:["Internet of Things (IoT)","Connected smart devices and sensors, from smart homes to industrial systems."]},
+  {file:"blockchain-distributed-ledgers.html", icon:"⛓️", group:"future",
+    ua:["Блокчейн та розподілені реєстри","Як працюють децентралізовані реєстри — блокчейн, криптовалюти та смарт-контракти."],
+    ru:["Блокчейн и распределённые реестры","Как работают децентрализованные реестры — блокчейн, криптовалюты и смарт-контракты."],
+    en:["Blockchain & Distributed Ledgers","How decentralized ledgers work — blockchain, cryptocurrency, and smart contracts."]},
+  {file:"parallel-distributed-computing.html", icon:"🖧", group:"future",
+    ua:["Паралельні та розподілені обчислення","Як задачі розподіляють між багатьма процесорами й машинами для швидшої обробки."],
+    ru:["Параллельные и распределённые вычисления","Как задачи распределяют между множеством процессоров и машин для более быстрой обработки."],
+    en:["Parallel & Distributed Computing","How tasks are split across many processors and machines for faster processing."]},
+  {file:"quantum-computing.html", icon:"⚛️", group:"future",
+    ua:["Квантові обчислення","Кубіти, суперпозиція і потенціал квантових комп'ютерів змінити цілі галузі."],
+    ru:["Квантовые вычисления","Кубиты, суперпозиция и потенциал квантовых компьютеров изменить целые отрасли."],
+    en:["Quantum Computing","Qubits, superposition, and the potential of quantum computers to transform entire industries."]},
+  {file:"robotics.html", icon:"🤖", group:"future",
+    ua:["Робототехніка (Robotics)","Проєктування й керування роботами — від промислових маніпуляторів до автономних дронів."],
+    ru:["Робототехника (Robotics)","Проектирование и управление роботами — от промышленных манипуляторов до автономных дронов."],
+    en:["Robotics","Designing and controlling robots, from industrial arms to autonomous drones."]},
+  {file:"accessibility.html", icon:"♿", group:"future",
+    ua:["Доступність (Accessibility / a11y)","Як робити цифрові продукти зручними для людей з різними можливостями."],
+    ru:["Доступность (Accessibility / a11y)","Как делать цифровые продукты удобными для людей с разными возможностями."],
+    en:["Accessibility (a11y)","How to make digital products usable for people of all abilities."]},
+
+  {file:"it-and-business.html", icon:"💼", group:"biz",
+    ua:["ІТ та Бізнес-процеси","Як технології оптимізують бізнес — автоматизація, ERP-системи та цифрова трансформація."],
+    ru:["ИТ и Бизнес-процессы","Как технологии оптимизируют бизнес — автоматизация, ERP-системы и цифровая трансформация."],
+    en:["IT & Business Processes","How technology optimizes business — automation, ERP systems, and digital transformation."]},
+  {file:"it-project-management.html", icon:"📋", group:"biz",
+    ua:["Управління ІТ-проєктами","Agile, Scrum і Kanban — як планують та ведуть проєкти в ІТ-командах."],
+    ru:["Управление ИТ-проектами","Agile, Scrum и Kanban — как планируют и ведут проекты в ИТ-командах."],
+    en:["IT Project Management","Agile, Scrum, and Kanban — how IT teams plan and run their projects."]},
+  {file:"it-careers-specialties.html", icon:"🎓", group:"biz",
+    ua:["Кар'єра в ІТ / спеціальності","Огляд ІТ-професій — від розробника до продакт-менеджера — і шляхи входу в галузь."],
+    ru:["Карьера в ИТ / специальности","Обзор ИТ-профессий — от разработчика до продакт-менеджера — и пути входа в отрасль."],
+    en:["IT Careers & Specialties","An overview of tech roles, from developer to product manager, and how to break in."]}
+];
+
+/* ---------- RENDER ---------- */
+let currentLang = "ua";
+
+function updateHeaderHeight(){
+  const header = document.querySelector("header.site-header");
+  const threadBar = document.querySelector(".thread-bar");
+  const h = (header ? header.offsetHeight : 0) + (threadBar ? threadBar.offsetHeight : 0) + 16;
+  document.documentElement.style.setProperty("--header-h", h + "px");
+}
+window.addEventListener("resize", updateHeaderHeight);
+window.addEventListener("load", updateHeaderHeight);
+
+function buildNav(){
+  const nav = document.getElementById("mainNav");
+  const newsItem = `<a href="it-news.html" class="nav-news">📰 ${I18N[currentLang].newsNav}</a>`;
+  const groupItems = GROUPS.map(g => `<a href="#grp-${g.id}">${g.icon} ${g[currentLang]}</a>`).join("");
+  nav.innerHTML = newsItem + groupItems;
+}
+
+function buildGroups(){
+  const container = document.getElementById("groupsContainer");
+  container.innerHTML = GROUPS.map(g => {
+    const items = SECTIONS.filter(s => s.group === g.id);
+    const cards = items.map(s => {
+      const [t,d] = s[currentLang];
+      return `<a class="card" href="${s.file}" data-title="${t.toLowerCase()}" data-desc="${d.toLowerCase()}">
+        <div class="c-top"><span class="c-icon">${s.icon}</span><h3>${t}</h3></div>
+        <p>${d}</p>
+        <span class="c-arrow">${I18N[currentLang].readMore}</span>
+      </a>`;
+    }).join("");
+    return `<section class="group" id="grp-${g.id}">
+      <div class="group-inner">
+        <div class="group-head"><span class="g-icon">${g.icon}</span><h2>${g[currentLang]}</h2></div>
+        <div class="group-underline"></div>
+        <div class="card-grid">${cards}</div>
+      </div>
+    </section>`;
+  }).join("");
+}
+
+function applyStaticI18n(){
+  const dict = I18N[currentLang];
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if(dict[key] !== undefined) el.textContent = dict[key];
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+    const key = el.getAttribute("data-i18n-placeholder");
+    if(dict[key] !== undefined) el.placeholder = dict[key];
+  });
+  document.getElementById("themeToggle").setAttribute("aria-label", dict.themeAria);
+  document.documentElement.lang = currentLang === "ua" ? "uk" : currentLang;
+  const year = new Date().getFullYear();
+  document.getElementById("copyLine").textContent = `Copyright © 2025–${year} ${dict.copyWord}`.trim();
+}
+
+function setLang(lang){
+  currentLang = lang;
+  document.querySelectorAll("#langSwitch button").forEach(b => b.classList.toggle("active", b.dataset.lang === lang));
+  applyStaticI18n();
+  buildNav();
+  buildGroups();
+  updateHeaderHeight();
+}
+
+document.getElementById("brandHome").addEventListener("click", e => {
+  e.preventDefault();
+  window.scrollTo({top:0, behavior:"smooth"});
+});
+
+document.getElementById("langSwitch").addEventListener("click", e => {
+  const btn = e.target.closest("button[data-lang]");
+  if(btn) setLang(btn.dataset.lang);
+});
+
+document.getElementById("themeToggle").addEventListener("click", () => {
+  const isLight = document.body.classList.toggle("theme-light");
+  document.getElementById("themeToggle").textContent = isLight ? "☀️" : "🌙";
+});
+
+/* init */
+buildNav();
+buildGroups();
+applyStaticI18n();
+updateHeaderHeight();
+</script>
+</body>
+</html>

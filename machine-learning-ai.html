@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Машинне навчання та штучний інтелект — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">🤖 Машинне навчання та ШІ</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    const categories = {
+        concepts: {
+            uk: "📘 Базові концепції",
+            ru: "📘 Базовые концепции",
+            en: "📘 Core Concepts"
+        },
+        models: {
+            uk: "🧠 Типи моделей і підходи",
+            ru: "🧠 Типы моделей и подходы",
+            en: "🧠 Model Types & Approaches"
+        },
+        deep: {
+            uk: "🧬 Глибоке навчання та сучасний ШІ",
+            ru: "🧬 Глубокое обучение и современный ИИ",
+            en: "🧬 Deep Learning & Modern AI"
+        },
+        mlops: {
+            uk: "🚀 MLOps та життєвий цикл",
+            ru: "🚀 MLOps и жизненный цикл",
+            en: "🚀 MLOps & Lifecycle"
+        },
+        practice: {
+            uk: "🛠️ Практика та етика",
+            ru: "🛠️ Практика и этика",
+            en: "🛠️ Practice & Ethics"
+        }
+    };
+
+    const items = [
+        {
+            cat: "concepts",
+            icon: "🎯",
+            name: {
+                uk: "Що таке машинне навчання",
+                ru: "Что такое машинное обучение",
+                en: "What is Machine Learning"
+            },
+            desc: {
+                uk: "Машинне навчання — це спосіб навчити комп’ютер знаходити закономірності в даних і робити передбачення або рішення без явного програмування правил. Модель «навчається» на прикладах і узагальнює знання на нові дані.",
+                ru: "Машинное обучение — это способ научить компьютер находить закономерности в данных и делать предсказания или решения без явного программирования правил. Модель «обучается» на примерах и обобщает знания на новые данные.",
+                en: "Machine learning is a way to teach a computer to find patterns in data and make predictions or decisions without explicitly programming rules. The model “learns” from examples and generalizes to new data."
+            },
+            traits: {
+                uk: "Навчання на даних, Узагальнення, Передбачення, Патерни, Автоматизація рішень",
+                ru: "Обучение на данных, Обобщение, Предсказание, Паттерны, Автоматизация решений",
+                en: "Learning from data, Generalization, Prediction, Patterns, Decision automation"
+            },
+            spec: {
+                uk: "Основа сучасного штучного інтелекту",
+                ru: "Основа современного искусственного интеллекта",
+                en: "Foundation of modern artificial intelligence"
+            },
+            links: [
+                { name: "Google ML Crash Course", url: "https://developers.google.com/machine-learning/crash-course" },
+                { name: "scikit-learn User Guide", url: "https://scikit-learn.org/stable/user_guide.html" }
+            ]
+        },
+        {
+            cat: "concepts",
+            icon: "📊",
+            name: {
+                uk: "Навчання з учителем, без учителя, з підкріпленням",
+                ru: "Обучение с учителем, без учителя, с подкреплением",
+                en: "Supervised, Unsupervised, Reinforcement Learning"
+            },
+            desc: {
+                uk: "З учителем — є правильні відповіді (мітки). Без учителя — шукаємо структуру в даних без міток. З підкріпленням — агент вчиться через нагороди та покарання в середовищі (ігри, роботи, рекомендації).",
+                ru: "С учителем — есть правильные ответы (метки). Без учителя — ищем структуру в данных без меток. С подкреплением — агент учится через награды и наказания в среде (игры, роботы, рекомендации).",
+                en: "Supervised — correct answers (labels) are available. Unsupervised — we look for structure without labels. Reinforcement — an agent learns via rewards and penalties in an environment (games, robots, recommendations)."
+            },
+            traits: {
+                uk: "Мітки, Кластеризація, Нагорода, Політика, Середовище",
+                ru: "Метки, Кластеризация, Награда, Политика, Среда",
+                en: "Labels, Clustering, Reward, Policy, Environment"
+            },
+            spec: {
+                uk: "Тип навчання визначає постановку задачі",
+                ru: "Тип обучения определяет постановку задачи",
+                en: "Learning type defines the problem formulation"
+            },
+            links: [
+                { name: "Supervised vs Unsupervised", url: "https://www.ibm.com/topics/supervised-learning" },
+                { name: "Reinforcement Learning", url: "https://spinningup.openai.com/en/latest/" }
+            ]
+        },
+        {
+            cat: "concepts",
+            icon: "⚖️",
+            name: {
+                uk: "Перенавчання, недонавчання, узагальнення",
+                ru: "Переобучение, недообучение, обобщение",
+                en: "Overfitting, Underfitting, Generalization"
+            },
+            desc: {
+                uk: "Перенавчання — модель «запам’ятала» тренувальні дані і погано працює на нових. Недонавчання — модель занадто проста. Мета — добре узагальнювати на невідомі дані. Допомагають регуляризація, крос-валідація, більше даних.",
+                ru: "Переобучение — модель «запомнила» тренировочные данные и плохо работает на новых. Недообучение — модель слишком простая. Цель — хорошо обобщать на неизвестные данные. Помогают регуляризация, кросс-валидация, больше данных.",
+                en: "Overfitting — the model “memorized” training data and fails on new data. Underfitting — the model is too simple. The goal is to generalize well to unseen data. Regularization, cross-validation and more data help."
+            },
+            traits: {
+                uk: "Bias-Variance, Регуляризація, Крос-валідація, Early stopping, Тестова вибірка",
+                ru: "Bias-Variance, Регуляризация, Кросс-валидация, Early stopping, Тестовая выборка",
+                en: "Bias-Variance, Regularization, Cross-validation, Early stopping, Test set"
+            },
+            spec: {
+                uk: "Головна мета ML — узагальнення, а не точність на тренуванні",
+                ru: "Главная цель ML — обобщение, а не точность на обучении",
+                en: "The main goal of ML is generalization, not training accuracy"
+            },
+            links: [
+                { name: "Overfitting explained", url: "https://developers.google.com/machine-learning/crash-course/generalization/peril-of-overfitting" }
+            ]
+        },
+        {
+            cat: "concepts",
+            icon: "📏",
+            name: {
+                uk: "Метрики якості моделей",
+                ru: "Метрики качества моделей",
+                en: "Model Quality Metrics"
+            },
+            desc: {
+                uk: "Для класифікації: accuracy, precision, recall, F1, ROC-AUC. Для регресії: MAE, MSE, RMSE, R². Вибір метрики залежить від задачі та вартості помилок (хибні спрацьовування vs пропуски).",
+                ru: "Для классификации: accuracy, precision, recall, F1, ROC-AUC. Для регрессии: MAE, MSE, RMSE, R². Выбор метрики зависит от задачи и стоимости ошибок (ложные срабатывания vs пропуски).",
+                en: "For classification: accuracy, precision, recall, F1, ROC-AUC. For regression: MAE, MSE, RMSE, R². Metric choice depends on the task and the cost of errors (false positives vs false negatives)."
+            },
+            traits: {
+                uk: "Precision, Recall, F1, ROC-AUC, MAE, RMSE, Confusion matrix",
+                ru: "Precision, Recall, F1, ROC-AUC, MAE, RMSE, Confusion matrix",
+                en: "Precision, Recall, F1, ROC-AUC, MAE, RMSE, Confusion matrix"
+            },
+            spec: {
+                uk: "Метрика має відповідати бізнес-цілі",
+                ru: "Метрика должна соответствовать бизнес-цели",
+                en: "The metric must match the business goal"
+            },
+            links: [
+                { name: "sklearn Metrics", url: "https://scikit-learn.org/stable/modules/model_evaluation.html" }
+            ]
+        },
+        {
+            cat: "models",
+            icon: "📈",
+            name: {
+                uk: "Лінійні моделі та дерева рішень",
+                ru: "Линейные модели и деревья решений",
+                en: "Linear Models and Decision Trees"
+            },
+            desc: {
+                uk: "Лінійна/логістична регресія — прості, інтерпретовані базові моделі. Дерева рішень і випадкові ліси (Random Forest) добре працюють з табличними даними, стійкі до масштабу ознак і дають зрозумілі правила.",
+                ru: "Линейная/логистическая регрессия — простые, интерпретируемые базовые модели. Деревья решений и случайные леса (Random Forest) хорошо работают с табличными данными, устойчивы к масштабу признаков и дают понятные правила.",
+                en: "Linear/logistic regression — simple, interpretable baseline models. Decision trees and random forests work well on tabular data, are robust to feature scale and provide understandable rules."
+            },
+            traits: {
+                uk: "Лінійна регресія, Логістична регресія, Decision Tree, Random Forest, Інтерпретованість",
+                ru: "Линейная регрессия, Логистическая регрессия, Decision Tree, Random Forest, Интерпретируемость",
+                en: "Linear regression, Logistic regression, Decision Tree, Random Forest, Interpretability"
+            },
+            spec: {
+                uk: "Завжди починайте з простих baseline-моделей",
+                ru: "Всегда начинайте с простых baseline-моделей",
+                en: "Always start with simple baseline models"
+            },
+            links: [
+                { name: "scikit-learn Supervised Learning", url: "https://scikit-learn.org/stable/supervised_learning.html" }
+            ]
+        },
+        {
+            cat: "models",
+            icon: "🌳",
+            name: {
+                uk: "Градієнтний бустинг",
+                ru: "Градиентный бустинг",
+                en: "Gradient Boosting"
+            },
+            desc: {
+                uk: "XGBoost, LightGBM, CatBoost — одні з найсильніших алгоритмів для табличних даних. Послідовно будують дерева, виправляючи помилки попередніх. Часто перемагають у змаганнях і промислових задачах.",
+                ru: "XGBoost, LightGBM, CatBoost — одни из самых сильных алгоритмов для табличных данных. Последовательно строят деревья, исправляя ошибки предыдущих. Часто побеждают в соревнованиях и промышленных задачах.",
+                en: "XGBoost, LightGBM, CatBoost — among the strongest algorithms for tabular data. They build trees sequentially, correcting previous errors. Often win competitions and industrial tasks."
+            },
+            traits: {
+                uk: "XGBoost, LightGBM, CatBoost, Ансамблі, Feature importance, Табличні дані",
+                ru: "XGBoost, LightGBM, CatBoost, Ансамбли, Feature importance, Табличные данные",
+                en: "XGBoost, LightGBM, CatBoost, Ensembles, Feature importance, Tabular data"
+            },
+            spec: {
+                uk: "Стандарт для більшості табличних задач",
+                ru: "Стандарт для большинства табличных задач",
+                en: "Standard for most tabular problems"
+            },
+            links: [
+                { name: "XGBoost", url: "https://xgboost.readthedocs.io" },
+                { name: "LightGBM", url: "https://lightgbm.readthedocs.io" },
+                { name: "CatBoost", url: "https://catboost.ai" }
+            ]
+        },
+        {
+            cat: "models",
+            icon: "🔍",
+            name: {
+                uk: "Кластеризація та зменшення розмірності",
+                ru: "Кластеризация и снижение размерности",
+                en: "Clustering and Dimensionality Reduction"
+            },
+            desc: {
+                uk: "K-Means, DBSCAN, ієрархічна кластеризація — для групування схожих об’єктів. PCA, t-SNE, UMAP — для зменшення кількості ознак і візуалізації. Корисно в сегментації клієнтів і дослідженні даних.",
+                ru: "K-Means, DBSCAN, иерархическая кластеризация — для группировки похожих объектов. PCA, t-SNE, UMAP — для снижения числа признаков и визуализации. Полезно в сегментации клиентов и исследовании данных.",
+                en: "K-Means, DBSCAN, hierarchical clustering — for grouping similar objects. PCA, t-SNE, UMAP — for reducing features and visualization. Useful in customer segmentation and data exploration."
+            },
+            traits: {
+                uk: "K-Means, DBSCAN, PCA, t-SNE, UMAP, Сегментація",
+                ru: "K-Means, DBSCAN, PCA, t-SNE, UMAP, Сегментация",
+                en: "K-Means, DBSCAN, PCA, t-SNE, UMAP, Segmentation"
+            },
+            spec: {
+                uk: "Навчання без учителя відкриває структуру даних",
+                ru: "Обучение без учителя открывает структуру данных",
+                en: "Unsupervised learning reveals data structure"
+            },
+            links: [
+                { name: "sklearn Clustering", url: "https://scikit-learn.org/stable/modules/clustering.html" },
+                { name: "UMAP", url: "https://umap-learn.readthedocs.io" }
+            ]
+        },
+        {
+            cat: "deep",
+            icon: "🧬",
+            name: {
+                uk: "Нейронні мережі та глибоке навчання",
+                ru: "Нейронные сети и глубокое обучение",
+                en: "Neural Networks and Deep Learning"
+            },
+            desc: {
+                uk: "Багатошарові нейронні мережі навчаються ієрархічним представленням даних. Глибоке навчання особливо сильне в зображеннях, мові, звуку та складних патернах, де традиційні методи слабші.",
+                ru: "Многослойные нейронные сети обучаются иерархическим представлениям данных. Глубокое обучение особенно сильно в изображениях, языке, звуке и сложных паттернах, где традиционные методы слабее.",
+                en: "Multi-layer neural networks learn hierarchical representations of data. Deep learning is especially strong on images, language, audio and complex patterns where traditional methods are weaker."
+            },
+            traits: {
+                uk: "Шари, Активації, Backpropagation, GPU, Представлення ознак",
+                ru: "Слои, Активации, Backpropagation, GPU, Представления признаков",
+                en: "Layers, Activations, Backpropagation, GPU, Feature representations"
+            },
+            spec: {
+                uk: "Потребує багато даних і обчислювальних ресурсів",
+                ru: "Требует много данных и вычислительных ресурсов",
+                en: "Requires lots of data and compute resources"
+            },
+            links: [
+                { name: "Deep Learning Book", url: "https://www.deeplearningbook.org" },
+                { name: "PyTorch Tutorials", url: "https://pytorch.org/tutorials/" },
+                { name: "fast.ai", url: "https://www.fast.ai" }
+            ]
+        },
+        {
+            cat: "deep",
+            icon: "🖼️",
+            name: {
+                uk: "Комп’ютерний зір (CV)",
+                ru: "Компьютерное зрение (CV)",
+                en: "Computer Vision (CV)"
+            },
+            desc: {
+                uk: "Згорткові мережі (CNN), детекція об’єктів, сегментація, розпізнавання облич, генерація зображень. Архітектури: ResNet, EfficientNet, YOLO, Vision Transformer (ViT).",
+                ru: "Сверточные сети (CNN), детекция объектов, сегментация, распознавание лиц, генерация изображений. Архитектуры: ResNet, EfficientNet, YOLO, Vision Transformer (ViT).",
+                en: "Convolutional networks (CNN), object detection, segmentation, face recognition, image generation. Architectures: ResNet, EfficientNet, YOLO, Vision Transformer (ViT)."
+            },
+            traits: {
+                uk: "CNN, YOLO, Segmentation, ViT, Transfer learning, Аугментація",
+                ru: "CNN, YOLO, Segmentation, ViT, Transfer learning, Аугментация",
+                en: "CNN, YOLO, Segmentation, ViT, Transfer learning, Augmentation"
+            },
+            spec: {
+                uk: "Transfer learning значно прискорює розробку",
+                ru: "Transfer learning значительно ускоряет разработку",
+                en: "Transfer learning greatly speeds up development"
+            },
+            links: [
+                { name: "Papers With Code — CV", url: "https://paperswithcode.com/area/computer-vision" },
+                { name: "Ultralytics YOLO", url: "https://docs.ultralytics.com" }
+            ]
+        },
+        {
+            cat: "deep",
+            icon: "💬",
+            name: {
+                uk: "Обробка мови та трансформери",
+                ru: "Обработка языка и трансформеры",
+                en: "NLP and Transformers"
+            },
+            desc: {
+                uk: "Трансформери (BERT, GPT, T5 та інші) змінили NLP: розуміння тексту, генерація, переклад, діалоги. Великі мовні моделі (LLM) стали основою сучасних AI-продуктів і асистентів.",
+                ru: "Трансформеры (BERT, GPT, T5 и другие) изменили NLP: понимание текста, генерация, перевод, диалоги. Большие языковые модели (LLM) стали основой современных AI-продуктов и ассистентов.",
+                en: "Transformers (BERT, GPT, T5 and others) transformed NLP: text understanding, generation, translation, dialogue. Large language models (LLMs) became the foundation of modern AI products and assistants."
+            },
+            traits: {
+                uk: "Transformer, Attention, BERT, GPT, LLM, Embeddings, Fine-tuning",
+                ru: "Transformer, Attention, BERT, GPT, LLM, Embeddings, Fine-tuning",
+                en: "Transformer, Attention, BERT, GPT, LLM, Embeddings, Fine-tuning"
+            },
+            spec: {
+                uk: "Attention — ключова ідея сучасного NLP",
+                ru: "Attention — ключевая идея современного NLP",
+                en: "Attention is the key idea of modern NLP"
+            },
+            links: [
+                { name: "Hugging Face", url: "https://huggingface.co" },
+                { name: "The Illustrated Transformer", url: "https://jalammar.github.io/illustrated-transformer/" },
+                { name: "Attention Is All You Need", url: "https://arxiv.org/abs/1706.03762" }
+            ]
+        },
+        {
+            cat: "deep",
+            icon: "🎨",
+            name: {
+                uk: "Генеративний ШІ",
+                ru: "Генеративный ИИ",
+                en: "Generative AI"
+            },
+            desc: {
+                uk: "Моделі, що створюють новий контент: текст (LLM), зображення (Stable Diffusion, DALL·E, Midjourney), код, аудіо, відео. Основа — генеративні архітектури (автоенкодери, GAN, дифузійні моделі, трансформери).",
+                ru: "Модели, создающие новый контент: текст (LLM), изображения (Stable Diffusion, DALL·E, Midjourney), код, аудио, видео. Основа — генеративные архитектуры (автоэнкодеры, GAN, диффузионные модели, трансформеры).",
+                en: "Models that create new content: text (LLMs), images (Stable Diffusion, DALL·E, Midjourney), code, audio, video. Based on generative architectures (autoencoders, GANs, diffusion models, transformers)."
+            },
+            traits: {
+                uk: "LLM, Diffusion, GAN, Генерація, Промпт-інженерія, Fine-tuning",
+                ru: "LLM, Diffusion, GAN, Генерация, Промпт-инженерия, Fine-tuning",
+                en: "LLM, Diffusion, GAN, Generation, Prompt engineering, Fine-tuning"
+            },
+            spec: {
+                uk: "Генеративний ШІ змінює продукти й процеси",
+                ru: "Генеративный ИИ меняет продукты и процессы",
+                en: "Generative AI is changing products and processes"
+            },
+            links: [
+                { name: "Stable Diffusion", url: "https://stability.ai" },
+                { name: "OpenAI", url: "https://openai.com" },
+                { name: "Hugging Face Diffusers", url: "https://huggingface.co/docs/diffusers" }
+            ]
+        },
+        {
+            cat: "mlops",
+            icon: "🔄",
+            name: {
+                uk: "Життєвий цикл ML-проєкту",
+                ru: "Жизненный цикл ML-проекта",
+                en: "ML Project Lifecycle"
+            },
+            desc: {
+                uk: "Від бізнес-задачі до продакшену: постановка задачі → дані → ознаки → модель → оцінка → впровадження → моніторинг → покращення. MLOps формалізує цей цикл і робить його повторюваним.",
+                ru: "От бизнес-задачи до продакшена: постановка задачи → данные → признаки → модель → оценка → внедрение → мониторинг → улучшение. MLOps формализует этот цикл и делает его повторяемым.",
+                en: "From business problem to production: problem definition → data → features → model → evaluation → deployment → monitoring → improvement. MLOps formalizes this cycle and makes it repeatable."
+            },
+            traits: {
+                uk: "Задача, Дані, Ознаки, Модель, Оцінка, Деплой, Моніторинг",
+                ru: "Задача, Данные, Признаки, Модель, Оценка, Деплой, Мониторинг",
+                en: "Problem, Data, Features, Model, Evaluation, Deploy, Monitoring"
+            },
+            spec: {
+                uk: "Більшість проєктів «вмирають» до продакшену без процесу",
+                ru: "Большинство проектов «умирают» до продакшена без процесса",
+                en: "Most projects die before production without a process"
+            },
+            links: [
+                { name: "Made with ML", url: "https://madewithml.com" },
+                { name: "Full Stack Deep Learning", url: "https://fullstackdeeplearning.com" }
+            ]
+        },
+        {
+            cat: "mlops",
+            icon: "📦",
+            name: {
+                uk: "Версіонування, експерименти, реєстр моделей",
+                ru: "Версионирование, эксперименты, реестр моделей",
+                en: "Versioning, Experiments, Model Registry"
+            },
+            desc: {
+                uk: "Відтворення результатів вимагає версіонування коду, даних і моделей. MLflow, DVC, Weights & Biases, Neptune допомагають логувати експерименти, порівнювати моделі та керувати їх життєвим циклом.",
+                ru: "Воспроизведение результатов требует версионирования кода, данных и моделей. MLflow, DVC, Weights & Biases, Neptune помогают логировать эксперименты, сравнивать модели и управлять их жизненным циклом.",
+                en: "Reproducibility requires versioning code, data and models. MLflow, DVC, Weights & Biases, Neptune help log experiments, compare models and manage their lifecycle."
+            },
+            traits: {
+                uk: "MLflow, DVC, W&B, Експерименти, Model Registry, Відтворюваність",
+                ru: "MLflow, DVC, W&B, Эксперименты, Model Registry, Воспроизводимость",
+                en: "MLflow, DVC, W&B, Experiments, Model Registry, Reproducibility"
+            },
+            spec: {
+                uk: "Без версіонування неможливий надійний ML",
+                ru: "Без версионирования невозможен надежный ML",
+                en: "Without versioning reliable ML is impossible"
+            },
+            links: [
+                { name: "MLflow", url: "https://mlflow.org" },
+                { name: "DVC", url: "https://dvc.org" },
+                { name: "Weights & Biases", url: "https://wandb.ai" }
+            ]
+        },
+        {
+            cat: "mlops",
+            icon: "📡",
+            name: {
+                uk: "Деплой і моніторинг моделей",
+                ru: "Деплой и мониторинг моделей",
+                en: "Model Deployment and Monitoring"
+            },
+            desc: {
+                uk: "Моделі можна обслуговувати як API, batch-процеси або edge-рішення. Після деплою потрібен моніторинг якості, дрейфу даних/концепції, затримок і помилок. Без моніторингу модель з часом деградує.",
+                ru: "Модели можно обслуживать как API, batch-процессы или edge-решения. После деплоя нужен мониторинг качества, дрейфа данных/концепции, задержек и ошибок. Без мониторинга модель со временем деградирует.",
+                en: "Models can be served as APIs, batch jobs or edge solutions. After deployment you need monitoring of quality, data/concept drift, latency and errors. Without monitoring the model degrades over time."
+            },
+            traits: {
+                uk: "Serving, Drift, Latency, A/B-тести, Canary, Алерти",
+                ru: "Serving, Drift, Latency, A/B-тесты, Canary, Алерты",
+                en: "Serving, Drift, Latency, A/B tests, Canary, Alerts"
+            },
+            spec: {
+                uk: "Деплой — не кінець, а початок відповідальності",
+                ru: "Деплой — не конец, а начало ответственности",
+                en: "Deployment is not the end, but the start of responsibility"
+            },
+            links: [
+                { name: "Kubeflow", url: "https://www.kubeflow.org" },
+                { name: "BentoML", url: "https://www.bentoml.com" },
+                { name: "Evidently AI", url: "https://www.evidentlyai.com" }
+            ]
+        },
+        {
+            cat: "practice",
+            icon: "🧩",
+            name: {
+                uk: "Feature Engineering та підготовка даних",
+                ru: "Feature Engineering и подготовка данных",
+                en: "Feature Engineering and Data Prep"
+            },
+            desc: {
+                uk: "Якість і представлення ознак часто важливіші за вибір алгоритму. Кодування категорій, масштабування, створення нових ознак, робота з часом і текстом — ключові навички практичного ML.",
+                ru: "Качество и представление признаков часто важнее выбора алгоритма. Кодирование категорий, масштабирование, создание новых признаков, работа со временем и текстом — ключевые навыки практического ML.",
+                en: "Feature quality and representation often matter more than algorithm choice. Encoding categories, scaling, creating new features, handling time and text — core skills of practical ML."
+            },
+            traits: {
+                uk: "Кодування, Масштабування, Нові ознаки, Часові ряди, Текстові ознаки",
+                ru: "Кодирование, Масштабирование, Новые признаки, Временные ряды, Текстовые признаки",
+                en: "Encoding, Scaling, New features, Time series, Text features"
+            },
+            spec: {
+                uk: "Feature engineering — мистецтво практичного ML",
+                ru: "Feature engineering — искусство практического ML",
+                en: "Feature engineering is the art of practical ML"
+            },
+            links: [
+                { name: "Feature Engineering for ML", url: "https://www.oreilly.com/library/view/feature-engineering-for/9781491953235/" }
+            ]
+        },
+        {
+            cat: "practice",
+            icon: "⚖️",
+            name: {
+                uk: "Етика, упередження та відповідальність",
+                ru: "Этика, предвзятость и ответственность",
+                en: "Ethics, Bias and Responsibility"
+            },
+            desc: {
+                uk: "Моделі можуть підсилювати упередження даних, впливати на людей (кредити, найм, медицина). Важливі: прозорість, справедливість, приватність, пояснюваність і відповідальне використання ШІ.",
+                ru: "Модели могут усиливать предвзятость данных, влиять на людей (кредиты, найм, медицина). Важны: прозрачность, справедливость, приватность, объяснимость и ответственное использование ИИ.",
+                en: "Models can amplify data bias and affect people (credit, hiring, medicine). Important: transparency, fairness, privacy, explainability and responsible use of AI."
+            },
+            traits: {
+                uk: "Bias, Fairness, Explainability, Privacy, Відповідальний ШІ",
+                ru: "Bias, Fairness, Explainability, Privacy, Ответственный ИИ",
+                en: "Bias, Fairness, Explainability, Privacy, Responsible AI"
+            },
+            spec: {
+                uk: "Технічна якість ≠ етична прийнятність",
+                ru: "Техническое качество ≠ этическая приемлемость",
+                en: "Technical quality ≠ ethical acceptability"
+            },
+            links: [
+                { name: "Google Responsible AI", url: "https://ai.google/responsibility/" },
+                { name: "Partnership on AI", url: "https://partnershiponai.org" }
+            ]
+        },
+        {
+            cat: "practice",
+            icon: "🛠️",
+            name: {
+                uk: "Інструменти та екосистема",
+                ru: "Инструменты и экосистема",
+                en: "Tools and Ecosystem"
+            },
+            desc: {
+                uk: "Python — основна мова. Бібліотеки: NumPy, pandas, scikit-learn, PyTorch, TensorFlow, XGBoost. Для продакшену: Docker, Kubernetes, cloud ML-платформи (SageMaker, Vertex AI, Azure ML).",
+                ru: "Python — основной язык. Библиотеки: NumPy, pandas, scikit-learn, PyTorch, TensorFlow, XGBoost. Для продакшена: Docker, Kubernetes, cloud ML-платформы (SageMaker, Vertex AI, Azure ML).",
+                en: "Python is the main language. Libraries: NumPy, pandas, scikit-learn, PyTorch, TensorFlow, XGBoost. For production: Docker, Kubernetes, cloud ML platforms (SageMaker, Vertex AI, Azure ML)."
+            },
+            traits: {
+                uk: "Python, PyTorch, TensorFlow, scikit-learn, Docker, Cloud ML",
+                ru: "Python, PyTorch, TensorFlow, scikit-learn, Docker, Cloud ML",
+                en: "Python, PyTorch, TensorFlow, scikit-learn, Docker, Cloud ML"
+            },
+            spec: {
+                uk: "Інструменти змінюються, принципи залишаються",
+                ru: "Инструменты меняются, принципы остаются",
+                en: "Tools change, principles remain"
+            },
+            links: [
+                { name: "PyTorch", url: "https://pytorch.org" },
+                { name: "TensorFlow", url: "https://www.tensorflow.org" },
+                { name: "scikit-learn", url: "https://scikit-learn.org" }
+            ]
+        }
+    ];
+
+    const ui = {
+        uk: {
+            title: "Машинне навчання та штучний інтелект — Довідник",
+            pageTitle: "🤖 Машинне навчання та ШІ",
+            home: "Головна сторінка",
+            all: "Усі розділи",
+            traits: "Ключові елементи та поняття",
+            mfgText: "Корисні ресурси:",
+            noResults: "Нічого не знайдено.",
+            footer: "🤖 Машинне навчання та штучний інтелект | Довідник 2026",
+            introTitle: "Що таке машинне навчання та штучний інтелект?",
+            intro1: "Машинне навчання (ML) — це підхід, за якого системи навчаються на даних і покращують свої рішення без явного програмування правил. Штучний інтелект (ШІ) — ширша галузь, що включає ML, глибоке навчання, обробку мови, комп’ютерний зір і генеративні моделі.",
+            intro2: "Ця сторінка зосереджена на базових концепціях, типах моделей і MLOps — практиках, які дозволяють доводити моделі до продакшену, підтримувати їх якість і відповідально використовувати ШІ в реальних продуктах."
+        },
+        ru: {
+            title: "Машинное обучение и искусственный интеллект — Справочник",
+            pageTitle: "🤖 Машинное обучение и ИИ",
+            home: "Главная страница",
+            all: "Все разделы",
+            traits: "Ключевые элементы и понятия",
+            mfgText: "Полезные ресурсы:",
+            noResults: "Ничего не найдено.",
+            footer: "🤖 Машинное обучение и искусственный интеллект | Справочник 2026",
+            introTitle: "Что такое машинное обучение и искусственный интеллект?",
+            intro1: "Машинное обучение (ML) — это подход, при котором системы обучаются на данных и улучшают свои решения без явного программирования правил. Искусственный интеллект (ИИ) — более широкая область, включающая ML, глубокое обучение, обработку языка, компьютерное зрение и генеративные модели.",
+            intro2: "Эта страница сосредоточена на базовых концепциях, типах моделей и MLOps — практиках, которые позволяют доводить модели до продакшена, поддерживать их качество и ответственно использовать ИИ в реальных продуктах."
+        },
+        en: {
+            title: "Machine Learning and Artificial Intelligence — Guide",
+            pageTitle: "🤖 Machine Learning & AI",
+            home: "Home page",
+            all: "All sections",
+            traits: "Key concepts and elements",
+            mfgText: "Useful resources:",
+            noResults: "Nothing found.",
+            footer: "🤖 Machine Learning and Artificial Intelligence | Guide 2026",
+            introTitle: "What are Machine Learning and Artificial Intelligence?",
+            intro1: "Machine Learning (ML) is an approach where systems learn from data and improve their decisions without explicitly programmed rules. Artificial Intelligence (AI) is a broader field that includes ML, deep learning, language processing, computer vision and generative models.",
+            intro2: "This page focuses on core concepts, model types and MLOps — the practices that let you take models to production, maintain their quality and use AI responsibly in real products."
+        }
+    };
+
+    let currentLang = safeGet("lang-ml", "uk");
+    let activeCategory = "all";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-ml", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + "</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) { return e.cat === catKey; });
+            if (!list.length) return;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        main.innerHTML = html || ('<div class="no-results">' + ui[currentLang].noResults + "</div>");
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

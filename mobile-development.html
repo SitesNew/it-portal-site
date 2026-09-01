@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мобільна розробка — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">📱 Мобільна розробка</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    const categories = {
+        native: {
+            uk: "📱 Нативна розробка",
+            ru: "📱 Нативная разработка",
+            en: "📱 Native Development"
+        },
+        cross: {
+            uk: "🔄 Кросплатформені підходи",
+            ru: "🔄 Кроссплатформенные подходы",
+            en: "🔄 Cross-Platform Approaches"
+        },
+        practices: {
+            uk: "🛠️ Практики та інструменти",
+            ru: "🛠️ Практики и инструменты",
+            en: "🛠️ Practices & Tools"
+        },
+        distribution: {
+            uk: "🚀 Публікація та розповсюдження",
+            ru: "🚀 Публикация и распространение",
+            en: "🚀 Publishing & Distribution"
+        }
+    };
+
+    const items = [
+        {
+            cat: "native",
+            icon: "🤖",
+            name: {
+                uk: "Android-розробка",
+                ru: "Android-разработка",
+                en: "Android Development"
+            },
+            desc: {
+                uk: "Офіційна платформа Google для мобільних додатків. Основні мови — Kotlin (рекомендована) та Java. Інструменти: Android Studio, Jetpack, Material Design, Google Play.",
+                ru: "Официальная платформа Google для мобильных приложений. Основные языки — Kotlin (рекомендуемый) и Java. Инструменты: Android Studio, Jetpack, Material Design, Google Play.",
+                en: "Google’s official platform for mobile apps. Primary languages — Kotlin (recommended) and Java. Tools: Android Studio, Jetpack, Material Design, Google Play."
+            },
+            traits: {
+                uk: "Kotlin, Java, Android Studio, Jetpack, Material Design, Google Play",
+                ru: "Kotlin, Java, Android Studio, Jetpack, Material Design, Google Play",
+                en: "Kotlin, Java, Android Studio, Jetpack, Material Design, Google Play"
+            },
+            spec: {
+                uk: "Найбільша частка ринку смартфонів",
+                ru: "Наибольшая доля рынка смартфонов",
+                en: "Largest share of the smartphone market"
+            },
+            links: [
+                { name: "Android Developers", url: "https://developer.android.com" },
+                { name: "Kotlin", url: "https://kotlinlang.org" },
+                { name: "Jetpack", url: "https://developer.android.com/jetpack" }
+            ]
+        },
+        {
+            cat: "native",
+            icon: "🍎",
+            name: {
+                uk: "iOS-розробка",
+                ru: "iOS-разработка",
+                en: "iOS Development"
+            },
+            desc: {
+                uk: "Платформа Apple для iPhone та iPad. Основна мова — Swift (раніше Objective-C). Інструменти: Xcode, SwiftUI, UIKit, App Store. Високі вимоги до якості та дизайну.",
+                ru: "Платформа Apple для iPhone и iPad. Основной язык — Swift (ранее Objective-C). Инструменты: Xcode, SwiftUI, UIKit, App Store. Высокие требования к качеству и дизайну.",
+                en: "Apple’s platform for iPhone and iPad. Primary language — Swift (previously Objective-C). Tools: Xcode, SwiftUI, UIKit, App Store. High quality and design expectations."
+            },
+            traits: {
+                uk: "Swift, SwiftUI, UIKit, Xcode, App Store, Human Interface Guidelines",
+                ru: "Swift, SwiftUI, UIKit, Xcode, App Store, Human Interface Guidelines",
+                en: "Swift, SwiftUI, UIKit, Xcode, App Store, Human Interface Guidelines"
+            },
+            spec: {
+                uk: "Висока якість і сильна екосистема",
+                ru: "Высокое качество и сильная экосистема",
+                en: "High quality and strong ecosystem"
+            },
+            links: [
+                { name: "Apple Developer", url: "https://developer.apple.com" },
+                { name: "Swift", url: "https://www.swift.org" },
+                { name: "SwiftUI", url: "https://developer.apple.com/xcode/swiftui/" }
+            ]
+        },
+        {
+            cat: "native",
+            icon: "🧱",
+            name: {
+                uk: "Нативні UI-фреймворки",
+                ru: "Нативные UI-фреймворки",
+                en: "Native UI Frameworks"
+            },
+            desc: {
+                uk: "Android: Jetpack Compose (декларативний UI) та класичний View-система. iOS: SwiftUI (сучасний декларативний) та UIKit. Декларативні підходи спрощують створення інтерфейсів і підтримку стану.",
+                ru: "Android: Jetpack Compose (декларативный UI) и классическая View-система. iOS: SwiftUI (современный декларативный) и UIKit. Декларативные подходы упрощают создание интерфейсов и поддержку состояния.",
+                en: "Android: Jetpack Compose (declarative UI) and the classic View system. iOS: SwiftUI (modern declarative) and UIKit. Declarative approaches simplify UI creation and state management."
+            },
+            traits: {
+                uk: "Jetpack Compose, SwiftUI, UIKit, View System, Декларативний UI",
+                ru: "Jetpack Compose, SwiftUI, UIKit, View System, Декларативный UI",
+                en: "Jetpack Compose, SwiftUI, UIKit, View System, Declarative UI"
+            },
+            spec: {
+                uk: "Сучасний стандарт — декларативний UI",
+                ru: "Современный стандарт — декларативный UI",
+                en: "Modern standard — declarative UI"
+            },
+            links: [
+                { name: "Jetpack Compose", url: "https://developer.android.com/compose" },
+                { name: "SwiftUI", url: "https://developer.apple.com/xcode/swiftui/" }
+            ]
+        },
+        {
+            cat: "cross",
+            icon: "💙",
+            name: {
+                uk: "Flutter",
+                ru: "Flutter",
+                en: "Flutter"
+            },
+            desc: {
+                uk: "Фреймворк від Google для створення додатків з одного коду для Android, iOS, Web і Desktop. Використовує мову Dart і власний рушій рендерингу. Висока продуктивність і гнучкий UI.",
+                ru: "Фреймворк от Google для создания приложений из одного кода для Android, iOS, Web и Desktop. Использует язык Dart и собственный движок рендеринга. Высокая производительность и гибкий UI.",
+                en: "Google’s framework for building apps from a single codebase for Android, iOS, Web and Desktop. Uses the Dart language and its own rendering engine. High performance and flexible UI."
+            },
+            traits: {
+                uk: "Dart, Власний рендеринг, Hot Reload, Material + Cupertino, Desktop/Web",
+                ru: "Dart, Собственный рендеринг, Hot Reload, Material + Cupertino, Desktop/Web",
+                en: "Dart, Own rendering, Hot Reload, Material + Cupertino, Desktop/Web"
+            },
+            spec: {
+                uk: "Один код — кілька платформ, близька до нативної швидкість",
+                ru: "Один код — несколько платформ, близкая к нативной скорость",
+                en: "One codebase — multiple platforms, near-native speed"
+            },
+            links: [
+                { name: "Flutter", url: "https://flutter.dev" },
+                { name: "Dart", url: "https://dart.dev" },
+                { name: "pub.dev", url: "https://pub.dev" }
+            ]
+        },
+        {
+            cat: "cross",
+            icon: "⚛️",
+            name: {
+                uk: "React Native",
+                ru: "React Native",
+                en: "React Native"
+            },
+            desc: {
+                uk: "Фреймворк від Meta (Facebook) для створення мобільних додатків за допомогою React і JavaScript/TypeScript. Використовує нативні компоненти платформи. Велика екосистема та спільнота.",
+                ru: "Фреймворк от Meta (Facebook) для создания мобильных приложений с помощью React и JavaScript/TypeScript. Использует нативные компоненты платформы. Большая экосистема и сообщество.",
+                en: "Meta’s (Facebook) framework for building mobile apps with React and JavaScript/TypeScript. Uses native platform components. Large ecosystem and community."
+            },
+            traits: {
+                uk: "React, JavaScript/TypeScript, Нативні компоненти, Expo, Велика спільнота",
+                ru: "React, JavaScript/TypeScript, Нативные компоненты, Expo, Большое сообщество",
+                en: "React, JavaScript/TypeScript, Native components, Expo, Large community"
+            },
+            spec: {
+                uk: "Ідеально, якщо команда вже знає React",
+                ru: "Идеально, если команда уже знает React",
+                en: "Ideal if the team already knows React"
+            },
+            links: [
+                { name: "React Native", url: "https://reactnative.dev" },
+                { name: "Expo", url: "https://expo.dev" },
+                { name: "React Native Directory", url: "https://reactnative.directory" }
+            ]
+        },
+        {
+            cat: "cross",
+            icon: "🟣",
+            name: {
+                uk: "Kotlin Multiplatform (KMP)",
+                ru: "Kotlin Multiplatform (KMP)",
+                en: "Kotlin Multiplatform (KMP)"
+            },
+            desc: {
+                uk: "Підхід від JetBrains: спільна бізнес-логіка на Kotlin для Android, iOS, Desktop, Web, а UI залишається нативним (Compose / SwiftUI) або також спільним (Compose Multiplatform). Максимальний контроль і нативність.",
+                ru: "Подход от JetBrains: общая бизнес-логика на Kotlin для Android, iOS, Desktop, Web, а UI остается нативным (Compose / SwiftUI) или тоже общим (Compose Multiplatform). Максимальный контроль и нативность.",
+                en: "JetBrains approach: shared business logic in Kotlin for Android, iOS, Desktop, Web, while UI stays native (Compose / SwiftUI) or can also be shared (Compose Multiplatform). Maximum control and nativeness."
+            },
+            traits: {
+                uk: "Спільна логіка, Нативний UI, Compose Multiplatform, Kotlin, Гнучкість",
+                ru: "Общая логика, Нативный UI, Compose Multiplatform, Kotlin, Гибкость",
+                en: "Shared logic, Native UI, Compose Multiplatform, Kotlin, Flexibility"
+            },
+            spec: {
+                uk: "Найкращий баланс спільного коду та нативності",
+                ru: "Лучший баланс общего кода и нативности",
+                en: "Best balance of shared code and nativeness"
+            },
+            links: [
+                { name: "Kotlin Multiplatform", url: "https://kotlinlang.org/docs/multiplatform.html" },
+                { name: "Compose Multiplatform", url: "https://www.jetbrains.com/lp/compose-multiplatform/" }
+            ]
+        },
+        {
+            cat: "cross",
+            icon: "🌐",
+            name: {
+                uk: "Інші кросплатформені варіанти",
+                ru: "Другие кроссплатформенные варианты",
+                en: "Other Cross-Platform Options"
+            },
+            desc: {
+                uk: ".NET MAUI (колишній Xamarin), Ionic + Capacitor (веб-технології в нативній оболонці), NativeScript, Uno Platform. Кожен має свої сильні сторони залежно від стеку команди та вимог до продуктивності.",
+                ru: ".NET MAUI (бывший Xamarin), Ionic + Capacitor (веб-технологии в нативной оболочке), NativeScript, Uno Platform. У каждого свои сильные стороны в зависимости от стека команды и требований к производительности.",
+                en: ".NET MAUI (formerly Xamarin), Ionic + Capacitor (web technologies in a native shell), NativeScript, Uno Platform. Each has strengths depending on the team’s stack and performance needs."
+            },
+            traits: {
+                uk: ".NET MAUI, Ionic, Capacitor, NativeScript, Uno Platform",
+                ru: ".NET MAUI, Ionic, Capacitor, NativeScript, Uno Platform",
+                en: ".NET MAUI, Ionic, Capacitor, NativeScript, Uno Platform"
+            },
+            spec: {
+                uk: "Обирайте під наявні навички команди",
+                ru: "Выбирайте под имеющиеся навыки команды",
+                en: "Choose based on the team’s existing skills"
+            },
+            links: [
+                { name: ".NET MAUI", url: "https://dotnet.microsoft.com/en-us/apps/maui" },
+                { name: "Ionic", url: "https://ionicframework.com" },
+                { name: "Capacitor", url: "https://capacitorjs.com" }
+            ]
+        },
+        {
+            cat: "practices",
+            icon: "🏗️",
+            name: {
+                uk: "Архітектура мобільних додатків",
+                ru: "Архитектура мобильных приложений",
+                en: "Mobile App Architecture"
+            },
+            desc: {
+                uk: "Популярні підходи: MVVM, MVI, Clean Architecture, VIPER (iOS). Важливо розділяти UI, бізнес-логіку та дані, щоб додаток було легше тестувати, підтримувати та масштабувати.",
+                ru: "Популярные подходы: MVVM, MVI, Clean Architecture, VIPER (iOS). Важно разделять UI, бизнес-логику и данные, чтобы приложение было легче тестировать, поддерживать и масштабировать.",
+                en: "Popular approaches: MVVM, MVI, Clean Architecture, VIPER (iOS). Separating UI, business logic and data makes the app easier to test, maintain and scale."
+            },
+            traits: {
+                uk: "MVVM, MVI, Clean Architecture, VIPER, Розділення відповідальностей",
+                ru: "MVVM, MVI, Clean Architecture, VIPER, Разделение ответственности",
+                en: "MVVM, MVI, Clean Architecture, VIPER, Separation of concerns"
+            },
+            spec: {
+                uk: "Архітектура впливає на довгострокову підтримку",
+                ru: "Архитектура влияет на долгосрочную поддержку",
+                en: "Architecture affects long-term maintainability"
+            },
+            links: [
+                { name: "Android Architecture", url: "https://developer.android.com/topic/architecture" },
+                { name: "iOS App Architecture", url: "https://developer.apple.com/documentation/swiftui" }
+            ]
+        },
+        {
+            cat: "practices",
+            icon: "🧪",
+            name: {
+                uk: "Тестування мобільних додатків",
+                ru: "Тестирование мобильных приложений",
+                en: "Mobile App Testing"
+            },
+            desc: {
+                uk: "Unit-тести, UI-тести (Espresso, XCUITest, Compose Testing, XCTest), інтеграційні тести, тестування на реальних пристроях і в хмарі (Firebase Test Lab, BrowserStack, AWS Device Farm).",
+                ru: "Unit-тесты, UI-тесты (Espresso, XCUITest, Compose Testing, XCTest), интеграционные тесты, тестирование на реальных устройствах и в облаке (Firebase Test Lab, BrowserStack, AWS Device Farm).",
+                en: "Unit tests, UI tests (Espresso, XCUITest, Compose Testing, XCTest), integration tests, testing on real devices and in the cloud (Firebase Test Lab, BrowserStack, AWS Device Farm)."
+            },
+            traits: {
+                uk: "Unit, UI-тести, Espresso, XCUITest, Firebase Test Lab, Device farms",
+                ru: "Unit, UI-тесты, Espresso, XCUITest, Firebase Test Lab, Device farms",
+                en: "Unit, UI tests, Espresso, XCUITest, Firebase Test Lab, Device farms"
+            },
+            spec: {
+                uk: "Тестуйте на реальних пристроях, не лише на емуляторах",
+                ru: "Тестируйте на реальных устройствах, а не только на эмуляторах",
+                en: "Test on real devices, not only emulators"
+            },
+            links: [
+                { name: "Espresso", url: "https://developer.android.com/training/testing/espresso" },
+                { name: "XCTest", url: "https://developer.apple.com/documentation/xctest" },
+                { name: "Firebase Test Lab", url: "https://firebase.google.com/docs/test-lab" }
+            ]
+        },
+        {
+            cat: "practices",
+            icon: "📡",
+            name: {
+                uk: "Мережа, офлайн і дані",
+                ru: "Сеть, офлайн и данные",
+                en: "Networking, Offline & Data"
+            },
+            desc: {
+                uk: "Робота з API (Retrofit, URLSession, Ktor), локальне зберігання (Room, Core Data, SQLite, DataStore), синхронізація, офлайн-режим і кешування — критично важливі для якісного мобільного досвіду.",
+                ru: "Работа с API (Retrofit, URLSession, Ktor), локальное хранение (Room, Core Data, SQLite, DataStore), синхронизация, офлайн-режим и кэширование — критически важны для качественного мобильного опыта.",
+                en: "Working with APIs (Retrofit, URLSession, Ktor), local storage (Room, Core Data, SQLite, DataStore), sync, offline mode and caching are critical for a good mobile experience."
+            },
+            traits: {
+                uk: "Retrofit, Room, Core Data, Ktor, Offline-first, Синхронізація",
+                ru: "Retrofit, Room, Core Data, Ktor, Offline-first, Синхронизация",
+                en: "Retrofit, Room, Core Data, Ktor, Offline-first, Synchronization"
+            },
+            spec: {
+                uk: "Офлайн-підтримка — очікування користувачів",
+                ru: "Офлайн-поддержка — ожидание пользователей",
+                en: "Offline support is a user expectation"
+            },
+            links: [
+                { name: "Room", url: "https://developer.android.com/training/data-storage/room" },
+                { name: "Core Data", url: "https://developer.apple.com/documentation/coredata" },
+                { name: "Ktor", url: "https://ktor.io" }
+            ]
+        },
+        {
+            cat: "practices",
+            icon: "🔔",
+            name: {
+                uk: "Сповіщення, фонова робота, аналітика",
+                ru: "Уведомления, фоновая работа, аналитика",
+                en: "Notifications, Background Work, Analytics"
+            },
+            desc: {
+                uk: "Push-сповіщення (FCM, APNs), фонові завдання, геолокація, аналітика (Firebase, AppMetrica, Amplitude) і краш-звітність допомагають тримати користувача в курсі та покращувати продукт на основі даних.",
+                ru: "Push-уведомления (FCM, APNs), фоновые задачи, геолокация, аналитика (Firebase, AppMetrica, Amplitude) и краш-репортинг помогают держать пользователя в курсе и улучшать продукт на основе данных.",
+                en: "Push notifications (FCM, APNs), background tasks, geolocation, analytics (Firebase, AppMetrica, Amplitude) and crash reporting help keep users informed and improve the product based on data."
+            },
+            traits: {
+                uk: "FCM, APNs, WorkManager, Background Tasks, Firebase Analytics, Crashlytics",
+                ru: "FCM, APNs, WorkManager, Background Tasks, Firebase Analytics, Crashlytics",
+                en: "FCM, APNs, WorkManager, Background Tasks, Firebase Analytics, Crashlytics"
+            },
+            spec: {
+                uk: "Дані допомагають приймати рішення про розвиток",
+                ru: "Данные помогают принимать решения о развитии",
+                en: "Data helps drive product decisions"
+            },
+            links: [
+                { name: "Firebase Cloud Messaging", url: "https://firebase.google.com/docs/cloud-messaging" },
+                { name: "Apple Push Notifications", url: "https://developer.apple.com/documentation/usernotifications" }
+            ]
+        },
+        {
+            cat: "distribution",
+            icon: "🏪",
+            name: {
+                uk: "App Store та Google Play",
+                ru: "App Store и Google Play",
+                en: "App Store and Google Play"
+            },
+            desc: {
+                uk: "Основні магазини додатків. Мають свої правила модерації, вимоги до приватності, підписок, скріншотів і описів. Підготовка до релізу включає підпис, збірки, метадані та відповідність політикам.",
+                ru: "Основные магазины приложений. Имеют свои правила модерации, требования к приватности, подпискам, скриншотам и описаниям. Подготовка к релизу включает подпись, сборки, метаданные и соответствие политикам.",
+                en: "The main app stores. They have their own review guidelines, privacy requirements, subscription rules, screenshots and descriptions. Release preparation includes signing, builds, metadata and policy compliance."
+            },
+            traits: {
+                uk: "Модерація, Підпис додатків, Метадані, Підписки, Політики приватності",
+                ru: "Модерация, Подпись приложений, Метаданные, Подписки, Политики приватности",
+                en: "Review, App signing, Metadata, Subscriptions, Privacy policies"
+            },
+            spec: {
+                uk: "Дотримуйтесь гайдлайнів — економить час на рев’ю",
+                ru: "Соблюдайте гайдлайны — экономит время на ревью",
+                en: "Follow the guidelines — saves review time"
+            },
+            links: [
+                { name: "App Store Review Guidelines", url: "https://developer.apple.com/app-store/review/guidelines/" },
+                { name: "Google Play Policy", url: "https://play.google.com/about/developer-content-policy/" }
+            ]
+        },
+        {
+            cat: "distribution",
+            icon: "📦",
+            name: {
+                uk: "CI/CD для мобільних додатків",
+                ru: "CI/CD для мобильных приложений",
+                en: "CI/CD for Mobile Apps"
+            },
+            desc: {
+                uk: "Автоматизація збірки, тестів, підпису та доставки: GitHub Actions, Bitrise, Codemagic, Fastlane, Xcode Cloud. Дозволяє швидко і безпечно випускати оновлення для обох платформ.",
+                ru: "Автоматизация сборки, тестов, подписи и доставки: GitHub Actions, Bitrise, Codemagic, Fastlane, Xcode Cloud. Позволяет быстро и безопасно выпускать обновления для обеих платформ.",
+                en: "Automation of build, tests, signing and delivery: GitHub Actions, Bitrise, Codemagic, Fastlane, Xcode Cloud. Enables fast and safe releases for both platforms."
+            },
+            traits: {
+                uk: "Fastlane, Bitrise, Codemagic, Xcode Cloud, GitHub Actions, Підпис",
+                ru: "Fastlane, Bitrise, Codemagic, Xcode Cloud, GitHub Actions, Подпись",
+                en: "Fastlane, Bitrise, Codemagic, Xcode Cloud, GitHub Actions, Signing"
+            },
+            spec: {
+                uk: "CI/CD критично важливий для регулярних релізів",
+                ru: "CI/CD критически важен для регулярных релизов",
+                en: "CI/CD is critical for regular releases"
+            },
+            links: [
+                { name: "Fastlane", url: "https://fastlane.tools" },
+                { name: "Bitrise", url: "https://www.bitrise.io" },
+                { name: "Codemagic", url: "https://codemagic.io" }
+            ]
+        },
+        {
+            cat: "distribution",
+            icon: "📊",
+            name: {
+                uk: "Моніторинг і підтримка після релізу",
+                ru: "Мониторинг и поддержка после релиза",
+                en: "Post-Release Monitoring & Support"
+            },
+            desc: {
+                uk: "Crashlytics, Sentry, аналітика використання, відгуки користувачів, A/B-тести та поступове розгортання (staged rollout) допомагають швидко реагувати на проблеми та покращувати додаток.",
+                ru: "Crashlytics, Sentry, аналитика использования, отзывы пользователей, A/B-тесты и поэтапное развертывание (staged rollout) помогают быстро реагировать на проблемы и улучшать приложение.",
+                en: "Crashlytics, Sentry, usage analytics, user reviews, A/B tests and staged rollout help react quickly to issues and improve the app."
+            },
+            traits: {
+                uk: "Crashlytics, Sentry, Analytics, Staged rollout, A/B testing, Відгуки",
+                ru: "Crashlytics, Sentry, Analytics, Staged rollout, A/B testing, Отзывы",
+                en: "Crashlytics, Sentry, Analytics, Staged rollout, A/B testing, Reviews"
+            },
+            spec: {
+                uk: "Реліз — лише початок життєвого циклу додатку",
+                ru: "Релиз — только начало жизненного цикла приложения",
+                en: "Release is only the start of the app’s life cycle"
+            },
+            links: [
+                { name: "Firebase Crashlytics", url: "https://firebase.google.com/docs/crashlytics" },
+                { name: "Sentry", url: "https://sentry.io" }
+            ]
+        }
+    ];
+
+    const ui = {
+        uk: {
+            title: "Мобільна розробка — Довідник",
+            pageTitle: "📱 Мобільна розробка",
+            home: "Головна сторінка",
+            all: "Усі розділи",
+            traits: "Ключові елементи та поняття",
+            mfgText: "Корисні ресурси:",
+            noResults: "Нічого не знайдено.",
+            footer: "📱 Мобільна розробка | Довідник 2026",
+            introTitle: "Що таке мобільна розробка?",
+            intro1: "Мобільна розробка — це створення додатків для смартфонів і планшетів. Основні платформи — Android та iOS. Можна писати нативні додатки окремо для кожної платформи або використовувати кросплатформені фреймворки (Flutter, React Native, Kotlin Multiplatform), щоб ділитися кодом.",
+            intro2: "Вибір підходу залежить від вимог до продуктивності, дизайну, бюджету, термінів і навичок команди. Розуміння нативних можливостей, архітектури, тестування та процесів публікації в магазинах допомагає створювати якісні та успішні мобільні продукти."
+        },
+        ru: {
+            title: "Мобильная разработка — Справочник",
+            pageTitle: "📱 Мобильная разработка",
+            home: "Главная страница",
+            all: "Все разделы",
+            traits: "Ключевые элементы и понятия",
+            mfgText: "Полезные ресурсы:",
+            noResults: "Ничего не найдено.",
+            footer: "📱 Мобильная разработка | Справочник 2026",
+            introTitle: "Что такое мобильная разработка?",
+            intro1: "Мобильная разработка — это создание приложений для смартфонов и планшетов. Основные платформы — Android и iOS. Можно писать нативные приложения отдельно для каждой платформы или использовать кроссплатформенные фреймворки (Flutter, React Native, Kotlin Multiplatform), чтобы делиться кодом.",
+            intro2: "Выбор подхода зависит от требований к производительности, дизайну, бюджету, срокам и навыкам команды. Понимание нативных возможностей, архитектуры, тестирования и процессов публикации в магазинах помогает создавать качественные и успешные мобильные продукты."
+        },
+        en: {
+            title: "Mobile Development — Guide",
+            pageTitle: "📱 Mobile Development",
+            home: "Home page",
+            all: "All sections",
+            traits: "Key concepts and elements",
+            mfgText: "Useful resources:",
+            noResults: "Nothing found.",
+            footer: "📱 Mobile Development | Guide 2026",
+            introTitle: "What is mobile development?",
+            intro1: "Mobile development is the creation of applications for smartphones and tablets. The main platforms are Android and iOS. You can write native apps separately for each platform or use cross-platform frameworks (Flutter, React Native, Kotlin Multiplatform) to share code.",
+            intro2: "The choice of approach depends on performance, design, budget, timeline and team skills. Understanding native capabilities, architecture, testing and store publishing processes helps build high-quality and successful mobile products."
+        }
+    };
+
+    let currentLang = safeGet("lang-mobile", "uk");
+    let activeCategory = "all";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-mobile", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + "</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) { return e.cat === catKey; });
+            if (!list.length) return;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        main.innerHTML = html || ('<div class="no-results">' + ui[currentLang].noResults + "</div>");
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

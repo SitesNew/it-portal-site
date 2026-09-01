@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ІТ та Бізнес-процеси — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">📊 ІТ та Бізнес-процеси</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+const categories = {
+    methodologies: { uk: "🔄 Методології управління (Agile/Waterfall)", ru: "🔄 Методологии управления (Agile/Waterfall)", en: "🔄 Management Frameworks" },
+    itsm: { uk: "⚙️ Управління ІТ-сервісами (ITIL & Service Desk)", ru: "⚙️ Управление ИТ-сервисами (ITIL & Service Desk)", en: "⚙️ IT Service Management" },
+    enterprise: { uk: "🏢 Корпоративні системи (ERP / CRM / BPM)", ru: "🏢 Корпоративные системы (ERP / CRM / BPM)", en: "🏢 Enterprise Systems" },
+    analytics: { uk: "📈 Бізнес-аналітика та BI", ru: "📈 Бизнес-аналитика и BI", en: "📈 Business Intelligence & Analysis" }
+};
+
+const items = [
+    { cat: "methodologies", icon: "🚀", name: "Agile, Scrum & Kanban",
+      desc: { uk: "Гнучкі підходи до управління розробкою ПЗ, орієнтовані на ітеративну доставку цінності, самоорганізовані команди та швидку адаптацію до змін.",
+              ru: "Гибкие подходы к управлению разработкой ПО, ориентированные на итеративную доставку ценности и адаптацию.",
+              en: "Agile frameworks for software development focusing on iterative delivery, team collaboration, and adaptability." },
+      traits: { uk: "Sprints, Backlog, Daily Standups, Retrospectives, WIP Limits", ru: "Sprints, Backlog, Daily Standups, Retrospectives, WIP Limits", en: "Sprints, Backlog, Daily Standups, Retrospectives, WIP Limits" },
+      spec: "Фокус: Гнучкість та швидкість реагування",
+      links: [
+        { name: "Scrum Guide", url: "https://scrumguides.org" },
+        { name: "Jira Software", url: "https://www.atlassian.com/software/jira" },
+        { name: "Trello", url: "https://trello.com" }
+      ]},
+
+    { cat: "methodologies", icon: "📐", name: "Waterfall (Каскадна модель)",
+      desc: { uk: "Класичний послідовний підхід до розробки продуктів, де кожна фаза (аналіз, дизайн, код, тест) суворо слідує за попередньою.",
+              ru: "Классический последовательный подход к разработке, где каждая фаза строго следует за предыдущей.",
+              en: "Linear, sequential project management approach where progress flows downwards through defined phases." },
+      traits: { uk: "Чітке планування, Фіксований бюджет, Чіткі вимоги, Гантт-діаграми", ru: "Четкое планирование, Фиксированный бюджет, Gantt charts", en: "Strict requirements, Fixed budget, Gantt charts, Milestones" },
+      spec: "Застосування: Великі критичні системи та будівництво",
+      links: [
+        { name: "PMI (PMBOK)", url: "https://www.pmi.org" },
+        { name: "MS Project", url: "https://www.microsoft.com/en-us/microsoft-365/project/project-management-software" }
+      ]},
+
+    { cat: "itsm", icon: "🛠️", name: "ITIL & ITSM (Сервісний підхід)",
+      desc: { uk: "Библіотека кращих практик для організації ІТ-послуг, узгодження діяльності ІТ-підрозділів із потребами бізнесу та управління інцидентами.",
+              ru: "Библиотека лучших практик для организации ИТ-услуг и согласования ИТ с потребностями бизнеса.",
+              en: "Set of best practices for IT Service Management (ITSM) aligning IT services with business needs." },
+      traits: { uk: "Incident Management, SLA, Change Control, Service Desk, CMDB", ru: "Incident Management, SLA, Change Control, Service Desk, CMDB", en: "Incident Management, SLA, Change Control, Service Desk, CMDB" },
+      spec: "Мета: Максимальна якість ІТ-послуг",
+      links: [
+        { name: "Axelos ITIL", url: "https://www.axelos.com/certifications/itil-service-management" },
+        { name: "ServiceNow", url: "https://www.servicenow.com" },
+        { name: "Jira Service Management", url: "https://www.atlassian.com/software/jira/service-management" }
+      ]},
+
+    { cat: "enterprise", icon: "🏬", name: "ERP-системи (Планування ресурсів)",
+      desc: { uk: "Централізовані програмні комплекси для управління всіма основними бізнес-процесами підприємства: фінанси, HR, закупівлі, логістика.",
+              ru: "Централизованные системы для управления всеми ресурсами предприятия: финансы, кадры, логистика.",
+              en: "Integrated management software systems designed to run core operational and financial business processes." },
+      traits: { uk: "Єдина база даних, Модульність, Автоматизація обліку, Фінанси", ru: "Единая база данных, Модульность, Автоматизация учета, Финансы", en: "Unified DB, Modular architecture, Resource planning, Finance" },
+      spec: "Рівень: Enterprise (Великий бізнес)",
+      links: [
+        { name: "SAP S/4HANA", url: "https://www.sap.com" },
+        { name: "Microsoft Dynamics 365", url: "https://dynamics.microsoft.com" },
+        { name: "Odoo ERP", url: "https://www.odoo.com" }
+      ]},
+
+    { cat: "enterprise", icon: "🤝", name: "CRM-системи (Управління продажами)",
+      desc: { uk: "Платформи для автоматизації взаємодії з клієнтами, відстеження угод, управління відділом продажів та маркетингом.",
+              ru: "Системы для автоматизации взаимодействия с клиентами, контроля продаж и маркетинга.",
+              en: "Software for managing corporate relationships, leads, sales funnels, and customer interactions." },
+      traits: { uk: "Воронка продажів, Історія контактів, Lead Nurturing, Інтеграції", ru: "Воронка продаж, История контактов, Lead Nurturing, Интеграции", en: "Sales Pipeline, Lead Management, Contact History, Automation" },
+      spec: "Фокус: Збільшення продажів та утримання клієнтів",
+      links: [
+        { name: "Salesforce", url: "https://www.salesforce.com" },
+        { name: "HubSpot CRM", url: "https://www.hubspot.com" },
+        { name: "Pipedrive", url: "https://www.pipedrive.com" }
+      ]},
+
+    { cat: "enterprise", icon: "🔄", name: "BPM & Моделювання процесів (BPMN)",
+      desc: { uk: "Концепція та інструменти для моделювання, виконання, моніторингу та постійної оптимізації регламентів і бізнес-процесів.",
+              ru: "Инструменты для моделирования, автоматизации и непрерывной оптимизации бизнес-процессов.",
+              en: "Methodology and notation tools used to model, analyze, automate, and optimize business processes." },
+      traits: { uk: "BPMN 2.0, Flowcharts, Автоматизація задач, Оптимізація Bottlenecks", ru: "BPMN 2.0, Flowcharts, Автоматизация задач, Оптимизация Bottlenecks", en: "BPMN 2.0, Process Mapping, Workflow Automation, Bottleneck Analysis" },
+      spec: "Стандарт: BPMN 2.0 (Business Process Model and Notation)",
+      links: [
+        { name: "Camunda", url: "https://camunda.com" },
+        { name: "Bizagi", url: "https://www.bizagi.com" },
+        { name: "Draw.io (Diagrams.net)", url: "https://app.diagrams.net" }
+      ]},
+
+    { cat: "analytics", icon: "📊", name: "BI (Business Intelligence) та Дашборди",
+      desc: { uk: "Системи збору даних із різних джерел, їх візуалізації та побудови аналітичних звітів для прийняття управлінських рішень.",
+              ru: "Системы сбора данных из разных источников, их визуализации и построения интерактивной аналитики.",
+              en: "Applications and tools for transforming raw corporate data into actionable business insights and dashboards." },
+      traits: { uk: "Data Warehouses, ETL, Дашборди, Interactive Charts, KPIs", ru: "Data Warehouses, ETL, Дашборды, Interactive Charts, KPIs", en: "Data Warehouses, ETL, Visual Dashboards, Interactive Charts" },
+      spec: "Принцип: Data-Driven Decision Making",
+      links: [
+        { name: "Microsoft Power BI", url: "https://powerbi.microsoft.com" },
+        { name: "Tableau", url: "https://www.tableau.com" },
+        { name: "Looker (Google Cloud)", url: "https://cloud.google.com/looker" }
+      ]}
+];
+
+const ui = {
+    uk: {
+        title: "ІТ та Бізнес-процеси — Довідник",
+        pageTitle: "📊 ІТ та Бізнес-процеси",
+        home: "Головна сторінка",
+        all: "Усі напрями",
+        traits: "Ключові елементи та поняття",
+        mfgText: "Популярні інструменти / Системи:",
+        noResults: "Нічого не знайдено.",
+        footer: "📊 ІТ та Бізнес-процеси | Довідник 2026"
+    },
+    ru: {
+        title: "ИТ и Бизнес-процессы — Справочник",
+        pageTitle: "📊 ИТ и Бизнес-процессы",
+        home: "Главная страница",
+        all: "Все направления",
+        traits: "Ключевые элементы и понятия",
+        mfgText: "Популярные инструменты / Системы:",
+        noResults: "Ничего не найдено.",
+        footer: "📊 ИТ и Бизнес-процессы | Справочник 2026"
+    },
+    en: {
+        title: "IT & Business Processes Guide",
+        pageTitle: "📊 IT & Business Processes",
+        home: "Home page",
+        all: "All Domains",
+        traits: "Key Concepts & Elements",
+        mfgText: "Popular Tools / Platforms:",
+        noResults: "Nothing found.",
+        footer: "📊 IT & Business Processes | Guide 2026"
+    }
+};
+
+let currentLang = localStorage.getItem('lang-itbusiness') || 'uk';
+let activeCategory = 'all';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang-itbusiness', lang);
+    document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+    ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+    document.title = ui[lang].title;
+    document.getElementById('home-link').textContent = ui[lang].home;
+    document.getElementById('page-title').textContent = ui[lang].pageTitle;
+    renderFilters();
+    render();
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const cur = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+function renderFilters() {
+    const c = document.getElementById('filters');
+    let h = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+    for (const [k,v] of Object.entries(categories)) {
+        h += `<button class="filter-btn ${activeCategory===k?'active':''}" onclick="setCat('${k}')">${v[currentLang]}</button>`;
+    }
+    c.innerHTML = h;
+}
+
+function setCat(cat) {
+    activeCategory = cat;
+    renderFilters();
+    render();
+}
+
+function render() {
+    const main = document.getElementById('main');
+    let html = '';
+    const cats = (activeCategory === 'all') ? Object.keys(categories) : [activeCategory];
+
+    cats.forEach(catKey => {
+        const list = items.filter(e => e.cat === catKey);
+        if (!list.length) return;
+        html += `<div class="section-title">${categories[catKey][currentLang]}</div><div class="grid">`;
+        list.forEach(e => {
+            const tags = e.traits[currentLang].split(',').map(t => `<span class="tag">${t.trim()}</span>`).join('');
+            
+            let linksHtml = '';
+            if (e.links && e.links.length) {
+                linksHtml = `<div class="mfg-links"><strong style="width:100%; font-size:0.7rem; color:var(--text-muted); margin-bottom:2px;">${ui[currentLang].mfgText}</strong>` +
+                    e.links.map(l => `<a href="${l.url}" target="_blank" rel="noopener" class="mfg-link">🔗 ${l.name}</a>`).join('') +
+                    `</div>`;
+            }
+
+            html += `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">${e.icon}</div>
+                        <div class="card-title">${e.name}</div>
+                    </div>
+                    <div class="card-desc">${e.desc[currentLang]}</div>
+                    <div class="card-meta">
+                        <strong>${ui[currentLang].traits}</strong>
+                        <div style="margin-top:0.25rem">${tags}</div>
+                    </div>
+                    <div class="spec-tag">📌 ${e.spec}</div>
+                    ${linksHtml}
+                </div>`;
+        });
+        html += `</div>`;
+    });
+
+    if (!html) html = `<div class="no-results">${ui[currentLang].noResults}</div>`;
+    main.innerHTML = html;
+    document.getElementById('footer').textContent = ui[currentLang].footer;
+}
+
+setLang(currentLang);
+</script>
+</body>
+</html>

@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кар’єра в ІТ / спеціальності — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">💼 Кар’єра в ІТ / спеціальності</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    const categories = {
+        development: {
+            uk: "💻 Розробка ПЗ",
+            ru: "💻 Разработка ПО",
+            en: "💻 Software Development"
+        },
+        data: {
+            uk: "📊 Дані, аналітика, ШІ",
+            ru: "📊 Данные, аналитика, ИИ",
+            en: "📊 Data, Analytics, AI"
+        },
+        infra: {
+            uk: "☁️ Інфраструктура та хмара",
+            ru: "☁️ Инфраструктура и облако",
+            en: "☁️ Infrastructure & Cloud"
+        },
+        security: {
+            uk: "🔐 Безпека",
+            ru: "🔐 Безопасность",
+            en: "🔐 Security"
+        },
+        product: {
+            uk: "🎯 Продукт, дизайн, якість",
+            ru: "🎯 Продукт, дизайн, качество",
+            en: "🎯 Product, Design, Quality"
+        },
+        management: {
+            uk: "📋 Управління та бізнес",
+            ru: "📋 Управление и бизнес",
+            en: "📋 Management & Business"
+        },
+        specialized: {
+            uk: "🔬 Спеціалізовані ролі",
+            ru: "🔬 Специализированные роли",
+            en: "🔬 Specialized Roles"
+        }
+    };
+
+    const items = [
+        // === DEVELOPMENT ===
+        {
+            cat: "development",
+            icon: "🖥️",
+            name: { uk: "Backend-розробник", ru: "Backend-разработчик", en: "Backend Developer" },
+            desc: {
+                uk: "Серверна логіка, API, бази даних, інтеграції, бізнес-правила. Мови: Java, C#, Python, Go, Node.js, PHP, Ruby, Rust. Фокус на надійності, масштабі та безпеці.",
+                ru: "Серверная логика, API, базы данных, интеграции, бизнес-правила. Языки: Java, C#, Python, Go, Node.js, PHP, Ruby, Rust. Фокус на надежности, масштабе и безопасности.",
+                en: "Server logic, APIs, databases, integrations, business rules. Languages: Java, C#, Python, Go, Node.js, PHP, Ruby, Rust. Focus on reliability, scale and security."
+            },
+            traits: { uk: "API, БД, Сервер, Бізнес-логіка, Масштаб", ru: "API, БД, Сервер, Бизнес-логика, Масштаб", en: "API, DB, Server, Business logic, Scale" },
+            spec: { uk: "Один з найпопулярніших напрямів", ru: "Одно из самых популярных направлений", en: "One of the most popular paths" },
+            links: [{ name: "Backend roadmap", url: "https://roadmap.sh/backend" }]
+        },
+        {
+            cat: "development",
+            icon: "🎨",
+            name: { uk: "Frontend-розробник", ru: "Frontend-разработчик", en: "Frontend Developer" },
+            desc: {
+                uk: "Інтерфейси в браузері: HTML, CSS, JavaScript/TypeScript, React, Vue, Angular, Svelte. Доступність, продуктивність, адаптивність, робота з дизайном.",
+                ru: "Интерфейсы в браузере: HTML, CSS, JavaScript/TypeScript, React, Vue, Angular, Svelte. Доступность, производительность, адаптивность, работа с дизайном.",
+                en: "Browser interfaces: HTML, CSS, JavaScript/TypeScript, React, Vue, Angular, Svelte. Accessibility, performance, responsiveness, collaboration with design."
+            },
+            traits: { uk: "HTML/CSS/JS, React/Vue, UI, a11y, Продуктивність", ru: "HTML/CSS/JS, React/Vue, UI, a11y, Производительность", en: "HTML/CSS/JS, React/Vue, UI, a11y, Performance" },
+            spec: { uk: "Те, що бачить і відчуває користувач", ru: "То, что видит и чувствует пользователь", en: "What the user sees and feels" },
+            links: [{ name: "Frontend roadmap", url: "https://roadmap.sh/frontend" }]
+        },
+        {
+            cat: "development",
+            icon: "📱",
+            name: { uk: "Mobile-розробник", ru: "Mobile-разработчик", en: "Mobile Developer" },
+            desc: {
+                uk: "Додатки для iOS (Swift, SwiftUI) та Android (Kotlin, Jetpack Compose). Кросплатформа: Flutter, React Native, Kotlin Multiplatform. Публікація в App Store / Google Play.",
+                ru: "Приложения для iOS (Swift, SwiftUI) и Android (Kotlin, Jetpack Compose). Кроссплатформа: Flutter, React Native, Kotlin Multiplatform. Публикация в App Store / Google Play.",
+                en: "Apps for iOS (Swift, SwiftUI) and Android (Kotlin, Jetpack Compose). Cross-platform: Flutter, React Native, Kotlin Multiplatform. Publishing to App Store / Google Play."
+            },
+            traits: { uk: "iOS, Android, Flutter, React Native, Stores", ru: "iOS, Android, Flutter, React Native, Stores", en: "iOS, Android, Flutter, React Native, Stores" },
+            spec: { uk: "Мобільний досвід — окремий світ", ru: "Мобильный опыт — отдельный мир", en: "Mobile experience is a world of its own" },
+            links: [{ name: "Android", url: "https://developer.android.com" }, { name: "Apple Developer", url: "https://developer.apple.com" }]
+        },
+        {
+            cat: "development",
+            icon: "🔄",
+            name: { uk: "Full-stack розробник", ru: "Full-stack разработчик", en: "Full-Stack Developer" },
+            desc: {
+                uk: "Працює і з frontend, і з backend. Зручно в стартапах і невеликих командах. Ризик — «трохи знаю все», тому важливо мати глибину хоча б в одній частині стеку.",
+                ru: "Работает и с frontend, и с backend. Удобно в стартапах и небольших командах. Риск — «немного знаю всё», поэтому важно иметь глубину хотя бы в одной части стека.",
+                en: "Works on both frontend and backend. Convenient in startups and small teams. Risk of “knowing a bit of everything” — depth in at least one part of the stack matters."
+            },
+            traits: { uk: "Frontend + Backend, Гнучкість, Стартапи, Широта", ru: "Frontend + Backend, Гибкость, Стартапы, Широта", en: "Frontend + Backend, Flexibility, Startups, Breadth" },
+            spec: { uk: "Універсальність vs глибина спеціалізації", ru: "Универсальность vs глубина специализации", en: "Versatility vs depth of specialization" },
+            links: [{ name: "Full-stack roadmap", url: "https://roadmap.sh/full-stack" }]
+        },
+        {
+            cat: "development",
+            icon: "🎮",
+            name: { uk: "Game Developer", ru: "Game Developer", en: "Game Developer" },
+            desc: {
+                uk: "Розробка ігор: Unity (C#), Unreal (C++), власні рушії. Графіка, фізика, геймплей, мультиплеєр, оптимізація під платформи (PC, консолі, мобільні).",
+                ru: "Разработка игр: Unity (C#), Unreal (C++), собственные движки. Графика, физика, геймплей, мультиплеер, оптимизация под платформы (PC, консоли, мобильные).",
+                en: "Game development: Unity (C#), Unreal (C++), custom engines. Graphics, physics, gameplay, multiplayer, optimization for platforms (PC, consoles, mobile)."
+            },
+            traits: { uk: "Unity, Unreal, C#/C++, Геймплей, Оптимізація", ru: "Unity, Unreal, C#/C++, Геймплей, Оптимизация", en: "Unity, Unreal, C#/C++, Gameplay, Optimization" },
+            spec: { uk: "Техніка + креатив у одному", ru: "Техника + креатив в одном", en: "Tech and creativity in one" },
+            links: [{ name: "Unity", url: "https://unity.com" }, { name: "Unreal", url: "https://www.unrealengine.com" }]
+        },
+        {
+            cat: "development",
+            icon: "🔌",
+            name: { uk: "Embedded / Firmware Engineer", ru: "Embedded / Firmware Engineer", en: "Embedded / Firmware Engineer" },
+            desc: {
+                uk: "ПЗ для мікроконтролерів і пристроїв: C/C++, RTOS, драйвери, датчики, low-power. Автомобіль, IoT, промислова автоматика, медицина, споживча електроніка.",
+                ru: "ПО для микроконтроллеров и устройств: C/C++, RTOS, драйверы, датчики, low-power. Автомобиль, IoT, промышленная автоматика, медицина, потребительская электроника.",
+                en: "Software for microcontrollers and devices: C/C++, RTOS, drivers, sensors, low-power. Automotive, IoT, industrial automation, medical, consumer electronics."
+            },
+            traits: { uk: "C/C++, MCU, RTOS, Hardware, Real-time", ru: "C/C++, MCU, RTOS, Hardware, Real-time", en: "C/C++, MCU, RTOS, Hardware, Real-time" },
+            spec: { uk: "Код «ближче до заліза»", ru: "Код «ближе к железу»", en: "Code closer to the metal" },
+            links: [{ name: "Embedded roadmap ideas", url: "https://www.embedded.com" }]
+        },
+        {
+            cat: "development",
+            icon: "🧱",
+            name: { uk: "Systems / Low-level Developer", ru: "Systems / Low-level Developer", en: "Systems / Low-level Developer" },
+            desc: {
+                uk: "ОС, драйвери, компілятори, віртуалізація, високопродуктивні системи. C, C++, Rust, Assembly. Робота з пам’яттю, потоками, мережевим стеком на низькому рівні.",
+                ru: "ОС, драйверы, компиляторы, виртуализация, высокопроизводительные системы. C, C++, Rust, Assembly. Работа с памятью, потоками, сетевым стеком на низком уровне.",
+                en: "OS, drivers, compilers, virtualization, high-performance systems. C, C++, Rust, Assembly. Working with memory, threads, network stack at a low level."
+            },
+            traits: { uk: "OS, Драйвери, C/Rust, Продуктивність, Низький рівень", ru: "OS, Драйверы, C/Rust, Производительность, Низкий уровень", en: "OS, Drivers, C/Rust, Performance, Low-level" },
+            spec: { uk: "Глибоке розуміння «як це працює»", ru: "Глубокое понимание «как это работает»", en: "Deep understanding of “how it works”" },
+            links: [{ name: "OSDev", url: "https://wiki.osdev.org" }]
+        },
+
+        // === DATA / AI ===
+        {
+            cat: "data",
+            icon: "📊",
+            name: { uk: "Data Engineer", ru: "Data Engineer", en: "Data Engineer" },
+            desc: {
+                uk: "Побудова конвеєрів даних (ETL/ELT), сховищ, озер даних, забезпечення якості та доступності даних для аналітики та ML. Spark, Airflow, dbt, SQL, хмарні data-сервіси.",
+                ru: "Построение конвейеров данных (ETL/ELT), хранилищ, озер данных, обеспечение качества и доступности данных для аналитики и ML. Spark, Airflow, dbt, SQL, облачные data-сервисы.",
+                en: "Building data pipelines (ETL/ELT), warehouses, data lakes, ensuring data quality and availability for analytics and ML. Spark, Airflow, dbt, SQL, cloud data services."
+            },
+            traits: { uk: "ETL, Spark, Airflow, SQL, Data warehouse", ru: "ETL, Spark, Airflow, SQL, Data warehouse", en: "ETL, Spark, Airflow, SQL, Data warehouse" },
+            spec: { uk: "Без якісних даних немає аналітики й ШІ", ru: "Без качественных данных нет аналитики и ИИ", en: "Without quality data there is no analytics or AI" },
+            links: [{ name: "Data Engineer roadmap", url: "https://roadmap.sh/data-engineer" }]
+        },
+        {
+            cat: "data",
+            icon: "📈",
+            name: { uk: "Data Analyst / BI Developer", ru: "Data Analyst / BI Developer", en: "Data Analyst / BI Developer" },
+            desc: {
+                uk: "Аналіз даних, звіти, дашборди, SQL, Excel/Sheets, Power BI, Tableau, Looker. Допомагає бізнесу приймати рішення на основі фактів.",
+                ru: "Анализ данных, отчеты, дашборды, SQL, Excel/Sheets, Power BI, Tableau, Looker. Помогает бизнесу принимать решения на основе фактов.",
+                en: "Data analysis, reports, dashboards, SQL, Excel/Sheets, Power BI, Tableau, Looker. Helps business make fact-based decisions."
+            },
+            traits: { uk: "SQL, BI, Дашборди, KPI, Візуалізація", ru: "SQL, BI, Дашборды, KPI, Визуализация", en: "SQL, BI, Dashboards, KPI, Visualization" },
+            spec: { uk: "Міст між даними і бізнесом", ru: "Мост между данными и бизнесом", en: "Bridge between data and business" },
+            links: [{ name: "Power BI", url: "https://powerbi.microsoft.com" }]
+        },
+        {
+            cat: "data",
+            icon: "🧠",
+            name: { uk: "Data Scientist / ML Engineer", ru: "Data Scientist / ML Engineer", en: "Data Scientist / ML Engineer" },
+            desc: {
+                uk: "Моделі машинного навчання, статистика, експерименти, Python, scikit-learn, PyTorch/TensorFlow. ML Engineer більше фокусується на продакшені моделей (MLOps).",
+                ru: "Модели машинного обучения, статистика, эксперименты, Python, scikit-learn, PyTorch/TensorFlow. ML Engineer больше фокусируется на продакшене моделей (MLOps).",
+                en: "Machine learning models, statistics, experiments, Python, scikit-learn, PyTorch/TensorFlow. ML Engineer focuses more on productionizing models (MLOps)."
+            },
+            traits: { uk: "ML, Python, Моделі, Статистика, MLOps", ru: "ML, Python, Модели, Статистика, MLOps", en: "ML, Python, Models, Statistics, MLOps" },
+            spec: { uk: "Від гіпотези до моделі в продакшені", ru: "От гипотезы до модели в продакшене", en: "From hypothesis to model in production" },
+            links: [{ name: "ML roadmap", url: "https://roadmap.sh/ai-data-scientist" }]
+        },
+        {
+            cat: "data",
+            icon: "🗣️",
+            name: { uk: "NLP / Computer Vision / AI Specialist", ru: "NLP / Computer Vision / AI Specialist", en: "NLP / Computer Vision / AI Specialist" },
+            desc: {
+                uk: "Вузькі напрями ШІ: обробка мови, комп’ютерний зір, генеративні моделі, рекомендаційні системи. Глибока експертиза в конкретній області ML.",
+                ru: "Узкие направления ИИ: обработка языка, компьютерное зрение, генеративные модели, рекомендательные системы. Глубокая экспертиза в конкретной области ML.",
+                en: "Narrow AI areas: language processing, computer vision, generative models, recommender systems. Deep expertise in a specific ML domain."
+            },
+            traits: { uk: "NLP, CV, LLM, Deep Learning, Research", ru: "NLP, CV, LLM, Deep Learning, Research", en: "NLP, CV, LLM, Deep Learning, Research" },
+            spec: { uk: "Спеціалізація всередині ШІ", ru: "Специализация внутри ИИ", en: "Specialization within AI" },
+            links: [{ name: "Hugging Face", url: "https://huggingface.co" }]
+        },
+
+        // === INFRA ===
+        {
+            cat: "infra",
+            icon: "⚙️",
+            name: { uk: "DevOps / Platform Engineer", ru: "DevOps / Platform Engineer", en: "DevOps / Platform Engineer" },
+            desc: {
+                uk: "CI/CD, автоматизація, інфраструктура як код, моніторинг, культура співпраці dev і ops. Kubernetes, Docker, Terraform, Ansible, хмарні платформи. Platform Engineer будує внутрішні платформи для розробників.",
+                ru: "CI/CD, автоматизация, инфраструктура как код, мониторинг, культура сотрудничества dev и ops. Kubernetes, Docker, Terraform, Ansible, облачные платформы. Platform Engineer строит внутренние платформы для разработчиков.",
+                en: "CI/CD, automation, infrastructure as code, monitoring, collaboration culture of dev and ops. Kubernetes, Docker, Terraform, Ansible, cloud platforms. Platform Engineer builds internal platforms for developers."
+            },
+            traits: { uk: "CI/CD, K8s, IaC, Автоматизація, Платформа", ru: "CI/CD, K8s, IaC, Автоматизация, Платформа", en: "CI/CD, K8s, IaC, Automation, Platform" },
+            spec: { uk: "Швидкість доставки + стабільність", ru: "Скорость доставки + стабильность", en: "Delivery speed + stability" },
+            links: [{ name: "DevOps roadmap", url: "https://roadmap.sh/devops" }]
+        },
+        {
+            cat: "infra",
+            icon: "☁️",
+            name: { uk: "Cloud Engineer / Architect", ru: "Cloud Engineer / Architect", en: "Cloud Engineer / Architect" },
+            desc: {
+                uk: "Проєктування та експлуатація рішень у AWS, Azure, GCP. Мережі, безпека, вартість, масштабування, multi-cloud. Cloud Architect — стратегія і високорівневий дизайн.",
+                ru: "Проектирование и эксплуатация решений в AWS, Azure, GCP. Сети, безопасность, стоимость, масштабирование, multi-cloud. Cloud Architect — стратегия и высокоуровневый дизайн.",
+                en: "Designing and operating solutions on AWS, Azure, GCP. Networking, security, cost, scaling, multi-cloud. Cloud Architect — strategy and high-level design."
+            },
+            traits: { uk: "AWS/Azure/GCP, Архітектура, Вартість, Безпека", ru: "AWS/Azure/GCP, Архитектура, Стоимость, Безопасность", en: "AWS/Azure/GCP, Architecture, Cost, Security" },
+            spec: { uk: "Хмара — стандарт сучасних систем", ru: "Облако — стандарт современных систем", en: "Cloud is the standard for modern systems" },
+            links: [{ name: "AWS", url: "https://aws.amazon.com" }, { name: "Azure", url: "https://azure.microsoft.com" }]
+        },
+        {
+            cat: "infra",
+            icon: "🖥️",
+            name: { uk: "SRE (Site Reliability Engineer)", ru: "SRE (Site Reliability Engineer)", en: "SRE (Site Reliability Engineer)" },
+            desc: {
+                uk: "Надійність продакшену «як інженерна дисципліна»: SLO/SLI, error budgets, автоматизація toil, інцидент-менеджмент. Започатковано в Google, поширилось у великих продуктах.",
+                ru: "Надежность продакшена «как инженерная дисциплина»: SLO/SLI, error budgets, автоматизация toil, инцидент-менеджмент. Зародилось в Google, распространилось в крупных продуктах.",
+                en: "Production reliability as an engineering discipline: SLO/SLI, error budgets, toil automation, incident management. Originated at Google, spread across large products."
+            },
+            traits: { uk: "SLO, Надійність, Інциденти, Toil, Автоматизація", ru: "SLO, Надежность, Инциденты, Toil, Автоматизация", en: "SLO, Reliability, Incidents, Toil, Automation" },
+            spec: { uk: "Надійність вимірюється і проєктується", ru: "Надежность измеряется и проектируется", en: "Reliability is measured and designed" },
+            links: [{ name: "Google SRE books", url: "https://sre.google/books/" }]
+        },
+        {
+            cat: "infra",
+            icon: "🗄️",
+            name: { uk: "DBA / Database Engineer", ru: "DBA / Database Engineer", en: "DBA / Database Engineer" },
+            desc: {
+                uk: "Адміністрування і оптимізація БД: PostgreSQL, MySQL, SQL Server, Oracle, NoSQL. Продуктивність запитів, реплікація, бекапи, міграції, висока доступність.",
+                ru: "Администрирование и оптимизация БД: PostgreSQL, MySQL, SQL Server, Oracle, NoSQL. Производительность запросов, репликация, бэкапы, миграции, высокая доступность.",
+                en: "Database administration and optimization: PostgreSQL, MySQL, SQL Server, Oracle, NoSQL. Query performance, replication, backups, migrations, high availability."
+            },
+            traits: { uk: "SQL, Реплікація, Performance, Бекапи, HA", ru: "SQL, Репликация, Performance, Бэкапы, HA", en: "SQL, Replication, Performance, Backups, HA" },
+            spec: { uk: "Дані — серце більшості систем", ru: "Данные — сердце большинства систем", en: "Data is the heart of most systems" },
+            links: [{ name: "PostgreSQL", url: "https://www.postgresql.org" }]
+        },
+        {
+            cat: "infra",
+            icon: "🌐",
+            name: { uk: "Network Engineer", ru: "Network Engineer", en: "Network Engineer" },
+            desc: {
+                uk: "Мережі: маршрутизація, комутація, firewall, VPN, SDN, хмарні мережі. Критично для інфраструктури, безпеки та продуктивності розподілених систем.",
+                ru: "Сети: маршрутизация, коммутация, firewall, VPN, SDN, облачные сети. Критично для инфраструктуры, безопасности и производительности распределенных систем.",
+                en: "Networks: routing, switching, firewall, VPN, SDN, cloud networking. Critical for infrastructure, security and performance of distributed systems."
+            },
+            traits: { uk: "TCP/IP, Routing, Firewall, VPN, Cloud networking", ru: "TCP/IP, Routing, Firewall, VPN, Cloud networking", en: "TCP/IP, Routing, Firewall, VPN, Cloud networking" },
+            spec: { uk: "Без мережі немає «хмар» і дата-центрів", ru: "Без сети нет «облаков» и дата-центров", en: "Without networks there are no “clouds” or data centers" },
+            links: [{ name: "Networking basics", url: "https://www.cisco.com/c/en/us/solutions/enterprise-networks/what-is-computer-networking.html" }]
+        },
+
+        // === SECURITY ===
+        {
+            cat: "security",
+            icon: "🔐",
+            name: { uk: "Security Engineer / AppSec", ru: "Security Engineer / AppSec", en: "Security Engineer / AppSec" },
+            desc: {
+                uk: "Безпека додатків і інфраструктури: загрози, secure coding, SAST/DAST, pentest-координація, hardening. AppSec — вбудовування безпеки в SDLC.",
+                ru: "Безопасность приложений и инфраструктуры: угрозы, secure coding, SAST/DAST, координация пентестов, hardening. AppSec — встраивание безопасности в SDLC.",
+                en: "Application and infrastructure security: threats, secure coding, SAST/DAST, pentest coordination, hardening. AppSec — building security into the SDLC."
+            },
+            traits: { uk: "AppSec, Threats, Secure coding, SAST/DAST, Hardening", ru: "AppSec, Threats, Secure coding, SAST/DAST, Hardening", en: "AppSec, Threats, Secure coding, SAST/DAST, Hardening" },
+            spec: { uk: "Безпека як частина розробки, а не «в кінці»", ru: "Безопасность как часть разработки, а не «в конце»", en: "Security as part of development, not “at the end”" },
+            links: [{ name: "OWASP", url: "https://owasp.org" }]
+        },
+        {
+            cat: "security",
+            icon: "🕵️",
+            name: { uk: "Penetration Tester / Red Team", ru: "Penetration Tester / Red Team", en: "Penetration Tester / Red Team" },
+            desc: {
+                uk: "Етичний хакінг: пошук вразливостей так, як це зробив би зловмисник. Звіти, рекомендації, інколи симуляції APT (Red Team). Потребує дозволу і чітких правил.",
+                ru: "Этический хакинг: поиск уязвимостей так, как это сделал бы злоумышленник. Отчеты, рекомендации, иногда симуляции APT (Red Team). Требует разрешения и четких правил.",
+                en: "Ethical hacking: finding vulnerabilities the way an attacker would. Reports, recommendations, sometimes APT simulations (Red Team). Requires authorization and clear rules."
+            },
+            traits: { uk: "Pentest, Red Team, Вразливості, Звіти, Rules of engagement", ru: "Pentest, Red Team, Уязвимости, Отчеты, Rules of engagement", en: "Pentest, Red Team, Vulnerabilities, Reports, Rules of engagement" },
+            spec: { uk: "Атакувати, щоб захищати", ru: "Атаковать, чтобы защищать", en: "Attack in order to defend" },
+            links: [{ name: "OWASP Testing Guide", url: "https://owasp.org/www-project-web-security-testing-guide/" }]
+        },
+        {
+            cat: "security",
+            icon: "🛡️",
+            name: { uk: "SOC Analyst / Blue Team / IR", ru: "SOC Analyst / Blue Team / IR", en: "SOC Analyst / Blue Team / IR" },
+            desc: {
+                uk: "Моніторинг загроз, реагування на інциденти, SIEM, forensics. Blue Team захищає; Incident Response — розслідування і стримування атак.",
+                ru: "Мониторинг угроз, реагирование на инциденты, SIEM, forensics. Blue Team защищает; Incident Response — расследование и сдерживание атак.",
+                en: "Threat monitoring, incident response, SIEM, forensics. Blue Team defends; Incident Response investigates and contains attacks."
+            },
+            traits: { uk: "SOC, SIEM, Інциденти, Forensics, Detection", ru: "SOC, SIEM, Инциденты, Forensics, Detection", en: "SOC, SIEM, Incidents, Forensics, Detection" },
+            spec: { uk: "Очі, що не сплять", ru: "Глаза, которые не спят", en: "Eyes that do not sleep" },
+            links: [{ name: "SANS IR", url: "https://www.sans.org/incident-response/" }]
+        },
+        {
+            cat: "security",
+            icon: "📋",
+            name: { uk: "GRC / Compliance / Privacy", ru: "GRC / Compliance / Privacy", en: "GRC / Compliance / Privacy" },
+            desc: {
+                uk: "Governance, Risk, Compliance: політики, аудит, відповідність стандартам (ISO 27001, SOC 2, GDPR). Privacy Officer / DPO — захист персональних даних.",
+                ru: "Governance, Risk, Compliance: политики, аудит, соответствие стандартам (ISO 27001, SOC 2, GDPR). Privacy Officer / DPO — защита персональных данных.",
+                en: "Governance, Risk, Compliance: policies, audit, adherence to standards (ISO 27001, SOC 2, GDPR). Privacy Officer / DPO — personal data protection."
+            },
+            traits: { uk: "GRC, ISO 27001, GDPR, Аудит, Політики", ru: "GRC, ISO 27001, GDPR, Аудит, Политики", en: "GRC, ISO 27001, GDPR, Audit, Policies" },
+            spec: { uk: "Правила гри, за якими живе безпека", ru: "Правила игры, по которым живет безопасность", en: "The rules of the game that security lives by" },
+            links: [{ name: "ISO 27001", url: "https://www.iso.org/isoiec-27001-information-security.html" }]
+        },
+
+        // === PRODUCT / DESIGN / QA ===
+        {
+            cat: "product",
+            icon: "🎯",
+            name: { uk: "Product Manager / Product Owner", ru: "Product Manager / Product Owner", en: "Product Manager / Product Owner" },
+            desc: {
+                uk: "Що будувати і навіщо: бачення продукту, пріоритети, користувацька цінність, метрики, робота зі стейкхолдерами. PO в Scrum — пріоритезація беклогу.",
+                ru: "Что строить и зачем: видение продукта, приоритеты, пользовательская ценность, метрики, работа со стейкхолдерами. PO в Scrum — приоритизация бэклога.",
+                en: "What to build and why: product vision, priorities, user value, metrics, stakeholder work. PO in Scrum — backlog prioritization."
+            },
+            traits: { uk: "Vision, Пріоритети, Метрики, Discovery, Delivery", ru: "Vision, Приоритеты, Метрики, Discovery, Delivery", en: "Vision, Priorities, Metrics, Discovery, Delivery" },
+            spec: { uk: "Голос користувача і бізнесу в команді", ru: "Голос пользователя и бизнеса в команде", en: "Voice of user and business in the team" },
+            links: [{ name: "Product management", url: "https://www.svpg.com" }]
+        },
+        {
+            cat: "product",
+            icon: "✏️",
+            name: { uk: "UI/UX Designer / Product Designer", ru: "UI/UX Designer / Product Designer", en: "UI/UX Designer / Product Designer" },
+            desc: {
+                uk: "Дослідження користувачів, інформаційна архітектура, прототипи, візуальний дизайн, дизайн-системи, доступність. Figma — основний інструмент індустрії.",
+                ru: "Исследования пользователей, информационная архитектура, прототипы, визуальный дизайн, дизайн-системы, доступность. Figma — основной инструмент индустрии.",
+                en: "User research, information architecture, prototypes, visual design, design systems, accessibility. Figma is the industry’s main tool."
+            },
+            traits: { uk: "UX Research, UI, Figma, Design system, a11y", ru: "UX Research, UI, Figma, Design system, a11y", en: "UX Research, UI, Figma, Design system, a11y" },
+            spec: { uk: "Роблять продукт зрозумілим і приємним", ru: "Делают продукт понятным и приятным", en: "Make the product clear and pleasant" },
+            links: [{ name: "Figma", url: "https://www.figma.com" }]
+        },
+        {
+            cat: "product",
+            icon: "🧪",
+            name: { uk: "QA Engineer / Test Automation", ru: "QA Engineer / Test Automation", en: "QA Engineer / Test Automation" },
+            desc: {
+                uk: "Забезпечення якості: ручне тестування, тест-дизайн, автоматизація (Selenium, Playwright, Cypress, API-тести), процеси якості в SDLC.",
+                ru: "Обеспечение качества: ручное тестирование, тест-дизайн, автоматизация (Selenium, Playwright, Cypress, API-тесты), процессы качества в SDLC.",
+                en: "Quality assurance: manual testing, test design, automation (Selenium, Playwright, Cypress, API tests), quality processes in the SDLC."
+            },
+            traits: { uk: "Тест-дизайн, Автоматизація, API tests, Регресія, Якість", ru: "Тест-дизайн, Автоматизация, API tests, Регрессия, Качество", en: "Test design, Automation, API tests, Regression, Quality" },
+            spec: { uk: "Якість — відповідальність усієї команди, QA — її адвокат", ru: "Качество — ответственность всей команды, QA — её адвокат", en: "Quality is the whole team’s job; QA is its advocate" },
+            links: [{ name: "Playwright", url: "https://playwright.dev" }]
+        },
+        {
+            cat: "product",
+            icon: "✍️",
+            name: { uk: "Technical Writer", ru: "Technical Writer", en: "Technical Writer" },
+            desc: {
+                uk: "Документація: API docs, гайди, внутрішні знання, release notes. Робить складне доступним. Docs-as-code, Markdown, OpenAPI, портали документації.",
+                ru: "Документация: API docs, гайды, внутренние знания, release notes. Делает сложное доступным. Docs-as-code, Markdown, OpenAPI, порталы документации.",
+                en: "Documentation: API docs, guides, internal knowledge, release notes. Makes the complex accessible. Docs-as-code, Markdown, OpenAPI, documentation portals."
+            },
+            traits: { uk: "Docs, API reference, Guides, Docs-as-code, Clarity", ru: "Docs, API reference, Guides, Docs-as-code, Clarity", en: "Docs, API reference, Guides, Docs-as-code, Clarity" },
+            spec: { uk: "Погана документація = втрачений час команди", ru: "Плохая документация = потерянное время команды", en: "Bad docs = lost team time" },
+            links: [{ name: "Write the Docs", url: "https://www.writethedocs.org" }]
+        },
+
+        // === MANAGEMENT ===
+        {
+            cat: "management",
+            icon: "👨‍💼",
+            name: { uk: "Engineering Manager / Team Lead", ru: "Engineering Manager / Team Lead", en: "Engineering Manager / Team Lead" },
+            desc: {
+                uk: "Люди + процес + техніка: розвиток команди, 1:1, hiring, пріоритети, усунення блокерів. Team Lead частіше ще й кодить; EM — більше менеджмент.",
+                ru: "Люди + процесс + техника: развитие команды, 1:1, hiring, приоритеты, устранение блокеров. Team Lead чаще ещё и кодит; EM — больше менеджмент.",
+                en: "People + process + tech: team growth, 1:1s, hiring, priorities, removing blockers. Team Lead often still codes; EM is more management-focused."
+            },
+            traits: { uk: "Люди, 1:1, Hiring, Пріоритети, Лідерство", ru: "Люди, 1:1, Hiring, Приоритеты, Лидерство", en: "People, 1:1, Hiring, Priorities, Leadership" },
+            spec: { uk: "Успіх вимірюється успіхом команди", ru: "Успех измеряется успехом команды", en: "Success is measured by the team’s success" },
+            links: [{ name: "Manager tools", url: "https://www.manager-tools.com" }]
+        },
+        {
+            cat: "management",
+            icon: "🏗️",
+            name: { uk: "Software / Solution / Enterprise Architect", ru: "Software / Solution / Enterprise Architect", en: "Software / Solution / Enterprise Architect" },
+            desc: {
+                uk: "Архітектура систем: вибір технологій, інтеграції, якість атрибутів (масштабованість, безпека). Solution — конкретні рішення; Enterprise — стратегія на рівні організації.",
+                ru: "Архитектура систем: выбор технологий, интеграции, атрибуты качества (масштабируемость, безопасность). Solution — конкретные решения; Enterprise — стратегия на уровне организации.",
+                en: "System architecture: technology choices, integrations, quality attributes (scalability, security). Solution — concrete solutions; Enterprise — organization-level strategy."
+            },
+            traits: { uk: "Архітектура, Патерни, Trade-offs, Стандарти, Стратегія", ru: "Архитектура, Паттерны, Trade-offs, Стандарты, Стратегия", en: "Architecture, Patterns, Trade-offs, Standards, Strategy" },
+            spec: { uk: "Бачити систему цілком, а не лише модуль", ru: "Видеть систему целиком, а не только модуль", en: "See the whole system, not only a module" },
+            links: [{ name: "Architecture guides", url: "https://martinfowler.com/architecture/" }]
+        },
+        {
+            cat: "management",
+            icon: "📅",
+            name: { uk: "Project / Delivery Manager", ru: "Project / Delivery Manager", en: "Project / Delivery Manager" },
+            desc: {
+                uk: "План, бюджет, ризики, комунікація зі стейкхолдерами, доставка в строк. У Agile-середовищі — часто Delivery Manager / Scrum Master у зв’язці з командою.",
+                ru: "План, бюджет, риски, коммуникация со стейкхолдерами, поставка в срок. В Agile-среде — часто Delivery Manager / Scrum Master в связке с командой.",
+                en: "Plan, budget, risks, stakeholder communication, on-time delivery. In Agile environments — often Delivery Manager / Scrum Master alongside the team."
+            },
+            traits: { uk: "План, Ризики, Стейкхолдери, Доставка, Комунікація", ru: "План, Риски, Стейкхолдеры, Поставка, Коммуникация", en: "Plan, Risks, Stakeholders, Delivery, Communication" },
+            spec: { uk: "Тримає «рамку» проєкту", ru: "Держит «рамку» проекта", en: "Holds the project “frame”" },
+            links: [{ name: "PMI", url: "https://www.pmi.org" }]
+        },
+        {
+            cat: "management",
+            icon: "📢",
+            name: { uk: "Scrum Master / Agile Coach", ru: "Scrum Master / Agile Coach", en: "Scrum Master / Agile Coach" },
+            desc: {
+                uk: "Фасилітація процесу, усунення перешкод, навчання команди Agile/Scrum, коучинг організації. Не «менеджер завдань», а servant-leader.",
+                ru: "Фасилитация процесса, устранение препятствий, обучение команды Agile/Scrum, коучинг организации. Не «менеджер задач», а servant-leader.",
+                en: "Process facilitation, removing impediments, teaching the team Agile/Scrum, coaching the organization. Not a “task manager” but a servant-leader."
+            },
+            traits: { uk: "Facilitation, Coaching, Scrum, Перешкоди, Покращення", ru: "Facilitation, Coaching, Scrum, Препятствия, Улучшение", en: "Facilitation, Coaching, Scrum, Impediments, Improvement" },
+            spec: { uk: "Процес у службі команди, а не навпаки", ru: "Процесс на службе команды, а не наоборот", en: "Process serves the team, not the other way around" },
+            links: [{ name: "Scrum Guide", url: "https://scrumguides.org" }]
+        },
+        {
+            cat: "management",
+            icon: "💼",
+            name: { uk: "Business Analyst / Systems Analyst", ru: "Business Analyst / Systems Analyst", en: "Business Analyst / Systems Analyst" },
+            desc: {
+                uk: "Збір і аналіз вимог, моделювання процесів, комунікація між бізнесом і розробкою. User stories, BPMN, специфікації, приймальні критерії.",
+                ru: "Сбор и анализ требований, моделирование процессов, коммуникация между бизнесом и разработкой. User stories, BPMN, спецификации, приемочные критерии.",
+                en: "Gathering and analyzing requirements, process modeling, communication between business and development. User stories, BPMN, specifications, acceptance criteria."
+            },
+            traits: { uk: "Вимоги, BPMN, User stories, Комунікація, Специфікації", ru: "Требования, BPMN, User stories, Коммуникация, Спецификации", en: "Requirements, BPMN, User stories, Communication, Specs" },
+            spec: { uk: "Перекладач між «хочу» і «зробимо»", ru: "Переводчик между «хочу» и «сделаем»", en: "Translator between “I want” and “we’ll build”" },
+            links: [{ name: "IIBA", url: "https://www.iiba.org" }]
+        },
+
+        // === SPECIALIZED ===
+        {
+            cat: "specialized",
+            icon: "🔗",
+            name: { uk: "Blockchain / Web3 Developer", ru: "Blockchain / Web3 Developer", en: "Blockchain / Web3 Developer" },
+            desc: {
+                uk: "Смарт-контракти (Solidity, Rust), dApps, протоколи, безпека контрактів. Ethereum та інші мережі. Високі вимоги до безпеки через незмінність і гроші.",
+                ru: "Смарт-контракты (Solidity, Rust), dApps, протоколы, безопасность контрактов. Ethereum и другие сети. Высокие требования к безопасности из-за неизменности и денег.",
+                en: "Smart contracts (Solidity, Rust), dApps, protocols, contract security. Ethereum and other networks. High security demands due to immutability and money."
+            },
+            traits: { uk: "Solidity, Smart contracts, Web3, Аудит, EVM", ru: "Solidity, Smart contracts, Web3, Аудит, EVM", en: "Solidity, Smart contracts, Web3, Audit, EVM" },
+            spec: { uk: "Помилка в контракті = втрачені кошти", ru: "Ошибка в контракте = потерянные средства", en: "A contract bug = lost funds" },
+            links: [{ name: "Ethereum.org", url: "https://ethereum.org/en/developers/" }]
+        },
+        {
+            cat: "specialized",
+            icon: "📡",
+            name: { uk: "IoT Engineer", ru: "IoT Engineer", en: "IoT Engineer" },
+            desc: {
+                uk: "Пристрої, протоколи (MQTT, LoRa, BLE), edge, хмарні IoT-платформи, сенсори. Поєднання embedded, мереж і backend/хмари.",
+                ru: "Устройства, протоколы (MQTT, LoRa, BLE), edge, облачные IoT-платформы, сенсоры. Сочетание embedded, сетей и backend/облака.",
+                en: "Devices, protocols (MQTT, LoRa, BLE), edge, cloud IoT platforms, sensors. Mix of embedded, networking and backend/cloud."
+            },
+            traits: { uk: "MQTT, Edge, Sensors, Embedded + Cloud, Протоколи", ru: "MQTT, Edge, Sensors, Embedded + Cloud, Протоколы", en: "MQTT, Edge, Sensors, Embedded + Cloud, Protocols" },
+            spec: { uk: "Фізичний світ + цифрові системи", ru: "Физический мир + цифровые системы", en: "Physical world + digital systems" },
+            links: [{ name: "IoT overview", url: "https://www.ibm.com/topics/internet-of-things" }]
+        },
+        {
+            cat: "specialized",
+            icon: "🎬",
+            name: { uk: "AR/VR / Graphics / Engine Developer", ru: "AR/VR / Graphics / Engine Developer", en: "AR/VR / Graphics / Engine Developer" },
+            desc: {
+                uk: "Комп’ютерна графіка, рушії, шейдери, AR/VR (Unity, Unreal, OpenXR). Висока математика, продуктивність GPU, імерсивний досвід.",
+                ru: "Компьютерная графика, движки, шейдеры, AR/VR (Unity, Unreal, OpenXR). Высокая математика, производительность GPU, иммерсивный опыт.",
+                en: "Computer graphics, engines, shaders, AR/VR (Unity, Unreal, OpenXR). Heavy math, GPU performance, immersive experience."
+            },
+            traits: { uk: "Graphics, Shaders, VR/AR, GPU, Math", ru: "Graphics, Shaders, VR/AR, GPU, Math", en: "Graphics, Shaders, VR/AR, GPU, Math" },
+            spec: { uk: "Коли пікселі і кадри — усе", ru: "Когда пиксели и кадры — всё", en: "When pixels and frames are everything" },
+            links: [{ name: "OpenXR", url: "https://www.khronos.org/openxr/" }]
+        },
+        {
+            cat: "specialized",
+            icon: "🧰",
+            name: { uk: "Developer Advocate / DevRel", ru: "Developer Advocate / DevRel", en: "Developer Advocate / DevRel" },
+            desc: {
+                uk: "Зв’язок продукту з спільнотою розробників: контент, доповіді, демо, зворотний зв’язок у продукт. Поєднання техніки, комунікації та емпатії до розробників.",
+                ru: "Связь продукта с сообществом разработчиков: контент, доклады, демо, обратная связь в продукт. Сочетание техники, коммуникации и эмпатии к разработчикам.",
+                en: "Link between product and developer community: content, talks, demos, feedback into the product. Mix of tech, communication and empathy for developers."
+            },
+            traits: { uk: "Контент, Спільнота, Демо, Feedback, Комунікація", ru: "Контент, Сообщество, Демо, Feedback, Коммуникация", en: "Content, Community, Demos, Feedback, Communication" },
+            spec: { uk: "Голос розробників усередині компанії", ru: "Голос разработчиков внутри компании", en: "Developers’ voice inside the company" },
+            links: [{ name: "DevRel resources", url: "https://devrel.agency" }]
+        },
+        {
+            cat: "specialized",
+            icon: "🎓",
+            name: { uk: "IT Trainer / Educator / Mentor", ru: "IT Trainer / Educator / Mentor", en: "IT Trainer / Educator / Mentor" },
+            desc: {
+                uk: "Навчання: курси, менторство, внутрішнє навчання в компаніях, створення навчальних матеріалів. Сильний технічний бекграунд + вміння пояснювати.",
+                ru: "Обучение: курсы, менторство, внутреннее обучение в компаниях, создание учебных материалов. Сильный технический бэкграунд + умение объяснять.",
+                en: "Teaching: courses, mentoring, internal company training, creating learning materials. Strong technical background + ability to explain."
+            },
+            traits: { uk: "Навчання, Менторство, Курси, Пояснення, Матеріали", ru: "Обучение, Менторство, Курсы, Объяснение, Материалы", en: "Teaching, Mentoring, Courses, Explaining, Materials" },
+            spec: { uk: "Передача досвіду — множник впливу", ru: "Передача опыта — множитель влияния", en: "Passing on experience multiplies impact" },
+            links: [{ name: "Teaching tech", url: "https://teachtech.io" }]
+        },
+        {
+            cat: "specialized",
+            icon: "🛒",
+            name: { uk: "Sales Engineer / Solutions Consultant", ru: "Sales Engineer / Solutions Consultant", en: "Sales Engineer / Solutions Consultant" },
+            desc: {
+                uk: "Технічна підтримка продажів: демо, PoC, відповіді на складні питання клієнтів, адаптація рішення під потреби. Техніка + комунікація + бізнес.",
+                ru: "Техническая поддержка продаж: демо, PoC, ответы на сложные вопросы клиентов, адаптация решения под нужды. Техника + коммуникация + бизнес.",
+                en: "Technical support for sales: demos, PoCs, answering hard client questions, adapting the solution to needs. Tech + communication + business."
+            },
+            traits: { uk: "Демо, PoC, Клієнти, Рішення, Комунікація", ru: "Демо, PoC, Клиенты, Решения, Коммуникация", en: "Demos, PoC, Clients, Solutions, Communication" },
+            spec: { uk: "Перекладач між продуктом і клієнтом", ru: "Переводчик между продуктом и клиентом", en: "Translator between product and client" },
+            links: []
+        },
+        {
+            cat: "specialized",
+            icon: "🔧",
+            name: { uk: "Support / Technical Support Engineer", ru: "Support / Technical Support Engineer", en: "Support / Technical Support Engineer" },
+            desc: {
+                uk: "Допомога користувачам і клієнтам: діагностика проблем, відтворення багів, ескалація, база знань. L1/L2/L3 — різні рівні глибини.",
+                ru: "Помощь пользователям и клиентам: диагностика проблем, воспроизведение багов, эскалация, база знаний. L1/L2/L3 — разные уровни глубины.",
+                en: "Helping users and clients: diagnosing issues, reproducing bugs, escalation, knowledge base. L1/L2/L3 — different depth levels."
+            },
+            traits: { uk: "Діагностика, Комунікація, База знань, Ескалація, Терпіння", ru: "Диагностика, Коммуникация, База знаний, Эскалация, Терпение", en: "Diagnostics, Communication, Knowledge base, Escalation, Patience" },
+            spec: { uk: "Обличчя продукту для користувача в біді", ru: "Лицо продукта для пользователя в беде", en: "The face of the product when the user is in trouble" },
+            links: []
+        },
+        {
+            cat: "specialized",
+            icon: "🔬",
+            name: { uk: "Research Engineer / Applied Scientist", ru: "Research Engineer / Applied Scientist", en: "Research Engineer / Applied Scientist" },
+            desc: {
+                uk: "Дослідження на межі науки і продукту: нові алгоритми, прототипи, публікації, перенесення ідей з papers у код. Часто в ML, графіці, системах.",
+                ru: "Исследования на грани науки и продукта: новые алгоритмы, прототипы, публикации, перенос идей из papers в код. Часто в ML, графике, системах.",
+                en: "Research at the boundary of science and product: new algorithms, prototypes, publications, turning papers into code. Often in ML, graphics, systems."
+            },
+            traits: { uk: "Research, Papers, Прототипи, Експерименти, R&D", ru: "Research, Papers, Прототипы, Эксперименты, R&D", en: "Research, Papers, Prototypes, Experiments, R&D" },
+            spec: { uk: "Коли ще немає «готового рішення»", ru: "Когда ещё нет «готового решения»", en: "When there is no “ready-made solution” yet" },
+            links: [{ name: "Papers With Code", url: "https://paperswithcode.com" }]
+        }
+    ];
+
+    const ui = {
+        uk: {
+            title: "Кар’єра в ІТ / спеціальності — Довідник",
+            pageTitle: "💼 Кар’єра в ІТ / спеціальності",
+            home: "Головна сторінка",
+            all: "Усі розділи",
+            traits: "Ключові навички та фокус",
+            mfgText: "Корисні ресурси:",
+            noResults: "Нічого не знайдено.",
+            footer: "💼 Кар’єра в ІТ / спеціальності | Довідник 2026",
+            introTitle: "Спеціальності в ІТ: орієнтир для вибору шляху",
+            intro1: "ІТ — це не одна професія, а десятки ролей: від написання коду до дизайну, даних, безпеки, інфраструктури та управління. Нижче — широкий перелік спеціальностей з коротким описом, щоб легше зорієнтуватися у виборі напряму або наступного кроку в кар’єрі.",
+            intro2: "Межі між ролями часто розмиті: full-stack, DevOps, MLOps поєднують кілька областей. Важливі не лише технології, а й інтерес до типу задач (продукт, інфраструктура, люди, дослідження) і готовність вчитися протягом усієї кар’єри."
+        },
+        ru: {
+            title: "Карьера в ИТ / специальности — Справочник",
+            pageTitle: "💼 Карьера в ИТ / специальности",
+            home: "Главная страница",
+            all: "Все разделы",
+            traits: "Ключевые навыки и фокус",
+            mfgText: "Полезные ресурсы:",
+            noResults: "Ничего не найдено.",
+            footer: "💼 Карьера в ИТ / специальности | Справочник 2026",
+            introTitle: "Специальности в ИТ: ориентир для выбора пути",
+            intro1: "ИТ — это не одна профессия, а десятки ролей: от написания кода до дизайна, данных, безопасности, инфраструктуры и управления. Ниже — широкий перечень специальностей с кратким описанием, чтобы легче сориентироваться в выборе направления или следующего шага в карьере.",
+            intro2: "Границы между ролями часто размыты: full-stack, DevOps, MLOps сочетают несколько областей. Важны не только технологии, но и интерес к типу задач (продукт, инфраструктура, люди, исследования) и готовность учиться на протяжении всей карьеры."
+        },
+        en: {
+            title: "IT Careers / Specialties — Guide",
+            pageTitle: "💼 IT Careers / Specialties",
+            home: "Home page",
+            all: "All sections",
+            traits: "Key skills and focus",
+            mfgText: "Useful resources:",
+            noResults: "Nothing found.",
+            footer: "💼 IT Careers / Specialties | Guide 2026",
+            introTitle: "IT specialties: a guide to choosing your path",
+            intro1: "IT is not one job but dozens of roles: from writing code to design, data, security, infrastructure and management. Below is a broad list of specialties with short descriptions to help you orient when choosing a direction or the next career step.",
+            intro2: "Boundaries between roles are often blurred: full-stack, DevOps, MLOps combine several areas. What matters is not only technology but interest in the type of work (product, infrastructure, people, research) and willingness to keep learning throughout your career."
+        }
+    };
+
+    let currentLang = safeGet("lang-careers", "uk");
+    let activeCategory = "all";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-careers", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + "</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) { return e.cat === catKey; });
+            if (!list.length) return;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        main.innerHTML = html || ('<div class="no-results">' + ui[currentLang].noResults + "</div>");
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

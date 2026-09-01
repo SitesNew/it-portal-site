@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-uk="Патерни проєктування" data-ru="Паттерны проектирования" data-en="Design Patterns">Патерни проєктування</title>
+<style>
+:root {
+  --bg-gradient-start: #0f0c29; --bg-gradient-mid: #302b63; --bg-gradient-end: #24243e;
+  --text-primary: #e0e0e0; --text-secondary: #888; --text-muted: #666;
+  --accent-cyan: #00d4ff; --accent-red: #ff6b6b; --accent-yellow: #ffd93d;
+  --accent-green: #6bcb77; --accent-blue: #4d96ff; --accent-purple: #9b59b6;
+  --accent-orange: #e67e22; --accent-gray: #95a5a6;
+  --card-bg: rgba(255,255,255,0.05); --card-border: rgba(255,255,255,0.08);
+  --header-bg: rgba(0,0,0,0.4); --nav-bg: rgba(0,0,0,0.25);
+  --tip-bg: rgba(0,212,255,0.1); --tip-border: #00d4ff;
+  --code-bg: rgba(0,0,0,0.3); --shadow: rgba(0,212,255,0.1);
+}
+[data-theme="light"] {
+  --bg-gradient-start: #f0f2f5; --bg-gradient-mid: #e4e7ec; --bg-gradient-end: #d9dce5;
+  --text-primary: #1a1a2e; --text-secondary: #555; --text-muted: #888;
+  --accent-cyan: #0066cc; --accent-red: #cc3333; --accent-yellow: #cc9900;
+  --accent-green: #228b22; --accent-blue: #1a5276; --accent-purple: #7d3c98;
+  --accent-orange: #d35400; --accent-gray: #5d6d7e;
+  --card-bg: rgba(255,255,255,0.7); --card-border: rgba(0,0,0,0.1);
+  --header-bg: rgba(255,255,255,0.8); --nav-bg: rgba(255,255,255,0.6);
+  --tip-bg: rgba(0,102,204,0.1); --tip-border: #0066cc;
+  --code-bg: rgba(0,0,0,0.05); --shadow: rgba(0,0,0,0.1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  background: linear-gradient(135deg,var(--bg-gradient-start),var(--bg-gradient-mid),var(--bg-gradient-end));
+  color:var(--text-primary); min-height:100vh; line-height:1.7; transition:background 0.5s,color 0.5s;
+}
+.header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:15px 30px; background:var(--header-bg); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--card-border); position:sticky; top:0; z-index:1000; transition:background 0.5s;
+}
+.home-link { color:var(--accent-cyan); text-decoration:none; font-size:1.1rem; font-weight:600; transition:color 0.3s; display:flex; align-items:center; gap:8px; }
+.home-link:hover { color:var(--accent-red); }
+.home-link::before { content:"\2190"; font-size:1.2rem; }
+.header-controls { display:flex; align-items:center; gap:15px; }
+.theme-toggle { background:var(--card-bg); border:1px solid var(--card-border); border-radius:30px; padding:5px 15px; cursor:pointer; font-size:1.2rem; transition:all 0.3s; color:var(--text-primary); }
+.theme-toggle:hover { transform:scale(1.1); border-color:var(--accent-cyan); }
+.lang-switcher { display:flex; gap:8px; }
+.lang-btn { background:var(--card-bg); border:1px solid var(--card-border); color:var(--text-primary); padding:6px 14px; border-radius:20px; cursor:pointer; font-size:0.85rem; transition:all 0.3s; text-decoration:none; font-weight:500; }
+.lang-btn:hover,.lang-btn.active { background:var(--accent-cyan); color:#fff; border-color:var(--accent-cyan); }
+.nav-menu {
+  display:flex; justify-content:center; gap:4px; padding:12px 20px; background:var(--nav-bg);
+  border-bottom:1px solid var(--card-border); flex-wrap:wrap; transition:background 0.5s;
+  position:sticky; top:58px; z-index:999; backdrop-filter:blur(8px);
+}
+.nav-menu a { color:var(--text-secondary); text-decoration:none; padding:7px 14px; border-radius:8px; transition:all 0.3s; font-size:0.85rem; white-space:nowrap; }
+.nav-menu a:hover { color:var(--accent-cyan); background:rgba(0,212,255,0.1); }
+.nav-menu a.active { color:var(--accent-cyan); background:rgba(0,212,255,0.15); font-weight:600; }
+.main-content { max-width:1100px; margin:0 auto; padding:40px 30px 60px; }
+.page-title { text-align:center; font-size:2.4rem; margin-bottom:10px; background:linear-gradient(90deg,var(--accent-cyan),var(--accent-red),var(--accent-yellow)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.page-subtitle { text-align:center; color:var(--text-secondary); font-size:1.1rem; margin-bottom:50px; }
+.section { background:var(--card-bg); border:1px solid var(--card-border); border-radius:16px; padding:30px; margin-bottom:30px; transition:transform 0.3s,box-shadow 0.3s,background 0.5s,border-color 0.5s; scroll-margin-top:120px; }
+.section:hover { transform:translateY(-3px); box-shadow:0 10px 40px var(--shadow); }
+.section h2 { color:var(--accent-cyan); font-size:1.5rem; margin-bottom:20px; display:flex; align-items:center; gap:12px; }
+.section h2 .icon { font-size:1.8rem; }
+.section h3 { color:var(--accent-yellow); font-size:1.15rem; margin:25px 0 12px; }
+.section h4 { color:var(--accent-orange); font-size:1.05rem; margin:20px 0 10px; }
+.section p { margin-bottom:12px; text-align:justify; }
+.section ul,.section ol { margin-left:25px; margin-bottom:15px; }
+.section li { margin-bottom:8px; }
+.section li::marker { color:var(--accent-cyan); }
+.protocol-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px; margin-top:20px; }
+.protocol-card { background:var(--code-bg); border:1px solid var(--card-border); border-radius:12px; padding:20px; transition:all 0.3s; }
+.protocol-card:hover { border-color:var(--accent-cyan); transform:translateY(-3px); }
+.protocol-card h4 { color:var(--accent-red); font-size:1.1rem; margin-bottom:10px; }
+.protocol-card p { font-size:0.9rem; color:var(--text-secondary); text-align:left; margin-bottom:0; }
+.tip { background:var(--tip-bg); border-left:4px solid var(--tip-border); padding:15px 20px; border-radius:0 8px 8px 0; margin:20px 0; font-size:0.95rem; transition:background 0.5s; }
+.tip strong { color:var(--accent-cyan); }
+.comparison-table { width:100%; border-collapse:collapse; margin:15px 0; font-size:0.95rem; }
+.comparison-table th,.comparison-table td { padding:12px 15px; text-align:left; border-bottom:1px solid var(--card-border); }
+.comparison-table th { background:var(--code-bg); color:var(--accent-cyan); font-weight:600; }
+.comparison-table tr:hover { background:rgba(0,212,255,0.03); }
+.footer { text-align:center; padding:30px; background:var(--header-bg); border-top:1px solid var(--card-border); color:var(--text-muted); font-size:0.9rem; transition:background 0.5s; }
+.footer a { color:var(--accent-cyan); text-decoration:none; }
+code { background:var(--code-bg); padding:2px 6px; border-radius:4px; font-family:'Consolas',monospace; font-size:0.9em; }
+@media(max-width:768px){
+  .header { flex-direction:column; gap:12px; padding:12px 15px; }
+  .header-controls { gap:10px; }
+  .page-title { font-size:1.7rem; }
+  .section { padding:20px; scroll-margin-top:150px; }
+  .nav-menu { gap:3px; padding:8px 10px; top:90px; }
+  .nav-menu a { padding:5px 10px; font-size:0.78rem; }
+  .comparison-table { font-size:0.85rem; }
+  .comparison-table th,.comparison-table td { padding:8px 10px; }
+}
+.page-name { font-size:1.1rem; font-weight:600; color:var(--accent-cyan); margin-left:15px; padding-left:15px; border-left:2px solid var(--card-border); transition:color 0.3s; }
+@media(max-width:768px){ .page-name{font-size:0.95rem;margin-left:10px;padding-left:10px} }
+</style>
+<base target="_blank">
+<base target="_blank">
+</head>
+<body>
+
+<header class="header">
+<a href="index.html" class="home-link" target="_self"><span data-uk="Головна сторінка" data-ru="Главная страница" data-en="Home page">Головна сторінка</span></a>
+<span class="page-name" data-uk="Патерни проєктування" data-ru="Паттерны проектирования" data-en="Design Patterns">Патерни проєктування</span>
+<div class="header-controls">
+<button class="theme-toggle" onclick="toggleTheme()" title="Switch theme">&#127769;</button>
+<div class="lang-switcher">
+<button class="lang-btn active" onclick="setLang('uk')">UK</button>
+<button class="lang-btn" onclick="setLang('ru')">RU</button>
+<button class="lang-btn" onclick="setLang('en')">EN</button>
+</div>
+</div>
+</header>
+
+<nav class="nav-menu">
+<a href="#intro" target="_self" data-uk="Вступ" data-ru="Введение" data-en="Intro">Вступ</a>
+<a href="#creational" target="_self" data-uk="Породжувальні" data-ru="Порождающие" data-en="Creational">Породжувальні</a>
+<a href="#structural" target="_self" data-uk="Структурні" data-ru="Структурные" data-en="Structural">Структурні</a>
+<a href="#behavioral" target="_self" data-uk="Поведінкові" data-ru="Поведенческие" data-en="Behavioral">Поведінкові</a>
+<a href="#architectural" target="_self" data-uk="Архітектура" data-ru="Архитектура" data-en="Architecture">Архітектура</a>
+<a href="#antipatterns" target="_self" data-uk="Антипатерни" data-ru="Антипаттерны" data-en="Antipatterns">Антипатерни</a>
+<a href="#summary" target="_self" data-uk="Підсумок" data-ru="Итог" data-en="Summary">Підсумок</a>
+</nav>
+
+<main class="main-content">
+<h1 class="page-title" data-uk="Патерни проєктування" data-ru="Паттерны проектирования" data-en="Design Patterns">Патерни проєктування</h1>
+<p class="page-subtitle" data-uk="Від класичних GoF-патернів до сучасних архітектурних стилів та антипатернів" data-ru="От классических GoF-паттернов до современных архитектурных стилей и антипаттернов" data-en="From classic GoF patterns to modern architectural styles and antipatterns">Від класичних GoF-патернів до сучасних архітектурних стилів та антипатернів</p>
+
+<section class="section" id="intro">
+<h2><span class="icon">&#128161;</span> <span data-uk="Що таке патерн проєктування?" data-ru="Что такое паттерн проектирования?" data-en="What is a design pattern?">Що таке патерн проєктування?</span></h2>
+<p data-uk="Патерн проєктування (design pattern) — це типове рішення часто виникаючої проблеми в архітектурі програмного забезпечення. На відміну від готової функції чи бібліотеки, патерн — це концепція, яку потрібно адаптувати під конкретне завдання. Патерни прискорюють розробку, покращують читабельність коду та полегшують комунікацію між розробниками." data-ru="Паттерн проектирования (design pattern) — это типовое решение часто возникающей проблемы в архитектуре программного обеспечения. В отличие от готовой функции или библиотеки, паттерн — это концепция, которую нужно адаптировать под конкретную задачу. Паттерны ускоряют разработку, улучшают читаемость кода и облегчают коммуникацию между разработчиками." data-en="A design pattern is a typical solution to a commonly occurring problem in software architecture. Unlike a ready-made function or library, a pattern is a concept that needs to be adapted to a specific task. Patterns speed up development, improve code readability and facilitate communication between developers.">Патерн проєктування (design pattern) — це типове рішення часто виникаючої проблеми в архітектурі програмного забезпечення. На відміну від готової функції чи бібліотеки, патерн — це концепція, яку потрібно адаптувати під конкретне завдання. Патерни прискорюють розробку, покращують читабельність коду та полегшують комунікацію між розробниками.</p>
+<p data-uk="Термін популяризували «Банда чотирьох» (Gang of Four — GoF): Еріх Гамма, Річард Хелм, Ральф Джонсон та Джон Вліссідес у книзі «Design Patterns: Elements of Reusable Object-Oriented Software» (1994). Вони виділили 23 класичних патерни, поділених на три групи: породжувальні, структурні та поведінкові." data-ru="Термин популяризовала «Банда четырёх» (Gang of Four — GoF): Эрих Гамма, Ричард Хелм, Ральф Джонсон и Джон Влиссидес в книге «Design Patterns: Elements of Reusable Object-Oriented Software» (1994). Они выделили 23 классических паттерна, разделённых на три группы: порождающие, структурные и поведенческие." data-en="The term was popularized by the 'Gang of Four' (GoF): Erich Gamma, Richard Helm, Ralph Johnson and John Vlissides in the book 'Design Patterns: Elements of Reusable Object-Oriented Software' (1994). They identified 23 classic patterns divided into three groups: creational, structural and behavioral.">Термін популяризували «Банда чотирьох» (Gang of Four — GoF): Еріх Гамма, Річард Хелм, Ральф Джонсон та Джон Вліссідес у книзі «Design Patterns: Elements of Reusable Object-Oriented Software» (1994). Вони виділили 23 класичних патерни, поділених на три групи: породжувальні, структурні та поведінкові.</p>
+<div class="tip">
+<strong data-uk="Пам'ятайте:" data-ru="Помните:" data-en="Remember:">Пам'ятайте:</strong>
+<span data-uk=" Патерн — це не готовий код, а шаблон думки. Неправильне або надмірне застосування патернів (over-engineering) може призвести до складнішого та повільнішого коду. Золоте правило: KISS (Keep It Simple, Stupid) та YAGNI (You Ain't Gonna Need It)." data-ru=" Паттерн — это не готовый код, а шаблон мышления. Неправильное или чрезмерное применение паттернов (over-engineering) может привести к более сложному и медленному коду. Золотое правило: KISS (Keep It Simple, Stupid) и YAGNI (You Ain't Gonna Need It)." data-en=" A pattern is not ready-made code, but a thinking template. Incorrect or excessive use of patterns (over-engineering) can lead to more complex and slower code. Golden rule: KISS (Keep It Simple, Stupid) and YAGNI (You Ain't Gonna Need It)."> Патерн — це не готовий код, а шаблон думки. Неправильне або надмірне застосування патернів (over-engineering) може призвести до складнішого та повільнішого коду. Золоте правило: KISS (Keep It Simple, Stupid) та YAGNI (You Ain't Gonna Need It).</span>
+</div>
+</section>
+
+<section class="section" id="creational">
+<h2><span class="icon">&#128295;</span> <span data-uk="Породжувальні патерни (Creational)" data-ru="Порождающие паттерны (Creational)" data-en="Creational Patterns">Породжувальні патерни (Creational)</span></h2>
+<p data-uk="Породжувальні патерни вирішують проблеми створення об'єктів. Вони абстрагують процес інстанціювання, роблячи систему незалежною від способу створення, композиції та представлення об'єктів." data-ru="Порождающие паттерны решают проблемы создания объектов. Они абстрагируют процесс инстанцирования, делая систему независимой от способа создания, композиции и представления объектов." data-en="Creational patterns solve object creation problems. They abstract the instantiation process, making the system independent of how objects are created, composed and represented.">Породжувальні патерни вирішують проблеми створення об'єктів. Вони абстрагують процес інстанціювання, роблячи систему незалежною від способу створення, композиції та представлення об'єктів.</p>
+
+<div class="protocol-grid">
+<div class="protocol-card">
+<h4>Singleton (Одинак)</h4>
+<p data-uk="Гарантує, що клас має лише один екземпляр, і надає глобальну точку доступу до нього. Застосування: пул з'єднань з БД, логер, кеш, конфігурація додатку. У сучасних мовах часто замінюється DI-контейнерами." data-ru="Гарантирует, что класс имеет только один экземпляр, и предоставляет глобальную точку доступа к нему. Применение: пул соединений с БД, логгер, кэш, конфигурация приложения. В современных языках часто заменяется DI-контейнерами." data-en="Ensures a class has only one instance and provides a global point of access to it. Usage: DB connection pool, logger, cache, app configuration. In modern languages often replaced by DI containers.">Гарантує, що клас має лише один екземпляр, і надає глобальну точку доступу до нього. Застосування: пул з'єднань з БД, логер, кеш, конфігурація додатку. У сучасних мовах часто замінюється DI-контейнерами.</p>
+</div>
+<div class="protocol-card">
+<h4>Factory Method (Фабричний метод)</h4>
+<p data-uk="Визначає інтерфейс для створення об'єкта, але дозволяє підкласам вирішувати, який клас інстанціювати. Застосування: фреймворки UI (кросплатформенні кнопки), парсери різних форматів файлів." data-ru="Определяет интерфейс для создания объекта, но позволяет подклассам решать, какой класс инстанцировать. Применение: фреймворки UI (кроссплатформенные кнопки), парсеры разных форматов файлов." data-en="Defines an interface for creating an object, but lets subclasses decide which class to instantiate. Usage: UI frameworks (cross-platform buttons), parsers for different file formats.">Визначає інтерфейс для створення об'єкта, але дозволяє підкласам вирішувати, який клас інстанціювати. Застосування: фреймворки UI (кросплатформенні кнопки), парсери різних форматів файлів.</p>
+</div>
+<div class="protocol-card">
+<h4>Abstract Factory (Абстрактна фабрика)</h4>
+<p data-uk="Створює сімейства пов'язаних об'єктів без прив'язки до конкретних класів. Застосування: теми UI (світла/темна з різними кнопками, чекбоксами), кросплатформенні тулкіти (Windows/macOS/Linux)." data-ru="Создаёт семейства связанных объектов без привязки к конкретным классам. Применение: темы UI (светлая/тёмная с разными кнопками, чекбоксами), кроссплатформенные тулкиты (Windows/macOS/Linux)." data-en="Creates families of related objects without binding to concrete classes. Usage: UI themes (light/dark with different buttons, checkboxes), cross-platform toolkits (Windows/macOS/Linux).">Створює сімейства пов'язаних об'єктів без прив'язки до конкретних класів. Застосування: теми UI (світла/темна з різними кнопками, чекбоксами), кросплатформенні тулкіти (Windows/macOS/Linux).</p>
+</div>
+<div class="protocol-card">
+<h4>Builder (Будівельник)</h4>
+<p data-uk="Розділяє конструювання складного об'єкта від його представлення, дозволяючи створювати різні представлення. Застосування: SQL-запити (QueryBuilder), HTTP-запити, конфігурація складних об'єктів (Retrofit, OkHttp у Java/Kotlin)." data-ru="Разделяет конструирование сложного объекта от его представления, позволяя создавать разные представления. Применение: SQL-запросы (QueryBuilder), HTTP-запросы, конфигурация сложных объектов (Retrofit, OkHttp в Java/Kotlin)." data-en="Separates the construction of a complex object from its representation, allowing different representations to be created. Usage: SQL queries (QueryBuilder), HTTP requests, configuration of complex objects (Retrofit, OkHttp in Java/Kotlin).">Розділяє конструювання складного об'єкта від його представлення, дозволяючи створювати різні представлення. Застосування: SQL-запити (QueryBuilder), HTTP-запити, конфігурація складних об'єктів (Retrofit, OkHttp у Java/Kotlin).</p>
+</div>
+<div class="protocol-card">
+<h4>Prototype (Прототип)</h4>
+<p data-uk="Створює нові об'єкти шляхом клонування існуючого. Застосування: графічні редактори (клонування фігур), ігрові об'єкти (клонування ворогів), глибоке/поверхневе копіювання об'єктів." data-ru="Создаёт новые объекты путём клонирования существующего. Применение: графические редакторы (клонирование фигур), игровые объекты (клонирование врагов), глубокое/поверхностное копирование объектов." data-en="Creates new objects by cloning an existing one. Usage: graphic editors (cloning shapes), game objects (cloning enemies), deep/shallow copying of objects.">Створює нові об'єкти шляхом клонування існуючого. Застосування: графічні редактори (клонування фігур), ігрові об'єкти (клонування ворогів), глибоке/поверхневе копіювання об'єктів.</p>
+</div>
+</div>
+</section>
+
+<section class="section" id="structural">
+<h2><span class="icon">&#128208;</span> <span data-uk="Структурні патерни (Structural)" data-ru="Структурные паттерны (Structural)" data-en="Structural Patterns">Структурні патерни (Structural)</span></h2>
+<p data-uk="Структурні патерни пояснюють, як складати об'єкти та класи в більші структури, зберігаючи при цьому гнучкість та ефективність. Вони допомагають забезпечити сумісність між інтерфейсами та додати нову функціональність без зміни існуючого коду." data-ru="Структурные паттерны объясняют, как составлять объекты и классы в большие структуры, сохраняя при этом гибкость и эффективность. Они помогают обеспечить совместимость между интерфейсами и добавить новую функциональность без изменения существующего кода." data-en="Structural patterns explain how to compose objects and classes into larger structures while maintaining flexibility and efficiency. They help ensure compatibility between interfaces and add new functionality without changing existing code.">Структурні патерни пояснюють, як складати об'єкти та класи в більші структури, зберігаючи при цьому гнучкість та ефективність. Вони допомагають забезпечити сумісність між інтерфейсами та додати нову функціональність без зміни існуючого коду.</p>
+
+<div class="protocol-grid">
+<div class="protocol-card">
+<h4>Adapter (Адаптер)</h4>
+<p data-uk="Дозволяє об'єктам із несумісними інтерфейсами працювати разом. Застосування: інтеграція сторонніх API, робота з різними форматами даних (XML ↔ JSON), legacy-системи." data-ru="Позволяет объектам с несовместимыми интерфейсами работать вместе. Применение: интеграция сторонних API, работа с разными форматами данных (XML ↔ JSON), legacy-системы." data-en="Allows objects with incompatible interfaces to work together. Usage: third-party API integration, working with different data formats (XML ↔ JSON), legacy systems.">Дозволяє об'єктам із несумісними інтерфейсами працювати разом. Застосування: інтеграція сторонніх API, робота з різними форматами даних (XML ↔ JSON), legacy-системи.</p>
+</div>
+<div class="protocol-card">
+<h4>Decorator (Декоратор)</h4>
+<p data-uk="Додає нову поведінку об'єктам, обгортаючи їх. Альтернатива наслідуванню. Застосування: I/O потоки (BufferedReader обгортає FileReader), middleware у веб-фреймворках, кешування результатів функцій." data-ru="Добавляет новое поведение объектам, оборачивая их. Альтернатива наследованию. Применение: I/O потоки (BufferedReader оборачивает FileReader), middleware в веб-фреймворках, кэширование результатов функций." data-en="Adds new behavior to objects by wrapping them. Alternative to inheritance. Usage: I/O streams (BufferedReader wraps FileReader), middleware in web frameworks, caching function results.">Додає нову поведінку об'єктам, обгортаючи їх. Альтернатива наслідуванню. Застосування: I/O потоки (BufferedReader обгортає FileReader), middleware у веб-фреймворках, кешування результатів функцій.</p>
+</div>
+<div class="protocol-card">
+<h4>Facade (Фасад)</h4>
+<p data-uk="Надає спрощений інтерфейс до складної підсистеми. Застосування: ORM (Hibernate, Entity Framework), фасади у Laravel, SDK для складних API (AWS SDK), бібліотеки роботи з файловою системою." data-ru="Предоставляет упрощённый интерфейс к сложной подсистеме. Применение: ORM (Hibernate, Entity Framework), фасады в Laravel, SDK для сложных API (AWS SDK), библиотеки работы с файловой системой." data-en="Provides a simplified interface to a complex subsystem. Usage: ORM (Hibernate, Entity Framework), facades in Laravel, SDKs for complex APIs (AWS SDK), file system libraries.">Надає спрощений інтерфейс до складної підсистеми. Застосування: ORM (Hibernate, Entity Framework), фасади у Laravel, SDK для складних API (AWS SDK), бібліотеки роботи з файловою системою.</p>
+</div>
+<div class="protocol-card">
+<h4>Proxy (Замісник)</h4>
+<p data-uk="Замінює інший об'єкт та контролює доступ до нього. Види: віртуальний (ліниве завантаження), захисний (контроль доступу), кешувальний, віддалений (RPC). Застосування: Spring AOP, Hibernate proxies, NGINX як reverse proxy." data-ru="Заменяет другой объект и контролирует доступ к нему. Виды: виртуальный (ленивая загрузка), защитный (контроль доступа), кеширующий, удалённый (RPC). Применение: Spring AOP, Hibernate proxies, NGINX как reverse proxy." data-en="Replaces another object and controls access to it. Types: virtual (lazy loading), protective (access control), caching, remote (RPC). Usage: Spring AOP, Hibernate proxies, NGINX as reverse proxy.">Замінює інший об'єкт та контролює доступ до нього. Види: віртуальний (ліниве завантаження), захисний (контроль доступу), кешувальний, віддалений (RPC). Застосування: Spring AOP, Hibernate proxies, NGINX як reverse proxy.</p>
+</div>
+<div class="protocol-card">
+<h4>Composite (Компонувальник)</h4>
+<p data-uk="Дозволяє об'єднувати об'єкти в деревоподібні структури та працювати з ними як з окремими об'єктами. Застосування: DOM-дерево в браузері, файлові системи (файли та папки), меню з підменю, організаційна структура компанії." data-ru="Позволяет объединять объекты в древовидные структуры и работать с ними как с отдельными объектами. Применение: DOM-дерево в браузере, файловые системы (файлы и папки), меню с подменю, организационная структура компании." data-en="Allows objects to be composed into tree structures and worked with as individual objects. Usage: DOM tree in browser, file systems (files and folders), menus with submenus, company organizational structure.">Дозволяє об'єднувати об'єкти в деревоподібні структури та працювати з ними як з окремими об'єктами. Застосування: DOM-дерево в браузері, файлові системи (файли та папки), меню з підменю, організаційна структура компанії.</p>
+</div>
+<div class="protocol-card">
+<h4>Bridge (Міст)</h4>
+<p data-uk="Розділяє абстракцію та реалізацію, дозволяючи змінювати їх незалежно. Застосування: драйвери пристроїв (JDBC), графічні бібліотеки (відділення API від бекенду — OpenGL/DirectX), кросплатформенні GUI." data-ru="Разделяет абстракцию и реализацию, позволяя изменять их независимо. Применение: драйверы устройств (JDBC), графические библиотеки (отделение API от бэкенда — OpenGL/DirectX), кроссплатформенные GUI." data-en="Separates abstraction from implementation, allowing them to be changed independently. Usage: device drivers (JDBC), graphics libraries (separating API from backend — OpenGL/DirectX), cross-platform GUI.">Розділяє абстракцію та реалізацію, дозволяючи змінювати їх незалежно. Застосування: драйвери пристроїв (JDBC), графічні бібліотеки (відділення API від бекенду — OpenGL/DirectX), кросплатформенні GUI.</p>
+</div>
+<div class="protocol-card">
+<h4>Flyweight (Легковаговик)</h4>
+<p data-uk="Мінімізує використання пам'яті, розділяючи спільний стан між кількома об'єктами. Застосування: символи в текстовому редакторі (кожна літера — flyweight), плитки у 2D-іграх (tile maps), пули об'єктів." data-ru="Минимизирует использование памяти, разделяя общее состояние между несколькими объектами. Применение: символы в текстовом редакторе (каждая буква — flyweight), плитки в 2D-играх (tile maps), пулы объектов." data-en="Minimizes memory usage by sharing common state among multiple objects. Usage: characters in a text editor (each letter is a flyweight), tiles in 2D games (tile maps), object pools.">Мінімізує використання пам'яті, розділяючи спільний стан між кількома об'єктами. Застосування: символи в текстовому редакторі (кожна літера — flyweight), плитки у 2D-іграх (tile maps), пули об'єктів.</p>
+</div>
+</div>
+</section>
+
+<section class="section" id="behavioral">
+<h2><span class="icon">&#128101;</span> <span data-uk="Поведінкові патерни (Behavioral)" data-ru="Поведенческие паттерны (Behavioral)" data-en="Behavioral Patterns">Поведінкові патерни (Behavioral)</span></h2>
+<p data-uk="Поведінкові патерни вирішують завдання ефективної комунікації між об'єктами, розподілу відповідальності та алгоритмів. Вони описують не тільки патерни об'єктів, але й патерни класів." data-ru="Поведенческие паттерны решают задачи эффективной коммуникации между объектами, распределения ответственности и алгоритмов. Они описывают не только паттерны объектов, но и паттерны классов." data-en="Behavioral patterns solve problems of effective communication between objects, responsibility distribution and algorithms. They describe not only object patterns but also class patterns.">Поведінкові патерни вирішують завдання ефективної комунікації між об'єктами, розподілу відповідальності та алгоритмів. Вони описують не тільки патерни об'єктів, але й патерни класів.</p>
+
+<div class="protocol-grid">
+<div class="protocol-card">
+<h4>Observer (Спостерігач)</h4>
+<p data-uk="Визначає залежність «один-до-багатьох» між об'єктами. При зміні стану суб'єкта всі спостерігачі отримують сповіщення. Застосування: подійна модель у фреймворках (React, Vue event emitters), pub/sub системи (Redis, RabbitMQ), MVC (Model оновлює View)." data-ru="Определяет зависимость «один-ко-многим» между объектами. При изменении состояния субъекта все наблюдатели получают уведомление. Применение: событийная модель во фреймворках (React, Vue event emitters), pub/sub системы (Redis, RabbitMQ), MVC (Model обновляет View)." data-en="Defines a one-to-many dependency between objects. When the subject's state changes, all observers are notified. Usage: event model in frameworks (React, Vue event emitters), pub/sub systems (Redis, RabbitMQ), MVC (Model updates View).">Визначає залежність «один-до-багатьох» між об'єктами. При зміні стану суб'єкта всі спостерігачі отримують сповіщення. Застосування: подійна модель у фреймворках (React, Vue event emitters), pub/sub системи (Redis, RabbitMQ), MVC (Model оновлює View).</p>
+</div>
+<div class="protocol-card">
+<h4>Strategy (Стратегія)</h4>
+<p data-uk="Визначає сімейство алгоритмів, інкапсулює кожен із них і робить їх взаємозамінними. Застосування: сортування (quick sort / merge sort), стратегії оплати (карта / PayPal / крипта), стратегії маршрутизації (Google Maps), компресія (gzip / brotli)." data-ru="Определяет семейство алгоритмов, инкапсулирует каждый из них и делает их взаимозаменяемыми. Применение: сортировка (quick sort / merge sort), стратегии оплаты (карта / PayPal / крипта), стратегии маршрутизации (Google Maps), компрессия (gzip / brotli)." data-en="Defines a family of algorithms, encapsulates each one and makes them interchangeable. Usage: sorting (quick sort / merge sort), payment strategies (card / PayPal / crypto), routing strategies (Google Maps), compression (gzip / brotli).">Визначає сімейство алгоритмів, інкапсулює кожен із них і робить їх взаємозамінними. Застосування: сортування (quick sort / merge sort), стратегії оплати (карта / PayPal / крипта), стратегії маршрутизації (Google Maps), компресія (gzip / brotli).</p>
+</div>
+<div class="protocol-card">
+<h4>Command (Команда)</h4>
+<p data-uk="Інкапсулює запит як об'єкт, дозволяючи параметризувати клієнтів чергами, логами та скасуванням операцій. Застосування: undo/redo у редакторах, черги завдань (Celery, Sidekiq), макроси, транзакції БД." data-ru="Инкапсулирует запрос как объект, позволяя параметризовать клиентов очередями, логами и отменой операций. Применение: undo/redo в редакторах, очереди задач (Celery, Sidekiq), макросы, транзакции БД." data-en="Encapsulates a request as an object, allowing clients to be parameterized with queues, logs and undo operations. Usage: undo/redo in editors, job queues (Celery, Sidekiq), macros, DB transactions.">Інкапсулює запит як об'єкт, дозволяючи параметризувати клієнтів чергами, логами та скасуванням операцій. Застосування: undo/redo у редакторах, черги завдань (Celery, Sidekiq), макроси, транзакції БД.</p>
+</div>
+<div class="protocol-card">
+<h4>Iterator (Ітератор)</h4>
+<p data-uk="Надає спосіб послідовного доступу до елементів складової колекції без розкриття її внутрішньої структури. Застосування: цикли for-each, курсори у БД, стрімінг великих файлів, генератори (yield у Python)." data-ru="Предоставляет способ последовательного доступа к элементам составной коллекции без раскрытия её внутренней структуры. Применение: циклы for-each, курсоры в БД, стриминг больших файлов, генераторы (yield в Python)." data-en="Provides a way to sequentially access elements of an aggregate collection without exposing its internal structure. Usage: for-each loops, DB cursors, streaming large files, generators (yield in Python).">Надає спосіб послідовного доступу до елементів складової колекції без розкриття її внутрішньої структури. Застосування: цикли for-each, курсори у БД, стрімінг великих файлів, генератори (yield у Python).</p>
+</div>
+<div class="protocol-card">
+<h4>State (Стан)</h4>
+<p data-uk="Дозволяє об'єкту змінювати поведінку при зміні його внутрішнього стану. Застосування: конечні автомати (Finite State Machine) — замовлення (створено → оплачено → відправлено → доставлено), TCP-з'єднання, ігрові стани (меню / гра / пауза)." data-ru="Позволяет объекту изменять поведение при изменении его внутреннего состояния. Применение: конечные автоматы (Finite State Machine) — заказ (создан → оплачен → отправлен → доставлен), TCP-соединение, игровые состояния (меню / игра / пауза)." data-en="Allows an object to alter its behavior when its internal state changes. Usage: finite state machines — order (created → paid → shipped → delivered), TCP connection, game states (menu / play / pause).">Дозволяє об'єкту змінювати поведінку при зміні його внутрішнього стану. Застосування: конечні автомати (Finite State Machine) — замовлення (створено → оплачено → відправлено → доставлено), TCP-з'єднання, ігрові стани (меню / гра / пауза).</p>
+</div>
+<div class="protocol-card">
+<h4>Chain of Responsibility (Ланцюжок відповідальності)</h4>
+<p data-uk="Передає запит уздовж ланцюжка обробників, доки один із них не обробить його. Застосування: middleware у Express.js / ASP.NET, логування (debug → info → warn → error), обробка подій у DOM (bubbling)." data-ru="Передаёт запрос вдоль цепочки обработчиков, пока один из них не обработает его. Применение: middleware в Express.js / ASP.NET, логирование (debug → info → warn → error), обработка событий в DOM (bubbling)." data-en="Passes a request along a chain of handlers until one of them handles it. Usage: middleware in Express.js / ASP.NET, logging (debug → info → warn → error), DOM event handling (bubbling).">Передає запит уздовж ланцюжка обробників, доки один із них не обробить його. Застосування: middleware у Express.js / ASP.NET, логування (debug → info → warn → error), обробка подій у DOM (bubbling).</p>
+</div>
+<div class="protocol-card">
+<h4>Template Method (Шаблонний метод)</h4>
+<p data-uk="Визначає скелет алгоритму в базовому класі, дозволяючи підкласам перевизначати окремі кроки без зміни структури. Застосування: JUnit (setUp → test → tearDown), фреймворки веб-додатків (Django views), алгоритми машинного навчання." data-ru="Определяет скелет алгоритма в базовом классе, позволяя подклассам переопределять отдельные шаги без изменения структуры. Применение: JUnit (setUp → test → tearDown), фреймворки веб-приложений (Django views), алгоритмы машинного обучения." data-en="Defines the skeleton of an algorithm in a base class, letting subclasses override certain steps without changing the structure. Usage: JUnit (setUp → test → tearDown), web application frameworks (Django views), machine learning algorithms.">Визначає скелет алгоритму в базовому класі, дозволяючи підкласам перевизначати окремі кроки без зміни структури. Застосування: JUnit (setUp → test → tearDown), фреймворки веб-додатків (Django views), алгоритми машинного навчання.</p>
+</div>
+<div class="protocol-card">
+<h4>Mediator (Посередник)</h4>
+<p data-uk="Визначає об'єкт, який інкапсулює спосіб взаємодії між об'єктами, зменшуючи зв'язаність. Застосування: диспетчери подій (EventBus), чат-кімнати, координатори у мобільній розробці (iOS Coordinator pattern), Redux store." data-ru="Определяет объект, который инкапсулирует способ взаимодействия между объектами, уменьшая связанность. Применение: диспетчеры событий (EventBus), чат-комнаты, координаторы в мобильной разработке (iOS Coordinator pattern), Redux store." data-en="Defines an object that encapsulates how a set of objects interact, reducing coupling. Usage: event dispatchers (EventBus), chat rooms, coordinators in mobile development (iOS Coordinator pattern), Redux store.">Визначає об'єкт, який інкапсулює спосіб взаємодії між об'єктами, зменшуючи зв'язаність. Застосування: диспетчери подій (EventBus), чат-кімнати, координатори у мобільній розробці (iOS Coordinator pattern), Redux store.</p>
+</div>
+<div class="protocol-card">
+<h4>Memento (Знімок)</h4>
+<p data-uk="Дозволяє зберігати та відновлювати попередній стан об'єкта без порушення інкапсуляції. Застосування: undo/redo у редакторах, збереження ігор (checkpoints), снапшоти віртуальних машін (VM snapshots)." data-ru="Позволяет сохранять и восстанавливать предыдущее состояние объекта без нарушения инкапсуляции. Применение: undo/redo в редакторах, сохранение игр (checkpoints), снапшоты виртуальных машин (VM snapshots)." data-en="Allows saving and restoring an object's previous state without breaking encapsulation. Usage: undo/redo in editors, game saves (checkpoints), virtual machine snapshots (VM snapshots).">Дозволяє зберігати та відновлювати попередній стан об'єкта без порушення інкапсуляції. Застосування: undo/redo у редакторах, збереження ігор (checkpoints), снапшоти віртуальних машін (VM snapshots).</p>
+</div>
+<div class="protocol-card">
+<h4>Visitor (Відвідувач)</h4>
+<p data-uk="Дозволяє додавати нові операції до об'єктів без зміни їхніх класів. Застосування: компілятори (AST traversal), лінтери коду, серіалізація об'єктів у різні формати (JSON/XML), обхід DOM-дерева." data-ru="Позволяет добавлять новые операции к объектам без изменения их классов. Применение: компиляторы (AST traversal), линтеры кода, сериализация объектов в разные форматы (JSON/XML), обход DOM-дерева." data-en="Allows adding new operations to objects without changing their classes. Usage: compilers (AST traversal), code linters, object serialization to different formats (JSON/XML), DOM tree traversal.">Дозволяє додавати нові операції до об'єктів без зміни їхніх класів. Застосування: компілятори (AST traversal), лінтери коду, серіалізація об'єктів у різні формати (JSON/XML), обхід DOM-дерева.</p>
+</div>
+</div>
+</section>
+
+<section class="section" id="architectural">
+<h2><span class="icon">&#127959;</span> <span data-uk="Архітектурні стилі" data-ru="Архитектурные стили" data-en="Architectural Styles">Архітектурні стилі</span></h2>
+<p data-uk="Архітектурний стиль — це високорівневий підхід до організації програмної системи. Він визначає, як компоненти взаємодіють, як розподіляються відповідальності та як масштабується система." data-ru="Архитектурный стиль — это высокоуровневый подход к организации программной системы. Он определяет, как компоненты взаимодействуют, как распределяются ответственности и как масштабируется система." data-en="An architectural style is a high-level approach to organizing a software system. It defines how components interact, how responsibilities are distributed and how the system scales.">Архітектурний стиль — це високорівневий підхід до організації програмної системи. Він визначає, як компоненти взаємодіють, як розподіляються відповідальності та як масштабується система.</p>
+
+<h3>&#128313; <span data-uk="Монолітна архітектура" data-ru="Монолитная архитектура" data-en="Monolithic Architecture">Монолітна архітектура</span></h3>
+<p data-uk="Усі компоненти додатку (UI, бізнес-логіка, доступ до даних) зібрані в один виконуваний модуль. Переваги: простота розробки та деплою, легке тестування, висока продуктивність внутрішніх викликів. Недоліки: складність масштабування окремих частин, тісна зв'язаність, ризик «великого вибуху» при деплої." data-ru="Все компоненты приложения (UI, бизнес-логика, доступ к данным) собраны в один исполняемый модуль. Преимущества: простота разработки и деплоя, лёгкое тестирование, высокая производительность внутренних вызовов. Недостатки: сложность масштабирования отдельных частей, тесная связанность, риск «большого взрыва» при деплое." data-en="All application components (UI, business logic, data access) are packaged into a single executable module. Pros: simplicity of development and deployment, easy testing, high performance of internal calls. Cons: difficulty scaling individual parts, tight coupling, risk of 'big bang' deployment.">Усі компоненти додатку (UI, бізнес-логіка, доступ до даних) зібрані в один виконуваний модуль. Переваги: простота розробки та деплою, легке тестування, висока продуктивність внутрішніх викликів. Недоліки: складність масштабування окремих частин, тісна зв'язаність, ризик «великого вибуху» при деплої.</p>
+
+<h3>&#128313; <span data-uk="Мікросервісна архітектура" data-ru="Микросервисная архитектура" data-en="Microservices Architecture">Мікросервісна архітектура</span></h3>
+<p data-uk="Додаток розбитий на невеликі, незалежні сервіси, кожен з яких відповідає за свою бізнес-здатність. Сервіси комунікують через API (HTTP/gRPC/message queue). Переваги: незалежне масштабування, різні технологічні стеки, ізольовані збої. Недоліки: складність розподілених систем ( eventual consistency, distributed tracing), накладні витрати на комунікацію, потреба в DevOps." data-ru="Приложение разбито на небольшие, независимые сервисы, каждый из которых отвечает за свою бизнес-способность. Сервисы коммуницируют через API (HTTP/gRPC/message queue). Преимущества: независимое масштабирование, разные технологические стеки, изолированные сбои. Недостатки: сложность распределённых систем (eventual consistency, distributed tracing), накладные расходы на коммуникацию, потребность в DevOps." data-en="The application is split into small, independent services, each responsible for its own business capability. Services communicate via API (HTTP/gRPC/message queue). Pros: independent scaling, different technology stacks, isolated failures. Cons: complexity of distributed systems (eventual consistency, distributed tracing), communication overhead, need for DevOps.">Додаток розбитий на невеликі, незалежні сервіси, кожен з яких відповідає за свою бізнес-здатність. Сервіси комунікують через API (HTTP/gRPC/message queue). Переваги: незалежне масштабування, різні технологічні стеки, ізольовані збої. Недоліки: складність розподілених систем (eventual consistency, distributed tracing), накладні витрати на комунікацію, потреба в DevOps.</p>
+
+<h3>&#128313; <span data-uk="Layered (Багатошарова) архітектура" data-ru="Layered (Многослойная) архитектура" data-en="Layered Architecture">Layered (Багатошарова) архітектура</span></h3>
+<p data-uk="Розділення на шари: Presentation → Business Logic → Data Access → Database. Кожен шар залежить лише від нижнього. Застосування: класичні enterprise-додатки (Spring, .NET), CRUD-системи. Перевага — простота. Недолік — шари можуть перетворитися на «прокладку», що просто передає дані далі." data-ru="Разделение на слои: Presentation → Business Logic → Data Access → Database. Каждый слой зависит только от нижнего. Применение: классические enterprise-приложения (Spring, .NET), CRUD-системы. Преимущество — простота. Недостаток — слои могут превратиться в «прокладку», которая просто передаёт данные дальше." data-en="Separation into layers: Presentation → Business Logic → Data Access → Database. Each layer depends only on the one below. Usage: classic enterprise applications (Spring, .NET), CRUD systems. Advantage — simplicity. Disadvantage — layers can become a 'pass-through' that simply forwards data.">Розділення на шари: Presentation → Business Logic → Data Access → Database. Кожен шар залежить лише від нижнього. Застосування: класичні enterprise-додатки (Spring, .NET), CRUD-системи. Перевага — простота. Недолік — шари можуть перетворитися на «прокладку», що просто передає дані далі.</p>
+
+<h3>&#128313; <span data-uk="Event-Driven Architecture (EDA)" data-ru="Event-Driven Architecture (EDA)" data-en="Event-Driven Architecture (EDA)">Event-Driven Architecture (EDA)</span></h3>
+<p data-uk="Компоненти реагують на події, а не викликають один одного безпосередньо. Події публікуються в брокер повідомлень (Kafka, RabbitMQ, NATS), а споживачі обробляють їх асинхронно. Застосування: фінтех (транзакції), IoT, real-time аналітика, e-commerce (inventory updates)." data-ru="Компоненты реагируют на события, а не вызывают друг друга напрямую. События публикуются в брокер сообщений (Kafka, RabbitMQ, NATS), а потребители обрабатывают их асинхронно. Применение: финтех (транзакции), IoT, real-time аналитика, e-commerce (inventory updates)." data-en="Components react to events rather than calling each other directly. Events are published to a message broker (Kafka, RabbitMQ, NATS), and consumers process them asynchronously. Usage: fintech (transactions), IoT, real-time analytics, e-commerce (inventory updates).">Компоненти реагують на події, а не викликають один одного безпосередньо. Події публікуються в брокер повідомлень (Kafka, RabbitMQ, NATS), а споживачі обробляють їх асинхронно. Застосування: фінтех (транзакції), IoT, real-time аналітика, e-commerce (inventory updates).</p>
+
+<h3>&#128313; <span data-uk="CQRS та Event Sourcing" data-ru="CQRS и Event Sourcing" data-en="CQRS and Event Sourcing">CQRS та Event Sourcing</span></h3>
+<p data-uk="CQRS (Command Query Responsibility Segregation) — розділення операцій читання та запису на різні моделі. Event Sourcing — зберігання стану системи як послідовності подій, а не поточного snapshot. Разом дають потужну основу для складних доменів (DDD). Застосування: банківські системи, бронювання, складські системи." data-ru="CQRS (Command Query Responsibility Segregation) — разделение операций чтения и записи на разные модели. Event Sourcing — хранение состояния системы как последовательности событий, а не текущего snapshot. Вместе дают мощную основу для сложных доменов (DDD). Применение: банковские системы, бронирование, складские системы." data-en="CQRS (Command Query Responsibility Segregation) — separating read and write operations into different models. Event Sourcing — storing system state as a sequence of events rather than a current snapshot. Together they provide a powerful foundation for complex domains (DDD). Usage: banking systems, booking, warehouse systems.">CQRS (Command Query Responsibility Segregation) — розділення операцій читання та запису на різні моделі. Event Sourcing — зберігання стану системи як послідовності подій, а не поточного snapshot. Разом дають потужну основу для складних доменів (DDD). Застосування: банківські системи, бронювання, складські системи.</p>
+
+<h3>&#128313; <span data-uk="Serverless / FaaS" data-ru="Serverless / FaaS" data-en="Serverless / FaaS">Serverless / FaaS</span></h3>
+<p data-uk="Розробник пише лише функції, а інфраструктура (масштабування, сервери, мережі) керується провайдером. Застосування: обробка зображень, webhook-обробники, IoT-дані, scheduled jobs. Приклади: AWS Lambda, Azure Functions, Google Cloud Functions, Cloudflare Workers." data-ru="Разработчик пишет только функции, а инфраструктура (масштабирование, серверы, сети) управляется провайдером. Применение: обработка изображений, webhook-обработчики, IoT-данные, scheduled jobs. Примеры: AWS Lambda, Azure Functions, Google Cloud Functions, Cloudflare Workers." data-en="The developer writes only functions, while infrastructure (scaling, servers, networks) is managed by the provider. Usage: image processing, webhook handlers, IoT data, scheduled jobs. Examples: AWS Lambda, Azure Functions, Google Cloud Functions, Cloudflare Workers.">Розробник пише лише функції, а інфраструктура (масштабування, сервери, мережі) керується провайдером. Застосування: обробка зображень, webhook-обробники, IoT-дані, scheduled jobs. Приклади: AWS Lambda, Azure Functions, Google Cloud Functions, Cloudflare Workers.</p>
+
+<h3>&#128313; <span data-uk="Hexagonal / Ports & Adapters" data-ru="Hexagonal / Ports & Adapters" data-en="Hexagonal / Ports & Adapters">Hexagonal / Ports & Adapters</span></h3>
+<p data-uk="Бізнес-логіка (ядро) ізольована від зовнішнього світу через чітко визначені порти (інтерфейси). Адаптери реалізують ці порти для конкретних технологій (БД, HTTP, CLI). Застосування: DDD, системи з довгим життєвим циклом, де технології часто змінюються." data-ru="Бизнес-логика (ядро) изолирована от внешнего мира через чётко определённые порты (интерфейсы). Адаптеры реализуют эти порты для конкретных технологий (БД, HTTP, CLI). Применение: DDD, системы с длительным жизненным циклом, где технологии часто меняются." data-en="Business logic (core) is isolated from the outside world through clearly defined ports (interfaces). Adapters implement these ports for specific technologies (DB, HTTP, CLI). Usage: DDD, systems with a long lifecycle where technologies change frequently.">Бізнес-логіка (ядро) ізольована від зовнішнього світу через чітко визначені порти (інтерфейси). Адаптери реалізують ці порти для конкретних технологій (БД, HTTP, CLI). Застосування: DDD, системи з довгим життєвим циклом, де технології часто змінюються.</p>
+</section>
+
+<section class="section" id="antipatterns">
+<h2><span class="icon">&#128683;</span> <span data-uk="Антипатерни" data-ru="Антипаттерны" data-en="Antipatterns">Антипатерни</span></h2>
+<p data-uk="Антипатерн — це типова, але неправильна або контрпродуктивна «рішення» проблеми, яке здається ефективним на перший погляд, але призводить до більших проблем у майбутньому. Розпізнавання антипатернів — важлива навичка для досвідченого розробника." data-ru="Антипаттерн — это типичное, но неправильное или контрпродуктивное «решение» проблемы, которое кажется эффективным на первый взгляд, но приводит к большим проблемам в будущем. Распознавание антипаттернов — важный навык для опытного разработчика." data-en="An antipattern is a typical but incorrect or counterproductive 'solution' to a problem that seems effective at first glance but leads to bigger problems in the future. Recognizing antipatterns is an important skill for an experienced developer.">Антипатерн — це типова, але неправильна або контрпродуктивна «рішення» проблеми, яке здається ефективним на перший погляд, але призводить до більших проблем у майбутньому. Розпізнавання антипатернів — важлива навичка для досвідченого розробника.</p>
+
+<div class="protocol-grid">
+<div class="protocol-card">
+<h4>God Object (Бог-об'єкт)</h4>
+<p data-uk="Один клас знає занадто багато і робить занадто багато. Має сотні полів і методів, пов'язаних з усіма аспектами системи. Рішення: розбити на менші класи за принципом єдиної відповідальності (SRP)." data-ru="Один класс знает слишком много и делает слишком много. Имеет сотни полей и методов, связанных со всеми аспектами системы. Решение: разбить на меньшие классы по принципу единой ответственности (SRP)." data-en="One class knows too much and does too much. Has hundreds of fields and methods related to all aspects of the system. Solution: break into smaller classes following the Single Responsibility Principle (SRP).">Один клас знає занадто багато і робить занадто багато. Має сотні полів і методів, пов'язаних з усіма аспектами системи. Рішення: розбити на менші класи за принципом єдиної відповідальності (SRP).</p>
+</div>
+<div class="protocol-card">
+<h4>Spaghetti Code (Спагеті-код)</h4>
+<p data-uk="Код із заплутаною структурою управління (goto, вкладені if на 10 рівнів), відсутністю модульності. Рішення: рефакторинг на функції/класи, застосування патернів, впровадження unit-тестів." data-ru="Код с запутанной структурой управления (goto, вложенные if на 10 уровней), отсутствием модульности. Решение: рефакторинг на функции/классы, применение паттернов, внедрение unit-тестов." data-en="Code with tangled control structures (goto, nested ifs at 10 levels), lack of modularity. Solution: refactoring into functions/classes, applying patterns, introducing unit tests.">Код із заплутаною структурою управління (goto, вкладені if на 10 рівнів), відсутністю модульності. Рішення: рефакторинг на функції/класи, застосування патернів, впровадження unit-тестів.</p>
+</div>
+<div class="protocol-card">
+<h4>Golden Hammer (Золотий молоток)</h4>
+<p data-uk="«Якщо у тебе є молоток, усе навколо здається цвяхом». Розробник застосовує знайомий інструмент/патерн до всіх задач, навіть коли він не підходить. Рішення: об'єктивна оцінка альтернатив, прототипування." data-ru="«Если у тебя есть молоток, всё вокруг кажется гвоздём». Разработчик применяет знакомый инструмент/паттерн ко всем задачам, даже когда он не подходит. Решение: объективная оценка альтернатив, прототипирование." data-en="'If you have a hammer, everything looks like a nail.' A developer applies a familiar tool/pattern to all tasks, even when it is not suitable. Solution: objective evaluation of alternatives, prototyping.">«Якщо у тебе є молоток, усе навколо здається цвяхом». Розробник застосовує знайомий інструмент/патерн до всіх задач, навіть коли він не підходить. Рішення: об'єктивна оцінка альтернатив, прототипування.</p>
+</div>
+<div class="protocol-card">
+<h4>Magic Numbers / Strings</h4>
+<p data-uk="Використання неіменованих констант без пояснення (if status == 7). Рішення: іменовані константи, enums, конфігураційні файли." data-ru="Использование неименованных констант без объяснения (if status == 7). Решение: именованные константы, enums, конфигурационные файлы." data-en="Using unnamed constants without explanation (if status == 7). Solution: named constants, enums, configuration files.">Використання неіменованих констант без пояснення (if status == 7). Рішення: іменовані константи, enums, конфігураційні файли.</p>
+</div>
+<div class="protocol-card">
+<h4>Copy-Paste Programming</h4>
+<p data-uk="Дублювання коду замість створення reusable компонентів. Приводить до помилок при оновленні (змінили в одному місці, забули в іншому). Рішення: DRY (Don't Repeat Yourself), виділення функцій/класів." data-ru="Дублирование кода вместо создания reusable компонентов. Приводит к ошибкам при обновлении (изменили в одном месте, забыли в другом). Решение: DRY (Don't Repeat Yourself), выделение функций/классов." data-en="Duplicating code instead of creating reusable components. Leads to errors during updates (changed in one place, forgot in another). Solution: DRY (Don't Repeat Yourself), extracting functions/classes.">Дублювання коду замість створення reusable компонентів. Приводить до помилок при оновленні (змінили в одному місці, забули в іншому). Рішення: DRY (Don't Repeat Yourself), виділення функцій/класів.</p>
+</div>
+<div class="protocol-card">
+<h4>Premature Optimization</h4>
+<p data-uk="Оптимізація до профілювання, що ускладнює код без реальної вигоди. Рішення: спочатку зробити чисто та зрозуміло, потім профілювати та оптимізувати вузькі місця." data-ru="Оптимизация до профилирования, которая усложняет код без реальной выгоды. Решение: сначала сделать чисто и понятно, потом профилировать и оптимизировать узкие места." data-en="Optimizing before profiling, which complicates the code without real benefit. Solution: first make it clean and understandable, then profile and optimize bottlenecks.">Оптимізація до профілювання, що ускладнює код без реальної вигоди. Рішення: спочатку зробити чисто та зрозуміло, потім профілювати та оптимізувати вузькі місця.</p>
+</div>
+<div class="protocol-card">
+<h4>Cargo Cult Programming</h4>
+<p data-uk="Використання патернів, фреймворків або підходів без розуміння, чому вони потрібні («бо Google так робить»). Рішення: вивчення основ, критичне мислення, розуміння компромісів." data-ru="Использование паттернов, фреймворков или подходов без понимания, зачем они нужны («потому что Google так делает»). Решение: изучение основ, критическое мышление, понимание компромиссов." data-en="Using patterns, frameworks or approaches without understanding why they are needed ('because Google does it'). Solution: learning fundamentals, critical thinking, understanding trade-offs.">Використання патернів, фреймворків або підходів без розуміння, чому вони потрібні («бо Google так робить»). Рішення: вивчення основ, критичне мислення, розуміння компромісів.</p>
+</div>
+<div class="protocol-card">
+<h4>Lava Flow (Лавовий потік)</h4>
+<p data-uk="Мертвий код, який ніхто не наважується видалити, бо «раптом щось зламається». Накопичується з роками і ускладнює розуміння системи. Рішення: code coverage аналіз, поступовий рефакторинг, feature flags." data-ru="Мёртвый код, который никто не решается удалить, потому что «вдруг что-то сломается». Накапливается годами и усложняет понимание системы. Решение: code coverage анализ, постепенный рефакторинг, feature flags." data-en="Dead code that no one dares to delete because 'something might break.' Accumulates over the years and complicates system understanding. Solution: code coverage analysis, gradual refactoring, feature flags.">Мертвий код, який ніхто не наважується видалити, бо «раптом щось зламається». Накопичується з роками і ускладнює розуміння системи. Рішення: code coverage аналіз, поступовий рефакторинг, feature flags.</p>
+</div>
+</div>
+
+<div class="tip">
+<strong data-uk="SOLID — як протиотрута:" data-ru="SOLID — как противоядие:" data-en="SOLID as an antidote:">SOLID — як протиотрута:</strong>
+<span data-uk=" S — Single Responsibility (одна відповідальність), O — Open/Closed (відкритий для розширення, закритий для змін), L — Liskov Substitution (замінність підкласів), I — Interface Segregation (розділення інтерфейсів), D — Dependency Inversion (залежність від абстракцій). Дотримання SOLID значно знижує ймовірність антипатернів." data-ru=" S — Single Responsibility (одна ответственность), O — Open/Closed (открыт для расширения, закрыт для изменений), L — Liskov Substitution (заменяемость подклассов), I — Interface Segregation (разделение интерфейсов), D — Dependency Inversion (зависимость от абстракций). Соблюдение SOLID значительно снижает вероятность антипаттернов." data-en=" S — Single Responsibility, O — Open/Closed, L — Liskov Substitution, I — Interface Segregation, D — Dependency Inversion. Following SOLID significantly reduces the likelihood of antipatterns."> S — Single Responsibility (одна відповідальність), O — Open/Closed (відкритий для розширення, закритий для змін), L — Liskov Substitution (замінність підкласів), I — Interface Segregation (розділення інтерфейсів), D — Dependency Inversion (залежність від абстракцій). Дотримання SOLID значно знижує ймовірність антипатернів.</span>
+</div>
+</section>
+
+<section class="section" id="summary">
+<h2><span class="icon">&#127919;</span> <span data-uk="Підсумок" data-ru="Итог" data-en="Summary">Підсумок</span></h2>
+<p data-uk="Патерни проєктування — це інструментарій досвідченого розробника, але не мета сама по собі. 23 класичних GoF-патерни заклали фундамент сучасної ООП-архітектури, а нові підходи (мікросервіси, event-driven, serverless, hexagonal) розширили горизонти масштабованих систем." data-ru="Паттерны проектирования — это инструментарий опытного разработчика, но не цель сама по себе. 23 классических GoF-паттерна заложили фундамент современной ООП-архитектуры, а новые подходы (микросервисы, event-driven, serverless, hexagonal) расширили горизонты масштабируемых систем." data-en="Design patterns are the toolkit of an experienced developer, but not an end in themselves. The 23 classic GoF patterns laid the foundation of modern OOP architecture, while new approaches (microservices, event-driven, serverless, hexagonal) have expanded the horizons of scalable systems.">Патерни проєктування — це інструментарій досвідченого розробника, але не мета сама по собі. 23 класичних GoF-патерни заклали фундамент сучасної ООП-архітектури, а нові підходи (мікросервіси, event-driven, serverless, hexagonal) розширили горизонти масштабованих систем.</p>
+<p data-uk="Ключ до успіху — баланс: знати патерни, але не зловживати ними; розуміти архітектурні стилі, але обирати відповідно до контексту; вміти розпізнавати антипатерни та вчасно їх усувати. Як сказав Дональд Кнут: «Передчасна оптимізація — корінь усього зла», а ми додамо: «Непродумане застосування патернів — її близький родич»." data-ru="Ключ к успеху — баланс: знать паттерны, но не злоупотреблять ими; понимать архитектурные стили, но выбирать в соответствии с контекстом; уметь распознавать антипаттерны и вовремя их устранять. Как сказал Дональд Кнут: «Преждевременная оптимизация — корень всего зла», а мы добавим: «Необдуманное применение паттернов — её близкий родственник»." data-en="The key to success is balance: know the patterns but don't abuse them; understand architectural styles but choose according to context; be able to recognize antipatterns and eliminate them in time. As Donald Knuth said: 'Premature optimization is the root of all evil,' and we add: 'Thoughtless application of patterns is its close relative.'">Ключ до успіху — баланс: знати патерни, але не зловживати ними; розуміти архітектурні стилі, але обирати відповідно до контексту; вміти розпізнавати антипатерни та вчасно їх усувати. Як сказав Дональд Кнут: «Передчасна оптимізація — корінь усього зла», а ми додамо: «Непродумане застосування патернів — її близький родич».</p>
+</section>
+</main>
+
+<footer class="footer">
+<p>&larr; <a href="index.html" data-uk="Повернутися на головну сторінку" data-ru="Вернуться на главную страницу" data-en="Return to home page">Повернутися на головну сторінку</a></p>
+<p style="margin-top:10px; font-size:0.8rem;">&copy; 2026 — <span data-uk="Навчальний проєкт. Патерни проєктування." data-ru="Учебный проект. Паттерны проектирования." data-en="Educational project. Design Patterns.">Навчальний проєкт. Патерни проєктування.</span></p>
+</footer>
+
+<script>
+function toggleTheme() {
+  var body = document.body;
+  var btn = document.querySelector('.theme-toggle');
+  var current = body.getAttribute('data-theme');
+  if (current === 'light') {
+    body.removeAttribute('data-theme');
+    btn.innerHTML = '&#127769;';
+    localStorage.setItem('theme', 'dark');
+  } else {
+    body.setAttribute('data-theme', 'light');
+    btn.innerHTML = '&#9728;';
+    localStorage.setItem('theme', 'light');
+  }
+}
+(function(){
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') {
+    document.body.setAttribute('data-theme', 'light');
+    document.querySelector('.theme-toggle').innerHTML = '&#9728;';
+  }
+})();
+
+function setLang(lang) {
+  document.querySelectorAll('.lang-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.querySelectorAll('.lang-btn').forEach(function(btn){
+    if (btn.textContent.toLowerCase() === lang) btn.classList.add('active');
+  });
+  document.querySelectorAll('[data-uk][data-ru][data-en]').forEach(function(el){
+    var text = el.getAttribute('data-' + lang);
+    if (text) el.textContent = text;
+  });
+  var titleEl = document.querySelector('title');
+  if (titleEl) {
+    var titleText = titleEl.getAttribute('data-' + lang);
+    if (titleText) document.title = titleText;
+  }
+  document.querySelector('html').setAttribute('lang', lang === 'uk' ? 'uk' : lang === 'ru' ? 'ru' : 'en');
+  localStorage.setItem('lang', lang);
+}
+(function(){
+  var saved = localStorage.getItem('lang');
+  if (saved && saved !== 'uk') setLang(saved);
+})();
+
+(function(){
+  var sections = document.querySelectorAll('.section[id]');
+  var navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
+  function onScroll() {
+    var scrollPos = window.scrollY + 150;
+    sections.forEach(function(sec){
+      var top = sec.offsetTop;
+      var bottom = top + sec.offsetHeight;
+      var id = sec.getAttribute('id');
+      if (scrollPos >= top && scrollPos < bottom) {
+        navLinks.forEach(function(link){
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + id) link.classList.add('active');
+        });
+      }
+    });
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+})();
+</script>
+</body>
+</html>

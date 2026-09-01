@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Квантові обчислення — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">⚛️ Квантові обчислення</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+const categories = {
+    fundamentals: { uk: "🧬 Основи квантової механіки", ru: "🧬 Основы квантовой механики", en: "🧬 Quantum Fundamentals" },
+    hardware: { uk: "🔧 Апаратне забезпечення (Кубіти)", ru: "🔧 Аппаратное обеспечение (Кубиты)", en: "🔧 Hardware (Qubits)" },
+    algorithms: { uk: "🧮 Квантові алгоритми", ru: "🧮 Квантовые алгоритмы", en: "🧮 Quantum Algorithms" },
+    software: { uk: "💻 ПЗ та Інструменти", ru: "💻 ПО и Инструменты", en: "💻 Software & Tools" }
+};
+
+const items = [
+    { cat: "fundamentals", icon: "⚛️", 
+      name: { uk: "Квантовий біт (Кубіт)", ru: "Квантовый бит (Кубит)", en: "Quantum Bit (Qubit)" },
+      desc: { uk: "Базова одиниця квантової інформації. На відміну від класичного біта (0 або 1), кубіт може перебувати в суперпозиції обох станів одночасно.",
+              ru: "Базовая единица квантовой информации. В отличие от классического бита (0 или 1), кубит может находиться в суперпозиции обоих состояний одновременно.",
+              en: "The basic unit of quantum information. Unlike a classical bit (0 or 1), a qubit can exist in a superposition of both states simultaneously." },
+      traits: { uk: "Суперпозиція, Сфера Блоха, |0⟩, |1⟩", ru: "Суперпозиция, Сфера Блоха, |0⟩, |1⟩", en: "Superposition, Bloch Sphere, |0⟩, |1⟩" },
+      spec: { uk: "Властивість: Експоненційне зростання простору станів", ru: "Свойство: Экспоненциальный рост пространства состояний", en: "Property: Exponential State Space Growth" },
+      links: [
+        { name: "IBM Quantum Learning", url: "https://learning.quantum.ibm.com/" }
+      ]},
+
+    { cat: "fundamentals", icon: "🔗", 
+      name: { uk: "Квантова заплутаність", ru: "Квантовая запутанность", en: "Quantum Entanglement" },
+      desc: { uk: "Явище, при якому стани двох або більше кубітів стають взаємозалежними, незалежно від відстані між ними. Основа для квантової телепортації.",
+              ru: "Явление, при котором состояния двух или более кубитов становятся взаимозависимыми, независимо от расстояния между ними. Основа для квантовой телепортации.",
+              en: "A phenomenon where the states of two or more qubits become interconnected, regardless of the distance between them. Basis for quantum teleportation." },
+      traits: { uk: "Стани Белла, EPR-парадокс, Нелокальність, Кореляція", ru: "Состояния Белла, EPR-парадокс, Нелокальность, Корреляция", en: "Bell States, EPR Paradox, Non-locality, Correlation" },
+      spec: { uk: "Застосування: Квантова криптографія та комунікації", ru: "Применение: Квантовая криптография и коммуникации", en: "Application: Quantum Cryptography & Communications" },
+      links: [
+        { name: "QuTech Academy", url: "https://www.qutube.nl/" }
+      ]},
+
+    { cat: "fundamentals", icon: "🚪", 
+      name: { uk: "Квантові вентилі (Gates)", ru: "Квантовые вентили (Gates)", en: "Quantum Gates" },
+      desc: { uk: "Базові операції, що змінюють стан кубітів. Аналог логічних вентилів у класичних комп'ютерах, але працюють з матрицями перетворення.",
+              ru: "Базовые операции, изменяющие состояния кубитов. Аналог логических вентилей в классических компьютерах, но работающие с матрицами преобразования.",
+              en: "Basic operations that change the state of qubits. Analogous to logic gates in classical computers, but operating with transformation matrices." },
+      traits: { uk: "Гейт Адамара (H), CNOT, Паулі (X,Y,Z), Унітарні матриці", ru: "Вентиль Адамара (H), CNOT, Паули (X,Y,Z), Унитарные матрицы", en: "Hadamard (H), CNOT, Pauli (X,Y,Z), Unitary Matrices" },
+      spec: { uk: "Принцип: Зворотність обчислень", ru: "Принцип: Обратимость вычислений", en: "Principle: Reversible Computation" },
+      links: [
+        { name: "Quantum Country", url: "https://quantum.country/" }
+      ]},
+
+    { cat: "hardware", icon: "🧊", 
+      name: { uk: "Надпровідні кубіти", ru: "Сверхпроводящие кубиты", en: "Superconducting Qubits" },
+      desc: { uk: "Найпоширеніша технологія (IBM, Google). Використовує електричні кола, охолоджені до надзвичайно низьких температур для створення кубітів.",
+              ru: "Самая распространенная технология (IBM, Google). Использует электрические цепи, охлажденные до сверхнизких температур для создания кубитов.",
+              en: "The most common technology (IBM, Google). Uses electrical circuits cooled to extremely low temperatures to create qubits." },
+      traits: { uk: "Трансмони, Мікрохвильові імпульси, Кріогенні системи, Дилатійний холодильник", ru: "Трансмоны, Микроволновые импульсы, Криогенные системы, Диляционный холодильник", en: "Transmons, Microwave Pulses, Cryogenics, Dilution Refrigerator" },
+      spec: { uk: "Фокус: Швидкість операцій, але схильні до шуму", ru: "Фокус: Скорость операций, но подвержены шуму", en: "Focus: Fast operations, but prone to noise" },
+      links: [
+        { name: "IBM Quantum", url: "https://www.ibm.com/quantum" },
+        { name: "Google Quantum AI", url: "https://quantumai.google/" }
+      ]},
+
+    { cat: "hardware", icon: "🧲", 
+      name: { uk: "Захоплені іони (Trapped Ions)", ru: "Захваченные ионы (Trapped Ions)", en: "Trapped Ions" },
+      desc: { uk: "Використовує окремі іони, утримувані електромагнітним полем у вакуумі. Лазери використовуються для зміни їх станів (Quantinuum, IonQ).",
+              ru: "Использует отдельные ионы, удерживаемые электромагнитным полем в вакууме. Лазеры используются для изменения их состояний (Quantinuum, IonQ).",
+              en: "Uses individual ions held in place by electromagnetic fields in a vacuum. Lasers are used to change their states (Quantinuum, IonQ)." },
+      traits: { uk: "Високий зв'язок, Довгий час життя, Лазерне керування, Ytterbium", ru: "Высокая связность, Долгое время жизни, Лазерное управление, Ytterbium", en: "High Connectivity, Long Lifespan, Laser Control, Ytterbium" },
+      spec: { uk: "Перевага: Висока точність та стабільність", ru: "Преимущество: Высокая точность и стабильность", en: "Advantage: High Fidelity & Stability" },
+      links: [
+        { name: "IonQ", url: "https://ionq.com/" },
+        { name: "Quantinuum", url: "https://www.quantinuum.com/" }
+      ]},
+
+    { cat: "hardware", icon: "💡", 
+      name: { uk: "Фотонні кубіти", ru: "Фотонные кубиты", en: "Photonic Qubits" },
+      desc: { uk: "Використовує окремі частинки світла (фотони) для обробки інформації. Працює при кімнатній температурі, але складно реалізувати дворотові гейти.",
+              ru: "Использует отдельные частицы света (фотоны) для обработки информации. Работает при комнатной температуре, но сложно реализовать двухкубитные вентили.",
+              en: "Uses single particles of light (photons) to process information. Operates at room temperature, but two-qubit gates are hard to implement." },
+      traits: { uk: "Кімнатна температура, Інтерферометри, Оптичні хвилеводи, Джерела одиничних фотонів", ru: "Комнатная температура, Интерферометры, Оптические волноводы, Источники одиночных фотонов", en: "Room Temperature, Interferometers, Optical Waveguides, Single-Photon Sources" },
+      spec: { uk: "Потенціал: Легка інтеграція у мережі", ru: "Потенциал: Легкая интеграция в сети", en: "Potential: Easy Network Integration" },
+      links: [
+        { name: "Xanadu", url: "https://www.xanadu.ai/" },
+        { name: "PsiQuantum", url: "https://www.psiquantum.com/" }
+      ]},
+
+    { cat: "algorithms", icon: "🔢", 
+      name: { uk: "Алгоритм Шора (Shor's)", ru: "Алгоритм Шора (Shor's)", en: "Shor's Algorithm" },
+      desc: { uk: "Квантовий алгоритм для факторизації великих чисел. Здатний зламати сучасну криптографію (RSA) за поліноміальний час.",
+              ru: "Квантовый алгоритм для факторизации больших чисел. Способен взломать современную криптографию (RSA) за полиномиальное время.",
+              en: "A quantum algorithm for integer factorization. Capable of breaking modern cryptography (RSA) in polynomial time." },
+      traits: { uk: "Факторизація, RSA-загроза, QFT, Поліноміальний час", ru: "Факторизация, RSA-угроза, QFT, Полиномиальное время", en: "Factorization, RSA Threat, QFT, Polynomial Time" },
+      spec: { uk: "Вплив: Мотиватор розвитку постквантової криптографії", ru: "Влияние: Мотиватор развития постквантовой криптографии", en: "Impact: Driver for Post-Quantum Cryptography" },
+      links: [
+        { name: "Explanation (Quantum Magazine)", url: "https://www.quantamagazine.org/" }
+      ]},
+
+    { cat: "algorithms", icon: "🔍", 
+      name: { uk: "Алгоритм Гровера (Grover's)", ru: "Алгоритм Гровера (Grover's)", en: "Grover's Algorithm" },
+      desc: { uk: "Алгоритм для пошуку в нев структурованій базі даних. Дає квадратичне прискорення порівняно з класичними методами.",
+              ru: "Алгоритм для поиска в неструктурированной базе данных. Дает квадратичное ускорение по сравнению с классическими методами.",
+              en: "An algorithm for searching an unstructured database. Provides a quadratic speedup over classical methods." },
+      traits: { uk: "Пошук, Амплітудне підсилення, Оракул, O(√N)", ru: "Поиск, Амплитудное усиление, Оракул, O(√N)", en: "Search, Amplitude Amplification, Oracle, O(√N)" },
+      spec: { uk: "Перевага: Прискорення перебору варіантів", ru: "Преимущество: Ускорение перебора вариантов", en: "Advantage: Speeds up Brute-Force" },
+      links: [
+        { name: "Qiskit Textbook", url: "https://qiskit.org/textbook/" }
+      ]},
+
+    { cat: "algorithms", icon: "⚡", 
+      name: { uk: "VQE (Гібридні алгоритми)", ru: "VQE (Гибридные алгоритмы)", en: "VQE (Hybrid Algorithms)" },
+      desc: { uk: "Варіаційний квантовий власний розв'язувач. Поєднує класичний машинний ленд з квантовим процесором для хімічних симуляцій (NISQ ера).",
+              ru: "Вариационный квантовый собственный решатель. Сочетает классический машинный лернинг с квантовым процессором для химических симуляций (эпоха NISQ).",
+              en: "Variational Quantum Eigensolver. Combines classical machine learning with a quantum processor for chemical simulations (NISQ era)." },
+      traits: { uk: "NISQ, Хімія, Оптимізація, Квантово-класичний цикл", ru: "NISQ, Химия, Оптимизация, Квантово-классический цикл", en: "NISQ, Chemistry, Optimization, Quantum-Classical Loop" },
+      spec: { uk: "Застосування: Симуляція молекул та матеріалів", ru: "Применение: Симуляция молекул и материалов", en: "Application: Molecule & Material Simulation" },
+      links: [
+        { name: "PennyLane", url: "https://pennylane.ai/" }
+      ]},
+
+    { cat: "software", icon: "🐍", 
+      name: { uk: "Qiskit (IBM)", ru: "Qiskit (IBM)", en: "Qiskit (IBM)" },
+      desc: { uk: "Найпопулярніший Python-фреймворк з відкритим кодом для роботи з квантовими колами. Дозволяє запускати код на реальних квантових комп'ютерах IBM.",
+              ru: "Самый популярный Python-фреймворк с открытым кодом для работы с квантовыми цепями. Позволяет запускать код на реальных квантовых компьютерах IBM.",
+              en: "The most popular open-source Python framework for working with quantum circuits. Allows running code on real IBM quantum computers." },
+      traits: { uk: "Python, Quantum Circuits, Open Source, Cloud Access", ru: "Python, Quantum Circuits, Open Source, Cloud Access", en: "Python, Quantum Circuits, Open Source, Cloud Access" },
+      spec: { uk: "Рівень: SDK для розробників", ru: "Уровень: SDK для разработчиков", en: "Level: SDK for Developers" },
+      links: [
+        { name: "Qiskit.org", url: "https://qiskit.org/" }
+      ]},
+
+    { cat: "software", icon: "🧩", 
+      name: { uk: "Cirq (Google)", ru: "Cirq (Google)", en: "Cirq (Google)" },
+      desc: { uk: "Python-фреймворк від Google для створення, редагування та виклику квантових кіл NISQ-ера. Оптимізований для симуляцій.",
+              ru: "Python-фреймворк от Google для создания, редактирования и вызова квантовых цепей NISQ-эпохи. Оптимизирован для симуляций.",
+              en: "A Python framework by Google for creating, editing, and invoking NISQ-era quantum circuits. Optimized for simulations." },
+      traits: { uk: "Python, NISQ, Симуляція, Google Quantum AI", ru: "Python, NISQ, Симуляция, Google Quantum AI", en: "Python, NISQ, Simulation, Google Quantum AI" },
+      spec: { uk: "Фокус: Точний контроль над квантовим обладнанням", ru: "Фокус: Точный контроль над квантовым оборудованием", en: "Focus: Precise Control over Quantum Hardware" },
+      links: [
+        { name: "Cirq.dev", url: "https://quantumai.google/cirq" }
+      ]},
+
+    { cat: "software", icon: "#️⃣", 
+      name: { uk: "Q# (Microsoft)", ru: "Q# (Microsoft)", en: "Q# (Microsoft)" },
+      desc: { uk: "Спеціалізована мова програмування від Microsoft для вираження квантових алгоритмів. Інтегрована з Visual Studio та Azure Quantum.",
+              ru: "Специализированный язык программирования от Microsoft для выражения квантовых алгоритмов. Интегрирован с Visual Studio и Azure Quantum.",
+              en: "A domain-specific programming language by Microsoft for expressing quantum algorithms. Integrated with Visual Studio and Azure Quantum." },
+      traits: { uk: "Мова програмування, Azure Quantum, QDK, Логіка високого рівня", ru: "Язык программирования, Azure Quantum, QDK, Логика высокого уровня", en: "Programming Language, Azure Quantum, QDK, High-level Logic" },
+      spec: { uk: "Підхід: Абстракція від апаратного забезпечення", ru: "Подход: Абстракция от аппаратного обеспечения", en: "Approach: Hardware Abstraction" },
+      links: [
+        { name: "Microsoft Quantum", url: "https://azure.microsoft.com/en-us/products/quantum/" }
+      ]}
+];
+
+const ui = {
+    uk: {
+        title: "Квантові обчислення — Довідник",
+        pageTitle: "⚛️ Квантові обчислення",
+        home: "Головна сторінка",
+        all: "Усі розділи",
+        traits: "Ключові поняття та терміни",
+        mfgText: "Інструменти та платформи:",
+        noResults: "Нічого не знайдено.",
+        footer: "⚛️ Квантові обчислення | Довідник 2025"
+    },
+    ru: {
+        title: "Квантовые вычисления — Справочник",
+        pageTitle: "⚛️ Квантовые вычисления",
+        home: "Главная страница",
+        all: "Все разделы",
+        traits: "Ключевые понятия и термины",
+        mfgText: "Инструменты и платформы:",
+        noResults: "Ничего не найдено.",
+        footer: "⚛️ Квантовые вычисления | Справочник 2025"
+    },
+    en: {
+        title: "Quantum Computing — Guide",
+        pageTitle: "⚛️ Quantum Computing",
+        home: "Home page",
+        all: "All Sections",
+        traits: "Key Concepts & Terms",
+        mfgText: "Tools & Platforms:",
+        noResults: "Nothing found.",
+        footer: "⚛️ Quantum Computing | Guide 2025"
+    }
+};
+
+let currentLang = localStorage.getItem('lang-quantum') || 'uk';
+let activeCategory = 'all';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang-quantum', lang);
+    document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+    ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+    document.title = ui[lang].title;
+    document.getElementById('home-link').textContent = ui[lang].home;
+    document.getElementById('page-title').textContent = ui[lang].pageTitle;
+    renderFilters();
+    render();
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const cur = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+function renderFilters() {
+    const c = document.getElementById('filters');
+    let h = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+    for (const [k,v] of Object.entries(categories)) {
+        h += `<button class="filter-btn ${activeCategory===k?'active':''}" onclick="setCat('${k}')">${v[currentLang]}</button>`;
+    }
+    c.innerHTML = h;
+}
+
+function setCat(cat) {
+    activeCategory = cat;
+    renderFilters();
+    render();
+}
+
+function render() {
+    const main = document.getElementById('main');
+    let html = '';
+    const cats = (activeCategory === 'all') ? Object.keys(categories) : [activeCategory];
+
+    cats.forEach(catKey => {
+        const list = items.filter(e => e.cat === catKey);
+        if (!list.length) return;
+        html += `<div class="section-title">${categories[catKey][currentLang]}</div><div class="grid">`;
+        list.forEach(e => {
+            const tags = e.traits[currentLang].split(',').map(t => `<span class="tag">${t.trim()}</span>`).join('');
+            
+            let linksHtml = '';
+            if (e.links && e.links.length) {
+                linksHtml = `<div class="mfg-links"><strong style="width:100%; font-size:0.7rem; color:var(--text-muted); margin-bottom:2px;">${ui[currentLang].mfgText}</strong>` +
+                    e.links.map(l => `<a href="${l.url}" target="_blank" rel="noopener" class="mfg-link">🔗 ${l.name}</a>`).join('') +
+                    `</div>`;
+            }
+
+            html += `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">${e.icon}</div>
+                        <div class="card-title">${e.name[currentLang]}</div>
+                    </div>
+                    <div class="card-desc">${e.desc[currentLang]}</div>
+                    <div class="card-meta">
+                        <strong>${ui[currentLang].traits}</strong>
+                        <div style="margin-top:0.25rem">${tags}</div>
+                    </div>
+                    <div class="spec-tag">📌 ${e.spec[currentLang]}</div>
+                    ${linksHtml}
+                </div>`;
+        });
+        html += `</div>`;
+    });
+
+    if (!html) html = `<div class="no-results">${ui[currentLang].noResults}</div>`;
+    main.innerHTML = html;
+    document.getElementById('footer').textContent = ui[currentLang].footer;
+}
+
+setLang(currentLang);
+</script>
+</body>
+</html>

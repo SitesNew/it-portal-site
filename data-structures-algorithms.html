@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Структури даних та алгоритми — довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #00e5b0;
+            --accent-2: #7c3aed;
+            --accent-3: #ff9f43;
+            --gradient: linear-gradient(135deg, #00e5b0, #7c3aed);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #000; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #000; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(0,229,176,0.2);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(124,58,237,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .complexity-tag {
+            display: inline-block;
+            background: rgba(0,229,176,0.12); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.6rem 1.8rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.35rem; margin-bottom: 0.8rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro h3 {
+            font-size: 1.05rem; margin: 1.25rem 0 0.45rem; color: var(--accent);
+        }
+        .intro p { margin-bottom: 0.7rem; }
+        .intro ul { margin: 0.4rem 0 0.8rem 1.25rem; }
+        .intro li { margin-bottom: 0.4rem; }
+        .intro strong { color: var(--text); }
+        .intro code {
+            background: var(--surface-hover);
+            padding: 0.1rem 0.4rem;
+            border-radius: 0.35rem;
+            font-size: 0.88em;
+            color: var(--accent);
+        }
+        .tip {
+            border-left: 3px solid var(--accent);
+            padding: 0.6rem 0.9rem;
+            margin: 0.8rem 0;
+            background: rgba(0,229,176,0.06);
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        .resource-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1.2rem;
+        }
+        .resource-card {
+            background: var(--surface-hover);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 0.75rem;
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .resource-card h4 { color: var(--text); font-size: 1rem; margin-bottom: 0.4rem; }
+        .resource-card p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
+        .btn-external {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: var(--accent);
+            color: #000;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .btn-external:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        .no-results {
+            text-align: center; color: var(--text-muted);
+            padding: 3rem; font-size: 1.1rem; grid-column: 1 / -1;
+        }
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">⚡ Структури даних та алгоритми</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+const categories = {
+    linear: { uk: "📊 Лінійні структури", ru: "📊 Линейные структуры", en: "📊 Linear Structures" },
+    non_linear: { uk: "🌳 Нелінійні структури", ru: "🌳 Нелинейные структуры", en: "🌳 Non-linear Structures" },
+    sorting: { uk: "🔀 Алгоритми сортування", ru: "🔀 Алгоритмы сортировки", en: "🔀 Sorting Algorithms" },
+    searching: { uk: "🔎 Пошук та Графи", ru: "🔎 Поиск и Графы", en: "🔎 Search & Graph Algorithms" }
+};
+
+const items = [
+    { cat: "linear", icon: "🔢", name: "Масив (Array)",
+      desc: { uk: "Проста структура з елементами одного типу, розташованими в пам'яті послідовно. Швидкий доступ за індексом O(1).",
+              ru: "Простая структура с элементами одного типа, расположенными подряд. Быстрый доступ по индексу O(1).",
+              en: "Basic structure storing elements in contiguous memory. Fast index access O(1)." },
+      traits: { uk: "Фіксований/Динамічний розмір, індексація", ru: "Фиксированный/Динамический размер, индексация", en: "Fixed/Dynamic size, indexing" },
+      complexity: "O(1) доступ | O(n) пошук" },
+
+    { cat: "linear", icon: "🔗", name: "Зв'язаний список (Linked List)",
+      desc: { uk: "Вузли, де кожен елемент містить значення та посилання на наступний. Зручно для частого додавання/видалення.",
+              ru: "Узлы, где каждый элемент содержит значение и ссылку на следующий. Удобно для частых вставок/удалений.",
+              en: "Nodes containing value and pointer to the next node. Ideal for dynamic insertions/deletions." },
+      traits: { uk: "Однозв'язний, двозв'язний, динамічна пам'ять", ru: "Односвязный, двусвязный, динамическая память", en: "Singly/Doubly linked, dynamic memory" },
+      complexity: "O(1) вставка | O(n) доступ" },
+
+    { cat: "linear", icon: "🥞", name: "Стек та Черга (Stack & Queue)",
+      desc: { uk: "Стек працює за принципом LIFO (останній зайшов — перший вийшов), а Черга — FIFO (перший зайшов — перший вийшов).",
+              ru: "Стек работает по принципу LIFO (последним пришёл — первым ушёл), Очередь — FIFO (первым пришёл — первым ушёл).",
+              en: "Stack uses LIFO (Last-In First-Out), Queue uses FIFO (First-In First-Out)." },
+      traits: { uk: "LIFO, FIFO, буферизація, виклики функцій", ru: "LIFO, FIFO, буферизация, вызовы функций", en: "LIFO, FIFO, buffering, function calls" },
+      complexity: "O(1) push/pop/enqueue/dequeue" },
+
+    { cat: "non_linear", icon: "🌲", name: "Дерева (Binary Search Tree, AVL)",
+      desc: { uk: "Ієрархічні структури. Двійкове дерево пошуку зберігає менші елементи ліворуч, а більші — праворуч.",
+              ru: "Иерархические структуры. Двоичное дерево поиска хранит меньшие элементы слева, большие — справа.",
+              en: "Hierarchical structure. BST keeps smaller items on the left, larger on the right." },
+      traits: { uk: "BST, AVL, Червоно-чорні дерева, Heap", ru: "BST, AVL, Красно-чёрные деревья, Heap", en: "BST, AVL, Red-Black trees, Heap" },
+      complexity: "O(log n) пошук/вставка" },
+
+    { cat: "non_linear", icon: "🗝️", name: "Хеш-таблиця (Hash Table)",
+      desc: { uk: "Зберігає пари «ключ-значення». Хеш-функція перетворює ключ в індекс масиву. Забезпечує миттєвий доступ.",
+              ru: "Хранит пары «ключ-значение». Хеш-функция преобразует ключ в индекс массива. Обеспечивает быстрый доступ.",
+              en: "Stores key-value pairs using a hash function to compute array indices. Super fast lookups." },
+      traits: { uk: "Ключ-значення, вирішення колізій", ru: "Ключ-значение, разрешение коллизий", en: "Key-value, collision handling" },
+      complexity: "O(1) пошук/вставка в середньому" },
+
+    { cat: "non_linear", icon: "🕸️", name: "Графи (Graph)",
+      desc: { uk: "Множина вершин (вузлів) та ребер (зв'язків). Використовується для моделювання мереж, карт, соціальних зв'язків.",
+              ru: "Множество вершин (узлов) и рёбер (связей). Используется для моделирования сетей, карт, соцсетей.",
+              en: "Set of vertices connected by edges. Models routing, networks, and social connections." },
+      traits: { uk: "Орієнтовані/Неорієнтовані, матриця суміжності", ru: "Ориентированные/Неориентированные, матрица смежности", en: "Directed/Undirected, adjacency matrix/list" },
+      complexity: "Залежить від алгоритму обходу" },
+
+    { cat: "sorting", icon: "⚡", name: "Quick Sort & Merge Sort",
+      desc: { uk: "Ефективні алгоритми сортування, засновані на парадигмі «розділяй і володарюй» (Divide and Conquer).",
+              ru: "Эффективные алгоритмы сортировки на основе парадигмы «разделяй и властвуй».",
+              en: "Efficient sorting algorithms based on Divide and Conquer paradigm." },
+      traits: { uk: "Рекурсія, швидкі, ефективні для великих масивів", ru: "Рекурсия, быстрые, эффективные для больших массивов", en: "Recursion, fast, efficient for large data" },
+      complexity: "O(n log n) середня складність" },
+
+    { cat: "sorting", icon: "🐢", name: "Bubble, Insertion & Selection Sort",
+      desc: { uk: "Прості квадратичні алгоритми сортування. Легкі для розуміння, але повільні на великих масивах даних.",
+              ru: "Простые квадратичные алгоритмы сортировки. Легки для понимания, но медленные на больших данных.",
+              en: "Simple quadratic sorting algorithms. Easy to learn, but inefficient on large datasets." },
+      traits: { uk: "Прості, ітеративні, навчальні", ru: "Простые, итеративные, учебные", en: "Simple, iterative, educational" },
+      complexity: "O(n²) складність у найгіршому випадку" },
+
+    { cat: "searching", icon: "🔍", name: "Бінарний пошук (Binary Search)",
+      desc: { uk: "Пошук елемента у відсортованому масиві шляхом постійного ділення діапазону навпіл.",
+              ru: "Поиск элемента в отсортированном массиве путём постоянного деления диапазона пополам.",
+              en: "Finds element location in a sorted array by repeatedly dividing range in half." },
+      traits: { uk: "Вимагає відсортованого масиву, швидкий", ru: "Требует отсортированный массив, быстрый", en: "Requires sorted array, fast" },
+      complexity: "O(log n) складність" },
+
+    { cat: "searching", icon: "🗺️", name: "Обхід графів (BFS & DFS)",
+      desc: { uk: "Пошук у ширину (BFS) використовує чергу. Пошук у глибину (DFS) використовує стек або рекурсію.",
+              ru: "Поиск в ширину (BFS) использует очередь. Поиск в глубину (DFS) использует стек или рекурсию.",
+              en: "Breadth-First Search (BFS) uses queue. Depth-First Search (DFS) uses stack or recursion." },
+      traits: { uk: "Обхід вершин, пошук шляху, рекурсія", ru: "Обход вершин, поиск пути, рекурсия", en: "Graph traversal, pathfinding, recursion" },
+      complexity: "O(V + E) складність" }
+];
+
+const content = {
+    whatis: {
+        uk: {
+            title: "Що таке Структури Даних та Алгоритми?",
+            body: `
+<p><strong>Структури даних</strong> — це спеціалізовані формати для організації, обробки та зберігання даних у пам'яті комп'ютера.</p>
+<p><strong>Алгоритм</strong> — це чітка послідовність кроків та інструкцій для вирішення конкретної задачі або виконання обчислень.</p>
+<h3>Чому це фундаментальна тема?</h3>
+<ul>
+<li><strong>Оптимізація ресурсів:</strong> правильний вибір структури даних зменшує споживання оперативної пам'яті та прискорює виконання програми в рази.</li>
+<li><strong>Оцінка ефективності (Big O Notation):</strong> дозволяє математично оцінити, як зростає час виконання алгоритму зі збільшенням кількості даних.</li>
+<li><strong>Основа технічних співбесід:</strong> розуміння алгоритмів є обов'язковим для розробників будь-якого рівня.</li>
+</ul>
+`
+        },
+        ru: {
+            title: "Что такое Структуры Данных и Алгоритмы?",
+            body: `
+<p><strong>Структуры данных</strong> — это специализированные форматы для организации, обработки и хранения данных в памяти.</p>
+<p><strong>Алгоритм</strong> — это чёткая последовательность шагов и инструкций для решения конкретной задачи.</p>
+<h3>Почему это фундаментальная тема?</h3>
+<ul>
+<li><strong>Оптимизация ресурсов:</strong> правильный выбор структуры снижает потребление памяти и ускоряет работу программы.</li>
+<li><strong>Оценка эффективности (Big O Notation):</strong> позволяет оценить рост времени выполнения при увеличении объёма данных.</li>
+<li><strong>Основа собеседований:</strong> понимание алгоритмов обязательно для разработчиков любого уровня.</li>
+</ul>
+`
+        },
+        en: {
+            title: "What are Data Structures and Algorithms?",
+            body: `
+<p><strong>Data Structures</strong> are specialized formats for organizing, processing, and storing data in computer memory.</p>
+<p><strong>Algorithm</strong> is a step-by-step set of instructions designed to solve a specific problem.</p>
+<h3>Why is this fundamental?</h3>
+<ul>
+<li><strong>Resource Optimization:</strong> The right data structure reduces memory footprint and boosts performance.</li>
+<li><strong>Big O Notation:</strong> Helps measure algorithm complexity as input size grows.</li>
+<li><strong>Core of Coding Interviews:</strong> essential knowledge for software engineering roles worldwide.</li>
+</ul>
+`
+        }
+    },
+    bigo: {
+        uk: {
+            title: "O-нотація (Big O Notation): оцінка складності",
+            body: `
+<p>Big O показує, як змінюється час виконання або обсяг пам'яті алгоритму при збільшенні вхідних даних (N).</p>
+<h3>Основні класи складності:</h3>
+<ul>
+<li><code>O(1)</code> — <strong>Константна:</strong> час не залежить від N (доступ до елемента за індексом).</li>
+<li><code>O(log n)</code> — <strong>Логарифмічна:</strong> ефективний пошук (бінарний пошук).</li>
+<li><code>O(n)</code> — <strong>Лінійна:</strong> час зростає пропорційно кількості елементів.</li>
+<li><code>O(n log n)</code> — <strong>Квазілінійна:</strong> оптимальна складність для сортування (Quick/Merge Sort).</li>
+<li><code>O(n²)</code> — <strong>Квадратична:</strong> вкладені цикли (сорт бульбашкою).</li>
+</ul>
+<div class="tip"><strong>Золоте правило:</strong> Прагніть алгоритмів зі складністю <code>O(1)</code>, <code>O(log n)</code> або <code>O(n log n)</code>.</div>
+`
+        },
+        ru: {
+            title: "O-нотация (Big O Notation): оценка сложности",
+            body: `
+<p>Big O показывает, как меняется время работы или память алгоритма с ростом входных данных (N).</p>
+<h3>Основные классы сложности:</h3>
+<ul>
+<li><code>O(1)</code> — <strong>Константная:</strong> время не зависит от N.</li>
+<li><code>O(log n)</code> — <strong>Логарифмическая:</strong> эффективный поиск (бинарный поиск).</li>
+<li><code>O(n)</code> — <strong>Линейная:</strong> время растёт пропорционально N.</li>
+<li><code>O(n log n)</code> — <strong>Квазилинейная:</strong> стандарт быстрой сортировки.</li>
+<li><code>O(n²)</code> — <strong>Квадратичная:</strong> вложенные циклы.</li>
+</ul>
+<div class="tip"><strong>Золотое правило:</strong> Стремитесь к алгоритмам со сложностью <code>O(1)</code>, <code>O(log n)</code> или <code>O(n log n)</code>.</div>
+`
+        },
+        en: {
+            title: "Big O Notation: Complexity Analysis",
+            body: `
+<p>Big O measures how runtime or space requirements scale relative to input size (N).</p>
+<h3>Key Complexity Classes:</h3>
+<ul>
+<li><code>O(1)</code> — <strong>Constant:</strong> Instant access by index.</li>
+<li><code>O(log n)</code> — <strong>Logarithmic:</strong> Binary Search.</li>
+<li><code>O(n)</code> — <strong>Linear:</strong> Iterating through items once.</li>
+<li><code>O(n log n)</code> — <strong>Linearithmic:</strong> Standard for fast sorting.</li>
+<li><code>O(n²)</code> — <strong>Quadratic:</strong> Nested loops.</li>
+</ul>
+<div class="tip"><strong>Golden Rule:</strong> Aim for <code>O(1)</code>, <code>O(log n)</code>, or <code>O(n log n)</code>.</div>
+`
+        }
+    },
+    tips: {
+        uk: {
+            title: "Шпаргалка: як обрати правильну структуру даних",
+            body: `
+<p>Вибір інструменту залежить від того, які операції ви виконуєте найчастіше:</p>
+<ul>
+<li><strong>Миттєвий доступ за номером?</strong> → <code>Масив (Array)</code>.</li>
+<li><strong>Швидкий пошук за текстовим ключем?</strong> → <code>Хеш-таблиця (Map / Dictionary)</code>.</li>
+<li><strong>Часте додавання/видалення в середині списку?</strong> → <code>Зв'язаний список (Linked List)</code>.</li>
+<li><strong>Порядок обробки LIFO (останній зайшов)?</strong> → <code>Стек (Stack)</code>.</li>
+<li><strong>Черга завдань FIFO (перший зайшов)?</strong> → <code>Черга (Queue)</code>.</li>
+<li><strong>Зв'язки між об'єктами (маршрути, мережі)?</strong> → <code>Граф (Graph)</code>.</li>
+</ul>
+`
+        },
+        ru: {
+            title: "Шпаргалка: как выбрать правильную структуру данных",
+            body: `
+<p>Выбор инструмента зависит от частоты операций:</p>
+<ul>
+<li><strong>Нужен мгновенный доступ по индексу?</strong> → <code>Массив (Array)</code>.</li>
+<li><strong>Поиск по текстовому ключу?</strong> → <code>Хеш-таблица (Map / Dictionary)</code>.</li>
+<li><strong>Частое добавление/удаление в середине?</strong> → <code>Связный список (Linked List)</code>.</li>
+<li><strong>Обработка LIFO?</strong> → <code>Стек (Stack)</code>.</li>
+<li><strong>Очередь задач FIFO?</strong> → <code>Очередь (Queue)</code>.</li>
+<li><strong>Связи объектов (друзья, карты)?</strong> → <code>Граф (Graph)</code>.</li>
+</ul>
+`
+        },
+        en: {
+            title: "Cheat Sheet: How to Choose a Data Structure",
+            body: `
+<p>Choose based on your most frequent operation:</p>
+<ul>
+<li><strong>Instant access by index?</strong> → <code>Array</code>.</li>
+<li><strong>Fast lookup by string key?</strong> → <code>Hash Table / Map</code>.</li>
+<li><strong>Frequent insertions/deletions in middle?</strong> → <code>Linked List</code>.</li>
+<li><strong>LIFO processing?</strong> → <code>Stack</code>.</li>
+<li><strong>FIFO task processing?</strong> → <code>Queue</code>.</li>
+<li><strong>Complex connections/networks?</strong> → <code>Graph</code>.</li>
+</ul>
+`
+        }
+    },
+    downloads: {
+        uk: {
+            title: "Безкоштовні інтерактивні ресурси та шпаргалки",
+            body: `
+<p>Вам не потрібно створювати власні папки чи файли. Скористайтеся готовими інтерактивними інструментами та довідниками у вільному доступі:</p>
+<div class="resource-cards">
+    <div class="resource-card">
+        <h4>📊 Big O Cheat Sheet (Шпаргалка)</h4>
+        <p>Найвідоміша у світі наочна таблиця складності алгоритмів і структур даних з колірними підказками.</p>
+        <a href="https://www.bigocheatsheet.com" target="_blank" rel="noopener" class="btn-external">🔗 Відкрити Big O Cheat Sheet</a>
+    </div>
+    <div class="resource-card">
+        <h4>🎬 VisuAlgo (Анімація алгоритмів)</h4>
+        <p>Інтерактивний візуалізатор, який покроково показує, як працюють сортування, дерева та графи у реальному часі.</p>
+        <a href="https://visualgo.net/en" target="_blank" rel="noopener" class="btn-external">🔗 Відкрити VisuAlgo</a>
+    </div>
+    <div class="resource-card">
+        <h4>💻 Algorithm Visualizer</h4>
+        <p>Відкрита платформа, де можна дивитися виконання коду алгоритмів різними мовами програмування.</p>
+        <a href="https://algorithm-visualizer.org" target="_blank" rel="noopener" class="btn-external">🔗 Відкрити Visualizer</a>
+    </div>
+</div>
+`
+        },
+        ru: {
+            title: "Бесплатные интерактивные ресурсы и шпаргалки",
+            body: `
+<p>Вам не нужно создавать собственные папки или файлы. Пользуйтесь готовыми интерактивными инструментами в свободном доступе:</p>
+<div class="resource-cards">
+    <div class="resource-card">
+        <h4>📊 Big O Cheat Sheet (Шпаргалка)</h4>
+        <p>Самая известная наглядная таблица сложности алгоритмов и структур данных.</p>
+        <a href="https://www.bigocheatsheet.com" target="_blank" rel="noopener" class="btn-external">🔗 Открыть Big O Cheat Sheet</a>
+    </div>
+    <div class="resource-card">
+        <h4>🎬 VisuAlgo (Анимация алгоритмов)</h4>
+        <p>Интерактивный визуализатор, пошагово показывающий работу деревьев, графов и сортировок.</p>
+        <a href="https://visualgo.net/ru" target="_blank" rel="noopener" class="btn-external">🔗 Открыть VisuAlgo</a>
+    </div>
+    <div class="resource-card">
+        <h4>💻 Algorithm Visualizer</h4>
+        <p>Открытая платформа для визуализации работы кода алгоритмов на разных языках.</p>
+        <a href="https://algorithm-visualizer.org" target="_blank" rel="noopener" class="btn-external">🔗 Открыть Visualizer</a>
+    </div>
+</div>
+`
+        },
+        en: {
+            title: "Free Interactive Resources & Cheat Sheets",
+            body: `
+<p>No personal setup required. Access ready-to-use, open-source educational tools directly:</p>
+<div class="resource-cards">
+    <div class="resource-card">
+        <h4>📊 Big O Cheat Sheet</h4>
+        <p>The standard reference guide for big-O complexities of algorithms and data structures.</p>
+        <a href="https://www.bigocheatsheet.com" target="_blank" rel="noopener" class="btn-external">🔗 Open Big O Cheat Sheet</a>
+    </div>
+    <div class="resource-card">
+        <h4>🎬 VisuAlgo (Algorithm Animation)</h4>
+        <p>Interactive tool visualizing data structures and algorithms through animations.</p>
+        <a href="https://visualgo.net/en" target="_blank" rel="noopener" class="btn-external">🔗 Open VisuAlgo</a>
+    </div>
+    <div class="resource-card">
+        <h4>💻 Algorithm Visualizer</h4>
+        <p>Interactive online platform that visualizes algorithms from actual code execution.</p>
+        <a href="https://algorithm-visualizer.org" target="_blank" rel="noopener" class="btn-external">🔗 Open Visualizer</a>
+    </div>
+</div>
+`
+        }
+    }
+};
+
+const ui = {
+    uk: {
+        title: "Структури даних та алгоритми — довідник",
+        pageTitle: "⚡ Структури даних та алгоритми",
+        home: "Головна сторінка",
+        all: "Усі поняття",
+        whatis: "💡 Що це таке?",
+        bigo: "📈 Оцінка складності (Big O)",
+        tips: "⭐ Шпаргалка вибору",
+        downloads: "🔗 Корисні посилання",
+        traits: "Особливості",
+        complexity: "Складність:",
+        noResults: "Нічого не знайдено.",
+        footer: "⚡ Структури даних та алгоритми | 2026 | Код вільний для редагування"
+    },
+    ru: {
+        title: "Структуры данных и алгоритмы — справочник",
+        pageTitle: "⚡ Структуры данных и алгоритмы",
+        home: "Главная страница",
+        all: "Все понятия",
+        whatis: "💡 Что это такое?",
+        bigo: "📈 Оценка сложности (Big O)",
+        tips: "⭐ Шпаргалка выбора",
+        downloads: "🔗 Полезные ссылки",
+        traits: "Особенности",
+        complexity: "Сложность:",
+        noResults: "Ничего не найдено.",
+        footer: "⚡ Структуры данных и алгоритмы | 2026 | Код свободен для редактирования"
+    },
+    en: {
+        title: "Data Structures & Algorithms — Guide",
+        pageTitle: "⚡ Data Structures & Algorithms",
+        home: "Home page",
+        all: "All concepts",
+        whatis: "💡 What is it?",
+        bigo: "📈 Big O Notation",
+        tips: "⭐ Selection Cheat Sheet",
+        downloads: "🔗 Useful Links",
+        traits: "Key Characteristics",
+        complexity: "Complexity:",
+        noResults: "Nothing found.",
+        footer: "⚡ Data Structures & Algorithms | 2026 | Open for edit"
+    }
+};
+
+let currentLang = localStorage.getItem('lang-dsa') || 'uk';
+let activeCategory = 'whatis';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang-dsa', lang);
+    document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+    ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+    document.title = ui[lang].title;
+    document.getElementById('home-link').textContent = ui[lang].home;
+    document.getElementById('page-title').textContent = ui[lang].pageTitle;
+    renderFilters();
+    render();
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const cur = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+function renderFilters() {
+    const c = document.getElementById('filters');
+    let h = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+    h += `<button class="filter-btn ${activeCategory==='whatis'?'active':''}" onclick="setCat('whatis')">${ui[currentLang].whatis}</button>`;
+    h += `<button class="filter-btn ${activeCategory==='bigo'?'active':''}" onclick="setCat('bigo')">${ui[currentLang].bigo}</button>`;
+    h += `<button class="filter-btn ${activeCategory==='tips'?'active':''}" onclick="setCat('tips')">${ui[currentLang].tips}</button>`;
+    h += `<button class="filter-btn ${activeCategory==='downloads'?'active':''}" onclick="setCat('downloads')">${ui[currentLang].downloads}</button>`;
+    for (const [k,v] of Object.entries(categories)) {
+        h += `<button class="filter-btn ${activeCategory===k?'active':''}" onclick="setCat('${k}')">${v[currentLang]}</button>`;
+    }
+    c.innerHTML = h;
+}
+
+function setCat(cat) {
+    activeCategory = cat;
+    renderFilters();
+    render();
+}
+
+function render() {
+    const main = document.getElementById('main');
+
+    if (['whatis','bigo','tips','downloads'].includes(activeCategory)) {
+        const o = content[activeCategory][currentLang];
+        main.innerHTML = `<div class="intro"><h2>${o.title}</h2>${o.body}</div>`;
+        document.getElementById('footer').textContent = ui[currentLang].footer;
+        return;
+    }
+
+    let html = '';
+    const cats = (activeCategory === 'all')
+        ? Object.keys(categories)
+        : [activeCategory];
+
+    cats.forEach(catKey => {
+        const list = items.filter(e => e.cat === catKey);
+        if (!list.length) return;
+        html += `<div class="section-title">${categories[catKey][currentLang]}</div><div class="grid">`;
+        list.forEach(e => {
+            const tags = e.traits[currentLang].split(',').map(t => `<span class="tag">${t.trim()}</span>`).join('');
+            html += `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">${e.icon}</div>
+                        <div class="card-title">${e.name}</div>
+                    </div>
+                    <div class="card-desc">${e.desc[currentLang]}</div>
+                    <div class="card-meta">
+                        <strong>${ui[currentLang].traits}</strong>
+                        <div style="margin-top:0.25rem">${tags}</div>
+                    </div>
+                    <div class="complexity-tag">⚡ ${e.complexity}</div>
+                </div>`;
+        });
+        html += `</div>`;
+    });
+
+    if (!html) html = `<div class="no-results">${ui[currentLang].noResults}</div>`;
+    main.innerHTML = html;
+    document.getElementById('footer').textContent = ui[currentLang].footer;
+}
+
+setLang(currentLang);
+</script>
+</body>
+</html>

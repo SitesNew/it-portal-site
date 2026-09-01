@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Science, Big Data та аналітика — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">📊 Data Science, Big Data та аналітика</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    const categories = {
+        foundations: {
+            uk: "📚 Основи роботи з даними",
+            ru: "📚 Основы работы с данными",
+            en: "📚 Data Foundations"
+        },
+        pipelines: {
+            uk: "🔄 ETL / ELT та конвеєри",
+            ru: "🔄 ETL / ELT и конвейеры",
+            en: "🔄 ETL / ELT & Pipelines"
+        },
+        bigdata: {
+            uk: "🐘 Big Data та обробка",
+            ru: "🐘 Big Data и обработка",
+            en: "🐘 Big Data & Processing"
+        },
+        analytics: {
+            uk: "📈 Аналітика та візуалізація",
+            ru: "📈 Аналитика и визуализация",
+            en: "📈 Analytics & Visualization"
+        },
+        ml: {
+            uk: "🤖 Data Science та ML",
+            ru: "🤖 Data Science и ML",
+            en: "🤖 Data Science & ML"
+        }
+    };
+
+    const items = [
+        {
+            cat: "foundations",
+            icon: "🗃️",
+            name: {
+                uk: "Типи даних і сховища",
+                ru: "Типы данных и хранилища",
+                en: "Data Types and Storage"
+            },
+            desc: {
+                uk: "Структуровані (таблиці, SQL), напівструктуровані (JSON, XML) і неструктуровані дані (текст, зображення, логи). Сховища: реляційні БД, NoSQL, data lake, data warehouse, lakehouse.",
+                ru: "Структурированные (таблицы, SQL), полуструктурированные (JSON, XML) и неструктурированные данные (текст, изображения, логи). Хранилища: реляционные БД, NoSQL, data lake, data warehouse, lakehouse.",
+                en: "Structured (tables, SQL), semi-structured (JSON, XML) and unstructured data (text, images, logs). Storage: relational DBs, NoSQL, data lake, data warehouse, lakehouse."
+            },
+            traits: {
+                uk: "SQL, NoSQL, Data Lake, Data Warehouse, Lakehouse, Формати даних",
+                ru: "SQL, NoSQL, Data Lake, Data Warehouse, Lakehouse, Форматы данных",
+                en: "SQL, NoSQL, Data Lake, Data Warehouse, Lakehouse, Data formats"
+            },
+            spec: {
+                uk: "Правильне сховище — основа аналітики",
+                ru: "Правильное хранилище — основа аналитики",
+                en: "Right storage is the foundation of analytics"
+            },
+            links: [
+                { name: "What is a Data Lake", url: "https://aws.amazon.com/big-data/datalakes-and-analytics/what-is-a-data-lake/" },
+                { name: "Lakehouse", url: "https://databricks.com/blog/2020/01/30/what-is-a-data-lakehouse.html" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "🧹",
+            name: {
+                uk: "Якість даних і підготовка",
+                ru: "Качество данных и подготовка",
+                en: "Data Quality and Preparation"
+            },
+            desc: {
+                uk: "Очищення, нормалізація, обробка пропусків, виявлення аномалій, дедуплікація. Без якісних даних навіть найкращі моделі та дашборди дають хибні висновки (garbage in — garbage out).",
+                ru: "Очистка, нормализация, обработка пропусков, обнаружение аномалий, дедупликация. Без качественных данных даже лучшие модели и дашборды дают ложные выводы (garbage in — garbage out).",
+                en: "Cleaning, normalization, handling missing values, anomaly detection, deduplication. Without quality data even the best models and dashboards produce wrong conclusions (garbage in — garbage out)."
+            },
+            traits: {
+                uk: "Очищення, Нормалізація, Пропуски, Аномалії, Валідація, Профілювання",
+                ru: "Очистка, Нормализация, Пропуски, Аномалии, Валидация, Профилирование",
+                en: "Cleaning, Normalization, Missing values, Anomalies, Validation, Profiling"
+            },
+            spec: {
+                uk: "Якість даних важливіша за складність моделі",
+                ru: "Качество данных важнее сложности модели",
+                en: "Data quality matters more than model complexity"
+            },
+            links: [
+                { name: "Great Expectations", url: "https://greatexpectations.io" },
+                { name: "pandas", url: "https://pandas.pydata.org" }
+            ]
+        },
+        {
+            cat: "foundations",
+            icon: "📐",
+            name: {
+                uk: "SQL та мови запитів",
+                ru: "SQL и языки запросов",
+                en: "SQL and Query Languages"
+            },
+            desc: {
+                uk: "SQL залишається головною мовою роботи з даними. Сучасні діалекти (PostgreSQL, BigQuery, Spark SQL, DuckDB) додають аналітичні функції, віконні функції, CTE та роботу з JSON/масивами.",
+                ru: "SQL остается главным языком работы с данными. Современные диалекты (PostgreSQL, BigQuery, Spark SQL, DuckDB) добавляют аналитические функции, оконные функции, CTE и работу с JSON/массивами.",
+                en: "SQL remains the main language for working with data. Modern dialects (PostgreSQL, BigQuery, Spark SQL, DuckDB) add analytic functions, window functions, CTEs and JSON/array support."
+            },
+            traits: {
+                uk: "SELECT, JOIN, Window functions, CTE, Агрегації, Діалекти SQL",
+                ru: "SELECT, JOIN, Window functions, CTE, Агрегации, Диалекты SQL",
+                en: "SELECT, JOIN, Window functions, CTE, Aggregations, SQL dialects"
+            },
+            spec: {
+                uk: "SQL — обов’язкова навичка для роботи з даними",
+                ru: "SQL — обязательный навык для работы с данными",
+                en: "SQL is a mandatory skill for data work"
+            },
+            links: [
+                { name: "Mode SQL Tutorial", url: "https://mode.com/sql-tutorial/" },
+                { name: "DuckDB", url: "https://duckdb.org" },
+                { name: "PostgreSQL", url: "https://www.postgresql.org" }
+            ]
+        },
+        {
+            cat: "pipelines",
+            icon: "⚙️",
+            name: {
+                uk: "ETL та ELT",
+                ru: "ETL и ELT",
+                en: "ETL and ELT"
+            },
+            desc: {
+                uk: "ETL (Extract–Transform–Load) — класичний підхід: дані спочатку перетворюють, потім завантажують. ELT (Extract–Load–Transform) — спочатку завантажують «сирі» дані, трансформації виконують уже в сховищі. Сучасні хмарні платформи часто надають перевагу ELT.",
+                ru: "ETL (Extract–Transform–Load) — классический подход: данные сначала преобразуют, потом загружают. ELT (Extract–Load–Transform) — сначала загружают «сырые» данные, трансформации выполняют уже в хранилище. Современные облачные платформы часто предпочитают ELT.",
+                en: "ETL (Extract–Transform–Load) is the classic approach: transform first, then load. ELT (Extract–Load–Transform) loads raw data first and transforms inside the warehouse. Modern cloud platforms often prefer ELT."
+            },
+            traits: {
+                uk: "Extract, Transform, Load, ELT, Інкрементальне завантаження, Оркестрація",
+                ru: "Extract, Transform, Load, ELT, Инкрементальная загрузка, Оркестрация",
+                en: "Extract, Transform, Load, ELT, Incremental load, Orchestration"
+            },
+            spec: {
+                uk: "ELT став популярнішим у хмарі",
+                ru: "ELT стал популярнее в облаке",
+                en: "ELT became more popular in the cloud"
+            },
+            links: [
+                { name: "Airflow", url: "https://airflow.apache.org" },
+                { name: "dbt", url: "https://www.getdbt.com" },
+                { name: "Prefect", url: "https://www.prefect.io" }
+            ]
+        },
+        {
+            cat: "pipelines",
+            icon: "🔗",
+            name: {
+                uk: "Оркестрація конвеєрів",
+                ru: "Оркестрация конвейеров",
+                en: "Pipeline Orchestration"
+            },
+            desc: {
+                uk: "Інструменти для запуску, моніторингу та залежностей між завданнями обробки даних: Apache Airflow, Prefect, Dagster, Luigi. Дозволяють будувати надійні та відтворювані конвеєри.",
+                ru: "Инструменты для запуска, мониторинга и зависимостей между задачами обработки данных: Apache Airflow, Prefect, Dagster, Luigi. Позволяют строить надежные и воспроизводимые конвейеры.",
+                en: "Tools for running, monitoring and managing dependencies between data processing tasks: Apache Airflow, Prefect, Dagster, Luigi. Enable reliable and reproducible pipelines."
+            },
+            traits: {
+                uk: "Airflow, Prefect, Dagster, DAG, Розклади, Моніторинг, Повторні запуски",
+                ru: "Airflow, Prefect, Dagster, DAG, Расписания, Мониторинг, Повторные запуски",
+                en: "Airflow, Prefect, Dagster, DAG, Schedules, Monitoring, Retries"
+            },
+            spec: {
+                uk: "Оркестрація — серце продакшен-аналітики",
+                ru: "Оркестрация — сердце продакшен-аналитики",
+                en: "Orchestration is the heart of production analytics"
+            },
+            links: [
+                { name: "Apache Airflow", url: "https://airflow.apache.org" },
+                { name: "Dagster", url: "https://dagster.io" },
+                { name: "Prefect", url: "https://www.prefect.io" }
+            ]
+        },
+        {
+            cat: "pipelines",
+            icon: "📦",
+            name: {
+                uk: "dbt та трансформації в сховищі",
+                ru: "dbt и трансформации в хранилище",
+                en: "dbt and In-Warehouse Transformations"
+            },
+            desc: {
+                uk: "dbt (data build tool) дозволяє описувати трансформації SQL-моделями, тестувати їх, документувати та версіонувати. Став стандартом для ELT у сучасних data-командах.",
+                ru: "dbt (data build tool) позволяет описывать трансформации SQL-моделями, тестировать их, документировать и версионировать. Стал стандартом для ELT в современных data-командах.",
+                en: "dbt (data build tool) lets you describe transformations as SQL models, test, document and version them. It has become the standard for ELT in modern data teams."
+            },
+            traits: {
+                uk: "SQL-моделі, Тести, Документація, Версіонування, Лінійність даних",
+                ru: "SQL-модели, Тесты, Документация, Версионирование, Линейность данных",
+                en: "SQL models, Tests, Documentation, Versioning, Data lineage"
+            },
+            spec: {
+                uk: "Аналітики пишуть код як інженери",
+                ru: "Аналитики пишут код как инженеры",
+                en: "Analysts write code like engineers"
+            },
+            links: [
+                { name: "dbt", url: "https://www.getdbt.com" },
+                { name: "dbt Docs", url: "https://docs.getdbt.com" }
+            ]
+        },
+        {
+            cat: "bigdata",
+            icon: "⚡",
+            name: {
+                uk: "Apache Spark",
+                ru: "Apache Spark",
+                en: "Apache Spark"
+            },
+            desc: {
+                uk: "Універсальний рушій для розподіленої обробки великих обсягів даних. Підтримує batch і streaming, SQL, DataFrame API, MLlib. Працює на кластерах і в хмарі (Databricks, EMR, Dataproc).",
+                ru: "Универсальный движок для распределенной обработки больших объемов данных. Поддерживает batch и streaming, SQL, DataFrame API, MLlib. Работает на кластерах и в облаке (Databricks, EMR, Dataproc).",
+                en: "A general-purpose engine for distributed processing of large data volumes. Supports batch and streaming, SQL, DataFrame API, MLlib. Runs on clusters and in the cloud (Databricks, EMR, Dataproc)."
+            },
+            traits: {
+                uk: "DataFrame, Spark SQL, Streaming, MLlib, Розподіленість, Databricks",
+                ru: "DataFrame, Spark SQL, Streaming, MLlib, Распределенность, Databricks",
+                en: "DataFrame, Spark SQL, Streaming, MLlib, Distributed, Databricks"
+            },
+            spec: {
+                uk: "Стандарт де-факто для Big Data обробки",
+                ru: "Стандарт де-факто для Big Data обработки",
+                en: "De-facto standard for Big Data processing"
+            },
+            links: [
+                { name: "Apache Spark", url: "https://spark.apache.org" },
+                { name: "Databricks", url: "https://www.databricks.com" },
+                { name: "Spark Docs", url: "https://spark.apache.org/docs/latest/" }
+            ]
+        },
+        {
+            cat: "bigdata",
+            icon: "🌊",
+            name: {
+                uk: "Потокова обробка даних",
+                ru: "Потоковая обработка данных",
+                en: "Stream Processing"
+            },
+            desc: {
+                uk: "Обробка даних у реальному часі: Apache Kafka, Spark Structured Streaming, Flink, Pulsar. Використовується для моніторингу, алертів, рекомендацій і event-driven аналітики.",
+                ru: "Обработка данных в реальном времени: Apache Kafka, Spark Structured Streaming, Flink, Pulsar. Используется для мониторинга, алертов, рекомендаций и event-driven аналитики.",
+                en: "Real-time data processing: Apache Kafka, Spark Structured Streaming, Flink, Pulsar. Used for monitoring, alerts, recommendations and event-driven analytics."
+            },
+            traits: {
+                uk: "Kafka, Flink, Spark Streaming, Події, Низька затримка, Exactly-once",
+                ru: "Kafka, Flink, Spark Streaming, События, Низкая задержка, Exactly-once",
+                en: "Kafka, Flink, Spark Streaming, Events, Low latency, Exactly-once"
+            },
+            spec: {
+                uk: "Реальний час змінює можливості бізнесу",
+                ru: "Реальное время меняет возможности бизнеса",
+                en: "Real-time changes what business can do"
+            },
+            links: [
+                { name: "Apache Kafka", url: "https://kafka.apache.org" },
+                { name: "Apache Flink", url: "https://flink.apache.org" },
+                { name: "Kafka Streams", url: "https://kafka.apache.org/documentation/streams/" }
+            ]
+        },
+        {
+            cat: "bigdata",
+            icon: "🏗️",
+            name: {
+                uk: "Hadoop-екосистема та сучасні альтернативи",
+                ru: "Hadoop-экосистема и современные альтернативы",
+                en: "Hadoop Ecosystem and Modern Alternatives"
+            },
+            desc: {
+                uk: "Hadoop (HDFS, MapReduce, Hive, HBase) довго був основою Big Data. Сьогодні часто замінюють або доповнюють хмарними сховищами (S3, GCS), Spark, Snowflake, BigQuery, Databricks Lakehouse.",
+                ru: "Hadoop (HDFS, MapReduce, Hive, HBase) долго был основой Big Data. Сегодня часто заменяют или дополняют облачными хранилищами (S3, GCS), Spark, Snowflake, BigQuery, Databricks Lakehouse.",
+                en: "Hadoop (HDFS, MapReduce, Hive, HBase) was long the foundation of Big Data. Today it is often replaced or complemented by cloud storage (S3, GCS), Spark, Snowflake, BigQuery, Databricks Lakehouse."
+            },
+            traits: {
+                uk: "HDFS, Hive, MapReduce, S3, Snowflake, BigQuery, Lakehouse",
+                ru: "HDFS, Hive, MapReduce, S3, Snowflake, BigQuery, Lakehouse",
+                en: "HDFS, Hive, MapReduce, S3, Snowflake, BigQuery, Lakehouse"
+            },
+            spec: {
+                uk: "Хмара та lakehouse — сучасний мейнстрім",
+                ru: "Облако и lakehouse — современный мейнстрим",
+                en: "Cloud and lakehouse are the modern mainstream"
+            },
+            links: [
+                { name: "Apache Hadoop", url: "https://hadoop.apache.org" },
+                { name: "Snowflake", url: "https://www.snowflake.com" },
+                { name: "BigQuery", url: "https://cloud.google.com/bigquery" }
+            ]
+        },
+        {
+            cat: "analytics",
+            icon: "📊",
+            name: {
+                uk: "Бізнес-аналітика (BI)",
+                ru: "Бизнес-аналитика (BI)",
+                en: "Business Intelligence (BI)"
+            },
+            desc: {
+                uk: "Інструменти для побудови звітів і дашбордів: Power BI, Tableau, Looker, Metabase, Superset, Qlik. Допомагають бізнесу бачити KPI, тренди та приймати рішення на основі даних.",
+                ru: "Инструменты для построения отчетов и дашбордов: Power BI, Tableau, Looker, Metabase, Superset, Qlik. Помогают бизнесу видеть KPI, тренды и принимать решения на основе данных.",
+                en: "Tools for building reports and dashboards: Power BI, Tableau, Looker, Metabase, Superset, Qlik. Help business see KPIs, trends and make data-driven decisions."
+            },
+            traits: {
+                uk: "Дашборди, KPI, Self-service BI, Звіти, Вбудована аналітика",
+                ru: "Дашборды, KPI, Self-service BI, Отчеты, Встроенная аналитика",
+                en: "Dashboards, KPI, Self-service BI, Reports, Embedded analytics"
+            },
+            spec: {
+                uk: "BI робить дані доступними для бізнесу",
+                ru: "BI делает данные доступными для бизнеса",
+                en: "BI makes data accessible to the business"
+            },
+            links: [
+                { name: "Power BI", url: "https://powerbi.microsoft.com" },
+                { name: "Tableau", url: "https://www.tableau.com" },
+                { name: "Apache Superset", url: "https://superset.apache.org" },
+                { name: "Metabase", url: "https://www.metabase.com" }
+            ]
+        },
+        {
+            cat: "analytics",
+            icon: "📉",
+            name: {
+                uk: "Візуалізація даних",
+                ru: "Визуализация данных",
+                en: "Data Visualization"
+            },
+            desc: {
+                uk: "Принципи ефективної візуалізації: правильний тип графіка, мінімум шуму, акцент на головному. Бібліотеки: Matplotlib, Seaborn, Plotly, D3.js, Observable. Погана візуалізація може ввести в оману.",
+                ru: "Принципы эффективной визуализации: правильный тип графика, минимум шума, акцент на главном. Библиотеки: Matplotlib, Seaborn, Plotly, D3.js, Observable. Плохая визуализация может ввести в заблуждение.",
+                en: "Principles of effective visualization: right chart type, minimal noise, focus on the message. Libraries: Matplotlib, Seaborn, Plotly, D3.js, Observable. Bad visualization can mislead."
+            },
+            traits: {
+                uk: "Типи графіків, Storytelling, Plotly, D3, Колір, Доступність",
+                ru: "Типы графиков, Storytelling, Plotly, D3, Цвет, Доступность",
+                en: "Chart types, Storytelling, Plotly, D3, Color, Accessibility"
+            },
+            spec: {
+                uk: "Візуалізація — це комунікація, а не прикраса",
+                ru: "Визуализация — это коммуникация, а не украшение",
+                en: "Visualization is communication, not decoration"
+            },
+            links: [
+                { name: "From Data to Viz", url: "https://www.data-to-viz.com" },
+                { name: "Plotly", url: "https://plotly.com" },
+                { name: "D3.js", url: "https://d3js.org" }
+            ]
+        },
+        {
+            cat: "analytics",
+            icon: "🔍",
+            name: {
+                uk: "Дослідницький аналіз даних (EDA)",
+                ru: "Исследовательский анализ данных (EDA)",
+                en: "Exploratory Data Analysis (EDA)"
+            },
+            desc: {
+                uk: "Перший етап роботи з новим набором даних: розподіли, кореляції, викиди, пропуски, базові статистики. Jupyter / notebooks, pandas, seaborn — класичний інструментарій.",
+                ru: "Первый этап работы с новым набором данных: распределения, корреляции, выбросы, пропуски, базовые статистики. Jupyter / notebooks, pandas, seaborn — классический инструментарий.",
+                en: "The first stage of working with a new dataset: distributions, correlations, outliers, missing values, basic statistics. Jupyter / notebooks, pandas, seaborn — the classic toolkit."
+            },
+            traits: {
+                uk: "Розподіли, Кореляції, Викиди, Notebooks, pandas, Статистика",
+                ru: "Распределения, Корреляции, Выбросы, Notebooks, pandas, Статистика",
+                en: "Distributions, Correlations, Outliers, Notebooks, pandas, Statistics"
+            },
+            spec: {
+                uk: "EDA економить час на подальших етапах",
+                ru: "EDA экономит время на последующих этапах",
+                en: "EDA saves time in later stages"
+            },
+            links: [
+                { name: "pandas", url: "https://pandas.pydata.org" },
+                { name: "Jupyter", url: "https://jupyter.org" },
+                { name: "seaborn", url: "https://seaborn.pydata.org" }
+            ]
+        },
+        {
+            cat: "ml",
+            icon: "🧠",
+            name: {
+                uk: "Основи Data Science та ML",
+                ru: "Основы Data Science и ML",
+                en: "Data Science and ML Basics"
+            },
+            desc: {
+                uk: "Data Science поєднує статистику, програмування та знання предметної області. Машинне навчання: навчання з учителем, без учителя, навчання з підкріпленням. Типові задачі — класифікація, регресія, кластеризація, рекомендації.",
+                ru: "Data Science объединяет статистику, программирование и знание предметной области. Машинное обучение: обучение с учителем, без учителя, обучение с подкреплением. Типичные задачи — классификация, регрессия, кластеризация, рекомендации.",
+                en: "Data Science combines statistics, programming and domain knowledge. Machine learning: supervised, unsupervised, reinforcement learning. Typical tasks — classification, regression, clustering, recommendations."
+            },
+            traits: {
+                uk: "Supervised, Unsupervised, Класифікація, Регресія, Кластеризація, Feature engineering",
+                ru: "Supervised, Unsupervised, Классификация, Регрессия, Кластеризация, Feature engineering",
+                en: "Supervised, Unsupervised, Classification, Regression, Clustering, Feature engineering"
+            },
+            spec: {
+                uk: "Спочатку зрозумійте задачу, потім обирайте модель",
+                ru: "Сначала поймите задачу, потом выбирайте модель",
+                en: "Understand the problem first, then choose the model"
+            },
+            links: [
+                { name: "scikit-learn", url: "https://scikit-learn.org" },
+                { name: "Google ML Crash Course", url: "https://developers.google.com/machine-learning/crash-course" }
+            ]
+        },
+        {
+            cat: "ml",
+            icon: "📚",
+            name: {
+                uk: "Бібліотеки та фреймворки ML",
+                ru: "Библиотеки и фреймворки ML",
+                en: "ML Libraries and Frameworks"
+            },
+            desc: {
+                uk: "scikit-learn — класика для табличних даних. TensorFlow і PyTorch — для глибокого навчання. XGBoost, LightGBM, CatBoost — градієнтний бустинг. Hugging Face — для NLP і трансформерів.",
+                ru: "scikit-learn — классика для табличных данных. TensorFlow и PyTorch — для глубокого обучения. XGBoost, LightGBM, CatBoost — градиентный бустинг. Hugging Face — для NLP и трансформеров.",
+                en: "scikit-learn is the classic for tabular data. TensorFlow and PyTorch for deep learning. XGBoost, LightGBM, CatBoost for gradient boosting. Hugging Face for NLP and transformers."
+            },
+            traits: {
+                uk: "scikit-learn, PyTorch, TensorFlow, XGBoost, Hugging Face, MLflow",
+                ru: "scikit-learn, PyTorch, TensorFlow, XGBoost, Hugging Face, MLflow",
+                en: "scikit-learn, PyTorch, TensorFlow, XGBoost, Hugging Face, MLflow"
+            },
+            spec: {
+                uk: "Обирайте інструмент під задачу, а не навпаки",
+                ru: "Выбирайте инструмент под задачу, а не наоборот",
+                en: "Choose the tool for the task, not the other way around"
+            },
+            links: [
+                { name: "PyTorch", url: "https://pytorch.org" },
+                { name: "TensorFlow", url: "https://www.tensorflow.org" },
+                { name: "Hugging Face", url: "https://huggingface.co" },
+                { name: "MLflow", url: "https://mlflow.org" }
+            ]
+        },
+        {
+            cat: "ml",
+            icon: "🚀",
+            name: {
+                uk: "MLOps та впровадження моделей",
+                ru: "MLOps и внедрение моделей",
+                en: "MLOps and Model Deployment"
+            },
+            desc: {
+                uk: "Перехід від експерименту до продакшену: версіонування даних і моделей, CI/CD для ML, моніторинг дрейфу, A/B-тести, feature store. MLflow, Kubeflow, SageMaker, Vertex AI — популярні платформи.",
+                ru: "Переход от эксперимента к продакшену: версионирование данных и моделей, CI/CD для ML, мониторинг дрейфа, A/B-тесты, feature store. MLflow, Kubeflow, SageMaker, Vertex AI — популярные платформы.",
+                en: "Moving from experiment to production: versioning data and models, CI/CD for ML, drift monitoring, A/B tests, feature store. MLflow, Kubeflow, SageMaker, Vertex AI — popular platforms."
+            },
+            traits: {
+                uk: "MLflow, Feature Store, Drift, CI/CD для ML, Моніторинг, Реєстр моделей",
+                ru: "MLflow, Feature Store, Drift, CI/CD для ML, Мониторинг, Реестр моделей",
+                en: "MLflow, Feature Store, Drift, CI/CD for ML, Monitoring, Model registry"
+            },
+            spec: {
+                uk: "Модель без моніторингу швидко втрачає цінність",
+                ru: "Модель без мониторинга быстро теряет ценность",
+                en: "A model without monitoring quickly loses value"
+            },
+            links: [
+                { name: "MLflow", url: "https://mlflow.org" },
+                { name: "Kubeflow", url: "https://www.kubeflow.org" },
+                { name: "Made with ML", url: "https://madewithml.com" }
+            ]
+        }
+    ];
+
+    const ui = {
+        uk: {
+            title: "Data Science, Big Data та аналітика — Довідник",
+            pageTitle: "📊 Data Science, Big Data та аналітика",
+            home: "Головна сторінка",
+            all: "Усі розділи",
+            traits: "Ключові елементи та поняття",
+            mfgText: "Корисні ресурси:",
+            noResults: "Нічого не знайдено.",
+            footer: "📊 Data Science, Big Data та аналітика | Довідник 2026",
+            introTitle: "Що таке Data Science, Big Data та аналітика?",
+            intro1: "Data Science, Big Data та аналітика — це дисципліни роботи з даними: від збору й очищення до зберігання, обробки, візуалізації та побудови моделей. Вони допомагають перетворювати сирі дані на інсайти та рішення для бізнесу.",
+            intro2: "Сучасний стек включає SQL, ETL/ELT, озера й сховища даних, Apache Spark, інструменти BI, машинне навчання та MLOps. Розуміння цих рівнів дозволяє будувати надійні data-платформи та отримувати реальну цінність з даних."
+        },
+        ru: {
+            title: "Data Science, Big Data и аналитика — Справочник",
+            pageTitle: "📊 Data Science, Big Data и аналитика",
+            home: "Главная страница",
+            all: "Все разделы",
+            traits: "Ключевые элементы и понятия",
+            mfgText: "Полезные ресурсы:",
+            noResults: "Ничего не найдено.",
+            footer: "📊 Data Science, Big Data и аналитика | Справочник 2026",
+            introTitle: "Что такое Data Science, Big Data и аналитика?",
+            intro1: "Data Science, Big Data и аналитика — это дисциплины работы с данными: от сбора и очистки до хранения, обработки, визуализации и построения моделей. Они помогают превращать сырые данные в инсайты и решения для бизнеса.",
+            intro2: "Современный стек включает SQL, ETL/ELT, озера и хранилища данных, Apache Spark, инструменты BI, машинное обучение и MLOps. Понимание этих уровней позволяет строить надежные data-платформы и получать реальную ценность из данных."
+        },
+        en: {
+            title: "Data Science, Big Data and Analytics — Guide",
+            pageTitle: "📊 Data Science, Big Data & Analytics",
+            home: "Home page",
+            all: "All sections",
+            traits: "Key concepts and elements",
+            mfgText: "Useful resources:",
+            noResults: "Nothing found.",
+            footer: "📊 Data Science, Big Data & Analytics | Guide 2026",
+            introTitle: "What are Data Science, Big Data and Analytics?",
+            intro1: "Data Science, Big Data and Analytics are disciplines of working with data: from collection and cleaning to storage, processing, visualization and model building. They help turn raw data into insights and business decisions.",
+            intro2: "The modern stack includes SQL, ETL/ELT, data lakes and warehouses, Apache Spark, BI tools, machine learning and MLOps. Understanding these layers enables reliable data platforms and real value from data."
+        }
+    };
+
+    let currentLang = safeGet("lang-data", "uk");
+    let activeCategory = "all";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-data", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + "</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) { return e.cat === catKey; });
+            if (!list.length) return;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        main.innerHTML = html || ('<div class="no-results">' + ui[currentLang].noResults + "</div>");
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Довідник операційних систем</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #00e5b0;
+            --accent-2: #7c3aed;
+            --accent-3: #ff9f43;
+            --gradient: linear-gradient(135deg, #00e5b0, #7c3aed);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #000; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .nav-menu {
+            max-width: 1200px;
+            margin: 0.9rem auto 0;
+            padding: 0 5%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+        .nav-menu a {
+            padding: 0.4rem 0.85rem;
+            border-radius: 2rem;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface-hover);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        [data-theme="light"] .nav-menu a { border-color: rgba(0,0,0,0.08); }
+        .nav-menu a:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #000; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(0,229,176,0.2);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.7rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; flex-shrink: 0;
+        }
+        .card-title {
+            font-weight: 700; font-size: 1.05rem;
+        }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.5; margin-bottom: 0.3rem;
+        }
+        .card-section {
+            margin-top: 0.7rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .card-section strong {
+            color: var(--text);
+            display: block;
+            margin-bottom: 0.15rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .arch-tags {
+            display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.3rem;
+        }
+        .arch-tag {
+            background: rgba(0,229,176,0.1); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600;
+        }
+        .card-link {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            color: var(--accent); text-decoration: none;
+            font-weight: 600; font-size: 0.85rem;
+            transition: gap 0.2s; margin-top: 0.8rem;
+        }
+        .card-link:hover { gap: 0.7rem; }
+        .card-link::after { content: "→"; }
+
+        .license-free { color: #00e5b0; }
+        .license-paid { color: #ff9f43; }
+        .license-mix { color: #7c3aed; }
+
+        .no-results {
+            text-align: center; color: var(--text-muted);
+            padding: 3rem; font-size: 1.1rem; grid-column: 1 / -1;
+        }
+
+        .extra-section {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.8rem;
+            margin: 2.5rem auto;
+            max-width: 1200px;
+            scroll-margin-top: 140px;
+        }
+        [data-theme="light"] .extra-section { border-color: rgba(0,0,0,0.06); }
+        .extra-section h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .extra-section h3 {
+            font-size: 1.1rem;
+            margin: 1.4rem 0 0.5rem;
+            color: var(--accent);
+        }
+        .extra-section p, .extra-section li {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.65;
+            margin-bottom: 0.7rem;
+        }
+        .extra-section ul { padding-left: 1.4rem; margin-bottom: 0.8rem; }
+        .extra-section strong { color: var(--text); }
+        .extra-section a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(0,229,176,0.35);
+        }
+        .extra-section a:hover { border-bottom-color: var(--accent); }
+        .extra-section {
+            margin-top: 0;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.05rem; }
+            .nav-menu a { font-size: 0.75rem; padding: 0.35rem 0.7rem; }
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-hover); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">🖥️ Довідник операційних систем</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+
+
+<footer id="footer"></footer>
+
+<script>
+const categories = {
+    desktop: { uk: "🖥️ Настільні ОС", ru: "🖥️ Настольные ОС", en: "🖥️ Desktop OS" },
+    server:  { uk: "🖧 Серверні ОС",   ru: "🖧 Серверные ОС",   en: "🖧 Server OS" },
+    mobile:  { uk: "📱 Мобільні ОС",   ru: "📱 Мобильные ОС",   en: "📱 Mobile OS" },
+    other:   { uk: "⚙️ Інші / Спеціальні", ru: "⚙️ Другие / Специальные", en: "⚙️ Other / Specialized" }
+};
+
+const osList = [
+    { id:"win11", cat:"desktop", icon:"🪟", name:"Windows 11",
+      url:"https://www.microsoft.com/windows/windows-11",
+      desc:{ uk:"Сучасна ОС від Microsoft з оновленим інтерфейсом, підтримкою віджетів, Snap Layouts та інтеграцією AI (Copilot).",
+             ru:"Современная ОС от Microsoft с обновлённым интерфейсом, поддержкой виджетов, Snap Layouts и интеграцией AI (Copilot).",
+             en:"Modern Microsoft OS with refreshed UI, widgets, Snap Layouts and AI integration (Copilot)." },
+      features:{ uk:"Підтримка Android-додатків, DirectStorage, Auto HDR, віртуальні робочі столи, Microsoft Store, Xbox Game Bar.",
+                ru:"Поддержка Android-приложений, DirectStorage, Auto HDR, виртуальные рабочие столы, Microsoft Store, Xbox Game Bar.",
+                en:"Android app support, DirectStorage, Auto HDR, virtual desktops, Microsoft Store, Xbox Game Bar." },
+      license:{ uk:"Платна (попередні версії — безкоштовне оновлення)", ru:"Платная (для предыдущих версий — бесплатное обновление)", en:"Paid (free upgrade from previous versions)" },
+      arch:["x86_64","ARM64"] },
+    { id:"win10", cat:"desktop", icon:"🪟", name:"Windows 10",
+      url:"https://www.microsoft.com/windows/windows-10",
+      desc:{ uk:"Надійна ОС від Microsoft з класичним меню Пуск. Підтримка оновлень безпеки триватиме до жовтня 2025.",
+             ru:"Надёжная ОС от Microsoft с классическим меню Пуск. Поддержка обновлений безопасности продлится до октября 2025.",
+             en:"Reliable Microsoft OS with classic Start menu. Security updates supported until October 2025." },
+      features:{ uk:"Cortana, Windows Hello, BitLocker, віртуальні робочі столи, DirectX 12, WSL.",
+                ru:"Cortana, Windows Hello, BitLocker, виртуальные рабочие столы, DirectX 12, WSL.",
+                en:"Cortana, Windows Hello, BitLocker, virtual desktops, DirectX 12, WSL." },
+      license:{ uk:"Платна", ru:"Платная", en:"Paid" },
+      arch:["x86_64","ARM64"] },
+    { id:"macos", cat:"desktop", icon:"🍎", name:"macOS Sequoia",
+      url:"https://www.apple.com/macos",
+      desc:{ uk:"Операційна система для комп'ютерів Apple. Відома стабільністю, інтеграцією з екосистемою та продуктивністю.",
+             ru:"Операционная система для компьютеров Apple. Известна стабильностью, интеграцией с экосистемой и продуктивностью.",
+             en:"Operating system for Apple computers. Known for stability, ecosystem integration and productivity." },
+      features:{ uk:"Apple Intelligence, Continuity, Handoff, Time Machine, Spotlight, вбудований Xcode, оптимізація під Apple Silicon.",
+                ru:"Apple Intelligence, Continuity, Handoff, Time Machine, Spotlight, встроенный Xcode, оптимизация под Apple Silicon.",
+                en:"Apple Intelligence, Continuity, Handoff, Time Machine, Spotlight, built-in Xcode, optimized for Apple Silicon." },
+      license:{ uk:"Безкоштовна (при купівлі обладнання Apple)", ru:"Бесплатная (при покупке оборудования Apple)", en:"Free (with Apple hardware purchase)" },
+      arch:["ARM64 (Apple Silicon)","x86_64 (Intel)"] },
+    { id:"ubuntu", cat:"desktop", icon:"🟠", name:"Ubuntu",
+      url:"https://ubuntu.com/download",
+      desc:{ uk:"Найпопулярніший дистрибутив Linux. Дружній до новачків, з великою спільнотою та довгостроковою підтримкою LTS.",
+             ru:"Самый популярный дистрибутив Linux. Дружелюбен к новичкам, с большим сообществом и долгосрочной поддержкой LTS.",
+             en:"The most popular Linux distribution. Beginner-friendly, large community and long-term LTS support." },
+      features:{ uk:"GNOME-стільниця, Snap-пакети, великий репозиторій ПЗ, WSL, серверна та десктопна версії, хмарні інструменти.",
+                ru:"GNOME-стол, Snap-пакеты, большой репозиторий ПО, WSL, серверная и десктопная версии, облачные инструменты.",
+                en:"GNOME desktop, Snap packages, large software repository, WSL, server and desktop editions, cloud tools." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64","RISC-V"] },
+    { id:"debian", cat:"desktop", icon:"🔴", name:"Debian",
+      url:"https://www.debian.org/distrib/",
+      desc:{ uk:"Один із найстаріших і найстабільніших дистрибутивів Linux. Основа для Ubuntu, Mint та інших систем.",
+             ru:"Один из старейших и самых стабильных дистрибутивов Linux. Основа для Ubuntu, Mint и других систем.",
+             en:"One of the oldest and most stable Linux distributions. Foundation for Ubuntu, Mint and others." },
+      features:{ uk:"Виняткова стабільність, понад 59000 пакетів, три гілки (Stable, Testing, Unstable), systemd, APT.",
+                ru:"Исключительная стабильность, более 59000 пакетов, три ветки (Stable, Testing, Unstable), systemd, APT.",
+                en:"Exceptional stability, over 59000 packages, three branches (Stable, Testing, Unstable), systemd, APT." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64","ARMhf","i386","RISC-V","ppc64el"] },
+    { id:"fedora", cat:"desktop", icon:"🔵", name:"Fedora",
+      url:"https://getfedora.org",
+      desc:{ uk:"Сучасний дистрибутив від Red Hat з новітніми технологіями. Тестовий полігон для RHEL.",
+             ru:"Современный дистрибутив от Red Hat с новейшими технологиями. Полигон для тестирования RHEL.",
+             en:"Modern distribution by Red Hat with cutting-edge technologies. Testing ground for RHEL." },
+      features:{ uk:"Wayland за замовчуванням, Flatpak, Podman, Toolbox, Silverblue (immutable), GNOME/KDE/Xfce.",
+                ru:"Wayland по умолчанию, Flatpak, Podman, Toolbox, Silverblue (immutable), GNOME/KDE/Xfce.",
+                en:"Wayland by default, Flatpak, Podman, Toolbox, Silverblue (immutable), GNOME/KDE/Xfce." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64"] },
+    { id:"arch", cat:"desktop", icon:"🏹", name:"Arch Linux",
+      url:"https://archlinux.org/download/",
+      desc:{ uk:"Мінімалістичний дистрибутив для досвідчених користувачів. Філософія KISS — «роби все сам».",
+             ru:"Минималистичный дистрибутив для опытных пользователей. Философия KISS — «делай всё сам».",
+             en:"Minimalist distribution for advanced users. KISS philosophy — 'do it yourself'." },
+      features:{ uk:"Rolling release, AUR (репозиторій користувачів), Pacman, повний контроль над системою, мінімум зайвого.",
+                ru:"Rolling release, AUR (репозиторий пользователей), Pacman, полный контроль над системой, минимум лишнего.",
+                en:"Rolling release, AUR (user repository), Pacman, full system control, minimal bloat." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64"] },
+    { id:"mint", cat:"desktop", icon:"🌿", name:"Linux Mint",
+      url:"https://linuxmint.com/download.php",
+      desc:{ uk:"Дружній дистрибутив на базі Ubuntu/Debian. Чудова альтернатива Windows для початківців.",
+             ru:"Дружелюбный дистрибутив на базе Ubuntu/Debian. Отличная альтернатива Windows для начинающих.",
+             en:"Friendly distribution based on Ubuntu/Debian. Great Windows alternative for beginners." },
+      features:{ uk:"Cinnamon/MATE/Xfce, вбудовані медіакодеки, менеджер оновлень, Timeshift (бекапи), підтримка Flatpak.",
+                ru:"Cinnamon/MATE/Xfce, встроенные медиакодеки, менеджер обновлений, Timeshift (бэкапы), поддержка Flatpak.",
+                en:"Cinnamon/MATE/Xfce, built-in media codecs, update manager, Timeshift (backups), Flatpak support." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64"] },
+    { id:"manjaro", cat:"desktop", icon:"⛰", name:"Manjaro",
+      url:"https://manjaro.org/download/",
+      desc:{ uk:"Дружня версія Arch Linux з автоматичним налаштуванням. Rolling release без складнощів.",
+             ru:"Дружелюбная версия Arch Linux с автоматической настройкой. Rolling release без сложностей.",
+             en:"User-friendly Arch Linux with automatic setup. Rolling release without the complexity." },
+      features:{ uk:"Calamares-інсталятор, Pamac (менеджер ПЗ), підтримка AUR, ядра в реальному часі, геймерські опції.",
+                ru:"Calamares-установщик, Pamac (менеджер ПО), поддержка AUR, ядра в реальном времени, игровые опции.",
+                en:"Calamares installer, Pamac (package manager), AUR support, real-time kernels, gaming options." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64"] },
+    { id:"popos", cat:"desktop", icon:"🚀", name:"Pop!_OS",
+      url:"https://pop.system76.com",
+      desc:{ uk:"Дистрибутив від System76 на базі Ubuntu. Оптимізований для творчості, програмування та ігор.",
+             ru:"Дистрибутив от System76 на базе Ubuntu. Оптимизирован для творчества, программирования и игр.",
+             en:"Distribution by System76 based on Ubuntu. Optimized for creativity, programming and gaming." },
+      features:{ uk:"Cosmic Desktop (Rust), автоматичне перемикання GPU, tiling-вікна, підтримка NVIDIA/AMD, Flatpak.",
+                ru:"Cosmic Desktop (Rust), автоматическое переключение GPU, tiling-окна, поддержка NVIDIA/AMD, Flatpak.",
+                en:"Cosmic Desktop (Rust), automatic GPU switching, tiling windows, NVIDIA/AMD support, Flatpak." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64"] },
+    { id:"zorin", cat:"desktop", icon:"🅉", name:"Zorin OS",
+      url:"https://zorin.com/os/download/",
+      desc:{ uk:"Ubuntu-based дистрибутив, стилізований під Windows/macOS. Ідеальний для міграції з Windows.",
+             ru:"Дистрибутив на базе Ubuntu, стилизованный под Windows/macOS. Идеален для миграции с Windows.",
+             en:"Ubuntu-based distribution styled like Windows/macOS. Ideal for migrating from Windows." },
+      features:{ uk:"Zorin Appearance (зміна макету), Zorin Connect (синхронізація з Android), Core/Pro/Lite редакції.",
+                ru:"Zorin Appearance (смена макета), Zorin Connect (синхронизация с Android), редакции Core/Pro/Lite.",
+                en:"Zorin Appearance (layout change), Zorin Connect (Android sync), Core/Pro/Lite editions." },
+      license:{ uk:"Core — безкоштовна, Pro — платна", ru:"Core — бесплатная, Pro — платная", en:"Core free, Pro paid" },
+      arch:["x86_64"] },
+    { id:"elementary", cat:"desktop", icon:"🎀", name:"Elementary OS",
+      url:"https://elementary.io",
+      desc:{ uk:"Елегантна ОС з власним Pantheon-оточенням, натхненним macOS. Фокус на красі та простоті.",
+             ru:"Элегантная ОС с собственным окружением Pantheon, вдохновлённым macOS. Фокус на красоте и простоте.",
+             en:"Elegant OS with its own Pantheon desktop inspired by macOS. Focus on beauty and simplicity." },
+      features:{ uk:"Pantheon Desktop, AppCenter, фокус на конфіденційності, pay-what-you-want модель, Flatpak.",
+                ru:"Pantheon Desktop, AppCenter, фокус на конфиденциальности, pay-what-you-want модель, Flatpak.",
+                en:"Pantheon Desktop, AppCenter, privacy focus, pay-what-you-want model, Flatpak." },
+      license:{ uk:"Pay-what-you-want", ru:"Pay-what-you-want", en:"Pay-what-you-want" },
+      arch:["x86_64"] },
+    { id:"opensuse", cat:"desktop", icon:"🦎", name:"openSUSE",
+      url:"https://www.opensuse.org",
+      desc:{ uk:"Стабільний дистрибутив від SUSE. Дві гілки: Leap (стабільна) та Tumbleweed (rolling).",
+             ru:"Стабильный дистрибутив от SUSE. Две ветки: Leap (стабильная) и Tumbleweed (rolling).",
+             en:"Stable distribution by SUSE. Two branches: Leap (stable) and Tumbleweed (rolling)." },
+      features:{ uk:"YaST (центр керування), OBS (білд-сервіс), Snapper (знімки Btrfs), KDE Plasma за замовчуванням.",
+                ru:"YaST (центр управления), OBS (билд-сервис), Snapper (снимки Btrfs), KDE Plasma по умолчанию.",
+                en:"YaST control center, OBS build service, Snapper (Btrfs snapshots), KDE Plasma by default." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64","ppc64le"] },
+    { id:"reactos", cat:"desktop", icon:"⚛", name:"ReactOS",
+      url:"https://reactos.org",
+      desc:{ uk:"Вільна ОС, сумісна з Windows NT. Мета — повна заміна Windows без зміни знайомого інтерфейсу.",
+             ru:"Свободная ОС, совместимая с Windows NT. Цель — полная замена Windows без изменения привычного интерфейса.",
+             en:"Free OS compatible with Windows NT. Goal — complete Windows replacement without changing the familiar UI." },
+      features:{ uk:"Запуск Windows-додатків і драйверів, класичний Explorer-інтерфейс, легка система, open source.",
+                ru:"Запуск Windows-приложений и драйверов, классический Explorer-интерфейс, лёгкая система, open source.",
+                en:"Runs Windows apps and drivers, classic Explorer UI, lightweight system, open source." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_32","x86_64"] },
+    { id:"rhel", cat:"server", icon:"🎩", name:"Red Hat Enterprise Linux",
+      url:"https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux",
+      desc:{ uk:"Комерційний серверний дистрибутив для підприємств. Підтримка, сертифікація та довгострокові оновлення.",
+             ru:"Коммерческий серверный дистрибутив для предприятий. Поддержка, сертификация и долгосрочные обновления.",
+             en:"Commercial enterprise server distribution. Support, certification and long-term updates." },
+      features:{ uk:"SELinux, Satellite, Ansible, OpenShift, підтримка до 10+ років, сертифікація апаратного та ПЗ.",
+                ru:"SELinux, Satellite, Ansible, OpenShift, поддержка до 10+ лет, сертификация железа и ПО.",
+                en:"SELinux, Satellite, Ansible, OpenShift, 10+ year support, hardware and software certification." },
+      license:{ uk:"Платна (підписка)", ru:"Платная (подписка)", en:"Paid (subscription)" },
+      arch:["x86_64","ARM64","IBM Z","IBM Power"] },
+    { id:"almalinux", cat:"server", icon:"🟤", name:"AlmaLinux",
+      url:"https://almalinux.org",
+      desc:{ uk:"Безкоштовна заміна CentOS, 1:1 сумісна з RHEL. Підтримується спільнотою та CloudLinux.",
+             ru:"Бесплатная замена CentOS, 1:1 совместимая с RHEL. Поддерживается сообществом и CloudLinux.",
+             en:"Free CentOS replacement, 1:1 compatible with RHEL. Supported by community and CloudLinux." },
+      features:{ uk:"Повна бінарна сумісність із RHEL, EPEL, підтримка до 2032+, міграція з CentOS однією командою.",
+                ru:"Полная бинарная совместимость с RHEL, EPEL, поддержка до 2032+, миграция с CentOS одной командой.",
+                en:"Full binary compatibility with RHEL, EPEL, support until 2032+, migrate from CentOS in one command." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64","IBM Z","IBM Power"] },
+    { id:"rocky", cat:"server", icon:"⛰", name:"Rocky Linux",
+      url:"https://rockylinux.org",
+      desc:{ uk:"Ще одна безкоштовна заміна CentOS від засновника CentOS. Повна сумісність із RHEL.",
+             ru:"Ещё одна бесплатная замена CentOS от основателя CentOS. Полная совместимость с RHEL.",
+             en:"Another free CentOS replacement by the founder of CentOS. Fully compatible with RHEL." },
+      features:{ uk:"Bug-for-bug сумісність, SecureBoot, підтримка хмарних платформ, мінімальна та повна інсталяція.",
+                ru:"Bug-for-bug совместимость, SecureBoot, поддержка облачных платформ, минимальная и полная установка.",
+                en:"Bug-for-bug compatibility, SecureBoot, cloud platform support, minimal and full installation." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64","IBM Z","IBM Power"] },
+    { id:"ubuntu-server", cat:"server", icon:"🟠", name:"Ubuntu Server",
+      url:"https://ubuntu.com/download/server",
+      desc:{ uk:"Серверна версія Ubuntu. Лідер у хмарних середовищах та контейнеризації.",
+             ru:"Серверная версия Ubuntu. Лидер в облачных средах и контейнеризации.",
+             en:"Server edition of Ubuntu. Leader in cloud environments and containerization." },
+      features:{ uk:"LXD, MicroK8s, Juju, MAAS, Ceph, OpenStack, підтримка до 10 років (Pro), автоматичні бекапи.",
+                ru:"LXD, MicroK8s, Juju, MAAS, Ceph, OpenStack, поддержка до 10 лет (Pro), автоматические бэкапы.",
+                en:"LXD, MicroK8s, Juju, MAAS, Ceph, OpenStack, up to 10 year support (Pro), automated backups." },
+      license:{ uk:"Безкоштовна / Pro — платна", ru:"Бесплатная / Pro — платная", en:"Free / Pro paid" },
+      arch:["x86_64","ARM64","IBM Z","RISC-V"] },
+    { id:"debian-server", cat:"server", icon:"🔴", name:"Debian GNU/Linux (Server)",
+      url:"https://www.debian.org/distrib/netinst",
+      desc:{ uk:"Серверна версія Debian. Вибір для тих, хто цінує стабільність понад усе.",
+             ru:"Серверная версия Debian. Выбор для тех, кто ценит стабильность превыше всего.",
+             en:"Server edition of Debian. The choice for those who value stability above all." },
+      features:{ uk:"Мінімальна установка, 59000+ пакетів, без реклами та телеметрії, підтримка безпеки до 5 років.",
+                ru:"Минимальная установка, 59000+ пакетов, без рекламы и телеметрии, поддержка безопасности до 5 лет.",
+                en:"Minimal install, 59000+ packages, no ads or telemetry, security support up to 5 years." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64","ARMhf","i386","RISC-V","ppc64el"] },
+    { id:"freebsd", cat:"server", icon:"😈", name:"FreeBSD",
+      url:"https://www.freebsd.org/where/",
+      desc:{ uk:"Unix-подібна ОС з відкритим кодом. Відома продуктивністю мережевого стека та ZFS.",
+             ru:"Unix-подобная ОС с открытым кодом. Известна производительностью сетевого стека и ZFS.",
+             en:"Open source Unix-like OS. Known for network stack performance and ZFS." },
+      features:{ uk:"ZFS, Jails (контейнери), Ports Collection, DTrace, pf (файрвол), чудова документація, стабільність.",
+                ru:"ZFS, Jails (контейнеры), Ports Collection, DTrace, pf (файрвол), отличная документация, стабильность.",
+                en:"ZFS, Jails (containers), Ports Collection, DTrace, pf firewall, excellent docs, stability." },
+      license:{ uk:"Безкоштовна (BSD)", ru:"Бесплатная (BSD)", en:"Free (BSD)" },
+      arch:["x86_64","ARM64","ARMv7","RISC-V","ppc64"] },
+    { id:"proxmox", cat:"server", icon:"🖧", name:"Proxmox VE",
+      url:"https://www.proxmox.com/en/downloads",
+      desc:{ uk:"Відкрита платформа віртуалізації. Об'єднує KVM (віртуальні машини) та LXC (контейнери).",
+             ru:"Открытая платформа виртуализации. Объединяет KVM (виртуальные машины) и LXC (контейнеры).",
+             en:"Open source virtualization platform. Combines KVM (VMs) and LXC (containers)." },
+      features:{ uk:"Веб-інтерфейс керування, кластеризація, резервне копіювання, Ceph, HA, live-миграція ВМ.",
+                ru:"Веб-интерфейс управления, кластеризация, резервное копирование, Ceph, HA, live-миграция ВМ.",
+                en:"Web management interface, clustering, backup, Ceph, HA, live VM migration." },
+      license:{ uk:"Безкоштовна / Підписка на підтримку", ru:"Бесплатная / Подписка на поддержку", en:"Free / Support subscription" },
+      arch:["x86_64","ARM64"] },
+    { id:"vmware", cat:"server", icon:"☁", name:"VMware ESXi",
+      url:"https://www.vmware.com/products/esxi-and-esx.html",
+      desc:{ uk:"Гіпервізор типу 1 для дата-центрів. Лідер корпоративної віртуалізації (тепер Broadcom).",
+             ru:"Гипервизор типа 1 для дата-центров. Лидер корпоративной виртуализации (теперь Broadcom).",
+             en:"Type 1 hypervisor for data centers. Leader in enterprise virtualization (now Broadcom)." },
+      features:{ uk:"vMotion, DRS, HA, vSAN, NSX, інтеграція з vCenter, підтримка великих кластерів.",
+                ru:"vMotion, DRS, HA, vSAN, NSX, интеграция с vCenter, поддержка больших кластеров.",
+                en:"vMotion, DRS, HA, vSAN, NSX, vCenter integration, large cluster support." },
+      license:{ uk:"Платна (підписка Broadcom)", ru:"Платная (подписка Broadcom)", en:"Paid (Broadcom subscription)" },
+      arch:["x86_64"] },
+    { id:"android", cat:"mobile", icon:"🤖", name:"Android",
+      url:"https://www.android.com",
+      desc:{ uk:"Найпопулярніша мобільна ОС у світі від Google. Відкрита платформа з великою екосистемою додатків.",
+             ru:"Самая популярная мобильная ОС в мире от Google. Открытая платформа с большой экосистемой приложений.",
+             en:"The world's most popular mobile OS by Google. Open platform with a vast app ecosystem." },
+      features:{ uk:"Google Play, Kotlin, Jetpack Compose, підтримка різних виробників, кастомні ROM, Android Auto.",
+                ru:"Google Play, Kotlin, Jetpack Compose, поддержка разных производителей, кастомные ROM, Android Auto.",
+                en:"Google Play, Kotlin, Jetpack Compose, multi-vendor support, custom ROMs, Android Auto." },
+      license:{ uk:"Open Source (AOSP) + Google сервіси", ru:"Open Source (AOSP) + Google сервисы", en:"Open Source (AOSP) + Google services" },
+      arch:["ARM64","ARMv7","x86_64"] },
+    { id:"ios", cat:"mobile", icon:"📱", name:"iOS",
+      url:"https://www.apple.com/ios",
+      desc:{ uk:"Мобільна ОС для iPhone від Apple. Відома плавністю, безпекою та інтеграцією з екосистемою.",
+             ru:"Мобильная ОС для iPhone от Apple. Известна плавностью, безопасностью и интеграцией с экосистемой.",
+             en:"Mobile OS for iPhone by Apple. Known for smoothness, security and ecosystem integration." },
+      features:{ uk:"Face ID, Apple Intelligence, iMessage, AirDrop, Focus, Widgets, App Tracking Transparency, SwiftUI.",
+                ru:"Face ID, Apple Intelligence, iMessage, AirDrop, Focus, Widgets, App Tracking Transparency, SwiftUI.",
+                en:"Face ID, Apple Intelligence, iMessage, AirDrop, Focus, Widgets, App Tracking Transparency, SwiftUI." },
+      license:{ uk:"Безкоштовна (тільки для Apple)", ru:"Бесплатная (только для Apple)", en:"Free (Apple hardware only)" },
+      arch:["ARM64 (Apple Silicon)"] },
+    { id:"ipados", cat:"mobile", icon:"📲", name:"iPadOS",
+      url:"https://www.apple.com/ipados",
+      desc:{ uk:"ОС для iPad на базі iOS з оптимізацією під великий екран, мультизадачність та Apple Pencil.",
+             ru:"ОС для iPad на базе iOS с оптимизацией под большой экран, многозадачность и Apple Pencil.",
+             en:"OS for iPad based on iOS, optimized for large screen, multitasking and Apple Pencil." },
+      features:{ uk:"Stage Manager, Split View, Slide Over, підтримка зовнішніх дисплеїв, Procreate, Final Cut для iPad.",
+                ru:"Stage Manager, Split View, Slide Over, поддержка внешних дисплеев, Procreate, Final Cut для iPad.",
+                en:"Stage Manager, Split View, Slide Over, external display support, Procreate, Final Cut for iPad." },
+      license:{ uk:"Безкоштовна (тільки для iPad)", ru:"Бесплатная (только для iPad)", en:"Free (iPad only)" },
+      arch:["ARM64 (Apple Silicon)"] },
+    { id:"kaios", cat:"mobile", icon:"🍌", name:"KaiOS",
+      url:"https://www.kaiostech.com",
+      desc:{ uk:"Легка ОС для кнопкових телефонів на базі Firefox OS. Підтримка 4G, WhatsApp, YouTube, Google Assistant.",
+             ru:"Лёгкая ОС для кнопочных телефонов на базе Firefox OS. Поддержка 4G, WhatsApp, YouTube, Google Assistant.",
+             en:"Lightweight OS for feature phones based on Firefox OS. Supports 4G, WhatsApp, YouTube, Google Assistant." },
+      features:{ uk:"HTML5-додатки, магазин KaiStore, GPS, Wi-Fi, Bluetooth, підтримка JioPhone та Nokia.",
+                ru:"HTML5-приложения, магазин KaiStore, GPS, Wi-Fi, Bluetooth, поддержка JioPhone и Nokia.",
+                en:"HTML5 apps, KaiStore, GPS, Wi-Fi, Bluetooth, supports JioPhone and Nokia devices." },
+      license:{ uk:"Пропрієтарна / GPL", ru:"Проприетарная / GPL", en:"Proprietary / GPL" },
+      arch:["ARMv7","ARM64"] },
+    { id:"chromeos", cat:"other", icon:"🌐", name:"Chrome OS / ChromeOS Flex",
+      url:"https://www.google.com/chromeos",
+      desc:{ uk:"Легка ОС від Google для Chromebook. ChromeOS Flex дозволяє встановити її на старі ПК та Mac.",
+             ru:"Лёгкая ОС от Google для Chromebook. ChromeOS Flex позволяет установить её на старые ПК и Mac.",
+             en:"Lightweight OS by Google for Chromebooks. ChromeOS Flex allows installing it on old PCs and Macs." },
+      features:{ uk:"Швидке завантаження, інтеграція з Google Workspace, Linux-контейнер, Android-додатки, хмарне сховище.",
+                ru:"Быстрая загрузка, интеграция с Google Workspace, Linux-контейнер, Android-приложения, облачное хранилище.",
+                en:"Fast boot, Google Workspace integration, Linux container, Android apps, cloud storage." },
+      license:{ uk:"Безкоштовна (ChromeOS Flex)", ru:"Бесплатная (ChromeOS Flex)", en:"Free (ChromeOS Flex)" },
+      arch:["x86_64","ARM64"] },
+    { id:"kali", cat:"other", icon:"🔒", name:"Kali Linux",
+      url:"https://www.kali.org/get-kali/",
+      desc:{ uk:"Дистрибутив для тестування на проникнення та аудиту безпеки. Містить 600+ інструментів.",
+             ru:"Дистрибутив для тестирования на проникновение и аудита безопасности. Содержит 600+ инструментов.",
+             en:"Distribution for penetration testing and security auditing. Contains 600+ tools." },
+      features:{ uk:"Metasploit, Nmap, Wireshark, Aircrack-ng, John the Ripper, підтримка ARM, live-режим, forensic mode.",
+                ru:"Metasploit, Nmap, Wireshark, Aircrack-ng, John the Ripper, поддержка ARM, live-режим, forensic mode.",
+                en:"Metasploit, Nmap, Wireshark, Aircrack-ng, John the Ripper, ARM support, live mode, forensic mode." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64","ARM64","ARMhf"] },
+    { id:"tails", cat:"other", icon:"🕵", name:"Tails",
+      url:"https://tails.net",
+      desc:{ uk:"Live-ОС для анонімності та приватності. Завантажується з USB і не залишає слідів на комп'ютері.",
+             ru:"Live-ОС для анонимности и приватности. Загружается с USB и не оставляет следов на компьютере.",
+             en:"Live OS for anonymity and privacy. Boots from USB and leaves no trace on the computer." },
+      features:{ uk:"Tor за замовчуванням, шифрування persistence, вбудовані криптозасоби, amnesic mode, onion circuits.",
+                ru:"Tor по умолчанию, шифрование persistence, встроенные криптосредства, amnesic mode, onion circuits.",
+                en:"Tor by default, encrypted persistence, built-in crypto tools, amnesic mode, onion circuits." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["x86_64"] },
+    { id:"raspbian", cat:"other", icon:"🍓", name:"Raspberry Pi OS",
+      url:"https://www.raspberrypi.com/software/",
+      desc:{ uk:"Офіційна ОС для одноплатників Raspberry Pi. Оптимізована для навчання, IoT та медіацентрів.",
+             ru:"Официальная ОС для одноплатников Raspberry Pi. Оптимизирована для обучения, IoT и медиацентров.",
+             en:"Official OS for Raspberry Pi single-board computers. Optimized for education, IoT and media centers." },
+      features:{ uk:"GPIO-програмування, Minecraft Pi, Mathematica, VNC, камера, HATs, Pi-hole, RetroPie, Home Assistant.",
+                ru:"GPIO-программирование, Minecraft Pi, Mathematica, VNC, камера, HATs, Pi-hole, RetroPie, Home Assistant.",
+                en:"GPIO programming, Minecraft Pi, Mathematica, VNC, camera, HATs, Pi-hole, RetroPie, Home Assistant." },
+      license:{ uk:"Безкоштовна (Open Source)", ru:"Бесплатная (Open Source)", en:"Free (Open Source)" },
+      arch:["ARM64","ARMhf"] },
+    { id:"haiku", cat:"other", icon:"🎵", name:"Haiku",
+      url:"https://www.haiku-os.org/get-haiku",
+      desc:{ uk:"Сучасна реінкарнація BeOS. Легка, швидка ОС з інноваційним файловим менеджером Tracker.",
+             ru:"Современная реинкарнация BeOS. Лёгкая, быстрая ОС с инновационным файловым менеджером Tracker.",
+             en:"Modern reincarnation of BeOS. Lightweight, fast OS with innovative Tracker file manager." },
+      features:{ uk:"WebPositive браузер, нативна багатопоточність, персональні атрибути файлів, швидке завантаження, POSIX.",
+                ru:"WebPositive браузер, нативная многопоточность, персональные атрибуты файлов, быстрая загрузка, POSIX.",
+                en:"WebPositive browser, native multithreading, personal file attributes, fast boot, POSIX." },
+      license:{ uk:"Безкоштовна (MIT)", ru:"Бесплатная (MIT)", en:"Free (MIT)" },
+      arch:["x86_64","x86_32"] },
+    { id:"menuetos", cat:"other", icon:"💿", name:"MenuetOS / KolibriOS",
+      url:"http://www.menuetos.net",
+      desc:{ uk:"Мініатюрна ОС, написана повністю на асемблері. Займає лише 1 дискету (1.44 МБ) і має GUI.",
+             ru:"Миниатюрная ОС, написанная полностью на ассемблере. Занимает всего 1 дискету (1.44 МБ) и имеет GUI.",
+             en:"Tiny OS written entirely in assembly. Fits on a single floppy disk (1.44 MB) and has a GUI." },
+      features:{ uk:"TCP/IP стек, HTTP/FTP клієнт, MP3-програвач, 3D-демо, повністю на асемблері x86, реальний час.",
+                ru:"TCP/IP стек, HTTP/FTP клиент, MP3-плеер, 3D-демо, полностью на ассемблере x86, реальное время.",
+                en:"TCP/IP stack, HTTP/FTP client, MP3 player, 3D demo, fully x86 assembly, real-time." },
+      license:{ uk:"Безкоштовна (GPL)", ru:"Бесплатная (GPL)", en:"Free (GPL)" },
+      arch:["x86_32"] }
+];
+
+const ui = {
+    uk: {
+        title: "Довідник операційних систем",
+        pageTitle: "🖥️ Довідник операційних систем",
+        home: "Головна сторінка",
+        searchPlaceholder: "Пошук ОС...",
+        all: "Усі категорії",
+        open: "Завантажити / Сайт →",
+        noResults: "Нічого не знайдено. Спробуйте інший запит.",
+        footer: "🖥️ Універсальний довідник ОС | 2026 | Код вільний для редагування",
+        features: "Можливості",
+        license: "Ліцензія",
+        arch: "Архітектура",
+        navMsdos: "📜 MS-DOS",
+        navSov: "📜 ОС малих ЕОМ СРСР",
+        navWeb: "🌐 WEB-сервери",
+        navFuture: "🤖 Майбутнє ОС і ШІ"
+    },
+    ru: {
+        title: "Справочник операционных систем",
+        pageTitle: "🖥️ Справочник операционных систем",
+        home: "Главная страница",
+        searchPlaceholder: "Поиск ОС...",
+        all: "Все категории",
+        open: "Скачать / Сайт →",
+        noResults: "Ничего не найдено. Попробуйте другой запрос.",
+        footer: "🖥️ Универсальный справочник ОС | 2026 | Код свободен для редактирования",
+        features: "Возможности",
+        license: "Лицензия",
+        arch: "Архитектура",
+        navMsdos: "📜 MS-DOS",
+        navSov: "📜 ОС малых ЭВМ СССР",
+        navWeb: "🌐 WEB-серверы",
+        navFuture: "🤖 Будущее ОС и ИИ"
+    },
+    en: {
+        title: "Operating Systems Catalog",
+        pageTitle: "🖥️ Operating Systems Catalog",
+        home: "Home page",
+        searchPlaceholder: "Search OS...",
+        all: "All Categories",
+        open: "Download / Website →",
+        noResults: "Nothing found. Try a different query.",
+        footer: "🖥️ Universal OS Directory | 2026 | Code is free to edit",
+        features: "Features",
+        license: "License",
+        arch: "Architecture",
+        navMsdos: "📜 MS-DOS",
+        navSov: "📜 USSR Minicomputer OS",
+        navWeb: "🌐 WEB Servers",
+        navFuture: "🤖 Future of OS & AI"
+    }
+};
+
+const extraContent = {
+    msdos: {
+        uk: { title: "📜 Історичний екскурс: MS-DOS", body: `<p><strong>MS-DOS</strong> (Microsoft Disk Operating System) — операційна система, яка в 1980-х роках зробила справжню революцію на ринку персональних комп’ютерів.</p><h3>Як з’явилася</h3><p>У 1980 році Seattle Computer Products створила <strong>QDOS</strong> (Quick and Dirty Operating System) для процесора Intel 8086. Microsoft придбала права на неї, адаптувала під вимоги IBM і випустила як <strong>PC-DOS 1.0</strong> разом із IBM PC у серпні 1981 року. Паралельно Microsoft продавала систему іншим виробникам як <strong>MS-DOS</strong>.</p><h3>Чому це була революція</h3><ul><li>Відкрита архітектура IBM PC + MS-DOS дозволила з’явитися тисячам сумісних «клонів» (Compaq, Dell та ін.).</li><li>Єдиний програмний стандарт зробив можливим масове поширення програм (WordStar, Lotus 1-2-3, dBase тощо).</li><li>Командний рядок і файлова система FAT стали базою для цілого покоління користувачів і розробників.</li><li>Саме MS-DOS забезпечила Microsoft домінуючу позицію на ринку ПЗ і проклала шлях до Windows.</li></ul><h3>Еволюція</h3><p>Версії 1.x–6.x (1981–1993) додавали підтримку жорстких дисків, каталогів, мереж, розширеної пам’яті. Windows 95 ще містила MS-DOS 7.0, але з Windows NT і XP система остаточно відійшла в минуле як основна платформа. Сьогодні MS-DOS живе в емуляторах, вбудованих системах і ностальгійних проектах (FreeDOS).</p>` },
+        ru: { title: "📜 Исторический экскурс: MS-DOS", body: `<p><strong>MS-DOS</strong> (Microsoft Disk Operating System) — операционная система, которая в 1980-х годах совершила настоящую революцию на рынке персональных компьютеров.</p><h3>Как появилась</h3><p>В 1980 году Seattle Computer Products создала <strong>QDOS</strong> (Quick and Dirty Operating System) для процессора Intel 8086. Microsoft приобрела права на неё, адаптировала под требования IBM и выпустила как <strong>PC-DOS 1.0</strong> вместе с IBM PC в августе 1981 года. Параллельно Microsoft продавала систему другим производителям как <strong>MS-DOS</strong>.</p><h3>Почему это была революция</h3><ul><li>Открытая архитектура IBM PC + MS-DOS позволила появиться тысячам совместимых «клонов» (Compaq, Dell и др.).</li><li>Единый программный стандарт сделал возможным массовое распространение программ (WordStar, Lotus 1-2-3, dBase и т.д.).</li><li>Командная строка и файловая система FAT стали базой для целого поколения пользователей и разработчиков.</li><li>Именно MS-DOS обеспечила Microsoft доминирующую позицию на рынке ПО и проложила путь к Windows.</li></ul><h3>Эволюция</h3><p>Версии 1.x–6.x (1981–1993) добавляли поддержку жёстких дисков, каталогов, сетей, расширенной памяти. Windows 95 ещё содержала MS-DOS 7.0, но с Windows NT и XP система окончательно ушла в прошлое как основная платформа. Сегодня MS-DOS живёт в эмуляторах, встроенных системах и ностальгических проектах (FreeDOS).</p>` },
+        en: { title: "📜 Historical excursion: MS-DOS", body: `<p><strong>MS-DOS</strong> (Microsoft Disk Operating System) was the operating system that truly revolutionized the personal computer market in the 1980s.</p><h3>How it appeared</h3><p>In 1980 Seattle Computer Products created <strong>QDOS</strong> (Quick and Dirty Operating System) for the Intel 8086. Microsoft acquired the rights, adapted it for IBM and released it as <strong>PC-DOS 1.0</strong> with the IBM PC in August 1981. Microsoft also sold the system to other manufacturers as <strong>MS-DOS</strong>.</p><h3>Why it was a revolution</h3><ul><li>The open IBM PC architecture + MS-DOS enabled thousands of compatible “clones” (Compaq, Dell and others).</li><li>A single software standard made mass distribution of applications possible (WordStar, Lotus 1-2-3, dBase, etc.).</li><li>The command line and FAT file system became the foundation for a whole generation of users and developers.</li><li>MS-DOS secured Microsoft’s dominant position in software and paved the way for Windows.</li></ul><h3>Evolution</h3><p>Versions 1.x–6.x (1981–1993) added hard-disk support, directories, networking and expanded memory. Windows 95 still included MS-DOS 7.0, but with Windows NT and XP the system ceased to be the primary platform. Today MS-DOS lives on in emulators, embedded systems and nostalgic projects (FreeDOS).</p>` }
+    },
+    sov: {
+        uk: { title: "📜 Операційні системи малих ЕОМ часів СРСР", body: `<p>У 1970–80-х роках у СРСР широко використовувалися міні-ЕОМ сімейства <strong>СМ ЕВМ</strong> (Система малих ЕОМ) та комплекси на базі <strong>М-6000</strong>. Багато з них були функціональними аналогами західних машин (зокрема PDP-11).</p><h3>Апаратна база</h3><ul><li><strong>М-6000</strong> — керуючі обчислювальні комплекси.</li><li><strong>СМ-1, СМ-2</strong> — ранні моделі сімейства.</li><li><strong>СМ-3, СМ-4</strong> — найбільш масові 16-розрядні міні-ЕОМ з інтерфейсом «Загальна шина» (аналог Unibus).</li></ul><h3>Основні операційні системи</h3><ul><li><strong>ОУС</strong> (Основна керуюча система) — однозадачний режим роботи.</li><li><strong>ДОС АСПО</strong> / дискові ОС з пакету АСПО — підготовка, налагодження та виконання програм у пакетному й діалоговому режимах.</li><li><strong>ДОС РВ / ДОСРВ</strong> (Дискова операційна система реального часу) — одночасна робота в багатозадачному режимі реального часу та діалогово-пакетній обробці.</li><li><strong>ОС РВ / ОСРВ</strong> (Операційна система реального часу) та її модифікації (ОСРВ-3, ОСРВ-4, СРВ, СРВ-М) — багатозадачні системи реального часу, здатні обслуговувати десятки задач з пріоритетами.</li><li>Також існували ПЛОС, РАФОС, ДОС КП, ДЕМОС-16 (UNIX-подібна) та інші спеціалізовані системи.</li></ul><p>Ці ОС забезпечували керування технологічними процесами, наукові розрахунки, системи збору даних і були важливою частиною промислової та військової автоматизації СРСР.</p>` },
+        ru: { title: "📜 Операционные системы малых ЭВМ времён СССР", body: `<p>В 1970–80-х годах в СССР широко использовались мини-ЭВМ семейства <strong>СМ ЭВМ</strong> (Система малых ЭВМ) и комплексы на базе <strong>М-6000</strong>. Многие из них были функциональными аналогами западных машин (в частности PDP-11).</p><h3>Аппаратная база</h3><ul><li><strong>М-6000</strong> — управляющие вычислительные комплексы.</li><li><strong>СМ-1, СМ-2</strong> — ранние модели семейства.</li><li><strong>СМ-3, СМ-4</strong> — наиболее массовые 16-разрядные мини-ЭВМ с интерфейсом «Общая шина» (аналог Unibus).</li></ul><h3>Основные операционные системы</h3><ul><li><strong>ОУС</strong> (Основная управляющая система) — однозадачный режим работы.</li><li><strong>ДОС АСПО</strong> / дисковые ОС из пакета АСПО — подготовка, отладка и выполнение программ в пакетном и диалоговом режимах.</li><li><strong>ДОС РВ / ДОСРВ</strong> (Дисковая операционная система реального времени) — одновременная работа в многозадачном режиме реального времени и диалогово-пакетной обработке.</li><li><strong>ОС РВ / ОСРВ</strong> (Операционная система реального времени) и её модификации (ОСРВ-3, ОСРВ-4, СРВ, СРВ-М) — многозадачные системы реального времени, способные обслуживать десятки задач с приоритетами.</li><li>Также существовали ПЛОС, РАФОС, ДОС КП, ДЕМОС-16 (UNIX-подобная) и другие специализированные системы.</li></ul><p>Эти ОС обеспечивали управление технологическими процессами, научные расчёты, системы сбора данных и были важной частью промышленной и военной автоматизации СССР.</p>` },
+        en: { title: "📜 Operating systems of USSR-era minicomputers", body: `<p>In the 1970s–80s the USSR widely used minicomputers of the <strong>SM EVM</strong> family (System of Small Computers) and systems based on the <strong>M-6000</strong>. Many were functional analogues of Western machines (notably the PDP-11).</p><h3>Hardware base</h3><ul><li><strong>M-6000</strong> — control computing complexes.</li><li><strong>SM-1, SM-2</strong> — early models of the family.</li><li><strong>SM-3, SM-4</strong> — the most widespread 16-bit minicomputers with the “Common Bus” interface (Unibus analogue).</li></ul><h3>Main operating systems</h3><ul><li><strong>OUS</strong> (Basic Control System) — single-task mode.</li><li><strong>DOS ASPO</strong> / disk OSes from the ASPO package — program preparation, debugging and execution in batch and interactive modes.</li><li><strong>DOS RV / DOSRV</strong> (Disk Real-Time Operating System) — simultaneous multi-task real-time operation and interactive/batch processing.</li><li><strong>OS RV / OSRV</strong> (Real-Time Operating System) and its variants (OSRV-3, OSRV-4, SRV, SRV-M) — multi-task real-time systems capable of handling dozens of prioritized tasks.</li><li>Other systems included PLOS, RAFOS, DOS KP, DEMOS-16 (UNIX-like) and various specialized OSes.</li></ul><p>These operating systems controlled industrial processes, scientific calculations and data-acquisition systems and formed an important part of Soviet industrial and military automation.</p>` }
+    },
+    web: {
+        uk: { title: "🌐 Найпопулярніші WEB-сервери (стан на 2026)", body: `
+<p>WEB-сервер — програмне забезпечення, яке приймає HTTP-запити і віддає веб-сторінки, API та статичні ресурси. Нижче — лідери ринку за даними незалежних досліджень 2026 року, з коротким описом і посиланнями на завантаження.</p>
+<h3>Nginx</h3>
+<p>Лідер за часткою сайтів і високонавантажених сервісів. Легкий, швидкий, відмінно працює як HTTP-сервер, reverse proxy, балансувальник навантаження та кеш. Відкритий код (2-clause BSD).</p>
+<p>Завантаження: <a href="https://nginx.org/en/download.html" target="_blank" rel="noopener">nginx.org/en/download.html</a> · Документація: <a href="https://nginx.org/en/docs/" target="_blank" rel="noopener">nginx.org/en/docs</a></p>
+<h3>Apache HTTP Server</h3>
+<p>Класика з величезною кількістю модулів і гнучкою конфігурацією (.htaccess). Досі дуже поширений у shared-хостингу та legacy-проектах.</p>
+<p>Завантаження: <a href="https://httpd.apache.org/download.cgi" target="_blank" rel="noopener">httpd.apache.org/download.cgi</a></p>
+<h3>Cloudflare (edge / reverse proxy)</h3>
+<p>Не класичний «завантажуваний» сервер, а глобальна edge-мережа: CDN, WAF, DDoS-захист, reverse proxy. Багато сайтів працюють «за» Cloudflare.</p>
+<p>Сервіс: <a href="https://www.cloudflare.com" target="_blank" rel="noopener">cloudflare.com</a></p>
+<h3>LiteSpeed Web Server</h3>
+<p>Популярний у shared-хостингу (часто з cPanel/DirectAdmin), висока продуктивність, сумісність з Apache-конфігами, HTTP/3 out of the box. Є OpenLiteSpeed (безкоштовна гілка).</p>
+<p>Завантаження: <a href="https://www.litespeedtech.com/products/litespeed-web-server/download" target="_blank" rel="noopener">litespeedtech.com (LSWS)</a> · OpenLiteSpeed: <a href="https://openlitespeed.org/kb/install-ols-from-litespeed-repositories/" target="_blank" rel="noopener">openlitespeed.org</a></p>
+<h3>Microsoft IIS</h3>
+<p>Основний веб-сервер для Windows Server і .NET-стеку. Поставляється як роль Windows Server / компонент Windows.</p>
+<p>Документація та встановлення: <a href="https://www.iis.net" target="_blank" rel="noopener">iis.net</a></p>
+<h3>OpenResty</h3>
+<p>Платформа на базі Nginx + LuaJIT: зручна для API-шлюзів, динамічної логіки на edge, WAF-правил.</p>
+<p>Завантаження: <a href="https://openresty.org/en/download.html" target="_blank" rel="noopener">openresty.org/en/download.html</a></p>
+<h3>Caddy</h3>
+<p>Сучасний веб-сервер з автоматичним HTTPS (Let’s Encrypt), простим конфігом і хорошою продуктивністю. Зручний для швидкого деплою.</p>
+<p>Завантаження: <a href="https://caddyserver.com/download" target="_blank" rel="noopener">caddyserver.com/download</a></p>
+<h3>Інші</h3>
+<p><strong>Tengine</strong> (форк Nginx від Alibaba) — <a href="https://tengine.taobao.org" target="_blank" rel="noopener">tengine.taobao.org</a>. Також зустрічаються Tomcat, Kestrel (.NET), lighttpd тощо в спеціалізованих сценаріях.</p>
+<p>Тенденція 2020-х: Nginx і edge-рішення (Cloudflare) продовжують зростати; Apache зберігає сильні позиції; Caddy та OpenLiteSpeed набирають популярності серед розробників і хостерів.</p>
+` },
+        ru: { title: "🌐 Самые популярные WEB-серверы (состояние на 2026)", body: `
+<p>WEB-сервер — программное обеспечение, которое принимает HTTP-запросы и отдаёт веб-страницы, API и статические ресурсы. Ниже — лидеры рынка по данным независимых исследований 2026 года, с кратким описанием и ссылками на загрузку.</p>
+<h3>Nginx</h3>
+<p>Лидер по доле сайтов и высоконагруженных сервисов. Лёгкий, быстрый; HTTP-сервер, reverse proxy, балансировщик и кэш. Открытый код (2-clause BSD).</p>
+<p>Загрузка: <a href="https://nginx.org/en/download.html" target="_blank" rel="noopener">nginx.org/en/download.html</a> · Документация: <a href="https://nginx.org/en/docs/" target="_blank" rel="noopener">nginx.org/en/docs</a></p>
+<h3>Apache HTTP Server</h3>
+<p>Классика с большим числом модулей и гибкой конфигурацией (.htaccess). По-прежнему распространён в shared-хостинге и legacy-проектах.</p>
+<p>Загрузка: <a href="https://httpd.apache.org/download.cgi" target="_blank" rel="noopener">httpd.apache.org/download.cgi</a></p>
+<h3>Cloudflare (edge / reverse proxy)</h3>
+<p>Не классический «скачиваемый» сервер, а глобальная edge-сеть: CDN, WAF, DDoS-защита, reverse proxy. Многие сайты работают «за» Cloudflare.</p>
+<p>Сервис: <a href="https://www.cloudflare.com" target="_blank" rel="noopener">cloudflare.com</a></p>
+<h3>LiteSpeed Web Server</h3>
+<p>Популярен в shared-хостинге (часто с cPanel/DirectAdmin), высокая производительность, совместимость с Apache-конфигами, HTTP/3. Есть OpenLiteSpeed (бесплатная ветка).</p>
+<p>Загрузка: <a href="https://www.litespeedtech.com/products/litespeed-web-server/download" target="_blank" rel="noopener">litespeedtech.com (LSWS)</a> · OpenLiteSpeed: <a href="https://openlitespeed.org/kb/install-ols-from-litespeed-repositories/" target="_blank" rel="noopener">openlitespeed.org</a></p>
+<h3>Microsoft IIS</h3>
+<p>Основной веб-сервер для Windows Server и .NET-стека. Поставляется как роль Windows Server / компонент Windows.</p>
+<p>Документация и установка: <a href="https://www.iis.net" target="_blank" rel="noopener">iis.net</a></p>
+<h3>OpenResty</h3>
+<p>Платформа на базе Nginx + LuaJIT: удобна для API-шлюзов, динамической логики на edge, WAF-правил.</p>
+<p>Загрузка: <a href="https://openresty.org/en/download.html" target="_blank" rel="noopener">openresty.org/en/download.html</a></p>
+<h3>Caddy</h3>
+<p>Современный веб-сервер с автоматическим HTTPS (Let’s Encrypt), простым конфигом и хорошей производительностью.</p>
+<p>Загрузка: <a href="https://caddyserver.com/download" target="_blank" rel="noopener">caddyserver.com/download</a></p>
+<h3>Прочие</h3>
+<p><strong>Tengine</strong> (форк Nginx от Alibaba) — <a href="https://tengine.taobao.org" target="_blank" rel="noopener">tengine.taobao.org</a>. Также встречаются Tomcat, Kestrel (.NET), lighttpd и др.</p>
+<p>Тенденция 2020-х: Nginx и edge-решения (Cloudflare) растут; Apache сохраняет позиции; Caddy и OpenLiteSpeed набирают популярность.</p>
+` },
+        en: { title: "🌐 Most popular WEB servers (as of 2026)", body: `
+<p>A web server accepts HTTP requests and serves web pages, APIs and static resources. Below are the 2026 market leaders with short descriptions and download links.</p>
+<h3>Nginx</h3>
+<p>Leader by site share and high-load services. Lightweight and fast as an HTTP server, reverse proxy, load balancer and cache. Open source (2-clause BSD).</p>
+<p>Download: <a href="https://nginx.org/en/download.html" target="_blank" rel="noopener">nginx.org/en/download.html</a> · Docs: <a href="https://nginx.org/en/docs/" target="_blank" rel="noopener">nginx.org/en/docs</a></p>
+<h3>Apache HTTP Server</h3>
+<p>The classic with many modules and flexible configuration (.htaccess). Still common in shared hosting and legacy projects.</p>
+<p>Download: <a href="https://httpd.apache.org/download.cgi" target="_blank" rel="noopener">httpd.apache.org/download.cgi</a></p>
+<h3>Cloudflare (edge / reverse proxy)</h3>
+<p>Not a classic downloadable server, but a global edge network: CDN, WAF, DDoS protection, reverse proxy. Many sites sit “behind” Cloudflare.</p>
+<p>Service: <a href="https://www.cloudflare.com" target="_blank" rel="noopener">cloudflare.com</a></p>
+<h3>LiteSpeed Web Server</h3>
+<p>Popular in shared hosting (often with cPanel/DirectAdmin), high performance, Apache-config compatibility, HTTP/3. OpenLiteSpeed is the free branch.</p>
+<p>Download: <a href="https://www.litespeedtech.com/products/litespeed-web-server/download" target="_blank" rel="noopener">litespeedtech.com (LSWS)</a> · OpenLiteSpeed: <a href="https://openlitespeed.org/kb/install-ols-from-litespeed-repositories/" target="_blank" rel="noopener">openlitespeed.org</a></p>
+<h3>Microsoft IIS</h3>
+<p>Primary web server for Windows Server and the .NET stack. Shipped as a Windows Server role / Windows feature.</p>
+<p>Docs & install: <a href="https://www.iis.net" target="_blank" rel="noopener">iis.net</a></p>
+<h3>OpenResty</h3>
+<p>Nginx + LuaJIT platform: convenient for API gateways, edge logic and WAF rules.</p>
+<p>Download: <a href="https://openresty.org/en/download.html" target="_blank" rel="noopener">openresty.org/en/download.html</a></p>
+<h3>Caddy</h3>
+<p>Modern web server with automatic HTTPS (Let’s Encrypt), simple config and solid performance.</p>
+<p>Download: <a href="https://caddyserver.com/download" target="_blank" rel="noopener">caddyserver.com/download</a></p>
+<h3>Others</h3>
+<p><strong>Tengine</strong> (Alibaba’s Nginx fork) — <a href="https://tengine.taobao.org" target="_blank" rel="noopener">tengine.taobao.org</a>. Also Tomcat, Kestrel (.NET), lighttpd in specialized cases.</p>
+<p>2020s trend: Nginx and edge solutions (Cloudflare) keep growing; Apache remains strong; Caddy and OpenLiteSpeed gain traction among developers and hosts.</p>
+` }
+    },
+    future: {
+        uk: { title: "🤖 Підсумки та прогноз: ОС і штучний інтелект", body: `<p>Операційні системи еволюціонують від класичних «менеджерів ресурсів» до інтелектуальних платформ, у яких ШІ стає частиною ядра або близького до нього шару.</p><h3>Ключові тенденції</h3><ul><li><strong>AI-assisted scheduling</strong> — планувальники, що використовують машинне навчання для передбачення навантаження і динамічного розподілу CPU, пам’яті та I/O.</li><li><strong>Локальні моделі на пристрої</strong> — AI PC і NPU дозволяють запускати невеликі мовні та мультимодальні моделі без постійного звернення до хмари (приватність + зниження вартості токенів).</li><li><strong>Агентні ОС</strong> — системи, де AI-агенти можуть виконувати дії від імені користувача (запуск програм, робота з файлами, мережею) під контролем політик безпеки.</li><li><strong>Immutable / declarative OS</strong> — незмінні або декларативні системи (Atomic, ostree, Nix-подібні підходи) спрощують оновлення і відкат, що важливо для надійності AI-навантажень.</li><li><strong>Спеціалізація під AI-прискорювачі</strong> — краща підтримка GPU, NPU, TPU на рівні ядра та драйверів.</li></ul><h3>Прогноз</h3><p>У найближчі роки більшість mainstream-ОС (Windows, macOS, Linux-дистрибутиви, Android, iOS) отримають глибшу інтеграцію ШІ на рівні системи, а не лише окремих додатків. Паралельно розвиватимуться «AI-native» експериментальні ОС і агентні середовища. Linux, завдяки відкритості та гнучкості, залишатиметься основною платформою для серверних і edge AI-навантажень. Безпека, прозорість рішень ШІ та контроль користувача стануть критичними вимогами до будь-якої «розумної» операційної системи.</p>` },
+        ru: { title: "🤖 Итоги и прогноз: ОС и искусственный интеллект", body: `<p>Операционные системы эволюционируют от классических «менеджеров ресурсов» к интеллектуальным платформам, в которых ИИ становится частью ядра или близкого к нему слоя.</p><h3>Ключевые тенденции</h3><ul><li><strong>AI-assisted scheduling</strong> — планировщики, использующие машинное обучение для предсказания нагрузки и динамического распределения CPU, памяти и I/O.</li><li><strong>Локальные модели на устройстве</strong> — AI PC и NPU позволяют запускать небольшие языковые и мультимодальные модели без постоянного обращения к облаку (приватность + снижение стоимости токенов).</li><li><strong>Агентные ОС</strong> — системы, где AI-агенты могут выполнять действия от имени пользователя (запуск программ, работа с файлами, сетью) под контролем политик безопасности.</li><li><strong>Immutable / declarative OS</strong> — неизменяемые или декларативные системы (Atomic, ostree, Nix-подобные подходы) упрощают обновления и откат, что важно для надёжности AI-нагрузок.</li><li><strong>Специализация под AI-ускорители</strong> — лучшая поддержка GPU, NPU, TPU на уровне ядра и драйверов.</li></ul><h3>Прогноз</h3><p>В ближайшие годы большинство mainstream-ОС (Windows, macOS, Linux-дистрибутивы, Android, iOS) получат более глубокую интеграцию ИИ на уровне системы, а не только отдельных приложений. Параллельно будут развиваться «AI-native» экспериментальные ОС и агентные среды. Linux, благодаря открытости и гибкости, останется основной платформой для серверных и edge AI-нагрузок. Безопасность, прозрачность решений ИИ и контроль пользователя станут критическими требованиями к любой «умной» операционной системе.</p>` },
+        en: { title: "🤖 Conclusions and forecast: OS and Artificial Intelligence", body: `<p>Operating systems are evolving from classic “resource managers” into intelligent platforms where AI becomes part of the kernel or a near-kernel layer.</p><h3>Key trends</h3><ul><li><strong>AI-assisted scheduling</strong> — schedulers that use machine learning to predict load and dynamically allocate CPU, memory and I/O.</li><li><strong>On-device local models</strong> — AI PCs and NPUs enable small language and multimodal models to run without constant cloud calls (privacy + lower token costs).</li><li><strong>Agentic OS</strong> — systems where AI agents can act on the user’s behalf (launch apps, handle files and network) under security policies.</li><li><strong>Immutable / declarative OS</strong> — immutable or declarative systems (Atomic, ostree, Nix-like approaches) simplify updates and rollbacks, which is vital for reliable AI workloads.</li><li><strong>Specialization for AI accelerators</strong> — better kernel- and driver-level support for GPUs, NPUs and TPUs.</li></ul><h3>Forecast</h3><p>In the coming years most mainstream OSes (Windows, macOS, Linux distributions, Android, iOS) will gain deeper system-level AI integration, not just application-level features. In parallel, experimental “AI-native” OSes and agentic environments will appear. Linux, thanks to its openness and flexibility, will remain the primary platform for server and edge AI workloads. Security, explainability of AI decisions and user control will become critical requirements for any “smart” operating system.</p>` }
+    }
+};
+
+let currentLang = localStorage.getItem('os-dir-lang') || 'uk';
+let activeCategory = 'all';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('os-dir-lang', lang);
+    document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+    ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+    document.title = ui[lang].title;
+    document.getElementById('home-link').textContent = ui[lang].home;
+    document.getElementById('page-title').textContent = ui[lang].pageTitle;
+    renderFilters();
+    render();
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const cur = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+function renderFilters() {
+    const container = document.getElementById('filters');
+    let html = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+    for (const [key, val] of Object.entries(categories)) {
+        html += `<button class="filter-btn ${activeCategory===key?'active':''}" onclick="setCat('${key}')">${val[currentLang]}</button>`;
+    }
+    // Додаткові розділи (та сама логіка, що й категорії ОС)
+    const extras = [
+        ['msdos', ui[currentLang].navMsdos],
+        ['sov', ui[currentLang].navSov],
+        ['web', ui[currentLang].navWeb],
+        ['future', ui[currentLang].navFuture]
+    ];
+    extras.forEach(([key, label]) => {
+        html += `<button class="filter-btn ${activeCategory===key?'active':''}" onclick="setCat('${key}')">${label}</button>`;
+    });
+    container.innerHTML = html;
+}
+
+function setCat(cat) {
+    activeCategory = cat;
+    renderFilters();
+    render();
+}
+
+function getLicenseClass(lic) {
+    const l = lic.toLowerCase();
+    if (l.includes('безкоштовна') || l.includes('бесплатная') || l.includes('free') || l.includes('open source') || l.includes('bsd') || l.includes('mit') || l.includes('gpl')) return 'license-free';
+    if (l.includes('платна') || l.includes('платная') || l.includes('paid')) return 'license-paid';
+    return 'license-mix';
+}
+
+function render() {
+    const main = document.getElementById('main');
+    let html = '';
+
+    // Додаткові розділи (історія, WEB, прогноз)
+    const extraMap = { msdos: 'msdos', sov: 'sov', web: 'web', future: 'future' };
+    if (extraMap[activeCategory]) {
+        const key = extraMap[activeCategory];
+        const block = extraContent[key][currentLang];
+        html = `<div class="extra-section"><h2>${block.title}</h2>${block.body}</div>`;
+        main.innerHTML = html;
+        document.getElementById('footer').textContent = ui[currentLang].footer;
+        return;
+    }
+
+    const catsToShow = activeCategory === 'all' ? Object.keys(categories) : [activeCategory];
+    catsToShow.forEach(catKey => {
+        const catOS = osList.filter(o => o.cat === catKey);
+        if (catOS.length === 0) return;
+        html += `<div class="section-title">${categories[catKey][currentLang]}</div><div class="grid">`;
+        catOS.forEach(o => {
+            const licClass = getLicenseClass(o.license[currentLang]);
+            html += `<div class="card"><div class="card-header"><div class="card-icon">${o.icon}</div><div><div class="card-title">${o.name}</div></div></div><div class="card-desc">${o.desc[currentLang]}</div><div class="card-section"><strong>${ui[currentLang].features}</strong>${o.features[currentLang]}</div><div class="card-section"><strong>${ui[currentLang].license}</strong><span class="${licClass}">${o.license[currentLang]}</span></div><div class="card-section"><strong>${ui[currentLang].arch}</strong><div class="arch-tags">${o.arch.map(a => `<span class="arch-tag">${a}</span>`).join('')}</div></div><a href="${o.url}" target="_blank" class="card-link">${ui[currentLang].open}</a></div>`;
+        });
+        html += `</div>`;
+    });
+    if (html === '') html = `<div class="no-results">${ui[currentLang].noResults}</div>`;
+    main.innerHTML = html;
+    document.getElementById('footer').textContent = ui[currentLang].footer;
+}
+
+setLang(currentLang);
+</script>
+</body>
+</html>

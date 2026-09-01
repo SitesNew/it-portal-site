@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-uk="Мережі та протоколи" data-ru="Сети и протоколы" data-en="Networks and Protocols">Мережі та протоколи</title>
+<style>
+:root {
+  --bg-gradient-start: #0f0c29; --bg-gradient-mid: #302b63; --bg-gradient-end: #24243e;
+  --text-primary: #e0e0e0; --text-secondary: #888; --text-muted: #666;
+  --accent-cyan: #00d4ff; --accent-red: #ff6b6b; --accent-yellow: #ffd93d;
+  --accent-green: #6bcb77; --accent-blue: #4d96ff; --accent-purple: #9b59b6;
+  --accent-orange: #e67e22; --accent-gray: #95a5a6;
+  --card-bg: rgba(255,255,255,0.05); --card-border: rgba(255,255,255,0.08);
+  --header-bg: rgba(0,0,0,0.4); --nav-bg: rgba(0,0,0,0.25);
+  --tip-bg: rgba(0,212,255,0.1); --tip-border: #00d4ff;
+  --code-bg: rgba(0,0,0,0.3); --shadow: rgba(0,212,255,0.1);
+}
+[data-theme="light"] {
+  --bg-gradient-start: #f0f2f5; --bg-gradient-mid: #e4e7ec; --bg-gradient-end: #d9dce5;
+  --text-primary: #1a1a2e; --text-secondary: #555; --text-muted: #888;
+  --accent-cyan: #0066cc; --accent-red: #cc3333; --accent-yellow: #cc9900;
+  --accent-green: #228b22; --accent-blue: #1a5276; --accent-purple: #7d3c98;
+  --accent-orange: #d35400; --accent-gray: #5d6d7e;
+  --card-bg: rgba(255,255,255,0.7); --card-border: rgba(0,0,0,0.1);
+  --header-bg: rgba(255,255,255,0.8); --nav-bg: rgba(255,255,255,0.6);
+  --tip-bg: rgba(0,102,204,0.1); --tip-border: #0066cc;
+  --code-bg: rgba(0,0,0,0.05); --shadow: rgba(0,0,0,0.1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  background: linear-gradient(135deg,var(--bg-gradient-start),var(--bg-gradient-mid),var(--bg-gradient-end));
+  color:var(--text-primary); min-height:100vh; line-height:1.7; transition:background 0.5s,color 0.5s;
+}
+.header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:15px 30px; background:var(--header-bg); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--card-border); position:sticky; top:0; z-index:1000; transition:background 0.5s;
+}
+.home-link { color:var(--accent-cyan); text-decoration:none; font-size:1.1rem; font-weight:600; transition:color 0.3s; display:flex; align-items:center; gap:8px; }
+.home-link:hover { color:var(--accent-red); }
+.home-link::before { content:"\2190"; font-size:1.2rem; }
+.header-controls { display:flex; align-items:center; gap:15px; }
+.theme-toggle { background:var(--card-bg); border:1px solid var(--card-border); border-radius:30px; padding:5px 15px; cursor:pointer; font-size:1.2rem; transition:all 0.3s; color:var(--text-primary); }
+.theme-toggle:hover { transform:scale(1.1); border-color:var(--accent-cyan); }
+.lang-switcher { display:flex; gap:8px; }
+.lang-btn { background:var(--card-bg); border:1px solid var(--card-border); color:var(--text-primary); padding:6px 14px; border-radius:20px; cursor:pointer; font-size:0.85rem; transition:all 0.3s; text-decoration:none; font-weight:500; }
+.lang-btn:hover,.lang-btn.active { background:var(--accent-cyan); color:#fff; border-color:var(--accent-cyan); }
+.nav-menu {
+  display:flex; justify-content:center; gap:4px; padding:12px 20px; background:var(--nav-bg);
+  border-bottom:1px solid var(--card-border); flex-wrap:wrap; transition:background 0.5s;
+  position:sticky; top:58px; z-index:999; backdrop-filter:blur(8px);
+}
+.nav-menu a { color:var(--text-secondary); text-decoration:none; padding:7px 14px; border-radius:8px; transition:all 0.3s; font-size:0.85rem; white-space:nowrap; }
+.nav-menu a:hover { color:var(--accent-cyan); background:rgba(0,212,255,0.1); }
+.nav-menu a.active { color:var(--accent-cyan); background:rgba(0,212,255,0.15); font-weight:600; }
+.main-content { max-width:1100px; margin:0 auto; padding:40px 30px 60px; }
+.page-title { text-align:center; font-size:2.4rem; margin-bottom:10px; background:linear-gradient(90deg,var(--accent-cyan),var(--accent-red),var(--accent-yellow)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.page-subtitle { text-align:center; color:var(--text-secondary); font-size:1.1rem; margin-bottom:50px; }
+.section { background:var(--card-bg); border:1px solid var(--card-border); border-radius:16px; padding:30px; margin-bottom:30px; transition:transform 0.3s,box-shadow 0.3s,background 0.5s,border-color 0.5s; scroll-margin-top:120px; }
+.section:hover { transform:translateY(-3px); box-shadow:0 10px 40px var(--shadow); }
+.section h2 { color:var(--accent-cyan); font-size:1.5rem; margin-bottom:20px; display:flex; align-items:center; gap:12px; }
+.section h2 .icon { font-size:1.8rem; }
+.section h3 { color:var(--accent-yellow); font-size:1.15rem; margin:25px 0 12px; }
+.section h4 { color:var(--accent-orange); font-size:1.05rem; margin:20px 0 10px; }
+.section p { margin-bottom:12px; text-align:justify; }
+.section ul,.section ol { margin-left:25px; margin-bottom:15px; }
+.section li { margin-bottom:8px; }
+.section li::marker { color:var(--accent-cyan); }
+.protocol-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px; margin-top:20px; }
+.protocol-card { background:var(--code-bg); border:1px solid var(--card-border); border-radius:12px; padding:20px; transition:all 0.3s; }
+.protocol-card:hover { border-color:var(--accent-cyan); }
+.protocol-card h4 { color:var(--accent-red); font-size:1.1rem; margin-bottom:10px; }
+.protocol-card p { font-size:0.9rem; color:var(--text-secondary); text-align:left; margin-bottom:0; }
+.osi-stack { display:flex; flex-direction:column; gap:4px; margin:20px 0; max-width:600px; }
+.osi-layer { padding:12px 20px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; font-weight:500; color:#fff; }
+.osi-layer span:first-child { font-weight:700; }
+.osi-layer span:last-child { font-size:0.85rem; opacity:0.9; }
+.l7 { background:linear-gradient(90deg,#ff6b6b,#ee5a5a); }
+.l6 { background:linear-gradient(90deg,#ffd93d,#e6c237); color:#222; }
+.l5 { background:linear-gradient(90deg,#6bcb77,#5ab865); }
+.l4 { background:linear-gradient(90deg,#4d96ff,#3d85ee); }
+.l3 { background:linear-gradient(90deg,#9b59b6,#8e44ad); }
+.l2 { background:linear-gradient(90deg,#e67e22,#d35400); }
+.l1 { background:linear-gradient(90deg,#95a5a6,#7f8c8d); }
+.tip { background:var(--tip-bg); border-left:4px solid var(--tip-border); padding:15px 20px; border-radius:0 8px 8px 0; margin:20px 0; font-size:0.95rem; transition:background 0.5s; }
+.tip strong { color:var(--accent-cyan); }
+.comparison-table { width:100%; border-collapse:collapse; margin:15px 0; font-size:0.95rem; }
+.comparison-table th,.comparison-table td { padding:12px 15px; text-align:left; border-bottom:1px solid var(--card-border); }
+.comparison-table th { background:var(--code-bg); color:var(--accent-cyan); font-weight:600; }
+.comparison-table tr:hover { background:rgba(0,212,255,0.03); }
+.footer { text-align:center; padding:30px; background:var(--header-bg); border-top:1px solid var(--card-border); color:var(--text-muted); font-size:0.9rem; transition:background 0.5s; }
+.footer a { color:var(--accent-cyan); text-decoration:none; }
+code { background:var(--code-bg); padding:2px 6px; border-radius:4px; font-family:'Consolas',monospace; font-size:0.9em; }
+@media(max-width:768px){
+  .header { flex-direction:column; gap:12px; padding:12px 15px; }
+  .header-controls { gap:10px; }
+  .page-title { font-size:1.7rem; }
+  .section { padding:20px; scroll-margin-top:150px; }
+  .nav-menu { gap:3px; padding:8px 10px; top:90px; }
+  .nav-menu a { padding:5px 10px; font-size:0.78rem; }
+  .osi-layer { flex-direction:column; align-items:flex-start; gap:4px; }
+  .comparison-table { font-size:0.85rem; }
+  .comparison-table th,.comparison-table td { padding:8px 10px; }
+}
+
+.page-hero { text-align:center; padding:30px 20px 5px; }
+.page-hero .hero-icon { font-size:3.5rem; margin-bottom:8px; animation:float 3s ease-in-out infinite; }
+.page-hero .hero-tagline { font-size:1.15rem; color:var(--text-secondary); font-style:italic; max-width:700px; margin:0 auto; line-height:1.5; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+@media(max-width:768px){ .page-hero .hero-icon{font-size:2.8rem} .page-hero .hero-tagline{font-size:1rem} }
+
+.page-name { font-size:1.1rem; font-weight:600; color:var(--accent-cyan); margin-left:15px; padding-left:15px; border-left:2px solid var(--card-border); transition:color 0.3s; }
+@media(max-width:768px){ .page-name{font-size:0.95rem;margin-left:10px;padding-left:10px} }
+</style>
+<base target="_blank">
+</head>
+<body>
+
+<header class="header">
+<a href="index.html" class="home-link" target="_self"><span data-uk="Головна сторінка" data-ru="Главная страница" data-en="Home page">Головна сторінка</span></a>
+<span class="page-name" data-uk="Мережі та протоколи" data-ru="Сети и протоколы" data-en="Networks and Protocols">Мережі та протоколи</span>
+<div class="header-controls">
+<button class="theme-toggle" onclick="toggleTheme()" title="Switch theme">&#127769;</button>
+<div class="lang-switcher">
+<button class="lang-btn active" onclick="setLang('uk')">UK</button>
+<button class="lang-btn" onclick="setLang('ru')">RU</button>
+<button class="lang-btn" onclick="setLang('en')">EN</button>
+</div>
+</div>
+</header>
+
+<nav class="nav-menu">
+<a href="#intro" target="_self" data-uk="Вступ" data-ru="Введение" data-en="Intro">Вступ</a>
+<a href="#types" target="_self" data-uk="Типи" data-ru="Типы" data-en="Types">Типи</a>
+<a href="#topologies" target="_self" data-uk="Топології" data-ru="Топологии" data-en="Topologies">Топології</a>
+<a href="#osi" target="_self" data-uk="OSI" data-ru="OSI" data-en="OSI">OSI</a>
+<a href="#tcpip" target="_self" data-uk="TCP/IP" data-ru="TCP/IP" data-en="TCP/IP">TCP/IP</a>
+<a href="#dns-dhcp" target="_self" data-uk="DNS/DHCP" data-ru="DNS/DHCP" data-en="DNS/DHCP">DNS/DHCP</a>
+<a href="#nat" target="_self" data-uk="NAT/CIDR" data-ru="NAT/CIDR" data-en="NAT/CIDR">NAT/CIDR</a>
+<a href="#http" target="_self" data-uk="HTTP/WS" data-ru="HTTP/WS" data-en="HTTP/WS">HTTP/WS</a>
+<a href="#vpn" target="_self" data-uk="VPN" data-ru="VPN" data-en="VPN">VPN</a>
+<a href="#cloud" target="_self" data-uk="Хмари" data-ru="Облака" data-en="Cloud">Хмари</a>
+<a href="#hardware" target="_self" data-uk="Обладнання" data-ru="Оборудование" data-en="Hardware">Обладнання</a>
+<a href="#security" target="_self" data-uk="Безпека" data-ru="Безопасность" data-en="Security">Безпека</a>
+<a href="#summary" target="_self" data-uk="Підсумок" data-ru="Итог" data-en="Summary">Підсумок</a>
+</nav>
+
+<main class="main-content">
+<h1 class="page-title" data-uk="Мережі та протоколи" data-ru="Сети и протоколы" data-en="Networks and Protocols">Мережі та протоколи</h1>
+<p class="page-subtitle" data-uk="Від локальних мереж і модемів до Інтернету, хмар та edge computing" data-ru="От локальных сетей и модемов до Интернета, облаков и edge computing" data-en="From local networks and modems to the Internet, clouds and edge computing">Від локальних мереж і модемів до Інтернету, хмар та edge computing</p>
+
+<section class="section" id="intro">
+<h2><span class="icon">&#127760;</span> <span data-uk="Що таке комп'ютерна мережа?" data-ru="Что такое компьютерная сеть?" data-en="What is a computer network?">Що таке комп'ютерна мережа?</span></h2>
+<p data-uk="Комп'ютерна мережа — це сукупність комп'ютерів, серверів, мережевого обладнання та програмного забезпечення, з'єднаних каналами зв'язку для обміну даними та спільного використання ресурсів. Сучасний світ неможливо уявити без мереж — від домашнього Wi-Fi до глобальної інфраструктури Інтернету." data-ru="Компьютерная сеть — это совокупность компьютеров, серверов, сетевого оборудования и программного обеспечения, соединённых каналами связи для обмена данными и совместного использования ресурсов. Современный мир невозможно представить без сетей — от домашнего Wi-Fi до глобальной инфраструктуры Интернета." data-en="A computer network is a collection of computers, servers, networking equipment and software connected by communication channels for data exchange and resource sharing. The modern world is unimaginable without networks — from home Wi-Fi to the global Internet infrastructure.">Комп'ютерна мережа — це сукупність комп'ютерів, серверів, мережевого обладнання та програмного забезпечення, з'єднаних каналами зв'язку для обміну даними та спільного використання ресурсів. Сучасний світ неможливо уявити без мереж — від домашнього Wi-Fi до глобальної інфраструктури Інтернету.</p>
+<p data-uk="Історія мереж почалася з модемних з'єднань через телефонні лінії (dial-up зі швидкістю 56 кбіт/с), еволюціонувала через локальні мережі (LAN) на коаксіальному кабелі та витій парі, до сучасних оптоволоконних магістралей, 5G-мереж та супутникового інтернету Starlink." data-ru="История сетей началась с модемных соединений через телефонные линии (dial-up со скоростью 56 кбит/с), эволюционировала через локальные сети (LAN) на коаксиальном кабеле и витой паре, до современных оптоволоконных магистралей, сетей 5G и спутникового интернета Starlink." data-en="The history of networks began with dial-up modem connections over telephone lines (56 kbps), evolved through local area networks (LAN) on coaxial cable and twisted pair, to modern fiber-optic backbones, 5G networks and Starlink satellite Internet.">Історія мереж почалася з модемних з'єднань через телефонні лінії (dial-up зі швидкістю 56 кбіт/с), еволюціонувала через локальні мережі (LAN) на коаксіальному кабелі та витій парі, до сучасних оптоволоконних магістралей, 5G-мереж та супутникового інтернету Starlink.</p>
+<p data-uk="Ключові переваги мереж: спільне використання ресурсів (принтери, файли), централізоване управління, економія коштів, масштабованість, відмовостійкість через резервування, а також можливість віддаленої роботи та доступу до інформації з будь-якої точки світу." data-ru="Ключевые преимущества сетей: совместное использование ресурсов (принтеры, файлы), централизованное управление, экономия средств, масштабируемость, отказоустойчивость через резервирование, а также возможность удалённой работы и доступа к информации из любой точки мира." data-en="Key benefits of networks: shared resources (printers, files), centralized management, cost savings, scalability, fault tolerance through redundancy, and the ability to work remotely and access information from anywhere in the world.">Ключові переваги мереж: спільне використання ресурсів (принтери, файли), централізоване управління, економія коштів, масштабованість, відмовостійкість через резервування, а також можливість віддаленої роботи та доступу до інформації з будь-якої точки світу.</p>
+</section>
+
+<section class="section" id="types">
+<h2><span class="icon">&#128225;</span> <span data-uk="Типи мереж за масштабом" data-ru="Типы сетей по масштабу" data-en="Network types by scale">Типи мереж за масштабом</span></h2>
+<p data-uk="Мережі класифікують за географічним охопленням. Кожен тип має свої протоколи, обладнання та області застосування." data-ru="Сети классифицируют по географическому охвату. Каждый тип имеет свои протоколы, оборудование и области применения." data-en="Networks are classified by geographic coverage. Each type has its own protocols, equipment and application areas.">Мережі класифікують за географічним охопленням. Кожен тип має свої протоколи, обладнання та області застосування.</p>
+<div class="protocol-grid">
+<div class="protocol-card">
+<h4>PAN</h4>
+<p data-uk="Personal Area Network — персональна мережа радіусом до 10 м. Об'єднує пристрої одного користувача: Bluetooth-гарнітуру, смарт-годинник, бездротові навушники, фітнес-браслети. Технології: Bluetooth (до 50 Мбіт/с), NFC (до 424 кбіт/с), Zigbee, Z-Wave." data-ru="Personal Area Network — персональная сеть радиусом до 10 м. Объединяет устройства одного пользователя: Bluetooth-гарнитуру, смарт-часы, беспроводные наушники, фитнес-браслеты. Технологии: Bluetooth (до 50 Мбит/с), NFC (до 424 кбит/с), Zigbee, Z-Wave." data-en="Personal Area Network — a personal network with a radius of up to 10 m. Connects devices of one user: Bluetooth headset, smartwatch, wireless earbuds, fitness bracelets. Technologies: Bluetooth (up to 50 Mbps), NFC (up to 424 kbps), Zigbee, Z-Wave.">Personal Area Network — персональна мережа радіусом до 10 м. Об'єднує пристрої одного користувача: Bluetooth-гарнітуру, смарт-годинник, бездротові навушники, фітнес-браслети. Технології: Bluetooth (до 50 Мбіт/с), NFC (до 424 кбіт/с), Zigbee, Z-Wave.</p>
+</div>
+<div class="protocol-card">
+<h4>LAN</h4>
+<p data-uk="Local Area Network — локальна мережа в межах будівлі, офісу чи кампусу (до кількох кілометрів). Використовує Ethernet (вита пара Cat5e/Cat6/Cat6a, оптоволокно) або Wi-Fi (802.11a/b/g/n/ac/ax/be). Швидкість: від 100 Мбіт/с до 10 Гбіт/с." data-ru="Local Area Network — локальная сеть в пределах здания, офиса или кампуса (до нескольких километров). Использует Ethernet (витая пара Cat5e/Cat6/Cat6a, оптоволокно) или Wi-Fi (802.11a/b/g/n/ac/ax/be). Скорость: от 100 Мбит/с до 10 Гбит/с." data-en="Local Area Network — within a building, office or campus (up to several kilometers). Uses Ethernet (twisted pair Cat5e/Cat6/Cat6a, fiber optic) or Wi-Fi (802.11a/b/g/n/ac/ax/be). Speed: from 100 Mbps to 10 Gbps.">Local Area Network — локальна мережа в межах будівлі, офісу чи кампусу (до кількох кілометрів). Використовує Ethernet (вита пара Cat5e/Cat6/Cat6a, оптоволокно) або Wi-Fi (802.11a/b/g/n/ac/ax/be). Швидкість: від 100 Мбіт/с до 10 Гбіт/с.</p>
+</div>
+<div class="protocol-card">
+<h4>MAN</h4>
+<p data-uk="Metropolitan Area Network — міська мережа, що охоплює населений пункт (10-50 км). З'єднує офіси, університети, дата-центри. Технології: оптоволоконні кільця, WiMAX, міський Wi-Fi, MPLS від провайдерів." data-ru="Metropolitan Area Network — городская сеть, охватывающая населённый пункт (10-50 км). Соединяет офисы, университеты, дата-центры. Технологии: оптоволоконные кольца, WiMAX, городской Wi-Fi, MPLS от провайдеров." data-en="Metropolitan Area Network — covers a city or town (10-50 km). Connects offices, universities, data centers. Technologies: fiber-optic rings, WiMAX, city Wi-Fi, MPLS from ISPs.">Metropolitan Area Network — міська мережа, що охоплює населений пункт (10-50 км). З'єднує офіси, університети, дата-центри. Технології: оптоволоконні кільця, WiMAX, міський Wi-Fi, MPLS від провайдерів.</p>
+</div>
+<div class="protocol-card">
+<h4>WAN</h4>
+<p data-uk="Wide Area Network — глобальна мережа, що з'єднує міста, країни, континенти. Інтернет — найбільший WAN. Технології: оптоволоконні трансокеанські кабелі, супутниковий зв'язок, MPLS, SD-WAN. Затримка: 20-300 мс." data-ru="Wide Area Network — глобальная сеть, соединяющая города, страны, континенты. Интернет — крупнейший WAN. Технологии: оптоволоконные трансокеанские кабели, спутниковая связь, MPLS, SD-WAN. Задержка: 20-300 мс." data-en="Wide Area Network — connects cities, countries, continents. The Internet is the largest WAN. Technologies: transoceanic fiber-optic cables, satellite communication, MPLS, SD-WAN. Latency: 20-300 ms.">Wide Area Network — глобальна мережа, що з'єднує міста, країни, континенти. Інтернет — найбільший WAN. Технології: оптоволоконні трансокеанські кабелі, супутниковий зв'язок, MPLS, SD-WAN. Затримка: 20-300 мс.</p>
+</div>
+</div>
+</section>
+
+<section class="section" id="topologies">
+<h2><span class="icon">&#128207;</span> <span data-uk="Топології мереж" data-ru="Топологии сетей" data-en="Network Topologies">Топології мереж</span></h2>
+<p data-uk="Топологія — це спосіб фізичного або логічного з'єднання вузлів мережі. Від неї залежить надійність, швидкість та вартість інфраструктури." data-ru="Топология — это способ физического или логического соединения узлов сети. От неё зависят надёжность, скорость и стоимость инфраструктуры." data-en="Topology is the way nodes in a network are physically or logically connected. It affects reliability, speed and infrastructure cost.">Топологія — це спосіб фізичного або логічного з'єднання вузлів мережі. Від неї залежить надійність, швидкість та вартість інфраструктури.</p>
+<div class="protocol-grid">
+<div class="protocol-card">
+<h4 data-uk="Зірка (Star)" data-ru="Звезда (Star)" data-en="Star">Зірка (Star)</h4>
+<p data-uk="Усі пристрої підключені до центрального комутатора або точки доступу. Переваги: простота діагностики, ізоляція відмов. Недоліки: залежність від центрального вузла. Найпоширеніша топологія сучасних LAN." data-ru="Все устройства подключены к центральному коммутатору или точке доступа. Преимущества: простота диагностики, изоляция отказов. Недостатки: зависимость от центрального узла. Самая распространённая топология современных LAN." data-en="All devices connect to a central switch or access point. Pros: easy diagnostics, fault isolation. Cons: dependency on the central node. The most common topology for modern LANs.">Усі пристрої підключені до центрального комутатора або точки доступу. Переваги: простота діагностики, ізоляція відмов. Недоліки: залежність від центрального вузла. Найпоширеніша топологія сучасних LAN.</p>
+</div>
+<div class="protocol-card">
+<h4 data-uk="Шина (Bus)" data-ru="Шина (Bus)" data-en="Bus">Шина (Bus)</h4>
+<p data-uk="Усі пристрої підключені до одного спільного кабелю (раніше — коаксіальний). Застаріла топологія. Недоліки: колізії даних, складність локалізації поломок, весь сегмент виходить з ладу при обриві кабелю." data-ru="Все устройства подключены к одному общему кабелю (ранее — коаксиальный). Устаревшая топология. Недостатки: коллизии данных, сложность локализации поломок, весь сегмент выходит из строя при обрыве кабеля." data-en="All devices connect to a single shared cable (formerly coaxial). Outdated topology. Cons: data collisions, difficulty locating faults, entire segment fails if cable breaks.">Усі пристрої підключені до одного спільного кабелю (раніше — коаксіальний). Застаріла топологія. Недоліки: колізії даних, складність локалізації поломок, весь сегмент виходить з ладу при обриві кабелю.</p>
+</div>
+<div class="protocol-card">
+<h4 data-uk="Кільце (Ring)" data-ru="Кольцо (Ring)" data-en="Ring">Кільце (Ring)</h4>
+<p data-uk="Кожен пристрій з'єднаний з двома сусідами, утворюючи кільце. Дані проходять по колу. Використовується в оптоволоконних мережах FDDI, SONET/SDH. Переваги: передбачувана затримка. Недоліки: обрив кільця порушує роботу." data-ru="Каждое устройство соединено с двумя соседями, образуя кольцо. Данные проходят по кругу. Используется в оптоволоконных сетях FDDI, SONET/SDH. Преимущества: предсказуемая задержка. Недостатки: обрыв кольца нарушает работу." data-en="Each device is connected to two neighbors, forming a ring. Data travels around the circle. Used in fiber-optic FDDI, SONET/SDH networks. Pros: predictable latency. Cons: ring break disrupts operation.">Кожен пристрій з'єднаний з двома сусідами, утворюючи кільце. Дані проходять по колу. Використовується в оптоволоконних мережах FDDI, SONET/SDH. Переваги: передбачувана затримка. Недоліки: обрив кільця порушує роботу.</p>
+</div>
+<div class="protocol-card">
+<h4 data-uk="Ячеиста (Mesh)" data-ru="Ячеистая (Mesh)" data-en="Mesh">Ячеиста (Mesh)</h4>
+<p data-uk="Кожен вузол з'єднаний з багатьма іншими. Повна ячеиста — усі з усіма. Часткова — кожен з кількома сусідами. Використовується в дата-центрах (Spine-Leaf), бездротових сенсорних мережах, блокчейн-мережах. Максимальна відмовостійкість." data-ru="Каждый узел соединён со многими другими. Полная ячеистая — все со всеми. Частичная — каждый с несколькими соседями. Используется в дата-центрах (Spine-Leaf), беспроводных сенсорных сетях, блокчейн-сетях. Максимальная отказоустойчивость." data-en="Each node is connected to many others. Full mesh — all to all. Partial — each to several neighbors. Used in data centers (Spine-Leaf), wireless sensor networks, blockchain networks. Maximum fault tolerance.">Кожен вузол з'єднаний з багатьма іншими. Повна ячеиста — усі з усіма. Часткова — кожен з кількома сусідами. Використовується в дата-центрах (Spine-Leaf), бездротових сенсорних мережах, блокчейн-мережах. Максимальна відмовостійкість.</p>
+</div>
+</div>
+</section>
+
+<section class="section" id="osi">
+<h2><span class="icon">&#129374;</span> <span data-uk="Модель OSI — 7 рівнів мережевої взаємодії" data-ru="Модель OSI — 7 уровней сетевого взаимодействия" data-en="OSI Model — 7 layers of network interaction">Модель OSI — 7 рівнів мережевої взаємодії</span></h2>
+<p data-uk="Модель OSI (Open Systems Interconnection) розроблена ISO у 1984 році. Це концептуальна модель, яка стандартизує функції мережевої комунікації на 7 рівнях. Кожен рівень виконує свою задачу і взаємодіє лише з сусідніми рівнями через чітко визначені інтерфейси." data-ru="Модель OSI (Open Systems Interconnection) разработана ISO в 1984 году. Это концептуальная модель, которая стандартизирует функции сетевой коммуникации на 7 уровнях. Каждый уровень выполняет свою задачу и взаимодействует только с соседними уровнями через чётко определённые интерфейсы." data-en="The OSI (Open Systems Interconnection) model was developed by ISO in 1984. It is a conceptual model that standardizes network communication functions into 7 layers. Each layer performs its own task and interacts only with adjacent layers through clearly defined interfaces.">Модель OSI (Open Systems Interconnection) розроблена ISO у 1984 році. Це концептуальна модель, яка стандартизує функції мережевої комунікації на 7 рівнях. Кожен рівень виконує свою задачу і взаємодіє лише з сусідніми рівнями через чітко визначені інтерфейси.</p>
+<div class="osi-stack">
+<div class="osi-layer l7"><span data-uk="7. Прикладний" data-ru="7. Прикладной" data-en="7. Application">7. Прикладний</span><span>HTTP, FTP, SMTP, DNS, SSH, SNMP</span></div>
+<div class="osi-layer l6"><span data-uk="6. Представницький" data-ru="6. Представительский" data-en="6. Presentation">6. Представницький</span><span>SSL/TLS, JPEG, PNG, ASCII, UTF-8, MPEG</span></div>
+<div class="osi-layer l5"><span data-uk="5. Сеансовий" data-ru="5. Сеансовый" data-en="5. Session">5. Сеансовий</span><span>NetBIOS, RPC, PPTP, SOCKS, SQL сесії</span></div>
+<div class="osi-layer l4"><span data-uk="4. Транспортний" data-ru="4. Транспортный" data-en="4. Transport">4. Транспортний</span><span>TCP, UDP, SCTP, DCCP</span></div>
+<div class="osi-layer l3"><span data-uk="3. Мережевий" data-ru="3. Сетевой" data-en="3. Network">3. Мережевий</span><span>IP, ICMP, OSPF, BGP, IGMP, IPSec</span></div>
+<div class="osi-layer l2"><span data-uk="2. Канальний" data-ru="2. Канальный" data-en="2. Data Link">2. Канальний</span><span>Ethernet, Wi-Fi (802.11), PPP, ARP, STP</span></div>
+<div class="osi-layer l1"><span data-uk="1. Фізичний" data-ru="1. Физический" data-en="1. Physical">1. Фізичний</span><span data-uk="Кабель, оптоволокно, радіохвилі, роз'єми RJ45" data-ru="Кабель, оптоволокно, радиоволны, разъёмы RJ45" data-en="Cable, fiber optic, radio waves, RJ45 connectors">Кабель, оптоволокно, радіохвилі, роз'єми RJ45</span></div>
+</div>
+<p data-uk="Кожен рівень додає свій заголовок (header) до даних при відправці та знімає його при отриманні. Цей процес називається інкапсуляція (вниз) та декапсуляція (вгору). Наприклад, веб-запит спочатку формується на прикладному рівні (HTTP), потім шифрується на представницькому (TLS), відкривається сесія на 5-му, сегментується на транспортному (TCP), пакетується на мережевому (IP), формується кадр на канальному (Ethernet) і перетворюється в електричні/оптичні сигнали на фізичному." data-ru="Каждый уровень добавляет свой заголовок (header) к данным при отправке и снимает его при получении. Этот процесс называется инкапсуляция (вниз) и декапсуляция (вверх). Например, веб-запрос сначала формируется на прикладном уровне (HTTP), затем шифруется на представительском (TLS), открывается сессия на 5-м, сегментируется на транспортном (TCP), пакетируется на сетевом (IP), формируется кадр на канальном (Ethernet) и превращается в электрические/оптические сигналы на физическом." data-en="Each layer adds its own header to data when sending and removes it when receiving. This process is called encapsulation (down) and decapsulation (up). For example, a web request is first formed at the application layer (HTTP), then encrypted at the presentation layer (TLS), a session is opened at layer 5, segmented at the transport layer (TCP), packetized at the network layer (IP), framed at the data link layer (Ethernet) and converted to electrical/optical signals at the physical layer.">Кожен рівень додає свій заголовок (header) до даних при відправці та знімає його при отриманні. Цей процес називається інкапсуляція (вниз) та декапсуляція (вгору). Наприклад, веб-запит спочатку формується на прикладному рівні (HTTP), потім шифрується на представницькому (TLS), відкривається сесія на 5-му, сегментується на транспортному (TCP), пакетується на мережевому (IP), формується кадр на канальному (Ethernet) і перетворюється в електричні/оптичні сигнали на фізичному.</p>
+<div class="tip">
+<strong data-uk="Порада:" data-ru="Совет:" data-en="Tip:">Порада:</strong>
+<span data-uk=" На практиці частіше використовують спрощену модель " data-ru=" На практике чаще используют упрощённую модель " data-en=" In practice, the simplified "> На практиці частіше використовують спрощену модель </span>
+<strong>TCP/IP</strong>
+<span data-uk=" з 4 рівнями: Прикладний (Application), Транспортний (Transport), Інтернет (Internet) та Канальний (Network Interface / Link)." data-ru=" с 4 уровнями: Прикладной (Application), Транспортный (Transport), Интернет (Internet) и Канальный (Network Interface / Link)." data-en=" model with 4 layers: Application, Transport, Internet and Network Interface / Link."> з 4 рівнями: Прикладний (Application), Транспортний (Transport), Інтернет (Internet) та Канальний (Network Interface / Link).</span>
+</div>
+</section>
+
+<section class="section" id="tcpip">
+<h2><span class="icon">&#128279;</span> <span data-uk="Стек протоколів TCP/IP" data-ru="Стек протоколов TCP/IP" data-en="TCP/IP Protocol Stack">Стек протоколів TCP/IP</span></h2>
+<p data-uk="TCP/IP — це набір мережевих протоколів, на яких базується Інтернет. Розроблений Міністерством оборони США (DARPA) у 1970-х. Назва походить від двох ключових протоколів: TCP (Transmission Control Protocol) та IP (Internet Protocol)." data-ru="TCP/IP — это набор сетевых протоколов, на которых базируется Интернет. Разработан Министерством обороны США (DARPA) в 1970-х. Название происходит от двух ключевых протоколов: TCP (Transmission Control Protocol) и IP (Internet Protocol)." data-en="TCP/IP is a suite of networking protocols that forms the foundation of the Internet. Developed by the US Department of Defense (DARPA) in the 1970s. The name comes from two key protocols: TCP (Transmission Control Protocol) and IP (Internet Protocol).">TCP/IP — це набір мережевих протоколів, на яких базується Інтернет. Розроблений Міністерством оборони США (DARPA) у 1970-х. Назва походить від двох ключових протоколів: TCP (Transmission Control Protocol) та IP (Internet Protocol).</p>
+
+<h3>&#128313; IP (Internet Protocol)</h3>
+<p data-uk="Відповідає за логічну адресацію та маршрутизацію пакетів між мережами. Кожен пристрій у мережі має унікальну IP-адресу. IP працює без установлення з'єднання і не гарантує доставку — це роблять протоколи вищих рівнів." data-ru="Отвечает за логическую адресацию и маршрутизацию пакетов между сетями. Каждое устройство в сети имеет уникальный IP-адрес. IP работает без установления соединения и не гарантирует доставку — это делают протоколы более высоких уровней." data-en="Responsible for logical addressing and routing packets between networks. Every device on a network has a unique IP address. IP is connectionless and does not guarantee delivery — higher-level protocols handle that.">Відповідає за логічну адресацію та маршрутизацію пакетів між мережами. Кожен пристрій у мережі має унікальну IP-адресу. IP працює без установлення з'єднання і не гарантує доставку — це роблять протоколи вищих рівнів.</p>
+<ul>
+<li data-uk="IPv4 — 32-бітна адреса (наприклад, 192.168.1.1). Доступно ~4,3 мільярда адрес, яких вже не вистачає. Має заголовок 20 байт. Підтримує фрагментацію пакетів." data-ru="IPv4 — 32-битный адрес (например, 192.168.1.1). Доступно ~4,3 миллиарда адрес, которых уже не хватает. Имеет заголовок 20 байт. Поддерживает фрагментацию пакетов." data-en="IPv4 — 32-bit address (e.g., 192.168.1.1). About 4.3 billion addresses available, which are now insufficient. Has a 20-byte header. Supports packet fragmentation.">IPv4 — 32-бітна адреса (наприклад, 192.168.1.1). Доступно ~4,3 мільярда адрес, яких вже не вистачає. Має заголовок 20 байт. Підтримує фрагментацію пакетів.</li>
+<li data-uk="IPv6 — 128-бітна адреса (наприклад, 2001:0db8::1). Надає 3,4×10^38 адрес — більше, ніж піщинок на Землі. Вбудована підтримка IPsec, автоконфігурація (SLAAC), спрощений заголовок 40 байт, без фрагментації маршрутизаторами." data-ru="IPv6 — 128-битный адрес (например, 2001:0db8::1). Предоставляет 3,4×10^38 адресов — больше, чем песчинок на Земле. Встроенная поддержка IPsec, автоконфигурация (SLAAC), упрощённый заголовок 40 байт, без фрагментации маршрутизаторами." data-en="IPv6 — 128-bit address (e.g., 2001:0db8::1). Provides 3.4×10^38 addresses — more than grains of sand on Earth. Built-in IPsec support, autoconfiguration (SLAAC), simplified 40-byte header, no router fragmentation.">IPv6 — 128-бітна адреса (наприклад, 2001:0db8::1). Надає 3,4×10^38 адрес — більше, ніж піщинок на Землі. Вбудована підтримка IPsec, автоконфігурація (SLAAC), спрощений заголовок 40 байт, без фрагментації маршрутизаторами.</li>
+</ul>
+
+<h3>&#128313; TCP (Transmission Control Protocol)</h3>
+<p data-uk="Надійний, орієнтований на з'єднання протокол. Перед передачею даних виконується тристороннє рукостискання (Three-Way Handshake):" data-ru="Надёжный, ориентированный на соединение протокол. Перед передачей данных выполняется трёхстороннее рукопожатие (Three-Way Handshake):" data-en="A reliable, connection-oriented protocol. Before data transmission, a Three-Way Handshake is performed:">Надійний, орієнтований на з'єднання протокол. Перед передачею даних виконується тристороннє рукостискання (Three-Way Handshake):</p>
+<ol>
+<li><strong>SYN</strong> <span data-uk="— клієнт надсилає серверу запит на з'єднання зі своїм початковим номером послідовності (ISN)." data-ru="— клиент отправляет серверу запрос на соединение со своим начальным номером последовательности (ISN)." data-en="— client sends server a connection request with its initial sequence number (ISN).">— клієнт надсилає серверу запит на з'єднання зі своїм початковим номером послідовності (ISN).</span></li>
+<li><strong>SYN-ACK</strong> <span data-uk="— сервер підтверджує отримання SYN і надсилає свій ISN." data-ru="— сервер подтверждает получение SYN и отправляет свой ISN." data-en="— server acknowledges SYN receipt and sends its own ISN.">— сервер підтверджує отримання SYN і надсилає свій ISN.</span></li>
+<li><strong>ACK</strong> <span data-uk="— клієнт підтверджує SYN-ACK, і з'єднання встановлено. Починається передача даних." data-ru="— клиент подтверждает SYN-ACK, и соединение установлено. Начинается передача данных." data-en="— client acknowledges SYN-ACK, and the connection is established. Data transmission begins.">— клієнт підтверджує SYN-ACK, і з'єднання встановлено. Починається передача даних.</span></li>
+</ol>
+<p data-uk="TCP гарантує доставку через номери послідовності та підтвердження (ACK), контроль перевантаження (congestion control: slow start, congestion avoidance, fast retransmit), керування потоком (sliding window) та правильний порядок сегментів. Використовується для HTTP/HTTPS, FTP, SSH, SMTP." data-ru="TCP гарантирует доставку через номера последовательности и подтверждения (ACK), контроль перегрузки (congestion control: slow start, congestion avoidance, fast retransmit), управление потоком (sliding window) и правильный порядок сегментов. Используется для HTTP/HTTPS, FTP, SSH, SMTP." data-en="TCP guarantees delivery through sequence numbers and acknowledgments (ACK), congestion control (slow start, congestion avoidance, fast retransmit), flow control (sliding window) and correct segment ordering. Used for HTTP/HTTPS, FTP, SSH, SMTP.">TCP гарантує доставку через номери послідовності та підтвердження (ACK), контроль перевантаження (congestion control: slow start, congestion avoidance, fast retransmit), керування потоком (sliding window) та правильний порядок сегментів. Використовується для HTTP/HTTPS, FTP, SSH, SMTP.</p>
+
+<h3>&#128313; UDP (User Datagram Protocol)</h3>
+<p data-uk="Протокол без установлення з'єднання. Не гарантує доставку, порядок пакетів і контроль перевантаження. Зате має мінімальні накладні витрати (8 байт заголовка проти 20 у TCP) і працює швидше. Ідеальний для відеодзвінків (WebRTC), онлайн-ігор, потокового відео, DNS-запитів, SNMP, NTP, TFTP." data-ru="Протокол без установления соединения. Не гарантирует доставку, порядок пакетов и контроль перегрузки. Зато имеет минимальные накладные расходы (8 байт заголовка против 20 у TCP) и работает быстрее. Идеален для видеозвонков (WebRTC), онлайн-игр, потокового видео, DNS-запросов, SNMP, NTP, TFTP." data-en="A connectionless protocol. Does not guarantee delivery, packet order or congestion control. However, it has minimal overhead (8-byte header vs 20 for TCP) and works faster. Ideal for video calls (WebRTC), online games, streaming video, DNS queries, SNMP, NTP, TFTP.">Протокол без установлення з'єднання. Не гарантує доставку, порядок пакетів і контроль перевантаження. Зате має мінімальні накладні витрати (8 байт заголовка проти 20 у TCP) і працює швидше. Ідеальний для відеодзвінків (WebRTC), онлайн-ігор, потокового відео, DNS-запитів, SNMP, NTP, TFTP.</p>
+
+<h3>&#128313; <span data-uk="Порти та сокети" data-ru="Порты и сокеты" data-en="Ports and Sockets">Порти та сокети</span></h3>
+<p data-uk="Порт — це 16-бітне число (0-65535), що ідентифікує конкретний процес/сервіс на хості. Сокет = IP-адреса + порт. Основні well-known порти:" data-ru="Порт — это 16-битное число (0-65535), идентифицирующее конкретный процесс/сервис на хосте. Сокет = IP-адрес + порт. Основные well-known порты:" data-en="A port is a 16-bit number (0-65535) that identifies a specific process/service on a host. Socket = IP address + port. Main well-known ports:">Порт — це 16-бітне число (0-65535), що ідентифікує конкретний процес/сервіс на хості. Сокет = IP-адреса + порт. Основні well-known порти:</p>
+<table class="comparison-table">
+<tr><th data-uk="Порт" data-ru="Порт" data-en="Port">Порт</th><th data-uk="Протокол/Сервіс" data-ru="Протокол/Сервис" data-en="Protocol/Service">Протокол/Сервіс</th><th data-uk="Призначення" data-ru="Назначение" data-en="Purpose">Призначення</th></tr>
+<tr><td>20/21</td><td>FTP</td><td data-uk="Передача файлів" data-ru="Передача файлов" data-en="File transfer">Передача файлів</td></tr>
+<tr><td>22</td><td>SSH</td><td data-uk="Безпечний віддалений доступ" data-ru="Безопасный удалённый доступ" data-en="Secure remote access">Безпечний віддалений доступ</td></tr>
+<tr><td>25</td><td>SMTP</td><td data-uk="Відправка email" data-ru="Отправка email" data-en="Email sending">Відправка email</td></tr>
+<tr><td>53</td><td>DNS</td><td data-uk="Доменні імена" data-ru="Доменные имена" data-en="Domain names">Доменні імена</td></tr>
+<tr><td>80</td><td>HTTP</td><td data-uk="Веб без шифрування" data-ru="Веб без шифрования" data-en="Web unencrypted">Веб без шифрування</td></tr>
+<tr><td>443</td><td>HTTPS</td><td data-uk="Веб з TLS/SSL" data-ru="Веб с TLS/SSL" data-en="Web with TLS/SSL">Веб з TLS/SSL</td></tr>
+<tr><td>3306</td><td>MySQL</td><td data-uk="База даних" data-ru="База данных" data-en="Database">База даних</td></tr>
+<tr><td>5432</td><td>PostgreSQL</td><td data-uk="База даних" data-ru="База данных" data-en="Database">База даних</td></tr>
+<tr><td>27017</td><td>MongoDB</td><td data-uk="NoSQL база даних" data-ru="NoSQL база данных" data-en="NoSQL database">NoSQL база даних</td></tr>
+</table>
+</section>
+
+<section class="section" id="dns-dhcp">
+<h2><span class="icon">&#128225;</span> <span data-uk="DNS та DHCP — інфраструктурні протоколи" data-ru="DNS и DHCP — инфраструктурные протоколы" data-en="DNS and DHCP — Infrastructure Protocols">DNS та DHCP — інфраструктурні протоколи</span></h2>
+
+<h3>&#128313; DNS (Domain Name System)</h3>
+<p data-uk="DNS — це розподілена ієрархічна система, яка перетворює людино-зрозумілі доменні імена (google.com) на IP-адреси (142.250.185.78). Працює на порту 53 (UDP для запитів, TCP для передачі зон)." data-ru="DNS — это распределённая иерархическая система, которая преобразует понятные человеку доменные имена (google.com) в IP-адреса (142.250.185.78). Работает на порту 53 (UDP для запросов, TCP для передачи зон)." data-en="DNS is a distributed hierarchical system that translates human-readable domain names (google.com) into IP addresses (142.250.185.78). Operates on port 53 (UDP for queries, TCP for zone transfers).">DNS — це розподілена ієрархічна система, яка перетворює людино-зрозумілі доменні імена (google.com) на IP-адреси (142.250.185.78). Працює на порту 53 (UDP для запитів, TCP для передачі зон).</p>
+<p data-uk="Ієрархія DNS: кореневі сервери (13 логічних у світі) -> сервери доменів верхнього рівня (.com, .org, .ua) -> авторитативні сервери доменів -> локальні DNS-резолвери (кешування). Запит проходить рекурсивно або ітеративно." data-ru="Иерархия DNS: корневые серверы (13 логических в мире) -> серверы доменов верхнего уровня (.com, .org, .ua) -> авторитативные серверы доменов -> локальные DNS-резолверы (кеширование). Запрос проходит рекурсивно или итеративно." data-en="DNS hierarchy: root servers (13 logical worldwide) -> top-level domain servers (.com, .org, .ua) -> authoritative domain servers -> local DNS resolvers (caching). The query proceeds recursively or iteratively.">Ієрархія DNS: кореневі сервери (13 логічних у світі) -> сервери доменів верхнього рівня (.com, .org, .ua) -> авторитативні сервери доменів -> локальні DNS-резолвери (кешування). Запит проходить рекурсивно або ітеративно.</p>
+<p data-uk="Типи DNS-записів: A (IPv4-адреса), AAAA (IPv6-адреса), CNAME (канонічне ім'я/псевдонім), MX (поштовий сервер), TXT (текстові записи, SPF, DKIM), NS (сервери імен домену), SOA (Start of Authority)." data-ru="Типы DNS-записей: A (IPv4-адрес), AAAA (IPv6-адрес), CNAME (каноническое имя/псевдоним), MX (почтовый сервер), TXT (текстовые записи, SPF, DKIM), NS (серверы имён домена), SOA (Start of Authority)." data-en="DNS record types: A (IPv4 address), AAAA (IPv6 address), CNAME (canonical name/alias), MX (mail server), TXT (text records, SPF, DKIM), NS (domain name servers), SOA (Start of Authority).">Типи DNS-записів: A (IPv4-адреса), AAAA (IPv6-адреса), CNAME (канонічне ім'я/псевдонім), MX (поштовий сервер), TXT (текстові записи, SPF, DKIM), NS (сервери імен домену), SOA (Start of Authority).</p>
+
+<h3>&#128313; DHCP (Dynamic Host Configuration Protocol)</h3>
+<p data-uk="DHCP автоматично призначає IP-адреси, маску підмережі, шлюз за замовчуванням та DNS-сервери пристроям у мережі. Працює на портах 67 (сервер) і 68 (клієнт), UDP. Процес DORA: Discover -> Offer -> Request -> Acknowledge." data-ru="DHCP автоматически назначает IP-адреса, маску подсети, шлюз по умолчанию и DNS-серверы устройствам в сети. Работает на портах 67 (сервер) и 68 (клиент), UDP. Процесс DORA: Discover -> Offer -> Request -> Acknowledge." data-en="DHCP automatically assigns IP addresses, subnet mask, default gateway and DNS servers to devices on the network. Operates on ports 67 (server) and 68 (client), UDP. DORA process: Discover -> Offer -> Request -> Acknowledge.">DHCP автоматично призначає IP-адреси, маску підмережі, шлюз за замовчуванням та DNS-сервери пристроям у мережі. Працює на портах 67 (сервер) і 68 (клієнт), UDP. Процес DORA: Discover -> Offer -> Request -> Acknowledge.</p>
+</section>
+
+<section class="section" id="nat">
+<h2><span class="icon">&#128208;</span> <span data-uk="NAT, підмережі та CIDR" data-ru="NAT, подсети и CIDR" data-en="NAT, Subnets and CIDR">NAT, підмережі та CIDR</span></h2>
+
+<h3>&#128313; NAT (Network Address Translation)</h3>
+<p data-uk="NAT — це механізм перетворення приватних IP-адрес у публічні і навпаки. Дозволяє багатьом пристроям у локальній мережі виходити в Інтернет через одну публічну IP-адресу. Основні типи:" data-ru="NAT — это механизм преобразования частных IP-адресов в публичные и наоборот. Позволяет многим устройствам в локальной сети выходить в Интернет через одну публичную IP-адрес. Основные типы:" data-en="NAT is a mechanism for translating private IP addresses to public ones and vice versa. Allows many devices on a local network to access the Internet through a single public IP address. Main types:">NAT — це механізм перетворення приватних IP-адрес у публічні і навпаки. Дозволяє багатьом пристроям у локальній мережі виходити в Інтернет через одну публічну IP-адресу. Основні типи:</p>
+<ul>
+<li data-uk="SNAT (Source NAT) — заміна адреси джерела при виході в Інтернет." data-ru="SNAT (Source NAT) — замена адреса источника при выходе в Интернет." data-en="SNAT (Source NAT) — replaces the source address when going to the Internet.">SNAT (Source NAT) — заміна адреси джерела при виході в Інтернет.</li>
+<li data-uk="DNAT (Destination NAT) — заміна адреси призначення, використовується для пробросу портів (Port Forwarding)." data-ru="DNAT (Destination NAT) — замена адреса назначения, используется для проброса портов (Port Forwarding)." data-en="DNAT (Destination NAT) — replaces the destination address, used for port forwarding.">DNAT (Destination NAT) — заміна адреси призначення, використовується для пробросу портів (Port Forwarding).</li>
+<li data-uk="PAT (Port Address Translation) — найпоширеніший варіант, коли кілька пристроїв використовують один IP з різними портами." data-ru="PAT (Port Address Translation) — самый распространённый вариант, когда несколько устройств используют один IP с разными портами." data-en="PAT (Port Address Translation) — the most common variant, where multiple devices use one IP with different ports.">PAT (Port Address Translation) — найпоширеніший варіант, коли кілька пристроїв використовують один IP з різними портами.</li>
+</ul>
+<p data-uk="Приватні діапазони IPv4 (RFC 1918): 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16. Ці адреси не маршрутизуються в Інтернеті." data-ru="Частные диапазоны IPv4 (RFC 1918): 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16. Эти адреса не маршрутизируются в Интернете." data-en="Private IPv4 ranges (RFC 1918): 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16. These addresses are not routed on the Internet.">Приватні діапазони IPv4 (RFC 1918): 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16. Ці адреси не маршрутизуються в Інтернеті.</p>
+
+<h3>&#128313; CIDR (Classless Inter-Domain Routing)</h3>
+<p data-uk="CIDR — метод запису IP-адрес і їхніх масок підмережі у форматі IP/префікс, наприклад 192.168.1.0/24. Число після слеша вказує кількість бітів маски. /24 = 255.255.255.0 (256 адрес). /16 = 255.255.0.0 (65 536 адрес). /32 — одна адреса." data-ru="CIDR — метод записи IP-адресов и их масок подсети в формате IP/префикс, например 192.168.1.0/24. Число после слэша указывает количество битов маски. /24 = 255.255.255.0 (256 адресов). /16 = 255.255.0.0 (65 536 адресов). /32 — одна адреса." data-en="CIDR is a method of writing IP addresses and their subnet masks in IP/prefix format, e.g. 192.168.1.0/24. The number after the slash indicates the number of mask bits. /24 = 255.255.255.0 (256 addresses). /16 = 255.255.0.0 (65,536 addresses). /32 = one address.">CIDR — метод запису IP-адрес і їхніх масок підмережі у форматі IP/префікс, наприклад 192.168.1.0/24. Число після слеша вказує кількість бітів маски. /24 = 255.255.255.0 (256 адрес). /16 = 255.255.0.0 (65 536 адрес). /32 — одна адреса.</p>
+<p data-uk="VLSM (Variable Length Subnet Masking) дозволяє розбивати мережу на підмережі різного розміру для ефективного використання адресного простору." data-ru="VLSM (Variable Length Subnet Masking) позволяет разбивать сеть на подсети разного размера для эффективного использования адресного пространства." data-en="VLSM (Variable Length Subnet Masking) allows splitting a network into subnets of different sizes for efficient address space usage.">VLSM (Variable Length Subnet Masking) дозволяє розбивати мережу на підмережі різного розміру для ефективного використання адресного простору.</p>
+</section>
+
+<section class="section" id="http">
+<h2><span class="icon">&#127757;</span> <span data-uk="HTTP, HTTPS, WebSocket та сучасні API" data-ru="HTTP, HTTPS, WebSocket и современные API" data-en="HTTP, HTTPS, WebSocket and Modern APIs">HTTP, HTTPS, WebSocket та сучасні API</span></h2>
+
+<h3>&#128313; HTTP (HyperText Transfer Protocol)</h3>
+<p data-uk="Основний протокол передачі даних у Всесвітній павутині. Робота за схемою запит-відповідь. Клієнт (браузер) надсилає запит, сервер повертає відповідь із статус-кодом." data-ru="Основной протокол передачи данных во Всемирной паутине. Работа по схеме запрос-ответ. Клиент (браузер) отправляет запрос, сервер возвращает ответ со статус-кодом." data-en="The primary protocol for data transfer on the World Wide Web. Works on a request-response scheme. The client (browser) sends a request, the server returns a response with a status code.">Основний протокол передачі даних у Всесвітній павутині. Робота за схемою запит-відповідь. Клієнт (браузер) надсилає запит, сервер повертає відповідь із статус-кодом.</p>
+<ul>
+<li data-uk="HTTP/1.1 (1997) — текстовий протокол, підтримка постійних з'єднань (keep-alive), конвеєризація (pipelining). Обмеження: head-of-line blocking." data-ru="HTTP/1.1 (1997) — текстовый протокол, поддержка постоянных соединений (keep-alive), конвейеризация (pipelining). Ограничение: head-of-line blocking." data-en="HTTP/1.1 (1997) — text-based protocol, persistent connection support (keep-alive), pipelining. Limitation: head-of-line blocking.">HTTP/1.1 (1997) — текстовий протокол, підтримка постійних з'єднань (keep-alive), конвеєризація (pipelining). Обмеження: head-of-line blocking.</li>
+<li data-uk="HTTP/2 (2015) — бінарний протокол, мультиплексування потоків у межах одного TCP-з'єднання, server push, стиснення заголовків HPACK, пріоритизація запитів." data-ru="HTTP/2 (2015) — бинарный протокол, мультиплексирование потоков в рамках одного TCP-соединения, server push, сжатие заголовков HPACK, приоритизация запросов." data-en="HTTP/2 (2015) — binary protocol, stream multiplexing within a single TCP connection, server push, HPACK header compression, request prioritization.">HTTP/2 (2015) — бінарний протокол, мультиплексування потоків у межах одного TCP-з'єднання, server push, стиснення заголовків HPACK, пріоритизація запитів.</li>
+<li data-uk="HTTP/3 (2022) — працює поверх QUIC (UDP замість TCP). Вбудоване шифрування TLS 1.3, незалежна передача потоків (немає head-of-line blocking на рівні TCP), швидше відновлення з'єднання." data-ru="HTTP/3 (2022) — работает поверх QUIC (UDP вместо TCP). Встроенное шифрование TLS 1.3, независимая передача потоков (нет head-of-line blocking на уровне TCP), быстрое восстановление соединения." data-en="HTTP/3 (2022) — runs over QUIC (UDP instead of TCP). Built-in TLS 1.3 encryption, independent stream transmission (no TCP-level head-of-line blocking), faster connection recovery.">HTTP/3 (2022) — працює поверх QUIC (UDP замість TCP). Вбудоване шифрування TLS 1.3, незалежна передача потоків (немає head-of-line blocking на рівні TCP), швидше відновлення з'єднання.</li>
+</ul>
+<p data-uk="Основні методи HTTP: GET (отримати ресурс), POST (створити ресурс), PUT (повністю оновити), DELETE (видалити), PATCH (частково оновити), HEAD (отримати заголовки), OPTIONS (отримати підтримувані методи). Статус-коди: 1xx — інформаційні, 2xx — успіх (200 OK, 201 Created), 3xx — перенаправлення (301, 302), 4xx — помилки клієнта (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found), 5xx — помилки сервера (500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable)." data-ru="Основные методы HTTP: GET (получить ресурс), POST (создать ресурс), PUT (полностью обновить), DELETE (удалить), PATCH (частично обновить), HEAD (получить заголовки), OPTIONS (получить поддерживаемые методы). Коды статуса: 1xx — информационные, 2xx — успех (200 OK, 201 Created), 3xx — перенаправление (301, 302), 4xx — ошибки клиента (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found), 5xx — ошибки сервера (500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable)." data-en="Main HTTP methods: GET (retrieve resource), POST (create resource), PUT (fully update), DELETE (delete), PATCH (partially update), HEAD (get headers), OPTIONS (get supported methods). Status codes: 1xx — informational, 2xx — success (200 OK, 201 Created), 3xx — redirection (301, 302), 4xx — client errors (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found), 5xx — server errors (500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable).">Основні методи HTTP: <code>GET</code> (отримати ресурс), <code>POST</code> (створити ресурс), <code>PUT</code> (повністю оновити), <code>DELETE</code> (видалити), <code>PATCH</code> (частково оновити), <code>HEAD</code> (отримати заголовки), <code>OPTIONS</code> (отримати підтримувані методи). Статус-коди: 1xx — інформаційні, 2xx — успіх (200 OK, 201 Created), 3xx — перенаправлення (301, 302), 4xx — помилки клієнта (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found), 5xx — помилки сервера (500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable).</p>
+
+<h3>&#128313; HTTPS та TLS</h3>
+<p data-uk="HTTPS = HTTP + TLS/SSL. TLS (Transport Layer Security) забезпечує шифрування, автентифікацію сервера (через сертифікати X.509 від CA) та цілісність даних. TLS 1.3 (2018) — найновіша версія: скорочено рукостискання до 1-RTT (або 0-RTT для повторних з'єднань), видалено застарілі алгоритми, покращено безпеку." data-ru="HTTPS = HTTP + TLS/SSL. TLS (Transport Layer Security) обеспечивает шифрование, аутентификацию сервера (через сертификаты X.509 от CA) и целостность данных. TLS 1.3 (2018) — новейшая версия: сокращено рукопожатие до 1-RTT (или 0-RTT для повторных соединений), удалены устаревшие алгоритмы, улучшена безопасность." data-en="HTTPS = HTTP + TLS/SSL. TLS (Transport Layer Security) provides encryption, server authentication (via X.509 certificates from CA) and data integrity. TLS 1.3 (2018) — the latest version: handshake reduced to 1-RTT (or 0-RTT for resumed connections), obsolete algorithms removed, security improved.">HTTPS = HTTP + TLS/SSL. TLS (Transport Layer Security) забезпечує шифрування, автентифікацію сервера (через сертифікати X.509 від CA) та цілісність даних. TLS 1.3 (2018) — найновіша версія: скорочено рукостискання до 1-RTT (або 0-RTT для повторних з'єднань), видалено застарілі алгоритми, покращено безпеку.</p>
+
+<h3>&#128313; WebSocket</h3>
+<p data-uk="WebSocket — протокол повнодуплексного зв'язку поверх TCP (порт 443 для WSS). Починається як HTTP-запит з заголовком Upgrade: websocket. Після узгодження з'єднання залишається відкритим, і обидві сторони можуть надсилати дані в будь-який момент. Фрейми: текстові, бінарні, ping/pong, закриття. Використовується для чатів, онлайн-ігор, біржових котирувань, спільного редагування документів, IoT." data-ru="WebSocket — протокол полнодуплексной связи поверх TCP (порт 443 для WSS). Начинается как HTTP-запрос с заголовком Upgrade: websocket. После согласования соединение остаётся открытым, и обе стороны могут отправлять данные в любой момент. Фреймы: текстовые, бинарные, ping/pong, закрытие. Используется для чатов, онлайн-игр, биржевых котировок, совместного редактирования документов, IoT." data-en="WebSocket — a full-duplex communication protocol over TCP (port 443 for WSS). Starts as an HTTP request with Upgrade: websocket header. After handshake, the connection remains open and both sides can send data at any time. Frames: text, binary, ping/pong, close. Used for chats, online games, stock quotes, collaborative document editing, IoT.">WebSocket — протокол повнодуплексного зв'язку поверх TCP (порт 443 для WSS). Починається як HTTP-запит з заголовком <code>Upgrade: websocket</code>. Після узгодження з'єднання залишається відкритим, і обидві сторони можуть надсилати дані в будь-який момент. Фрейми: текстові, бінарні, ping/pong, закриття. Використовується для чатів, онлайн-ігор, біржових котирувань, спільного редагування документів, IoT.</p>
+<div class="tip">
+<strong data-uk="Порівняння:" data-ru="Сравнение:" data-en="Comparison:">Порівняння:</strong>
+<span data-uk=" HTTP — як листування (кожен лист — окремий запит, клієнт ініціює). WebSocket — як телефонна розмова (постійне відкрите з'єднання в обидва боки)." data-ru=" HTTP — как переписка (каждое письмо — отдельный запрос, клиент инициирует). WebSocket — как телефонный разговор (постоянное открытое соединение в обе стороны)." data-en=" HTTP is like correspondence (each letter is a separate request, client initiates). WebSocket is like a phone call (persistent open connection in both directions)."> HTTP — як листування (кожен лист — окремий запит, клієнт ініціює). WebSocket — як телефонна розмова (постійне відкрите з'єднання в обидва боки).</span>
+</div>
+
+<h3>&#128313; REST API, GraphQL, gRPC</h3>
+<p data-uk="Сучасні підходи до побудови API через HTTP:" data-ru="Современные подходы к построению API через HTTP:" data-en="Modern approaches to building APIs over HTTP:">Сучасні підходи до побудови API через HTTP:</p>
+<ul>
+<li data-uk="REST (Representational State Transfer) — архітектурний стиль, що використовує стандартні HTTP-методи та статус-коди. Ресурси ідентифікуються URI. Stateless. JSON/XML як формат даних." data-ru="REST (Representational State Transfer) — архитектурный стиль, использующий стандартные HTTP-методы и статус-коды. Ресурсы идентифицируются URI. Stateless. JSON/XML как формат данных." data-en="REST (Representational State Transfer) — an architectural style using standard HTTP methods and status codes. Resources identified by URI. Stateless. JSON/XML as data format.">REST (Representational State Transfer) — архітектурний стиль, що використовує стандартні HTTP-методи та статус-коди. Ресурси ідентифікуються URI. Stateless. JSON/XML як формат даних.</li>
+<li data-uk="GraphQL — мова запитів від Facebook. Клієнт сам вказує, які поля потрібні, отримує рівно те, що запросив. Один endpoint. Підписки (subscriptions) через WebSocket для real-time." data-ru="GraphQL — язык запросов от Facebook. Клиент сам указывает, какие поля нужны, получает ровно то, что запросил. Один endpoint. Подписки (subscriptions) через WebSocket для real-time." data-en="GraphQL — a query language from Facebook. The client specifies exactly which fields are needed, gets precisely what was requested. Single endpoint. Subscriptions via WebSocket for real-time.">GraphQL — мова запитів від Facebook. Клієнт сам вказує, які поля потрібні, отримує рівно те, що запросив. Один endpoint. Підписки (subscriptions) через WebSocket для real-time.</li>
+<li data-uk="gRPC — високопродуктивний RPC-фреймворк від Google. Використовує Protocol Buffers (бінарна серіалізація) та HTTP/2. Підтримує стрімінг, автоматична генерація коду. Часто використовується у мікросервісах." data-ru="gRPC — высокопроизводительный RPC-фреймворк от Google. Использует Protocol Buffers (бинарная сериализация) и HTTP/2. Поддерживает стриминг, автоматическую генерацию кода. Часто используется в микросервисах." data-en="gRPC — a high-performance RPC framework from Google. Uses Protocol Buffers (binary serialization) and HTTP/2. Supports streaming, automatic code generation. Often used in microservices.">gRPC — високопродуктивний RPC-фреймворк від Google. Використовує Protocol Buffers (бінарна серіалізація) та HTTP/2. Підтримує стрімінг, автоматична генерація коду. Часто використовується у мікросервісах.</li>
+</ul>
+</section>
+
+<section class="section" id="vpn">
+<h2><span class="icon">&#128274;</span> <span data-uk="VPN та тунелювання" data-ru="VPN и туннелирование" data-en="VPN and Tunneling">VPN та тунелювання</span></h2>
+<p data-uk="VPN (Virtual Private Network) створює захищений зашифрований тунель через публічну мережу (Інтернет), дозволяючи віддаленим користувачам або офісам працювати так, ніби вони в одній локальній мережі." data-ru="VPN (Virtual Private Network) создаёт защищённый зашифрованный туннель через публичную сеть (Интернет), позволяя удалённым пользователям или офисам работать так, будто они в одной локальной сети." data-en="VPN (Virtual Private Network) creates a secure encrypted tunnel through a public network (Internet), allowing remote users or offices to work as if they were on the same local network.">VPN (Virtual Private Network) створює захищений зашифрований тунель через публічну мережу (Інтернет), дозволяючи віддаленим користувачам або офісам працювати так, ніби вони в одній локальній мережі.</p>
+<ul>
+<li data-uk="IPsec VPN — працює на мережевому рівні (L3). Два режими: Transport (тільки вміст пакета) і Tunnel (весь пакет інкапсулюється). Використовує AH (аутентифікація) та ESP (шифрування + аутентифікація)." data-ru="IPsec VPN — работает на сетевом уровне (L3). Два режима: Transport (только содержимое пакета) и Tunnel (весь пакет инкапсулируется). Использует AH (аутентификация) и ESP (шифрование + аутентификация)." data-en="IPsec VPN — operates at the network layer (L3). Two modes: Transport (payload only) and Tunnel (entire packet encapsulated). Uses AH (authentication) and ESP (encryption + authentication).">IPsec VPN — працює на мережевому рівні (L3). Два режими: Transport (тільки вміст пакета) і Tunnel (весь пакет інкапсулюється). Використовує AH (аутентифікація) та ESP (шифрування + аутентифікація).</li>
+<li data-uk="SSL/TLS VPN — працює на сеансовому/прикладному рівні. Не потребує клієнтського ПЗ (достатньо браузера). Приклад: OpenVPN, WireGuard." data-ru="SSL/TLS VPN — работает на сеансовом/прикладном уровне. Не требует клиентского ПО (достаточно браузера). Пример: OpenVPN, WireGuard." data-en="SSL/TLS VPN — operates at the session/application layer. No client software needed (browser is sufficient). Example: OpenVPN, WireGuard.">SSL/TLS VPN — працює на сеансовому/прикладному рівні. Не потребує клієнтського ПЗ (достатньо браузера). Приклад: OpenVPN, WireGuard.</li>
+<li data-uk="WireGuard — сучасний VPN-протокол (2016). Мінімалістичний код (~4000 рядків проти 600 000 у OpenVPN/IPsec), швидкий, використовує сучасну криптографію (Curve25519, ChaCha20, Poly1305)." data-ru="WireGuard — современный VPN-протокол (2016). Минималистичный код (~4000 строк против 600 000 у OpenVPN/IPsec), быстрый, использует современную криптографию (Curve25519, ChaCha20, Poly1305)." data-en="WireGuard — a modern VPN protocol (2016). Minimalist code (~4,000 lines vs 600,000 for OpenVPN/IPsec), fast, uses modern cryptography (Curve25519, ChaCha20, Poly1305).">WireGuard — сучасний VPN-протокол (2016). Мінімалістичний код (~4000 рядків проти 600 000 у OpenVPN/IPsec), швидкий, використовує сучасну криптографію (Curve25519, ChaCha20, Poly1305).</li>
+<li data-uk="GRE та VXLAN — протоколи тунелювання без шифрування. GRE (Generic Routing Encapsulation) — L3 over IP. VXLAN (Virtual Extensible LAN) — інкапсуляція L2-кадрів у UDP-пакети, розширює VLAN до 16 млн сегментів." data-ru="GRE и VXLAN — протоколы туннелирования без шифрования. GRE (Generic Routing Encapsulation) — L3 over IP. VXLAN (Virtual Extensible LAN) — инкапсуляция L2-кадров в UDP-пакеты, расширяет VLAN до 16 млн сегментов." data-en="GRE and VXLAN — tunneling protocols without encryption. GRE (Generic Routing Encapsulation) — L3 over IP. VXLAN (Virtual Extensible LAN) — encapsulates L2 frames in UDP packets, extends VLAN to 16 million segments.">GRE та VXLAN — протоколи тунелювання без шифрування. GRE (Generic Routing Encapsulation) — L3 over IP. VXLAN (Virtual Extensible LAN) — інкапсуляція L2-кадрів у UDP-пакети, розширює VLAN до 16 млн сегментів.</li>
+</ul>
+</section>
+
+<section class="section" id="cloud">
+<h2><span class="icon">&#9729;</span> <span data-uk="Хмарні обчислення та Edge Computing" data-ru="Облачные вычисления и Edge Computing" data-en="Cloud Computing and Edge Computing">Хмарні обчислення та Edge Computing</span></h2>
+
+<h3>&#128313; <span data-uk="Хмарні обчислення (Cloud Computing)" data-ru="Облачные вычисления (Cloud Computing)" data-en="Cloud Computing">Хмарні обчислення (Cloud Computing)</span></h3>
+<p data-uk="Модель надання обчислювальних ресурсів (серверів, сховищ, баз даних, мереж) через Інтернет за запитом. Користувач платить лише за використані ресурси (pay-as-you-go). Основні моделі:" data-ru="Модель предоставления вычислительных ресурсов (серверов, хранилищ, баз данных, сетей) через Интернет по запросу. Пользователь платит только за использованные ресурсы (pay-as-you-go). Основные модели:" data-en="A model for delivering computing resources (servers, storage, databases, networks) over the Internet on demand. The user pays only for consumed resources (pay-as-you-go). Main models:">Модель надання обчислювальних ресурсів (серверів, сховищ, баз даних, мереж) через Інтернет за запитом. Користувач платить лише за використані ресурси (pay-as-you-go). Основні моделі:</p>
+<ul>
+<li data-uk="IaaS (Infrastructure as a Service) — віртуальні машини, мережі, сховища, балансувальники. Приклади: AWS EC2, Azure VMs, Google Compute Engine, DigitalOcean Droplets." data-ru="IaaS (Infrastructure as a Service) — виртуальные машины, сети, хранилища, балансировщики. Примеры: AWS EC2, Azure VMs, Google Compute Engine, DigitalOcean Droplets." data-en="IaaS (Infrastructure as a Service) — virtual machines, networks, storage, load balancers. Examples: AWS EC2, Azure VMs, Google Compute Engine, DigitalOcean Droplets.">IaaS (Infrastructure as a Service) — віртуальні машини, мережі, сховища, балансувальники. Приклади: AWS EC2, Azure VMs, Google Compute Engine, DigitalOcean Droplets.</li>
+<li data-uk="PaaS (Platform as a Service) — платформи для розробки та розгортання додатків без управління інфраструктурою. Приклади: Heroku, Google App Engine, AWS Elastic Beanstalk, Vercel." data-ru="PaaS (Platform as a Service) — платформы для разработки и развёртывания приложений без управления инфраструктурой. Примеры: Heroku, Google App Engine, AWS Elastic Beanstalk, Vercel." data-en="PaaS (Platform as a Service) — platforms for developing and deploying applications without managing infrastructure. Examples: Heroku, Google App Engine, AWS Elastic Beanstalk, Vercel.">PaaS (Platform as a Service) — платформи для розробки та розгортання додатків без управління інфраструктурою. Приклади: Heroku, Google App Engine, AWS Elastic Beanstalk, Vercel.</li>
+<li data-uk="SaaS (Software as a Service) — готові програми через браузер. Приклади: Gmail, Zoom, Salesforce, Notion, Figma, Google Docs." data-ru="SaaS (Software as a Service) — готовые программы через браузер. Примеры: Gmail, Zoom, Salesforce, Notion, Figma, Google Docs." data-en="SaaS (Software as a Service) — ready-made programs via browser. Examples: Gmail, Zoom, Salesforce, Notion, Figma, Google Docs.">SaaS (Software as a Service) — готові програми через браузер. Приклади: Gmail, Zoom, Salesforce, Notion, Figma, Google Docs.</li>
+<li data-uk="FaaS (Function as a Service) / Serverless — запуск окремих функцій у відповідь на події. Автоматичне масштабування до нуля. Приклади: AWS Lambda, Azure Functions, Google Cloud Functions, Cloudflare Workers." data-ru="FaaS (Function as a Service) / Serverless — запуск отдельных функций в ответ на события. Автоматическое масштабирование до нуля. Примеры: AWS Lambda, Azure Functions, Google Cloud Functions, Cloudflare Workers." data-en="FaaS (Function as a Service) / Serverless — running individual functions in response to events. Automatic scaling to zero. Examples: AWS Lambda, Azure Functions, Google Cloud Functions, Cloudflare Workers.">FaaS (Function as a Service) / Serverless — запуск окремих функцій у відповідь на події. Автоматичне масштабування до нуля. Приклади: AWS Lambda, Azure Functions, Google Cloud Functions, Cloudflare Workers.</li>
+</ul>
+
+<h3>&#128313; CDN (Content Delivery Network)</h3>
+<p data-uk="CDN — розподілена мережа серверів, що доставляє контент користувачам із найближчої географічної точки (edge node). Зменшує затримку, знижує навантаження на оригінальний сервер, захищає від DDoS. Приклади: Cloudflare, Akamai, AWS CloudFront, Fastly." data-ru="CDN — распределённая сеть серверов, доставляющая контент пользователям из ближайшей географической точки (edge node). Уменьшает задержку, снижает нагрузку на оригинальный сервер, защищает от DDoS. Примеры: Cloudflare, Akamai, AWS CloudFront, Fastly." data-en="CDN — a distributed network of servers that delivers content to users from the nearest geographic point (edge node). Reduces latency, lowers load on the origin server, protects against DDoS. Examples: Cloudflare, Akamai, AWS CloudFront, Fastly.">CDN — розподілена мережа серверів, що доставляє контент користувачам із найближчої географічної точки (edge node). Зменшує затримку, знижує навантаження на оригінальний сервер, захищає від DDoS. Приклади: Cloudflare, Akamai, AWS CloudFront, Fastly.</p>
+
+<h3>&#128313; Edge Computing</h3>
+<p data-uk="Обчислення на «краю» мережі — ближче до джерела даних, а не в централізованому хмарному дата-центрі. Зменшує затримку (latency) з 50-100 мс до 1-10 мс, знижує навантаження на магістральну мережу, покращує приватність даних (чутлива інформація не покидає локальну зону)." data-ru="Вычисления на «краю» сети — ближе к источнику данных, а не в централизованном облачном дата-центре. Уменьшает задержку (latency) с 50-100 мс до 1-10 мс, снижает нагрузку на магистральную сеть, улучшает приватность данных (чувствительная информация не покидает локальную зону)." data-en="Computing at the 'edge' of the network — closer to the data source rather than in a centralized cloud data center. Reduces latency from 50-100 ms to 1-10 ms, lowers backbone network load, improves data privacy (sensitive information does not leave the local zone).">Обчислення на «краю» мережі — ближче до джерела даних, а не в централізованому хмарному дата-центрі. Зменшує затримку (latency) з 50-100 мс до 1-10 мс, знижує навантаження на магістральну мережу, покращує приватність даних (чутлива інформація не покидає локальну зону).</p>
+<p data-uk="Приклади: обробка відео з камер спостереження на локальному шлюзі (NVIDIA Jetson), автономні автомобілі приймають рішення на борту, IoT-датчики аналізують дані локально, AR/VR додатки потребують <10 мс затримки, промислові PLC контролери на заводах." data-ru="Примеры: обработка видео с камер наблюдения на локальном шлюзе (NVIDIA Jetson), автономные автомобили принимают решения на борту, IoT-датчики анализируют данные локально, AR/VR приложения требуют <10 мс задержки, промышленные PLC контроллеры на заводах." data-en="Examples: processing video from surveillance cameras on a local gateway (NVIDIA Jetson), autonomous vehicles making decisions onboard, IoT sensors analyzing data locally, AR/VR applications requiring <10 ms latency, industrial PLC controllers at factories.">Приклади: обробка відео з камер спостереження на локальному шлюзі (NVIDIA Jetson), автономні автомобілі приймають рішення на борту, IoT-датчики аналізують дані локально, AR/VR додатки потребують <10 мс затримки, промислові PLC контролери на заводах.</p>
+</section>
+
+<section class="section" id="hardware">
+<h2><span class="icon">&#128375;</span> <span data-uk="Мережеве обладнання" data-ru="Сетевое оборудование" data-en="Networking Equipment">Мережеве обладнання</span></h2>
+<p data-uk="Мережеве обладнання з'єднує, керує, захищає та оптимізує трафік. Кожен пристрій працює на певних рівнях OSI і виконує специфічні функції." data-ru="Сетевое оборудование соединяет, управляет, защищает и оптимизирует трафик. Каждое устройство работает на определённых уровнях OSI и выполняет специфические функции." data-en="Networking equipment connects, manages, protects and optimizes traffic. Each device operates at specific OSI layers and performs specific functions.">Мережеве обладнання з'єднує, керує, захищає та оптимізує трафік. Кожен пристрій працює на певних рівнях OSI і виконує специфічні функції.</p>
+<div class="protocol-grid">
+<div class="protocol-card">
+<h4 data-uk="Маршрутизатор (Router)" data-ru="Маршрутизатор (Router)" data-en="Router">Маршрутизатор (Router)</h4>
+<p data-uk="Пристрій 3-го рівня OSI. Керує трафіком між різними IP-мережами, визначає оптимальні шляхи на основі таблиць маршрутизації. Підтримує статичну та динамічну маршрутизацію (OSPF, BGP, EIGRP). Має WAN-порти (оптоволокно, DSL, 4G/5G) та LAN-порти." data-ru="Устройство 3-го уровня OSI. Управляет трафиком между разными IP-сетями, определяет оптимальные пути на основе таблиц маршрутизации. Поддерживает статическую и динамическую маршрутизацию (OSPF, BGP, EIGRP). Имеет WAN-порты (оптоволокно, DSL, 4G/5G) и LAN-порты." data-en="Layer 3 OSI device. Manages traffic between different IP networks, determines optimal paths based on routing tables. Supports static and dynamic routing (OSPF, BGP, EIGRP). Has WAN ports (fiber optic, DSL, 4G/5G) and LAN ports.">Пристрій 3-го рівня OSI. Керує трафіком між різними IP-мережами, визначає оптимальні шляхи на основі таблиць маршрутизації. Підтримує статичну та динамічну маршрутизацію (OSPF, BGP, EIGRP). Має WAN-порти (оптоволокно, DSL, 4G/5G) та LAN-порти.</p>
+</div>
+<div class="protocol-card">
+<h4 data-uk="Комутатор (Switch)" data-ru="Коммутатор (Switch)" data-en="Switch">Комутатор (Switch)</h4>
+<p data-uk="Пристрій 2-го рівня OSI. З'єднує пристрої в межах LAN, пересилає кадри Ethernet за MAC-адресами, використовуючи MAC-таблицю. Managed-switch підтримує VLAN (логічне розділення мереж), QoS (пріоритизація трафіку), ACL (списки доступу), PoE (живлення через Ethernet для IP-камер, точок доступу)." data-ru="Устройство 2-го уровня OSI. Соединяет устройства в пределах LAN, пересылает кадры Ethernet по MAC-адресам, используя MAC-таблицу. Managed-switch поддерживает VLAN (логическое разделение сетей), QoS (приоритизация трафика), ACL (списки доступа), PoE (питание через Ethernet для IP-камер, точек доступа)." data-en="Layer 2 OSI device. Connects devices within a LAN, forwards Ethernet frames by MAC addresses using a MAC table. Managed switches support VLAN (logical network separation), QoS (traffic prioritization), ACL (access control lists), PoE (Power over Ethernet for IP cameras, access points).">Пристрій 2-го рівня OSI. З'єднує пристрої в межах LAN, пересилає кадри Ethernet за MAC-адресами, використовуючи MAC-таблицю. Managed-switch підтримує VLAN (логічне розділення мереж), QoS (пріоритизація трафіку), ACL (списки доступу), PoE (живлення через Ethernet для IP-камер, точок доступу).</p>
+</div>
+<div class="protocol-card">
+<h4 data-uk="Точка доступу (AP)" data-ru="Точка доступа (AP)" data-en="Access Point (AP)">Точка доступу (AP)</h4>
+<p data-uk="Перетворює дротовий Ethernet на бездротовий Wi-Fi. Підтримує стандарти 802.11a/b/g/n (Wi-Fi 4), 802.11ac (Wi-Fi 5), 802.11ax (Wi-Fi 6 / 6E з частотою 6 ГГц), 802.11be (Wi-Fi 7 з 320 МГц каналами та MLO)." data-ru="Превращает проводной Ethernet в беспроводной Wi-Fi. Поддерживает стандарты 802.11a/b/g/n (Wi-Fi 4), 802.11ac (Wi-Fi 5), 802.11ax (Wi-Fi 6 / 6E с частотой 6 ГГц), 802.11be (Wi-Fi 7 с 320 МГц каналами и MLO)." data-en="Converts wired Ethernet to wireless Wi-Fi. Supports 802.11a/b/g/n (Wi-Fi 4), 802.11ac (Wi-Fi 5), 802.11ax (Wi-Fi 6 / 6E at 6 GHz), 802.11be (Wi-Fi 7 with 320 MHz channels and MLO).">Перетворює дротовий Ethernet на бездротовий Wi-Fi. Підтримує стандарти 802.11a/b/g/n (Wi-Fi 4), 802.11ac (Wi-Fi 5), 802.11ax (Wi-Fi 6 / 6E з частотою 6 ГГц), 802.11be (Wi-Fi 7 з 320 МГц каналами та MLO).</p>
+</div>
+<div class="protocol-card">
+<h4 data-uk="Модем" data-ru="Модем" data-en="Modem">Модем</h4>
+<p data-uk="Модулятор-демодулятор. Перетворює цифрові сигнали в аналогові для передачі через телефонні лінії (DSL/VDSL), коаксіальний кабель (DOCSIS) або оптоволокно (PON/ONT). Сучасні ONU/ONT перетворюють оптичний сигнал у Ethernet." data-ru="Модулятор-демодулятор. Преобразует цифровые сигналы в аналоговые для передачи через телефонные линии (DSL/VDSL), коаксиальный кабель (DOCSIS) или оптоволокно (PON/ONT). Современные ONU/ONT преобразуют оптический сигнал в Ethernet." data-en="Modulator-demodulator. Converts digital signals to analog for transmission over telephone lines (DSL/VDSL), coaxial cable (DOCSIS) or fiber optic (PON/ONT). Modern ONU/ONT converts optical signal to Ethernet.">Модулятор-демодулятор. Перетворює цифрові сигнали в аналогові для передачі через телефонні лінії (DSL/VDSL), коаксіальний кабель (DOCSIS) або оптоволокно (PON/ONT). Сучасні ONU/ONT перетворюють оптичний сигнал у Ethernet.</p>
+</div>
+<div class="protocol-card">
+<h4>Firewall</h4>
+<p data-uk="Мережевий екран, що фільтрує трафік на основі правил. Stateless firewall — перевіряє кожен пакет окремо. Stateful — відстежує стан з'єднань. NGFW (Next-Generation Firewall) — додає інспекцію додатків (L7), IDS/IPS, антивірус, пісочницю." data-ru="Сетевой экран, фильтрующий трафик на основе правил. Stateless firewall — проверяет каждый пакет отдельно. Stateful — отслеживает состояние соединений. NGFW (Next-Generation Firewall) — добавляет инспекцию приложений (L7), IDS/IPS, антивирус, песочницу." data-en="A network firewall that filters traffic based on rules. Stateless firewall — checks each packet individually. Stateful — tracks connection states. NGFW (Next-Generation Firewall) — adds application inspection (L7), IDS/IPS, antivirus, sandboxing.">Мережевий екран, що фільтрує трафік на основі правил. Stateless firewall — перевіряє кожен пакет окремо. Stateful — відстежує стан з'єднань. NGFW (Next-Generation Firewall) — додає інспекцію додатків (L7), IDS/IPS, антивірус, пісочницю.</p>
+</div>
+<div class="protocol-card">
+<h4 data-uk="Балансувальник навантаження" data-ru="Балансировщик нагрузки" data-en="Load Balancer">Балансувальник навантаження</h4>
+<p data-uk="Розподіляє вхідний трафік між кількома серверами для забезпечення відмовостійкості та масштабованості. Алгоритми: Round Robin, Least Connections, IP Hash, Weighted. Типи: L4 (транспортний, на основі IP/портів) та L7 (прикладний, аналізує HTTP-заголовки, cookies, URL)." data-ru="Распределяет входящий трафик между несколькими серверами для обеспечения отказоустойчивости и масштабируемости. Алгоритмы: Round Robin, Least Connections, IP Hash, Weighted. Типы: L4 (транспортный, на основе IP/портов) и L7 (прикладной, анализирует HTTP-заголовки, cookies, URL)." data-en="Distributes incoming traffic across multiple servers to ensure fault tolerance and scalability. Algorithms: Round Robin, Least Connections, IP Hash, Weighted. Types: L4 (transport, based on IP/ports) and L7 (application, analyzes HTTP headers, cookies, URL).">Розподіляє вхідний трафік між кількома серверами для забезпечення відмовостійкості та масштабованості. Алгоритми: Round Robin, Least Connections, IP Hash, Weighted. Типи: L4 (транспортний, на основі IP/портів) та L7 (прикладний, аналізує HTTP-заголовки, cookies, URL).</p>
+</div>
+</div>
+</section>
+
+<section class="section" id="security">
+<h2><span class="icon">&#128272;</span> <span data-uk="Безпека мереж" data-ru="Безопасность сетей" data-en="Network Security">Безпека мереж</span></h2>
+<p data-uk="Мережі — головна мішень для кібератак. Розуміння загроз і механізмів захисту є критично важливим для будь-якого IT-фахівця." data-ru="Сети — главная мишень для кибератак. Понимание угроз и механизмов защиты является критически важным для любого IT-специалиста." data-en="Networks are the primary target for cyberattacks. Understanding threats and protection mechanisms is critical for any IT professional.">Мережі — головна мішень для кібератак. Розуміння загроз і механізмів захисту є критично важним для будь-якого IT-фахівця.</p>
+
+<h3>&#128313; <span data-uk="Типові мережеві атаки" data-ru="Типичные сетевые атаки" data-en="Common Network Attacks">Типові мережеві атаки</span></h3>
+<ul>
+<li data-uk="DDoS (Distributed Denial of Service) — масована атака з ботнету, що перевантажує сервер фальшивими запитами. Види: Volumetric (UDP flood, ICMP flood), Protocol (SYN flood, Ping of Death), Application (HTTP flood, Slowloris)." data-ru="DDoS (Distributed Denial of Service) — массовая атака из ботнета, перегружающая сервер фальшивыми запросами. Виды: Volumetric (UDP flood, ICMP flood), Protocol (SYN flood, Ping of Death), Application (HTTP flood, Slowloris)." data-en="DDoS (Distributed Denial of Service) — a massive attack from a botnet that overloads a server with fake requests. Types: Volumetric (UDP flood, ICMP flood), Protocol (SYN flood, Ping of Death), Application (HTTP flood, Slowloris).">DDoS (Distributed Denial of Service) — масована атака з ботнету, що перевантажує сервер фальшивими запитами. Види: Volumetric (UDP flood, ICMP flood), Protocol (SYN flood, Ping of Death), Application (HTTP flood, Slowloris).</li>
+<li data-uk="MITM (Man-in-the-Middle) — зловмисник перехоплює та може змінювати трафік між двома сторонами. Приклади: ARP spoofing, DNS hijacking, SSL stripping. Захист: HTTPS, HSTS, VPN, сертифікати." data-ru="MITM (Man-in-the-Middle) — злоумышленник перехватывает и может изменять трафик между двумя сторонами. Примеры: ARP spoofing, DNS hijacking, SSL stripping. Защита: HTTPS, HSTS, VPN, сертификаты." data-en="MITM (Man-in-the-Middle) — an attacker intercepts and can modify traffic between two parties. Examples: ARP spoofing, DNS hijacking, SSL stripping. Protection: HTTPS, HSTS, VPN, certificates.">MITM (Man-in-the-Middle) — зловмисник перехоплює та може змінювати трафік між двома сторонами. Приклади: ARP spoofing, DNS hijacking, SSL stripping. Захист: HTTPS, HSTS, VPN, сертифікати.</li>
+<li data-uk="Phishing та Social Engineering — маніпуляція людьми для отримання облікових даних. Технічні засоби не завжди допомагають — потрібна освіта користувачів." data-ru="Phishing и Social Engineering — манипуляция людьми для получения учётных данных. Технические средства не всегда помогают — нужно обучение пользователей." data-en="Phishing and Social Engineering — manipulating people to obtain credentials. Technical means do not always help — user education is needed.">Phishing та Social Engineering — маніпуляція людьми для отримання облікових даних. Технічні засоби не завжди допомагають — потрібна освіта користувачів.</li>
+</ul>
+
+<h3>&#128313; <span data-uk="Засоби захисту" data-ru="Средства защиты" data-en="Protection Measures">Засоби захисту</span></h3>
+<ul>
+<li data-uk="WAF (Web Application Firewall) — фільтрує HTTP-трафік, захищає від SQL-ін'єкцій, XSS, CSRF." data-ru="WAF (Web Application Firewall) — фильтрует HTTP-трафик, защищает от SQL-инъекций, XSS, CSRF." data-en="WAF (Web Application Firewall) — filters HTTP traffic, protects against SQL injection, XSS, CSRF.">WAF (Web Application Firewall) — фільтрує HTTP-трафік, захищає від SQL-ін'єкцій, XSS, CSRF.</li>
+<li data-uk="IDS/IPS (Intrusion Detection/Prevention System) — виявляє (IDS) або блокує (IPS) підозрілий трафік на основі сигнатур та аномалій." data-ru="IDS/IPS (Intrusion Detection/Prevention System) — обнаруживает (IDS) или блокирует (IPS) подозрительный трафик на основе сигнатур и аномалий." data-en="IDS/IPS (Intrusion Detection/Prevention System) — detects (IDS) or blocks (IPS) suspicious traffic based on signatures and anomalies.">IDS/IPS (Intrusion Detection/Prevention System) — виявляє (IDS) або блокує (IPS) підозрілий трафік на основі сигнатур та аномалій.</li>
+<li data-uk="Zero Trust — модель безпеки «ніколи не довіряй, завжди перевіряй». Кожен запит автентифікується та авторизується, незалежно від джерела." data-ru="Zero Trust — модель безопасности «никогда не доверяй, всегда проверяй». Каждый запрос аутентифицируется и авторизуется, независимо от источника." data-en="Zero Trust — a security model of 'never trust, always verify'. Every request is authenticated and authorized regardless of source.">Zero Trust — модель безпеки «ніколи не довіряй, завжди перевіряй». Кожен запит автентифікується та авторизується, незалежно від джерела.</li>
+<li data-uk="SIEM (Security Information and Event Management) — централізований збір та аналіз журналів безпеки з усіх систем для виявлення загроз у реальному часі." data-ru="SIEM (Security Information and Event Management) — централизованный сбор и анализ журналов безопасности со всех систем для обнаружения угроз в реальном времени." data-en="SIEM (Security Information and Event Management) — centralized collection and analysis of security logs from all systems to detect threats in real time.">SIEM (Security Information and Event Management) — централізований збір та аналіз журналів безпеки з усіх систем для виявлення загроз у реальному часі.</li>
+</ul>
+</section>
+
+<section class="section" id="summary">
+<h2><span class="icon">&#127919;</span> <span data-uk="Підсумок" data-ru="Итог" data-en="Summary">Підсумок</span></h2>
+<p data-uk="Мережеві технології — фундамент сучасної цифрової цивілізації. Від простих локальних мереж до глобальних хмарних екосистем — мережі продовжують еволюціонувати, наближаючи обчислення до користувача через edge computing та забезпечуючи безпрецедентну швидкість через 5G, оптоволокно та супутниковий інтернет." data-ru="Сетевые технологии — фундамент современной цифровой цивилизации. От простых локальных сетей до глобальных облачных экосистем — сети продолжают эволюционировать, приближая вычисления к пользователю через edge computing и обеспечивая беспрецедентную скорость через 5G, оптоволокно и спутниковый интернет." data-en="Networking technologies are the foundation of modern digital civilization. From simple local networks to global cloud ecosystems — networks continue to evolve, bringing computing closer to the user through edge computing and providing unprecedented speed through 5G, fiber optics and satellite Internet.">Мережеві технології — фундамент сучасної цифрової цивілізації. Від простих локальних мереж до глобальних хмарних екосистем — мережі продовжують еволюціонувати, наближаючи обчислення до користувача через edge computing та забезпечуючи безпрецедентну швидкість через 5G, оптоволокно та супутниковий інтернет.</p>
+<p data-uk="Розуміння моделі OSI, стеку TCP/IP, протоколів HTTP/HTTPS/WebSocket, DNS/DHCP, NAT/CIDR, VPN, принципів роботи мережевого обладнання та сучасних підходів до безпеки є обов'язковим для будь-якого розробника, системного адміністратора, DevOps-інженера та спеціаліста з кібербезпеки." data-ru="Понимание модели OSI, стека TCP/IP, протоколов HTTP/HTTPS/WebSocket, DNS/DHCP, NAT/CIDR, VPN, принципов работы сетевого оборудования и современных подходов к безопасности является обязательным для любого разработчика, системного администратора, DevOps-инженера и специалиста по кибербезопасности." data-en="Understanding the OSI model, TCP/IP stack, HTTP/HTTPS/WebSocket protocols, DNS/DHCP, NAT/CIDR, VPN, networking equipment principles and modern security approaches is essential for any developer, system administrator, DevOps engineer and cybersecurity specialist.">Розуміння моделі OSI, стеку TCP/IP, протоколів HTTP/HTTPS/WebSocket, DNS/DHCP, NAT/CIDR, VPN, принципів роботи мережевого обладнання та сучасних підходів до безпеки є обов'язковим для будь-якого розробника, системного адміністратора, DevOps-інженера та спеціаліста з кібербезпеки.</p>
+<p data-uk="Ключові тренди на найближче десятиліття: повсюдне впровадження IPv6, квантове шифрування, мережі 6G, автономні мережі з AI-driven маршрутизацією, розширення edge та fog computing, а також zero-trust архітектура як стандарт безпеки." data-ru="Ключевые тренды на ближайшее десятилетие: повсеместное внедрение IPv6, квантовое шифрование, сети 6G, автономные сети с AI-driven маршрутизацией, расширение edge и fog computing, а также zero-trust архитектура как стандарт безопасности." data-en="Key trends for the coming decade: widespread IPv6 adoption, quantum encryption, 6G networks, autonomous networks with AI-driven routing, expansion of edge and fog computing, and zero-trust architecture as the security standard.">Ключові тренди на найближче десятиліття: повсюдне впровадження IPv6, квантове шифрування, мережі 6G, автономні мережі з AI-driven маршрутизацією, розширення edge та fog computing, а також zero-trust архітектура як стандарт безпеки.</p>
+</section>
+</main>
+
+<footer class="footer">
+<p>&larr; <a href="index.html" data-uk="Повернутися на головну сторінку" data-ru="Вернуться на главную страницу" data-en="Return to home page">Повернутися на головну сторінку</a></p>
+<p style="margin-top:10px; font-size:0.8rem;">&copy; 2026 — <span data-uk="Навчальний проєкт. Мережі та протоколи." data-ru="Учебный проект. Сети и протоколы." data-en="Educational project. Networks and Protocols.">Навчальний проєкт. Мережі та протоколи.</span></p>
+</footer>
+
+<script>
+function toggleTheme() {
+  var body = document.body;
+  var btn = document.querySelector('.theme-toggle');
+  var current = body.getAttribute('data-theme');
+  if (current === 'light') {
+    body.removeAttribute('data-theme');
+    btn.innerHTML = '&#127769;';
+    localStorage.setItem('theme', 'dark');
+  } else {
+    body.setAttribute('data-theme', 'light');
+    btn.innerHTML = '&#9728;';
+    localStorage.setItem('theme', 'light');
+  }
+}
+(function(){
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') {
+    document.body.setAttribute('data-theme', 'light');
+    document.querySelector('.theme-toggle').innerHTML = '&#9728;';
+  }
+})();
+
+function setLang(lang) {
+  document.querySelectorAll('.lang-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.querySelectorAll('.lang-btn').forEach(function(btn){
+    if (btn.textContent.toLowerCase() === lang) btn.classList.add('active');
+  });
+  document.querySelectorAll('[data-uk][data-ru][data-en]').forEach(function(el){
+    var text = el.getAttribute('data-' + lang);
+    if (text) el.textContent = text;
+  });
+  // Update page title
+  var titleEl = document.querySelector('title');
+  if (titleEl) {
+    var titleText = titleEl.getAttribute('data-' + lang);
+    if (titleText) document.title = titleText;
+  }
+  document.querySelector('html').setAttribute('lang', lang === 'uk' ? 'uk' : lang === 'ru' ? 'ru' : 'en');
+  localStorage.setItem('lang', lang);
+}
+(function(){
+  var saved = localStorage.getItem('lang');
+  if (saved && saved !== 'uk') setLang(saved);
+})();
+
+// === SCROLL SPY — підсвічування активного пункту меню ===
+(function(){
+  var sections = document.querySelectorAll('.section[id]');
+  var navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
+  function onScroll() {
+    var scrollPos = window.scrollY + 150;
+    sections.forEach(function(sec){
+      var top = sec.offsetTop;
+      var bottom = top + sec.offsetHeight;
+      var id = sec.getAttribute('id');
+      if (scrollPos >= top && scrollPos < bottom) {
+        navLinks.forEach(function(link){
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + id) link.classList.add('active');
+        });
+      }
+    });
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+})();
+</script>
+</body>
+</html>

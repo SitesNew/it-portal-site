@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глосарій термінів ІТ — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        .search-wrap {
+            max-width: 1200px; margin: 0.5rem auto 0; padding: 0 5%;
+        }
+        .search-input {
+            width: 100%;
+            max-width: 420px;
+            padding: 0.55rem 1rem;
+            border-radius: 2rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--surface);
+            color: var(--text);
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .search-input:focus {
+            border-color: var(--accent);
+        }
+        [data-theme="light"] .search-input {
+            border-color: rgba(0,0,0,0.12);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">📖 Глосарій термінів ІТ</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="search-wrap">
+        <input type="search" class="search-input" id="search" placeholder="Пошук терміна..." oninput="onSearch()">
+    </div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    const categories = {
+        general: {
+            uk: "📚 Загальні поняття",
+            ru: "📚 Общие понятия",
+            en: "📚 General Concepts"
+        },
+        development: {
+            uk: "💻 Розробка та архітектура",
+            ru: "💻 Разработка и архитектура",
+            en: "💻 Development & Architecture"
+        },
+        data: {
+            uk: "📊 Дані та бази",
+            ru: "📊 Данные и базы",
+            en: "📊 Data & Databases"
+        },
+        infra: {
+            uk: "☁️ Інфраструктура та DevOps",
+            ru: "☁️ Инфраструктура и DevOps",
+            en: "☁️ Infrastructure & DevOps"
+        },
+        security: {
+            uk: "🔐 Безпека",
+            ru: "🔐 Безопасность",
+            en: "🔐 Security"
+        },
+        process: {
+            uk: "🔄 Процеси та методології",
+            ru: "🔄 Процессы и методологии",
+            en: "🔄 Processes & Methodologies"
+        },
+        network: {
+            uk: "🌐 Мережі та веб",
+            ru: "🌐 Сети и веб",
+            en: "🌐 Networks & Web"
+        }
+    };
+
+    const items = [
+        // GENERAL
+        {
+            cat: "general",
+            icon: "💡",
+            name: { uk: "Алгоритм", ru: "Алгоритм", en: "Algorithm" },
+            desc: {
+                uk: "Послідовність кроків для розв’язання задачі. Має бути однозначною, скінченною і давати результат. Основа будь-якої програми.",
+                ru: "Последовательность шагов для решения задачи. Должна быть однозначной, конечной и давать результат. Основа любой программы.",
+                en: "A sequence of steps to solve a problem. Must be unambiguous, finite and produce a result. The foundation of any program."
+            },
+            traits: { uk: "Кроки, Скінченність, Коректність, Складність", ru: "Шаги, Конечность, Корректность, Сложность", en: "Steps, Finiteness, Correctness, Complexity" },
+            spec: { uk: "O(n), O(log n) — оцінка ефективності", ru: "O(n), O(log n) — оценка эффективности", en: "O(n), O(log n) — efficiency measure" },
+            links: []
+        },
+        {
+            cat: "general",
+            icon: "📦",
+            name: { uk: "API (Application Programming Interface)", ru: "API (Application Programming Interface)", en: "API (Application Programming Interface)" },
+            desc: {
+                uk: "Набір правил і точок доступу, через які програми взаємодіють між собою. REST, GraphQL, gRPC — поширені стилі. «Контракт» між постачальником і споживачем.",
+                ru: "Набор правил и точек доступа, через которые программы взаимодействуют друг с другом. REST, GraphQL, gRPC — распространённые стили. «Контракт» между поставщиком и потребителем.",
+                en: "A set of rules and endpoints through which programs interact. REST, GraphQL, gRPC are common styles. A “contract” between provider and consumer."
+            },
+            traits: { uk: "REST, GraphQL, Endpoint, Контракт, Інтеграція", ru: "REST, GraphQL, Endpoint, Контракт, Интеграция", en: "REST, GraphQL, Endpoint, Contract, Integration" },
+            spec: { uk: "Добре спроектований API — довговічний", ru: "Хорошо спроектированный API — долговечен", en: "A well-designed API lasts" },
+            links: []
+        },
+        {
+            cat: "general",
+            icon: "🧩",
+            name: { uk: "Фреймворк (Framework)", ru: "Фреймворк (Framework)", en: "Framework" },
+            desc: {
+                uk: "Готова структура і набір інструментів для розробки додатків. Ви задаєте логіку «всередині» рамок фреймворку (inversion of control). Приклади: React, Django, Spring, .NET.",
+                ru: "Готовая структура и набор инструментов для разработки приложений. Вы задаёте логику «внутри» рамок фреймворка (inversion of control). Примеры: React, Django, Spring, .NET.",
+                en: "A ready-made structure and toolset for building applications. You plug logic into the framework’s structure (inversion of control). Examples: React, Django, Spring, .NET."
+            },
+            traits: { uk: "Структура, IoC, Бібліотека vs Framework, Екосистема", ru: "Структура, IoC, Библиотека vs Framework, Экосистема", en: "Structure, IoC, Library vs Framework, Ecosystem" },
+            spec: { uk: "Фреймворк керує вами; бібліотекою керуєте ви", ru: "Фреймворк управляет вами; библиотекой управляете вы", en: "A framework calls you; you call a library" },
+            links: []
+        },
+        {
+            cat: "general",
+            icon: "📚",
+            name: { uk: "Бібліотека (Library)", ru: "Библиотека (Library)", en: "Library" },
+            desc: {
+                uk: "Набір готових функцій/модулів, які ви викликаєте у своєму коді. На відміну від фреймворку, контроль залишається за вами. Приклади: lodash, requests, NumPy.",
+                ru: "Набор готовых функций/модулей, которые вы вызываете в своём коде. В отличие от фреймворка, контроль остаётся за вами. Примеры: lodash, requests, NumPy.",
+                en: "A set of ready-made functions/modules that you call from your code. Unlike a framework, you stay in control. Examples: lodash, requests, NumPy."
+            },
+            traits: { uk: "Функції, Модулі, Повторне використання, Залежності", ru: "Функции, Модули, Повторное использование, Зависимости", en: "Functions, Modules, Reuse, Dependencies" },
+            spec: { uk: "Не винайдіть велосипед — використайте бібліотеку", ru: "Не изобретайте велосипед — используйте библиотеку", en: "Don’t reinvent the wheel — use a library" },
+            links: []
+        },
+        {
+            cat: "general",
+            icon: "🆔",
+            name: { uk: "SDK (Software Development Kit)", ru: "SDK (Software Development Kit)", en: "SDK (Software Development Kit)" },
+            desc: {
+                uk: "Комплект інструментів для розробки під конкретну платформу: бібліотеки, документація, емулятори, приклади. Наприклад, Android SDK, iOS SDK.",
+                ru: "Комплект инструментов для разработки под конкретную платформу: библиотеки, документация, эмуляторы, примеры. Например, Android SDK, iOS SDK.",
+                en: "A toolkit for developing for a specific platform: libraries, docs, emulators, samples. E.g. Android SDK, iOS SDK."
+            },
+            traits: { uk: "Платформа, Інструменти, Документація, Приклади", ru: "Платформа, Инструменты, Документация, Примеры", en: "Platform, Tools, Documentation, Samples" },
+            spec: { uk: "SDK = «все для старту» на платформі", ru: "SDK = «всё для старта» на платформе", en: "SDK = “everything to start” on a platform" },
+            links: []
+        },
+        {
+            cat: "general",
+            icon: "📄",
+            name: { uk: "Open Source", ru: "Open Source", en: "Open Source" },
+            desc: {
+                uk: "ПЗ з відкритим вихідним кодом: можна переглядати, змінювати і поширювати за умовами ліцензії (MIT, Apache, GPL тощо). Основа сучасної інфраструктури ІТ.",
+                ru: "ПО с открытым исходным кодом: можно просматривать, изменять и распространять на условиях лицензии (MIT, Apache, GPL и т.д.). Основа современной инфраструктуры ИТ.",
+                en: "Software with publicly available source code: you may view, modify and redistribute under the license terms (MIT, Apache, GPL, etc.). Foundation of modern IT infrastructure."
+            },
+            traits: { uk: "Ліцензії, Спільнота, Внесок, Прозорість", ru: "Лицензии, Сообщество, Вклад, Прозрачность", en: "Licenses, Community, Contribution, Transparency" },
+            spec: { uk: "Читайте ліцензію перед використанням", ru: "Читайте лицензию перед использованием", en: "Read the license before using" },
+            links: []
+        },
+
+        // DEVELOPMENT
+        {
+            cat: "development",
+            icon: "🏗️",
+            name: { uk: "Архітектура ПЗ", ru: "Архитектура ПО", en: "Software Architecture" },
+            desc: {
+                uk: "Високорівнева структура системи: компоненти, їхні зв’язки, принципи організації. Впливає на масштабованість, підтримуваність, безпеку. Приклади стилів: моноліт, мікросервіси, event-driven.",
+                ru: "Высокоуровневая структура системы: компоненты, их связи, принципы организации. Влияет на масштабируемость, поддерживаемость, безопасность. Примеры стилей: монолит, микросервисы, event-driven.",
+                en: "High-level structure of a system: components, their relationships, organizing principles. Affects scalability, maintainability, security. Style examples: monolith, microservices, event-driven."
+            },
+            traits: { uk: "Компоненти, Зв’язки, Якість атрибутів, Стилі", ru: "Компоненты, Связи, Атрибуты качества, Стили", en: "Components, Relations, Quality attributes, Styles" },
+            spec: { uk: "Архітектура — це рішення, які дорого змінювати пізніше", ru: "Архитектура — это решения, которые дорого менять позже", en: "Architecture is decisions that are expensive to change later" },
+            links: []
+        },
+        {
+            cat: "development",
+            icon: "🧱",
+            name: { uk: "Моноліт", ru: "Монолит", en: "Monolith" },
+            desc: {
+                uk: "Додаток як єдине ціле: один кодова база, один деплой. Простіше на старті, складніше масштабувати окремі частини. Протилежність — мікросервіси.",
+                ru: "Приложение как единое целое: одна кодовая база, один деплой. Проще на старте, сложнее масштабировать отдельные части. Противоположность — микросервисы.",
+                en: "An application as one unit: one codebase, one deployment. Simpler at the start, harder to scale parts independently. Opposite of microservices."
+            },
+            traits: { uk: "Єдиний деплой, Простота, Зв’язність, Масштаб", ru: "Единый деплой, Простота, Связность, Масштаб", en: "Single deploy, Simplicity, Coupling, Scale" },
+            spec: { uk: "Не завжди «погано» — залежить від контексту", ru: "Не всегда «плохо» — зависит от контекста", en: "Not always “bad” — depends on context" },
+            links: []
+        },
+        {
+            cat: "development",
+            icon: "🔗",
+            name: { uk: "Мікросервіси", ru: "Микросервисы", en: "Microservices" },
+            desc: {
+                uk: "Архітектура з багатьох невеликих незалежних сервісів, які спілкуються мережею (часто через API). Незалежний деплой і масштаб, але складність розподіленої системи.",
+                ru: "Архитектура из множества небольших независимых сервисов, общающихся по сети (часто через API). Независимый деплой и масштаб, но сложность распределённой системы.",
+                en: "Architecture of many small independent services communicating over the network (often via APIs). Independent deploy and scale, but distributed-system complexity."
+            },
+            traits: { uk: "Сервіси, API, Незалежність, Складність, DevOps", ru: "Сервисы, API, Независимость, Сложность, DevOps", en: "Services, API, Independence, Complexity, DevOps" },
+            spec: { uk: "Мікросервіси — не срібна куля", ru: "Микросервисы — не серебряная пуля", en: "Microservices are not a silver bullet" },
+            links: []
+        },
+        {
+            cat: "development",
+            icon: "♻️",
+            name: { uk: "Рефакторинг", ru: "Рефакторинг", en: "Refactoring" },
+            desc: {
+                uk: "Покращення структури коду без зміни зовнішньої поведінки. Мета — читабельність, підтримуваність, зменшення технічного боргу. Робіть під захистом тестів.",
+                ru: "Улучшение структуры кода без изменения внешнего поведения. Цель — читаемость, поддерживаемость, уменьшение технического долга. Делайте под защитой тестов.",
+                en: "Improving code structure without changing external behaviour. Goal: readability, maintainability, less technical debt. Do it under test protection."
+            },
+            traits: { uk: "Структура, Тести, Читабельність, Техборг", ru: "Структура, Тесты, Читаемость, Техдолг", en: "Structure, Tests, Readability, Tech debt" },
+            spec: { uk: "Рефакторинг без тестів — ризик", ru: "Рефакторинг без тестов — риск", en: "Refactoring without tests is a risk" },
+            links: []
+        },
+        {
+            cat: "development",
+            icon: "📉",
+            name: { uk: "Технічний борг", ru: "Технический долг", en: "Technical Debt" },
+            desc: {
+                uk: "Наслідки швидких або компромісних рішень у коді/архітектурі, які потім доводиться «виплачувати» часом на виправлення. Свідомий борг іноді виправданий; ігнорований — росте.",
+                ru: "Последствия быстрых или компромиссных решений в коде/архитектуре, которые потом приходится «выплачивать» временем на исправление. Сознательный долг иногда оправдан; игнорируемый — растёт.",
+                en: "Consequences of quick or compromise decisions in code/architecture that later cost time to fix. Conscious debt can be justified; ignored debt grows."
+            },
+            traits: { uk: "Компроміс, Відсотки, Пріоритезація, Якість", ru: "Компромисс, Проценты, Приоритизация, Качество", en: "Compromise, Interest, Prioritization, Quality" },
+            spec: { uk: "Борг треба бачити і планувати", ru: "Долг нужно видеть и планировать", en: "Debt must be visible and planned" },
+            links: []
+        },
+        {
+            cat: "development",
+            icon: "🎭",
+            name: { uk: "Design Patterns (патерни проєктування)", ru: "Design Patterns (паттерны проектирования)", en: "Design Patterns" },
+            desc: {
+                uk: "Типові рішення типових задач проєктування: Singleton, Factory, Observer, Strategy тощо. Не догма, а словник ідей. «Банда чотирьох» (GoF) — класична збірка.",
+                ru: "Типовые решения типовых задач проектирования: Singleton, Factory, Observer, Strategy и т.д. Не догма, а словарь идей. «Банда четырёх» (GoF) — классический сборник.",
+                en: "Typical solutions to typical design problems: Singleton, Factory, Observer, Strategy, etc. Not dogma, but a vocabulary of ideas. “Gang of Four” (GoF) is the classic collection."
+            },
+            traits: { uk: "GoF, Повторне використання, Словник, Контекст", ru: "GoF, Повторное использование, Словарь, Контекст", en: "GoF, Reuse, Vocabulary, Context" },
+            spec: { uk: "Патерн — інструмент, не ціль", ru: "Паттерн — инструмент, не цель", en: "A pattern is a tool, not a goal" },
+            links: []
+        },
+        {
+            cat: "development",
+            icon: "💉",
+            name: { uk: "Dependency Injection (DI)", ru: "Dependency Injection (DI)", en: "Dependency Injection (DI)" },
+            desc: {
+                uk: "Залежності передаються об’єкту ззовні, а не створюються всередині. Спрощує тестування і гнучкість. Часто частина IoC-контейнерів (Spring, .NET DI).",
+                ru: "Зависимости передаются объекту извне, а не создаются внутри. Упрощает тестирование и гибкость. Часто часть IoC-контейнеров (Spring, .NET DI).",
+                en: "Dependencies are passed into an object from outside, not created inside. Eases testing and flexibility. Often part of IoC containers (Spring, .NET DI)."
+            },
+            traits: { uk: "IoC, Тестованість, Слабка зв’язність, Контейнер", ru: "IoC, Тестируемость, Слабая связность, Контейнер", en: "IoC, Testability, Loose coupling, Container" },
+            spec: { uk: "Не створюй залежності — отримай їх", ru: "Не создавай зависимости — получай их", en: "Don’t create dependencies — receive them" },
+            links: []
+        },
+
+        // DATA
+        {
+            cat: "data",
+            icon: "🗃️",
+            name: { uk: "База даних (Database)", ru: "База данных (Database)", en: "Database" },
+            desc: {
+                uk: "Організоване сховище даних з можливістю пошуку, оновлення, цілісності. Реляційні (SQL) і нереляційні (NoSQL). СУБД керує доступом і надійністю.",
+                ru: "Организованное хранилище данных с возможностью поиска, обновления, целостности. Реляционные (SQL) и нереляционные (NoSQL). СУБД управляет доступом и надёжностью.",
+                en: "Organized data storage with query, update and integrity capabilities. Relational (SQL) and non-relational (NoSQL). A DBMS manages access and reliability."
+            },
+            traits: { uk: "SQL, NoSQL, Цілісність, Запити, СУБД", ru: "SQL, NoSQL, Целостность, Запросы, СУБД", en: "SQL, NoSQL, Integrity, Queries, DBMS" },
+            spec: { uk: "Дані переживають код — проєктуйте уважно", ru: "Данные переживают код — проектируйте внимательно", en: "Data outlives code — design carefully" },
+            links: []
+        },
+        {
+            cat: "data",
+            icon: "📐",
+            name: { uk: "SQL", ru: "SQL", en: "SQL" },
+            desc: {
+                uk: "Structured Query Language — мова запитів до реляційних БД. SELECT, JOIN, індекси, транзакції. Діалекти: PostgreSQL, MySQL, SQL Server, SQLite.",
+                ru: "Structured Query Language — язык запросов к реляционным БД. SELECT, JOIN, индексы, транзакции. Диалекты: PostgreSQL, MySQL, SQL Server, SQLite.",
+                en: "Structured Query Language — the query language for relational DBs. SELECT, JOIN, indexes, transactions. Dialects: PostgreSQL, MySQL, SQL Server, SQLite."
+            },
+            traits: { uk: "SELECT, JOIN, Index, Transaction, ACID", ru: "SELECT, JOIN, Index, Transaction, ACID", en: "SELECT, JOIN, Index, Transaction, ACID" },
+            spec: { uk: "SQL — обов’язкова навичка для роботи з даними", ru: "SQL — обязательный навык для работы с данными", en: "SQL is a must-have skill for data work" },
+            links: []
+        },
+        {
+            cat: "data",
+            icon: "🔄",
+            name: { uk: "ACID", ru: "ACID", en: "ACID" },
+            desc: {
+                uk: "Властивості надійних транзакцій: Atomicity (усе або нічого), Consistency (узгодженість), Isolation (ізоляція), Durability (довговічність). Основа класичних реляційних БД.",
+                ru: "Свойства надёжных транзакций: Atomicity (всё или ничего), Consistency (согласованность), Isolation (изоляция), Durability (долговечность). Основа классических реляционных БД.",
+                en: "Properties of reliable transactions: Atomicity (all or nothing), Consistency, Isolation, Durability. Foundation of classic relational databases."
+            },
+            traits: { uk: "Atomicity, Consistency, Isolation, Durability", ru: "Atomicity, Consistency, Isolation, Durability", en: "Atomicity, Consistency, Isolation, Durability" },
+            spec: { uk: "ACID vs BASE у розподілених системах", ru: "ACID vs BASE в распределённых системах", en: "ACID vs BASE in distributed systems" },
+            links: []
+        },
+        {
+            cat: "data",
+            icon: "🌊",
+            name: { uk: "ETL / ELT", ru: "ETL / ELT", en: "ETL / ELT" },
+            desc: {
+                uk: "Extract–Transform–Load (або Extract–Load–Transform): витяг даних з джерел, перетворення, завантаження у сховище. Основа data pipelines і аналітики.",
+                ru: "Extract–Transform–Load (или Extract–Load–Transform): извлечение данных из источников, преобразование, загрузка в хранилище. Основа data pipelines и аналитики.",
+                en: "Extract–Transform–Load (or Extract–Load–Transform): extract from sources, transform, load into a warehouse. Foundation of data pipelines and analytics."
+            },
+            traits: { uk: "Extract, Transform, Load, Pipeline, Warehouse", ru: "Extract, Transform, Load, Pipeline, Warehouse", en: "Extract, Transform, Load, Pipeline, Warehouse" },
+            spec: { uk: "ELT популярніший у сучасних хмарних сховищах", ru: "ELT популярнее в современных облачных хранилищах", en: "ELT is more common in modern cloud warehouses" },
+            links: []
+        },
+        {
+            cat: "data",
+            icon: "📦",
+            name: { uk: "Кеш (Cache)", ru: "Кэш (Cache)", en: "Cache" },
+            desc: {
+                uk: "Швидке проміжне сховище часто використовуваних даних, щоб зменшити навантаження на БД чи мережу. Redis, CDN, HTTP-кеш. Важливо: інвалідація і узгодженість.",
+                ru: "Быстрое промежуточное хранилище часто используемых данных, чтобы снизить нагрузку на БД или сеть. Redis, CDN, HTTP-кэш. Важно: инвалидация и согласованность.",
+                en: "Fast intermediate storage of frequently used data to reduce load on DB or network. Redis, CDN, HTTP cache. Important: invalidation and consistency."
+            },
+            traits: { uk: "Швидкість, Інвалідація, Redis, TTL, Hit rate", ru: "Скорость, Инвалидация, Redis, TTL, Hit rate", en: "Speed, Invalidation, Redis, TTL, Hit rate" },
+            spec: { uk: "Дві складні проблеми: іменування і інвалідація кешу", ru: "Две сложные проблемы: именование и инвалидация кэша", en: "Two hard problems: naming and cache invalidation" },
+            links: []
+        },
+
+        // INFRA
+        {
+            cat: "infra",
+            icon: "🐳",
+            name: { uk: "Контейнер (Docker тощо)", ru: "Контейнер (Docker и др.)", en: "Container (Docker, etc.)" },
+            desc: {
+                uk: "Ізольоване середовище з додатком і залежностями. Легше за ВМ, швидший старт, однакова поведінка «у мене / на сервері». Docker — де-факто стандарт.",
+                ru: "Изолированная среда с приложением и зависимостями. Легче ВМ, быстрее старт, одинаковое поведение «у меня / на сервере». Docker — де-факто стандарт.",
+                en: "Isolated environment with app and dependencies. Lighter than VMs, faster start, same behaviour “on my machine / on the server”. Docker is the de-facto standard."
+            },
+            traits: { uk: "Docker, Image, Isolation, Портативність", ru: "Docker, Image, Isolation, Портативность", en: "Docker, Image, Isolation, Portability" },
+            spec: { uk: "«Працює в контейнері» — сучасний стандарт доставки", ru: "«Работает в контейнере» — современный стандарт доставки", en: "“Runs in a container” is the modern delivery standard" },
+            links: []
+        },
+        {
+            cat: "infra",
+            icon: "☸️",
+            name: { uk: "Kubernetes (K8s)", ru: "Kubernetes (K8s)", en: "Kubernetes (K8s)" },
+            desc: {
+                uk: "Платформа оркестрації контейнерів: розгортання, масштаб, самовідновлення, сервісна мережа. Стандарт для великих і середніх хмарних систем.",
+                ru: "Платформа оркестрации контейнеров: развёртывание, масштаб, самовосстановление, сервисная сеть. Стандарт для крупных и средних облачных систем.",
+                en: "Container orchestration platform: deployment, scaling, self-healing, service networking. Standard for large and mid-size cloud systems."
+            },
+            traits: { uk: "Pods, Deployments, Services, Scaling, Cloud-native", ru: "Pods, Deployments, Services, Scaling, Cloud-native", en: "Pods, Deployments, Services, Scaling, Cloud-native" },
+            spec: { uk: "Потужний, але складний — не завжди потрібен", ru: "Мощный, но сложный — не всегда нужен", en: "Powerful but complex — not always needed" },
+            links: []
+        },
+        {
+            cat: "infra",
+            icon: "🔄",
+            name: { uk: "CI/CD", ru: "CI/CD", en: "CI/CD" },
+            desc: {
+                uk: "Continuous Integration / Continuous Delivery (або Deployment): автоматична збірка, тести, доставка коду. Зменшує ризик релізів і прискорює feedback.",
+                ru: "Continuous Integration / Continuous Delivery (или Deployment): автоматическая сборка, тесты, доставка кода. Снижает риск релизов и ускоряет feedback.",
+                en: "Continuous Integration / Continuous Delivery (or Deployment): automated build, tests, code delivery. Reduces release risk and speeds up feedback."
+            },
+            traits: { uk: "Pipeline, Автоматизація, Тести, Деплой, Feedback", ru: "Pipeline, Автоматизация, Тесты, Деплой, Feedback", en: "Pipeline, Automation, Tests, Deploy, Feedback" },
+            spec: { uk: "Без CI/CD сучасна команда гальмує", ru: "Без CI/CD современная команда тормозит", en: "Without CI/CD a modern team slows down" },
+            links: []
+        },
+        {
+            cat: "infra",
+            icon: "📜",
+            name: { uk: "Infrastructure as Code (IaC)", ru: "Infrastructure as Code (IaC)", en: "Infrastructure as Code (IaC)" },
+            desc: {
+                uk: "Опис інфраструктури в коді (Terraform, Ansible, CloudFormation): версіонування, повторюваність, огляд змін. Інфра — не «ручні кліки», а артефакт.",
+                ru: "Описание инфраструктуры в коде (Terraform, Ansible, CloudFormation): версионирование, повторяемость, обзор изменений. Инфра — не «ручные клики», а артефакт.",
+                en: "Describing infrastructure in code (Terraform, Ansible, CloudFormation): versioning, repeatability, change review. Infra is not “manual clicks” but an artifact."
+            },
+            traits: { uk: "Terraform, Ansible, Версіонування, Повторюваність", ru: "Terraform, Ansible, Версионирование, Повторяемость", en: "Terraform, Ansible, Versioning, Repeatability" },
+            spec: { uk: "Інфра в Git — прозорість і контроль", ru: "Инфра в Git — прозрачность и контроль", en: "Infra in Git means transparency and control" },
+            links: []
+        },
+        {
+            cat: "infra",
+            icon: "📊",
+            name: { uk: "Observability (спостережуваність)", ru: "Observability (наблюдаемость)", en: "Observability" },
+            desc: {
+                uk: "Здатність розуміти стан системи за телеметрією: логи, метрики, трейси. Не лише «моніторинг», а можливість відповідати на нові питання про поведінку системи.",
+                ru: "Способность понимать состояние системы по телеметрии: логи, метрики, трейсы. Не только «мониторинг», а возможность отвечать на новые вопросы о поведении системы.",
+                en: "Ability to understand system state from telemetry: logs, metrics, traces. Not only “monitoring”, but answering new questions about system behaviour."
+            },
+            traits: { uk: "Logs, Metrics, Traces, Алерти, SLA/SLO", ru: "Logs, Metrics, Traces, Алерты, SLA/SLO", en: "Logs, Metrics, Traces, Alerts, SLA/SLO" },
+            spec: { uk: "Якщо не вимірюєте — не керуєте", ru: "Если не измеряете — не управляете", en: "If you don’t measure, you don’t control" },
+            links: []
+        },
+
+        // SECURITY
+        {
+            cat: "security",
+            icon: "🔐",
+            name: { uk: "Автентифікація vs Авторизація", ru: "Аутентификация vs Авторизация", en: "Authentication vs Authorization" },
+            desc: {
+                uk: "Authentication — хто ви (логін, пароль, MFA). Authorization — що вам дозволено (ролі, права). Часто плутають; обидва критичні для безпеки.",
+                ru: "Authentication — кто вы (логин, пароль, MFA). Authorization — что вам разрешено (роли, права). Часто путают; оба критичны для безопасности.",
+                en: "Authentication — who you are (login, password, MFA). Authorization — what you are allowed to do (roles, permissions). Often confused; both are critical for security."
+            },
+            traits: { uk: "AuthN, AuthZ, MFA, RBAC, JWT", ru: "AuthN, AuthZ, MFA, RBAC, JWT", en: "AuthN, AuthZ, MFA, RBAC, JWT" },
+            spec: { uk: "Спочатку «хто», потім «що можна»", ru: "Сначала «кто», потом «что можно»", en: "First “who”, then “what is allowed”" },
+            links: []
+        },
+        {
+            cat: "security",
+            icon: "🛡️",
+            name: { uk: "Шифрування (Encryption)", ru: "Шифрование (Encryption)", en: "Encryption" },
+            desc: {
+                uk: "Перетворення даних у нечитабельний вигляд без ключа. Symmetric (один ключ) і asymmetric (пара ключів). TLS, HTTPS, дискове шифрування — приклади застосування.",
+                ru: "Преобразование данных в нечитаемый вид без ключа. Symmetric (один ключ) и asymmetric (пара ключей). TLS, HTTPS, дисковое шифрование — примеры применения.",
+                en: "Turning data into unreadable form without a key. Symmetric (one key) and asymmetric (key pair). TLS, HTTPS, disk encryption are application examples."
+            },
+            traits: { uk: "Symmetric, Asymmetric, TLS, Ключі, HTTPS", ru: "Symmetric, Asymmetric, TLS, Ключи, HTTPS", en: "Symmetric, Asymmetric, TLS, Keys, HTTPS" },
+            spec: { uk: "Шифруйте дані в спокої і в русі", ru: "Шифруйте данные в покое и в движении", en: "Encrypt data at rest and in transit" },
+            links: []
+        },
+        {
+            cat: "security",
+            icon: "🐛",
+            name: { uk: "Вразливість (Vulnerability)", ru: "Уязвимость (Vulnerability)", en: "Vulnerability" },
+            desc: {
+                uk: "Слабке місце в системі, яке можна використати для атаки. OWASP Top 10 — відомий список веб-ризиків. Важливі: виявлення, оцінка, виправлення, запобігання.",
+                ru: "Слабое место в системе, которое можно использовать для атаки. OWASP Top 10 — известный список веб-рисков. Важны: обнаружение, оценка, исправление, предотвращение.",
+                en: "A weakness in a system that can be exploited for an attack. OWASP Top 10 is a well-known web risk list. Important: detect, assess, fix, prevent."
+            },
+            traits: { uk: "OWASP, CVE, Patch, Exploit, Ризик", ru: "OWASP, CVE, Patch, Exploit, Риск", en: "OWASP, CVE, Patch, Exploit, Risk" },
+            spec: { uk: "Нульовий день (0-day) — ще без патчу", ru: "Нулевой день (0-day) — ещё без патча", en: "Zero-day — no patch yet" },
+            links: []
+        },
+        {
+            cat: "security",
+            icon: "🔑",
+            name: { uk: "Least Privilege", ru: "Least Privilege", en: "Least Privilege" },
+            desc: {
+                uk: "Принцип найменших привілеїв: давати лише ті права, які потрібні для виконання задачі. Зменшує шкоду від компрометації акаунта чи сервісу.",
+                ru: "Принцип наименьших привилегий: давать только те права, которые нужны для выполнения задачи. Уменьшает ущерб от компрометации аккаунта или сервиса.",
+                en: "Principle of least privilege: grant only the rights needed for the task. Reduces damage if an account or service is compromised."
+            },
+            traits: { uk: "Мінімум прав, RBAC, Сегментація, Ризик", ru: "Минимум прав, RBAC, Сегментация, Риск", en: "Minimal rights, RBAC, Segmentation, Risk" },
+            spec: { uk: "Не давайте root «про всяк випадок»", ru: "Не давайте root «на всякий случай»", en: "Don’t give root “just in case”" },
+            links: []
+        },
+
+        // PROCESS
+        {
+            cat: "process",
+            icon: "🔄",
+            name: { uk: "Agile", ru: "Agile", en: "Agile" },
+            desc: {
+                uk: "Підхід до розробки з акцентом на людей, робочий продукт, співпрацю з замовником і готовність до змін. Не один метод, а набір цінностей і принципів (маніфест 2001).",
+                ru: "Подход к разработке с акцентом на людей, рабочий продукт, сотрудничество с заказчиком и готовность к изменениям. Не один метод, а набор ценностей и принципов (манифест 2001).",
+                en: "An approach to development emphasizing people, working product, customer collaboration and responding to change. Not one method, but a set of values and principles (2001 manifesto)."
+            },
+            traits: { uk: "Маніфест, Ітерації, Зміни, Цінність, Люди", ru: "Манифест, Итерации, Изменения, Ценность, Люди", en: "Manifesto, Iterations, Change, Value, People" },
+            spec: { uk: "Agile — мислення, не лише церемонії", ru: "Agile — мышление, не только церемонии", en: "Agile is a mindset, not only ceremonies" },
+            links: []
+        },
+        {
+            cat: "process",
+            icon: "🏉",
+            name: { uk: "Scrum", ru: "Scrum", en: "Scrum" },
+            desc: {
+                uk: "Популярний Agile-фреймворк: спринти, ролі (PO, SM, Developers), події (Planning, Daily, Review, Retro), артефакти (Backlog, Increment). Емпіричний контроль процесу.",
+                ru: "Популярный Agile-фреймворк: спринты, роли (PO, SM, Developers), события (Planning, Daily, Review, Retro), артефакты (Backlog, Increment). Эмпирический контроль процесса.",
+                en: "Popular Agile framework: sprints, roles (PO, SM, Developers), events (Planning, Daily, Review, Retro), artifacts (Backlog, Increment). Empirical process control."
+            },
+            traits: { uk: "Спринт, Backlog, Daily, Review, Retrospective", ru: "Спринт, Backlog, Daily, Review, Retrospective", en: "Sprint, Backlog, Daily, Review, Retrospective" },
+            spec: { uk: "Scrum Guide — єдине «офіційне» джерело", ru: "Scrum Guide — единственный «официальный» источник", en: "The Scrum Guide is the single “official” source" },
+            links: []
+        },
+        {
+            cat: "process",
+            icon: "📌",
+            name: { uk: "Kanban", ru: "Kanban", en: "Kanban" },
+            desc: {
+                uk: "Метод управління потоком роботи: візуалізація (дошка), WIP-ліміти, управління потоком. Немає фіксованих спринтів — робота «тягнеться» за готовністю.",
+                ru: "Метод управления потоком работы: визуализация (доска), WIP-лимиты, управление потоком. Нет фиксированных спринтов — работа «тянется» по готовности.",
+                en: "A method for managing work flow: visualization (board), WIP limits, flow management. No fixed sprints — work is pulled when capacity allows."
+            },
+            traits: { uk: "Дошка, WIP, Потік, Pull, Continuous", ru: "Доска, WIP, Поток, Pull, Continuous", en: "Board, WIP, Flow, Pull, Continuous" },
+            spec: { uk: "Ідеально для підтримки і потоку задач", ru: "Идеально для поддержки и потока задач", en: "Ideal for support and continuous flow of tasks" },
+            links: []
+        },
+        {
+            cat: "process",
+            icon: "📏",
+            name: { uk: "Definition of Done (DoD)", ru: "Definition of Done (DoD)", en: "Definition of Done (DoD)" },
+            desc: {
+                uk: "Спільне розуміння команди, коли робота вважається завершеною (код, тести, рев’ю, документація). Зменшує «майже готово» і приховану якість.",
+                ru: "Общее понимание команды, когда работа считается завершённой (код, тесты, ревью, документация). Уменьшает «почти готово» и скрытое качество.",
+                en: "Shared team understanding of when work is considered complete (code, tests, review, docs). Reduces “almost done” and hidden quality gaps."
+            },
+            traits: { uk: "Готовність, Якість, Спільне розуміння, Чекліст", ru: "Готовность, Качество, Общее понимание, Чеклист", en: "Readiness, Quality, Shared understanding, Checklist" },
+            spec: { uk: "«Готово» має означати одне для всіх", ru: "«Готово» должно означать одно для всех", en: "“Done” must mean the same for everyone" },
+            links: []
+        },
+        {
+            cat: "process",
+            icon: "🧪",
+            name: { uk: "TDD (Test-Driven Development)", ru: "TDD (Test-Driven Development)", en: "TDD (Test-Driven Development)" },
+            desc: {
+                uk: "Спочатку тест, потім код, потім рефакторинг (red–green–refactor). Тести задають поведінку і захищають від регресій. Не єдиний спосіб якості, але потужна дисципліна.",
+                ru: "Сначала тест, потом код, потом рефакторинг (red–green–refactor). Тесты задают поведение и защищают от регрессий. Не единственный способ качества, но мощная дисциплина.",
+                en: "Test first, then code, then refactor (red–green–refactor). Tests define behaviour and protect against regressions. Not the only path to quality, but a powerful discipline."
+            },
+            traits: { uk: "Red-Green-Refactor, Unit tests, Регресія, Дизайн", ru: "Red-Green-Refactor, Unit tests, Регрессия, Дизайн", en: "Red-Green-Refactor, Unit tests, Regression, Design" },
+            spec: { uk: "Тест як специфікація поведінки", ru: "Тест как спецификация поведения", en: "Test as a behaviour specification" },
+            links: []
+        },
+
+        // NETWORK / WEB
+        {
+            cat: "network",
+            icon: "🌐",
+            name: { uk: "HTTP / HTTPS", ru: "HTTP / HTTPS", en: "HTTP / HTTPS" },
+            desc: {
+                uk: "Протокол обміну в вебі. HTTPS = HTTP + TLS (шифрування). Методи: GET, POST, PUT, DELETE. Статус-коди: 200, 404, 500 тощо. Основа REST і більшості веб-API.",
+                ru: "Протокол обмена в вебе. HTTPS = HTTP + TLS (шифрование). Методы: GET, POST, PUT, DELETE. Статус-коды: 200, 404, 500 и т.д. Основа REST и большинства веб-API.",
+                en: "The web’s exchange protocol. HTTPS = HTTP + TLS (encryption). Methods: GET, POST, PUT, DELETE. Status codes: 200, 404, 500, etc. Foundation of REST and most web APIs."
+            },
+            traits: { uk: "GET/POST, Status codes, TLS, REST, Headers", ru: "GET/POST, Status codes, TLS, REST, Headers", en: "GET/POST, Status codes, TLS, REST, Headers" },
+            spec: { uk: "Без HTTPS — дані під загрозою", ru: "Без HTTPS — данные под угрозой", en: "Without HTTPS, data is at risk" },
+            links: []
+        },
+        {
+            cat: "network",
+            icon: "📨",
+            name: { uk: "REST", ru: "REST", en: "REST" },
+            desc: {
+                uk: "Стиль архітектури для мережевих API: ресурси, HTTP-методи, без стану (stateless), представлення (JSON тощо). Не протокол, а набір обмежень і практик.",
+                ru: "Стиль архитектуры для сетевых API: ресурсы, HTTP-методы, без состояния (stateless), представления (JSON и т.д.). Не протокол, а набор ограничений и практик.",
+                en: "Architectural style for network APIs: resources, HTTP methods, stateless, representations (JSON, etc.). Not a protocol, but a set of constraints and practices."
+            },
+            traits: { uk: "Resources, Stateless, JSON, HTTP verbs, API", ru: "Resources, Stateless, JSON, HTTP verbs, API", en: "Resources, Stateless, JSON, HTTP verbs, API" },
+            spec: { uk: "Найпоширеніший стиль публічних API", ru: "Самый распространённый стиль публичных API", en: "The most common style for public APIs" },
+            links: []
+        },
+        {
+            cat: "network",
+            icon: "🔌",
+            name: { uk: "WebSocket", ru: "WebSocket", en: "WebSocket" },
+            desc: {
+                uk: "Двосторонній постійний канал між клієнтом і сервером поверх TCP. Для чатів, live-оновлень, ігор. На відміну від HTTP request/response — з’єднання довгоживуче.",
+                ru: "Двусторонний постоянный канал между клиентом и сервером поверх TCP. Для чатов, live-обновлений, игр. В отличие от HTTP request/response — соединение долгоживущее.",
+                en: "Bidirectional persistent channel between client and server over TCP. For chats, live updates, games. Unlike HTTP request/response — the connection stays open."
+            },
+            traits: { uk: "Real-time, Двосторонній, TCP, Push, Live", ru: "Real-time, Двусторонний, TCP, Push, Live", en: "Real-time, Bidirectional, TCP, Push, Live" },
+            spec: { uk: "Коли потрібен push з сервера — не лише polling", ru: "Когда нужен push с сервера — не только polling", en: "When you need server push — not only polling" },
+            links: []
+        },
+        {
+            cat: "network",
+            icon: "🍪",
+            name: { uk: "Cookie / Session / JWT", ru: "Cookie / Session / JWT", en: "Cookie / Session / JWT" },
+            desc: {
+                uk: "Способи зберігати стан автентифікації. Cookie + server session; або JWT (токен на клієнті). Кожен варіант має плюси/мінуси щодо безпеки і масштабу.",
+                ru: "Способы хранить состояние аутентификации. Cookie + server session; или JWT (токен на клиенте). У каждого варианта плюсы/минусы по безопасности и масштабу.",
+                en: "Ways to keep authentication state. Cookie + server session; or JWT (token on the client). Each has security and scaling trade-offs."
+            },
+            traits: { uk: "Cookie, Session, JWT, Token, Безпека", ru: "Cookie, Session, JWT, Token, Безопасность", en: "Cookie, Session, JWT, Token, Security" },
+            spec: { uk: "Не зберігайте секрети в localStorage без потреби", ru: "Не храните секреты в localStorage без нужды", en: "Don’t store secrets in localStorage without need" },
+            links: []
+        },
+        {
+            cat: "network",
+            icon: "🌍",
+            name: { uk: "CDN (Content Delivery Network)", ru: "CDN (Content Delivery Network)", en: "CDN (Content Delivery Network)" },
+            desc: {
+                uk: "Мережа серверів по світу для роздачі статичного контенту ближче до користувача. Зменшує затримку, знімає навантаження з origin. Cloudflare, Fastly, CloudFront тощо.",
+                ru: "Сеть серверов по миру для раздачи статического контента ближе к пользователю. Снижает задержку, снимает нагрузку с origin. Cloudflare, Fastly, CloudFront и др.",
+                en: "A network of servers worldwide to serve static content closer to the user. Reduces latency, offloads the origin. Cloudflare, Fastly, CloudFront, etc."
+            },
+            traits: { uk: "Edge, Latency, Cache, Static, Origin", ru: "Edge, Latency, Cache, Static, Origin", en: "Edge, Latency, Cache, Static, Origin" },
+            spec: { uk: "CDN — стандарт для швидкого вебу", ru: "CDN — стандарт для быстрого веба", en: "CDN is the standard for a fast web" },
+            links: []
+        },
+        {
+            cat: "network",
+            icon: "📡",
+            name: { uk: "Latency / Throughput", ru: "Latency / Throughput", en: "Latency / Throughput" },
+            desc: {
+                uk: "Latency — затримка (час відповіді). Throughput — пропускна здатність (обсяг за час). Оптимізація однієї не завжди покращує іншу. Важливо розуміти обидві метрики.",
+                ru: "Latency — задержка (время ответа). Throughput — пропускная способность (объём за время). Оптимизация одной не всегда улучшает другую. Важно понимать обе метрики.",
+                en: "Latency — delay (response time). Throughput — capacity (volume per time). Optimizing one does not always improve the other. Understanding both metrics matters."
+            },
+            traits: { uk: "Затримка, Пропускна здатність, Performance, UX", ru: "Задержка, Пропускная способность, Performance, UX", en: "Delay, Bandwidth, Performance, UX" },
+            spec: { uk: "Користувач відчуває latency сильніше за throughput", ru: "Пользователь чувствует latency сильнее throughput", en: "Users feel latency more than throughput" },
+            links: []
+        }
+    ];
+
+    const ui = {
+        uk: {
+            title: "Глосарій термінів ІТ — Довідник",
+            pageTitle: "📖 Глосарій термінів ІТ",
+            home: "Головна сторінка",
+            all: "Усі розділи",
+            traits: "Пов’язані поняття",
+            mfgText: "Корисні ресурси:",
+            noResults: "Нічого не знайдено.",
+            searchPlaceholder: "Пошук терміна...",
+            footer: "📖 Глосарій термінів ІТ | Довідник 2026",
+            introTitle: "Глосарій термінів ІТ",
+            intro1: "Короткі пояснення поширених термінів з розробки, даних, інфраструктури, безпеки, процесів і мереж. Зручно для навчання, онбордингу та швидкого нагадування «що це означає».",
+            intro2: "Список не вичерпний — ІТ постійно з’являються нові поняття. Фільтри та пошук допоможуть швидше знайти потрібне."
+        },
+        ru: {
+            title: "Глоссарий терминов ИТ — Справочник",
+            pageTitle: "📖 Глоссарий терминов ИТ",
+            home: "Главная страница",
+            all: "Все разделы",
+            traits: "Связанные понятия",
+            mfgText: "Полезные ресурсы:",
+            noResults: "Ничего не найдено.",
+            searchPlaceholder: "Поиск термина...",
+            footer: "📖 Глоссарий терминов ИТ | Справочник 2026",
+            introTitle: "Глоссарий терминов ИТ",
+            intro1: "Краткие пояснения распространённых терминов из разработки, данных, инфраструктуры, безопасности, процессов и сетей. Удобно для обучения, онбординга и быстрого напоминания «что это значит».",
+            intro2: "Список не исчерпывающий — в ИТ постоянно появляются новые понятия. Фильтры и поиск помогут быстрее найти нужное."
+        },
+        en: {
+            title: "IT Terms Glossary — Guide",
+            pageTitle: "📖 IT Terms Glossary",
+            home: "Home page",
+            all: "All sections",
+            traits: "Related concepts",
+            mfgText: "Useful resources:",
+            noResults: "Nothing found.",
+            searchPlaceholder: "Search term...",
+            footer: "📖 IT Terms Glossary | Guide 2026",
+            introTitle: "IT Terms Glossary",
+            intro1: "Short explanations of common terms from development, data, infrastructure, security, processes and networks. Useful for learning, onboarding and a quick “what does this mean” reminder.",
+            intro2: "The list is not exhaustive — new terms appear in IT all the time. Filters and search help you find what you need faster."
+        }
+    };
+
+    let currentLang = safeGet("lang-glossary", "uk");
+    let activeCategory = "all";
+    let searchQuery = "";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-glossary", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        const search = document.getElementById("search");
+        if (search) search.placeholder = ui[lang].searchPlaceholder;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function onSearch() {
+        const el = document.getElementById("search");
+        searchQuery = el ? (el.value || "").trim().toLowerCase() : "";
+        render();
+    }
+
+    function matchesSearch(e) {
+        if (!searchQuery) return true;
+        const name = (e.name[currentLang] || "").toLowerCase();
+        const desc = (e.desc[currentLang] || "").toLowerCase();
+        const traits = (e.traits[currentLang] || "").toLowerCase();
+        return name.indexOf(searchQuery) !== -1 || desc.indexOf(searchQuery) !== -1 || traits.indexOf(searchQuery) !== -1;
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + "</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+        let any = false;
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) {
+                return e.cat === catKey && matchesSearch(e);
+            });
+            if (!list.length) return;
+            any = true;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        if (!any) {
+            html += '<div class="intro"><p>' + ui[currentLang].noResults + "</p></div>";
+        }
+
+        main.innerHTML = html;
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+    window.onSearch = onSearch;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

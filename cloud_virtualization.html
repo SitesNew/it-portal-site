@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-uk="Хмари та віртуалізація" data-ru="Облака и виртуализация" data-en="Cloud & Virtualization">Хмари та віртуалізація</title>
+<style>
+:root {
+  --bg-gradient-start: #0f0c29; --bg-gradient-mid: #302b63; --bg-gradient-end: #24243e;
+  --text-primary: #e0e0e0; --text-secondary: #888; --text-muted: #666;
+  --accent-cyan: #00d4ff; --accent-red: #ff6b6b; --accent-yellow: #ffd93d;
+  --accent-green: #6bcb77; --accent-blue: #4d96ff; --accent-purple: #9b59b6;
+  --accent-orange: #e67e22; --accent-gray: #95a5a6;
+  --card-bg: rgba(255,255,255,0.05); --card-border: rgba(255,255,255,0.08);
+  --header-bg: rgba(0,0,0,0.4); --nav-bg: rgba(0,0,0,0.25);
+  --tip-bg: rgba(0,212,255,0.1); --tip-border: #00d4ff;
+  --code-bg: rgba(0,0,0,0.3); --shadow: rgba(0,212,255,0.1);
+}
+[data-theme="light"] {
+  --bg-gradient-start: #f0f2f5; --bg-gradient-mid: #e4e7ec; --bg-gradient-end: #d9dce5;
+  --text-primary: #1a1a2e; --text-secondary: #555; --text-muted: #888;
+  --accent-cyan: #0066cc; --accent-red: #cc3333; --accent-yellow: #cc9900;
+  --accent-green: #228b22; --accent-blue: #1a5276; --accent-purple: #7d3c98;
+  --accent-orange: #d35400; --accent-gray: #5d6d7e;
+  --card-bg: rgba(255,255,255,0.7); --card-border: rgba(0,0,0,0.1);
+  --header-bg: rgba(255,255,255,0.8); --nav-bg: rgba(255,255,255,0.6);
+  --tip-bg: rgba(0,102,204,0.1); --tip-border: #0066cc;
+  --code-bg: rgba(0,0,0,0.05); --shadow: rgba(0,0,0,0.1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  background: linear-gradient(135deg,var(--bg-gradient-start),var(--bg-gradient-mid),var(--bg-gradient-end));
+  color:var(--text-primary); min-height:100vh; line-height:1.7; transition:background 0.5s,color 0.5s;
+}
+.header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:15px 30px; background:var(--header-bg); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--card-border); position:sticky; top:0; z-index:1000; transition:background 0.5s;
+}
+.home-link { color:var(--accent-cyan); text-decoration:none; font-size:1.1rem; font-weight:600; transition:color 0.3s; display:flex; align-items:center; gap:8px; }
+.home-link:hover { color:var(--accent-red); }
+.home-link::before { content:"\2190"; font-size:1.2rem; }
+.header-controls { display:flex; align-items:center; gap:15px; }
+.theme-toggle { background:var(--card-bg); border:1px solid var(--card-border); border-radius:30px; padding:5px 15px; cursor:pointer; font-size:1.2rem; transition:all 0.3s; color:var(--text-primary); }
+.theme-toggle:hover { transform:scale(1.1); border-color:var(--accent-cyan); }
+.lang-switcher { display:flex; gap:8px; }
+.lang-btn { background:var(--card-bg); border:1px solid var(--card-border); color:var(--text-primary); padding:6px 14px; border-radius:20px; cursor:pointer; font-size:0.85rem; transition:all 0.3s; text-decoration:none; font-weight:500; }
+.lang-btn:hover,.lang-btn.active { background:var(--accent-cyan); color:#fff; border-color:var(--accent-cyan); }
+.nav-menu {
+  display:flex; justify-content:center; gap:4px; padding:12px 20px; background:var(--nav-bg);
+  border-bottom:1px solid var(--card-border); flex-wrap:wrap; transition:background 0.5s;
+  position:sticky; top:58px; z-index:999; backdrop-filter:blur(8px);
+}
+.nav-menu a { color:var(--text-secondary); text-decoration:none; padding:7px 14px; border-radius:8px; transition:all 0.3s; font-size:0.85rem; white-space:nowrap; }
+.nav-menu a:hover { color:var(--accent-cyan); background:rgba(0,212,255,0.1); }
+.nav-menu a.active { color:var(--accent-cyan); background:rgba(0,212,255,0.15); font-weight:600; }
+.main-content { max-width:1100px; margin:0 auto; padding:40px 30px 60px; }
+.page-title { text-align:center; font-size:2.4rem; margin-bottom:10px; background:linear-gradient(90deg,var(--accent-cyan),var(--accent-red),var(--accent-yellow)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.page-subtitle { text-align:center; color:var(--text-secondary); font-size:1.1rem; margin-bottom:50px; }
+.section { background:var(--card-bg); border:1px solid var(--card-border); border-radius:16px; padding:30px; margin-bottom:30px; transition:transform 0.3s,box-shadow 0.3s,background 0.5s,border-color 0.5s; scroll-margin-top:120px; }
+.section:hover { transform:translateY(-3px); box-shadow:0 10px 40px var(--shadow); }
+.section h2 { color:var(--accent-cyan); font-size:1.5rem; margin-bottom:20px; display:flex; align-items:center; gap:12px; }
+.section h2 .icon { font-size:1.8rem; }
+.section h3 { color:var(--accent-yellow); font-size:1.15rem; margin:25px 0 12px; }
+.section h4 { color:var(--accent-orange); font-size:1.05rem; margin:20px 0 10px; }
+.section p { margin-bottom:12px; text-align:justify; }
+.section ul,.section ol { margin-left:25px; margin-bottom:15px; }
+.section li { margin-bottom:8px; }
+.section li::marker { color:var(--accent-cyan); }
+.protocol-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px; margin-top:20px; }
+.protocol-card { background:var(--code-bg); border:1px solid var(--card-border); border-radius:12px; padding:20px; transition:all 0.3s; }
+.protocol-card:hover { border-color:var(--accent-cyan); }
+.protocol-card h4 { color:var(--accent-red); font-size:1.1rem; margin-bottom:10px; }
+.protocol-card p { font-size:0.9rem; color:var(--text-secondary); text-align:left; margin-bottom:0; }
+.tip { background:var(--tip-bg); border-left:4px solid var(--tip-border); padding:15px 20px; border-radius:0 8px 8px 0; margin:20px 0; font-size:0.95rem; transition:background 0.5s; }
+.tip strong { color:var(--accent-cyan); }
+.comparison-table { width:100%; border-collapse:collapse; margin:15px 0; font-size:0.95rem; }
+.comparison-table th,.comparison-table td { padding:12px 15px; text-align:left; border-bottom:1px solid var(--card-border); }
+.comparison-table th { background:var(--code-bg); color:var(--accent-cyan); font-weight:600; }
+.comparison-table tr:hover { background:rgba(0,212,255,0.03); }
+.footer { text-align:center; padding:30px; background:var(--header-bg); border-top:1px solid var(--card-border); color:var(--text-muted); font-size:0.9rem; transition:background 0.5s; }
+.footer a { color:var(--accent-cyan); text-decoration:none; }
+code { background:var(--code-bg); padding:2px 6px; border-radius:4px; font-family:'Consolas',monospace; font-size:0.9em; }
+.timeline { display:flex; flex-direction:column; gap:16px; margin:20px 0; position:relative; padding-left:30px; }
+.timeline::before { content:''; position:absolute; left:10px; top:8px; bottom:8px; width:3px; background:linear-gradient(180deg,var(--accent-cyan),var(--accent-purple)); border-radius:3px; }
+.timeline-item { position:relative; }
+.timeline-item::before { content:''; position:absolute; left:-26px; top:6px; width:14px; height:14px; background:var(--accent-cyan); border-radius:50%; border:3px solid var(--bg-gradient-mid); }
+.timeline-item h4 { color:var(--accent-cyan); font-size:1rem; margin-bottom:6px; }
+.timeline-item p { font-size:0.92rem; color:var(--text-secondary); margin-bottom:0; }
+@media(max-width:768px){
+  .header { flex-direction:column; gap:12px; padding:12px 15px; }
+  .header-controls { gap:10px; }
+  .page-title { font-size:1.7rem; }
+  .section { padding:20px; scroll-margin-top:150px; }
+  .nav-menu { gap:3px; padding:8px 10px; top:90px; }
+  .nav-menu a { padding:5px 10px; font-size:0.78rem; }
+  .comparison-table { font-size:0.85rem; }
+  .comparison-table th,.comparison-table td { padding:8px 10px; }
+  .timeline { padding-left:24px; }
+  .timeline-item::before { left:-22px; width:12px; height:12px; }
+}
+.page-hero { text-align:center; padding:30px 20px 5px; }
+.page-hero .hero-icon { font-size:3.5rem; margin-bottom:8px; animation:float 3s ease-in-out infinite; }
+.page-hero .hero-tagline { font-size:1.15rem; color:var(--text-secondary); font-style:italic; max-width:700px; margin:0 auto; line-height:1.5; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+@media(max-width:768px){ .page-hero .hero-icon{font-size:2.8rem} .page-hero .hero-tagline{font-size:1rem} }
+.page-name { font-size:1.1rem; font-weight:600; color:var(--accent-cyan); margin-left:15px; padding-left:15px; border-left:2px solid var(--card-border); transition:color 0.3s; }
+@media(max-width:768px){ .page-name{font-size:0.95rem;margin-left:10px;padding-left:10px} }
+</style>
+<base target="_blank">
+<base target="_blank">
+</head>
+<body>
+
+<header class="header">
+<a href="index.html" class="home-link" target="_self"><span data-uk="Головна сторінка" data-ru="Главная страница" data-en="Home page">Головна сторінка</span></a>
+<span class="page-name" data-uk="Хмари та віртуалізація" data-ru="Облака и виртуализация" data-en="Cloud & Virtualization">Хмари та віртуалізація</span>
+<div class="header-controls">
+<button class="theme-toggle" onclick="toggleTheme()" title="Switch theme">&#127769;</button>
+<div class="lang-switcher">
+<button class="lang-btn active" onclick="setLang('uk')">UK</button>
+<button class="lang-btn" onclick="setLang('ru')">RU</button>
+<button class="lang-btn" onclick="setLang('en')">EN</button>
+</div>
+</div>
+</header>
+
+<nav class="nav-menu">
+<a href="#intro" target="_self" data-uk="Вступ" data-ru="Введение" data-en="Intro">Вступ</a>
+<a href="#vm" target="_self" data-uk="VM" data-ru="ВМ" data-en="VMs">VM</a>
+<a href="#containers" target="_self" data-uk="Контейнери" data-ru="Контейнеры" data-en="Containers">Контейнери</a>
+<a href="#docker" target="_self" data-uk="Docker" data-ru="Docker" data-en="Docker">Docker</a>
+<a href="#k8s" target="_self" data-uk="K8s" data-ru="K8s" data-en="K8s">K8s</a>
+<a href="#serverless" target="_self" data-uk="Serverless" data-ru="Serverless" data-en="Serverless">Serverless</a>
+<a href="#cloud" target="_self" data-uk="Хмари" data-ru="Облака" data-en="Cloud">Хмари</a>
+<a href="#compare" target="_self" data-uk="Порівняння" data-ru="Сравнение" data-en="Compare">Порівняння</a>
+<a href="#devops" target="_self" data-uk="DevOps" data-ru="DevOps" data-en="DevOps">DevOps</a>
+<a href="#summary" target="_self" data-uk="Підсумок" data-ru="Итог" data-en="Summary">Підсумок</a>
+</nav>
+
+<main class="main-content">
+<h1 class="page-title" data-uk="Хмари та віртуалізація" data-ru="Облака и виртуализация" data-en="Cloud & Virtualization">Хмари та віртуалізація</h1>
+<p class="page-subtitle" data-uk="Віртуальні машини, контейнери, Docker, Kubernetes, serverless та хмарні платформи" data-ru="Виртуальные машины, контейнеры, Docker, Kubernetes, serverless и облачные платформы" data-en="Virtual machines, containers, Docker, Kubernetes, serverless and cloud platforms">Віртуальні машини, контейнери, Docker, Kubernetes, serverless та хмарні платформи</p>
+
+<section class="section" id="intro">
+<h2><span class="icon">&#9729;</span> <span data-uk="Що таке віртуалізація та хмарні обчислення?" data-ru="Что такое виртуализация и облачные вычисления?" data-en="What are virtualization and cloud computing?">Що таке віртуалізація та хмарні обчислення?</span></h2>
+<p data-uk="Віртуалізація — це технологія створення програмної абстракції над фізичним обладнанням: процесорами, пам'яттю, дисками та мережевими інтерфейсами. Завдяки віртуалізації один фізичний сервер може одночасно виконувати кілька ізольованих операційних систем або середовищ виконання." data-ru="Виртуализация — это технология создания программной абстракции над физическим оборудованием: процессорами, памятью, дисками и сетевыми интерфейсами. Благодаря виртуализации один физический сервер может одновременно выполнять несколько изолированных операционных систем или сред выполнения." data-en="Virtualization is a technology for creating a software abstraction over physical hardware: processors, memory, disks and network interfaces. Thanks to virtualization, a single physical server can run multiple isolated operating systems or execution environments simultaneously.">Віртуалізація — це технологія створення програмної абстракції над фізичним обладнанням: процесорами, пам'яттю, дисками та мережевими інтерфейсами. Завдяки віртуалізації один фізичний сервер може одночасно виконувати кілька ізольованих операційних систем або середовищ виконання.</p>
+<p data-uk="Хмарні обчислення (Cloud Computing) — модель надання обчислювальних ресурсів через Інтернет за запитом. Користувач платить лише за використані ресурси (pay-as-you-go), а інфраструктура масштабується автоматично відповідно до навантаження." data-ru="Облачные вычисления (Cloud Computing) — модель предоставления вычислительных ресурсов через Интернет по запросу. Пользователь платит только за использованные ресурсы (pay-as-you-go), а инфраструктура масштабируется автоматически в соответствии с нагрузкой." data-en="Cloud Computing is a model for delivering computing resources over the Internet on demand. The user pays only for consumed resources (pay-as-you-go), and the infrastructure scales automatically according to the workload.">Хмарні обчислення (Cloud Computing) — модель надання обчислювальних ресурсів через Інтернет за запитом. Користувач платить лише за використані ресурси (pay-as-you-go), а інфраструктура масштабується автоматично відповідно до навантаження.</p>
+<p data-uk="Від віртуальних машин 1960-х (IBM CP-40) до сучасних serverless-архітектур та Kubernetes-кластерів — еволюція обчислень пройшла шлях від монолітних мейнфреймів до гіпермасштабованих розподілених систем, які керують мільярдами контейнерів по всьому світу." data-ru="От виртуальных машин 1960-х (IBM CP-40) до современных serverless-архитектур и Kubernetes-кластеров — эволюция вычислений прошла путь от монолитных мейнфреймов до гипермасштабируемых распределённых систем, управляющих миллиардами контейнеров по всему миру." data-en="From virtual machines of the 1960s (IBM CP-40) to modern serverless architectures and Kubernetes clusters — the evolution of computing has gone from monolithic mainframes to hyperscale distributed systems managing billions of containers worldwide.">Від віртуальних машин 1960-х (IBM CP-40) до сучасних serverless-архітектур та Kubernetes-кластерів — еволюція обчислень пройшла шлях від монолітних мейнфреймів до гіпермасштабованих розподілених систем, які керують мільярдами контейнерів по всьому світу.</p>
+</section>
+
+<section class="section" id="vm">
+<h2><span class="icon">&#128187;</span> <span data-uk="Віртуальні машини" data-ru="Виртуальные машины" data-en="Virtual Machines">Віртуальні машини</span></h2>
+<p data-uk="Віртуальна машина (VM) — це програмна емуляція повноцінного комп'ютера: власний процесор, пам'ять, диски, мережеві адаптери та BIOS/UEFI. Гіпервізор (hypervisor) розподіляє фізичні ресурси між кількома VM." data-ru="Виртуальная машина (VM) — это программная эмуляция полноценного компьютера: собственный процессор, память, диски, сетевые адаптеры и BIOS/UEFI. Гипервизор (hypervisor) распределяет физические ресурсы между несколькими VM." data-en="A virtual machine (VM) is a software emulation of a full computer: its own processor, memory, disks, network adapters and BIOS/UEFI. A hypervisor distributes physical resources among multiple VMs.">Віртуальна машина (VM) — це програмна емуляція повноцінного комп'ютера: власний процесор, пам'ять, диски, мережеві адаптери та BIOS/UEFI. Гіпервізор (hypervisor) розподіляє фізичні ресурси між кількома VM.</p>
+
+<h3>&#128313; <span data-uk="Типи гіпервізорів" data-ru="Типы гипервизоров" data-en="Hypervisor Types">Типи гіпервізорів</span></h3>
+<ul>
+<li data-uk="Тип 1 (Bare-metal) — працює безпосередньо на фізичному залізі. Приклади: VMware ESXi, Microsoft Hyper-V, Xen, KVM (Kernel-based Virtual Machine). Максимальна продуктивність та ізоляція." data-ru="Тип 1 (Bare-metal) — работает непосредственно на физическом железе. Примеры: VMware ESXi, Microsoft Hyper-V, Xen, KVM (Kernel-based Virtual Machine). Максимальная производительность и изоляция." data-en="Type 1 (Bare-metal) — runs directly on physical hardware. Examples: VMware ESXi, Microsoft Hyper-V, Xen, KVM (Kernel-based Virtual Machine). Maximum performance and isolation.">Тип 1 (Bare-metal) — працює безпосередньо на фізичному залізі. Приклади: VMware ESXi, Microsoft Hyper-V, Xen, KVM (Kernel-based Virtual Machine). Максимальна продуктивність та ізоляція.</li>
+<li data-uk="Тип 2 (Hosted) — працює поверх операційної системи хоста. Приклади: VMware Workstation, Oracle VirtualBox, Parallels Desktop. Зручні для розробки та тестування." data-ru="Тип 2 (Hosted) — работает поверх операционной системы хоста. Примеры: VMware Workstation, Oracle VirtualBox, Parallels Desktop. Удобны для разработки и тестирования." data-en="Type 2 (Hosted) — runs on top of the host operating system. Examples: VMware Workstation, Oracle VirtualBox, Parallels Desktop. Convenient for development and testing.">Тип 2 (Hosted) — працює поверх операційної системи хоста. Приклади: VMware Workstation, Oracle VirtualBox, Parallels Desktop. Зручні для розробки та тестування.</li>
+</ul>
+
+<h3>&#128313; <span data-uk="Популярні платформи віртуалізації" data-ru="Популярные платформы виртуализации" data-en="Popular Virtualization Platforms">Популярні платформи віртуалізації</span></h3>
+<div class="protocol-grid">
+<div class="protocol-card">
+<h4>VMware vSphere / ESXi</h4>
+<p data-uk="Лідер корпоративної віртуалізації. ESXi — гіпервізор типу 1, vCenter — централізоване управління кластерами, vMotion — живе переміщення VM між хостами без простою." data-ru="Лидер корпоративной виртуализации. ESXi — гипервизор типа 1, vCenter — централизованное управление кластерами, vMotion — живое перемещение VM между хостами без простоя." data-en="The leader in enterprise virtualization. ESXi is a Type 1 hypervisor, vCenter is centralized cluster management, vMotion is live VM migration between hosts without downtime.">Лідер корпоративної віртуалізації. ESXi — гіпервізор типу 1, vCenter — централізоване управління кластерами, vMotion — живе переміщення VM між хостами без простою.</p>
+</div>
+<div class="protocol-card">
+<h4>Microsoft Hyper-V</h4>
+<p data-uk="Вбудований у Windows Server та Windows Pro. Підтримує Live Migration, Replica (реплікація VM), Storage Spaces Direct, інтеграцію з Azure." data-ru="Встроенный в Windows Server и Windows Pro. Поддерживает Live Migration, Replica (репликация VM), Storage Spaces Direct, интеграцию с Azure." data-en="Built into Windows Server and Windows Pro. Supports Live Migration, Replica (VM replication), Storage Spaces Direct, Azure integration.">Вбудований у Windows Server та Windows Pro. Підтримує Live Migration, Replica (реплікація VM), Storage Spaces Direct, інтеграцію з Azure.</p>
+</div>
+<div class="protocol-card">
+<h4>KVM + QEMU</h4>
+<p data-uk="KVM перетворює ядро Linux у гіпервізор типу 1. QEMU емулює обладнання. Разом — основа хмарних платформ OpenStack, Proxmox VE, oVirt. Відкритий код, нульова вартість ліцензії." data-ru="KVM превращает ядро Linux в гипервизор типа 1. QEMU эмулирует оборудование. Вместе — основа облачных платформ OpenStack, Proxmox VE, oVirt. Открытый код, нулевая стоимость лицензии." data-en="KVM turns the Linux kernel into a Type 1 hypervisor. QEMU emulates hardware. Together they are the foundation of cloud platforms OpenStack, Proxmox VE, oVirt. Open source, zero license cost.">KVM перетворює ядро Linux у гіпервізор типу 1. QEMU емулює обладнання. Разом — основа хмарних платформ OpenStack, Proxmox VE, oVirt. Відкритий код, нульова вартість ліцензії.</p>
+</div>
+<div class="protocol-card">
+<h4>Oracle VirtualBox</h4>
+<p data-uk="Безкоштовний гіпервізор типу 2 для Windows, macOS, Linux. Ідеальний для навчання, тестування та розробки. Підтримує знімки стану VM (snapshots), спільні папки, USB-пасsthrough." data-ru="Бесплатный гипервизор типа 2 для Windows, macOS, Linux. Идеален для обучения, тестирования и разработки. Поддерживает снимки состояния VM (snapshots), общие папки, USB-пасsthrough." data-en="A free Type 2 hypervisor for Windows, macOS, Linux. Ideal for learning, testing and development. Supports VM state snapshots, shared folders, USB passthrough.">Безкоштовний гіпервізор типу 2 для Windows, macOS, Linux. Ідеальний для навчання, тестування та розробки. Підтримує знімки стану VM (snapshots), спільні папки, USB-пасsthrough.</p>
+</div>
+</div>
+
+<div class="tip">
+<strong data-uk="Порада:" data-ru="Совет:" data-en="Tip:">Порада:</strong>
+<span data-uk=" Для production-середовищ обирайте гіпервізори типу 1 (ESXi, Hyper-V, KVM). Для розробки та навчання — VirtualBox або VMware Workstation (тип 2) дають більше гнучкості та простіше в налаштуванні." data-ru=" Для production-сред выбирайте гипервизоры типа 1 (ESXi, Hyper-V, KVM). Для разработки и обучения — VirtualBox или VMware Workstation (тип 2) дают больше гибкости и проще в настройке." data-en=" For production environments, choose Type 1 hypervisors (ESXi, Hyper-V, KVM). For development and learning, VirtualBox or VMware Workstation (Type 2) offer more flexibility and are easier to set up."> Для production-середовищ обирайте гіпервізори типу 1 (ESXi, Hyper-V, KVM). Для розробки та навчання — VirtualBox або VMware Workstation (тип 2) дають більше гнучкості та простіше в налаштуванні.</span>
+</div>
+</section>
+
+<section class="section" id="containers">
+<h2><span class="icon">&#128230;</span> <span data-uk="Контейнери vs Віртуальні машини" data-ru="Контейнеры vs Виртуальные машины" data-en="Containers vs Virtual Machines">Контейнери vs Віртуальні машини</span></h2>
+<p data-uk="Контейнер — це ізольоване середовище виконання, яке ділить ядро ОС хоста з іншими контейнерами. На відміну від VM, контейнер не емулює апаратуру та не містить повноцінну ОС — лише необхідні бібліотеки та залежності додатка." data-ru="Контейнер — это изолированная среда выполнения, которая делит ядро ОС хоста с другими контейнерами. В отличие от VM, контейнер не эмулирует аппаратуру и не содержит полноценную ОС — только необходимые библиотеки и зависимости приложения." data-en="A container is an isolated execution environment that shares the host OS kernel with other containers. Unlike a VM, a container does not emulate hardware and does not contain a full OS — only the necessary libraries and application dependencies.">Контейнер — це ізольоване середовище виконання, яке ділить ядро ОС хоста з іншими контейнерами. На відміну від VM, контейнер не емулює апаратуру та не містить повноцінну ОС — лише необхідні бібліотеки та залежності додатка.</p>
+
+<h3>&#128313; <span data-uk="Ключові відмінності" data-ru="Ключевые отличия" data-en="Key Differences">Ключові відмінності</span></h3>
+<table class="comparison-table">
+<tr>
+<th data-uk="Параметр" data-ru="Параметр" data-en="Parameter">Параметр</th>
+<th data-uk="Віртуальна машина" data-ru="Виртуальная машина" data-en="Virtual Machine">Віртуальна машина</th>
+<th data-uk="Контейнер" data-ru="Контейнер" data-en="Container">Контейнер</th>
+</tr>
+<tr>
+<td data-uk="ОС" data-ru="ОС" data-en="OS">ОС</td>
+<td data-uk="Повноцінна ОС на кожній VM" data-ru="Полноценная ОС на каждой VM" data-en="Full OS on each VM">Повноцінна ОС на кожній VM</td>
+<td data-uk="Спільне ядро ОС хоста" data-ru="Общее ядро ОС хоста" data-en="Shared host OS kernel">Спільне ядро ОС хоста</td>
+</tr>
+<tr>
+<td data-uk="Розмір" data-ru="Размер" data-en="Size">Розмір</td>
+<td data-uk="Гігабайти (образ ОС + додаток)" data-ru="Гигабайты (образ ОС + приложение)" data-en="Gigabytes (OS image + app)">Гігабайти (образ ОС + додаток)</td>
+<td data-uk="Мегабайти (лише додаток + deps)" data-ru="Мегабайты (только приложение + deps)" data-en="Megabytes (app + deps only)">Мегабайти (лише додаток + deps)</td>
+</tr>
+<tr>
+<td data-uk="Запуск" data-ru="Запуск" data-en="Startup">Запуск</td>
+<td data-uk="Хвилини (завантаження ОС)" data-ru="Минуты (загрузка ОС)" data-en="Minutes (OS boot)">Хвилини (завантаження ОС)</td>
+<td data-uk="Секунди (процес на хості)" data-ru="Секунды (процесс на хосте)" data-en="Seconds (process on host)">Секунди (процес на хості)</td>
+</tr>
+<tr>
+<td data-uk="Ізоляція" data-ru="Изоляция" data-en="Isolation">Ізоляція</td>
+<td data-uk="Апаратна (гипервізор)" data-ru="Аппаратная (гипервизор)" data-en="Hardware (hypervisor)">Апаратна (гіпервізор)</td>
+<td data-uk="Програмна (namespaces, cgroups)" data-ru="Программная (namespaces, cgroups)" data-en="Software (namespaces, cgroups)">Програмна (namespaces, cgroups)</td>
+</tr>
+<tr>
+<td data-uk="Продуктивність" data-ru="Производительность" data-en="Performance">Продуктивність</td>
+<td data-uk="Накладні витрати ~10-20%" data-ru="Накладные расходы ~10-20%" data-en="Overhead ~10-20%">Накладні витрати ~10-20%</td>
+<td data-uk="Мінімальні втрати (~1-5%)" data-ru="Минимальные потери (~1-5%)" data-en="Minimal overhead (~1-5%)">Мінімальні втрати (~1-5%)</td>
+</tr>
+<tr>
+<td data-uk="Портативність" data-ru="Портативность" data-en="Portability">Портативність</td>
+<td data-uk="Залежить від гіпервізора" data-ru="Зависит от гипервизора" data-en="Depends on hypervisor">Залежить від гіпервізора</td>
+<td data-uk="Універсальна (будь-який Docker Engine)" data-ru="Универсальная (любой Docker Engine)" data-en="Universal (any Docker Engine)">Універсальна (будь-який Docker Engine)</td>
+</tr>
+</table>
+
+<h3>&#128313; <span data-uk="Механізми ізоляції Linux" data-ru="Механизмы изоляции Linux" data-en="Linux Isolation Mechanisms">Механізми ізоляції Linux</span></h3>
+<ul>
+<li data-uk="Namespaces — ізоляція просторів імен: PID (процеси), NET (мережа), MNT (файлові системи), UTS (hostname), IPC (міжпроцесна взаємодія), USER (UID/GID), Cgroup (cgroups v2)." data-ru="Namespaces — изоляция пространств имён: PID (процессы), NET (сеть), MNT (файловые системы), UTS (hostname), IPC (межпроцессное взаимодействие), USER (UID/GID), Cgroup (cgroups v2)." data-en="Namespaces — isolation of namespaces: PID (processes), NET (network), MNT (file systems), UTS (hostname), IPC (inter-process communication), USER (UID/GID), Cgroup (cgroups v2).">Namespaces — ізоляція просторів імен: PID (процеси), NET (мережа), MNT (файлові системи), UTS (hostname), IPC (міжпроцесна взаємодія), USER (UID/GID), Cgroup (cgroups v2).</li>
+<li data-uk="cgroups (control groups) — обмеження та облік ресурсів: CPU, пам'ять, диск I/O, мережа. Дозволяє гарантувати, що один контейнер не з'їсть усі ресурси хоста." data-ru="cgroups (control groups) — ограничение и учёт ресурсов: CPU, память, диск I/O, сеть. Позволяет гарантировать, что один контейнер не съест все ресурсы хоста." data-en="cgroups (control groups) — resource limiting and accounting: CPU, memory, disk I/O, network. Ensures that one container cannot consume all host resources.">cgroups (control groups) — обмеження та облік ресурсів: CPU, пам'ять, диск I/O, мережа. Дозволяє гарантувати, що один контейнер не з'їсть усі ресурси хоста.</li>
+<li data-uk="Capabilities — тонке розподілення привілеїв root. Наприклад, CAP_NET_BIND_SERVICE дозволяє відкривати порти < 1024 без повних root-прав." data-ru="Capabilities — тонкое распределение привилегий root. Например, CAP_NET_BIND_SERVICE позволяет открывать порты < 1024 без полных root-прав." data-en="Capabilities — fine-grained privilege distribution for root. For example, CAP_NET_BIND_SERVICE allows binding to ports < 1024 without full root rights.">Capabilities — тонке розподілення привілеїв root. Наприклад, CAP_NET_BIND_SERVICE дозволяє відкривати порти < 1024 без повних root-прав.</li>
+<li data-uk="Seccomp (Secure Computing Mode) — фільтр системних викликів. Контейнер може викликати лише дозволені syscall, що різко зменшує поверхню атаки." data-ru="Seccomp (Secure Computing Mode) — фильтр системных вызовов. Контейнер может вызывать только разрешённые syscall, что резко уменьшает поверхность атаки." data-en="Seccomp (Secure Computing Mode) — a system call filter. A container can only invoke allowed syscalls, drastically reducing the attack surface.">Seccomp (Secure Computing Mode) — фільтр системних викликів. Контейнер може викликати лише дозволені syscall, що різко зменшує поверхню атаки.</li>
+</ul>
+</section>
+
+<section class="section" id="docker">
+<h2><span class="icon">&#128011;</span> <span data-uk="Docker — стандарт контейнеризації" data-ru="Docker — стандарт контейнеризации" data-en="Docker — the Containerization Standard">Docker — стандарт контейнеризації</span></h2>
+<p data-uk="Docker, представлений у 2013 році, зробив контейнеризацію масовою. До Docker контейнери існували (LXC, OpenVZ), але Docker спростив створення, розповсюдження та запуск контейнерів до рівня однієї команди." data-ru="Docker, представленный в 2013 году, сделал контейнеризацию массовой. До Docker контейнеры существовали (LXC, OpenVZ), но Docker упростил создание, распространение и запуск контейнеров до уровня одной команды." data-en="Docker, introduced in 2013, made containerization mainstream. Before Docker, containers existed (LXC, OpenVZ), but Docker simplified creating, distributing and running containers to the level of a single command.">Docker, представлений у 2013 році, зробив контейнеризацію масовою. До Docker контейнери існували (LXC, OpenVZ), але Docker спростив створення, розповсюдження та запуск контейнерів до рівня однієї команди.</p>
+
+<h3>&#128313; <span data-uk="Архітектура Docker" data-ru="Архитектура Docker" data-en="Docker Architecture">Архітектура Docker</span></h3>
+<ul>
+<li data-uk="Docker Engine — демон (dockerd), що керує контейнерами, образами, мережами та томами. CLI-клієнт (docker) надсилає команди через REST API або Unix socket." data-ru="Docker Engine — демон (dockerd), управляющий контейнерами, образами, сетями и томами. CLI-клиент (docker) отправляет команды через REST API или Unix socket." data-en="Docker Engine — a daemon (dockerd) that manages containers, images, networks and volumes. The CLI client (docker) sends commands via REST API or Unix socket.">Docker Engine — демон (dockerd), що керує контейнерами, образами, мережами та томами. CLI-клієнт (docker) надсилає команди через REST API або Unix socket.</li>
+<li data-uk="Docker Image — незмінний шаблон контейнера, зібраний шарами (layers). Кожна інструкція у Dockerfile створює новий шар. Шари кешуються та повторно використовуються між образами." data-ru="Docker Image — неизменяемый шаблон контейнера, собранный слоями (layers). Каждая инструкция в Dockerfile создаёт новый слой. Слои кэшируются и повторно используются между образами." data-en="Docker Image — an immutable container template built from layers. Each instruction in a Dockerfile creates a new layer. Layers are cached and reused between images.">Docker Image — незмінний шаблон контейнера, зібраний шарами (layers). Кожна інструкція у Dockerfile створює новий шар. Шари кешуються та повторно використовуються між образами.</li>
+<li data-uk="Docker Container — запущений екземпляр образу. Має власну файлову систему (overlayfs), ізольований мережевий стек та обмежені ресурси." data-ru="Docker Container — запущенный экземпляр образа. Имеет собственную файловую систему (overlayfs), изолированный сетевой стек и ограниченные ресурсы." data-en="Docker Container — a running instance of an image. Has its own file system (overlayfs), isolated network stack and limited resources.">Docker Container — запущений екземпляр образу. Має власну файлову систему (overlayfs), ізольований мережевий стек та обмежені ресурси.</li>
+<li data-uk="Docker Registry — сховище образів. Docker Hub — публічний реєстр. Приватні: AWS ECR, Google Artifact Registry, Harbor, GitHub Container Registry (GHCR)." data-ru="Docker Registry — хранилище образов. Docker Hub — публичный реестр. Приватные: AWS ECR, Google Artifact Registry, Harbor, GitHub Container Registry (GHCR)." data-en="Docker Registry — an image repository. Docker Hub is the public registry. Private ones: AWS ECR, Google Artifact Registry, Harbor, GitHub Container Registry (GHCR).">Docker Registry — сховище образів. Docker Hub — публічний реєстр. Приватні: AWS ECR, Google Artifact Registry, Harbor, GitHub Container Registry (GHCR).</li>
+</ul>
+
+<h3>&#128313; <span data-uk="Dockerfile — рецепт образу" data-ru="Dockerfile — рецепт образа" data-en="Dockerfile — image recipe">Dockerfile — рецепт образу</span></h3>
+<p data-uk="Dockerfile — текстовий файл з інструкціями для збірки образу. Основні директиви:" data-ru="Dockerfile — текстовый файл с инструкциями для сборки образа. Основные директивы:" data-en="Dockerfile is a text file with instructions for building an image. Main directives:">Dockerfile — текстовий файл з інструкціями для збірки образу. Основні директиви:</p>
+<ul>
+<li><code>FROM</code> <span data-uk="— базовий образ (наприклад, ubuntu:22.04, node:18-alpine)." data-ru="— базовый образ (например, ubuntu:22.04, node:18-alpine)." data-en="— base image (e.g., ubuntu:22.04, node:18-alpine).">— базовий образ (наприклад, ubuntu:22.04, node:18-alpine).</span></li>
+<li><code>RUN</code> <span data-uk="— виконання команд під час збірки (apt-get install, npm install)." data-ru="— выполнение команд при сборке (apt-get install, npm install)." data-en="— execute commands during build (apt-get install, npm install).">— виконання команд під час збірки (apt-get install, npm install).</span></li>
+<li><code>COPY</code> / <code>ADD</code> <span data-uk="— копіювання файлів з хоста в образ." data-ru="— копирование файлов с хоста в образ." data-en="— copy files from host to image.">— копіювання файлів з хоста в образ.</span></li>
+<li><code>WORKDIR</code> <span data-uk="— робочий каталог у контейнері." data-ru="— рабочий каталог в контейнере." data-en="— working directory in the container.">— робочий каталог у контейнері.</span></li>
+<li><code>EXPOSE</code> <span data-uk="— декларація портів, які слухає додаток." data-ru="— декларация портов, которые слушает приложение." data-en="— declaration of ports the application listens on.">— декларація портів, які слухає додаток.</span></li>
+<li><code>CMD</code> / <code>ENTRYPOINT</code> <span data-uk="— команда, що виконується при запуску контейнера." data-ru="— команда, выполняемая при запуске контейнера." data-en="— command executed when the container starts.">— команда, що виконується при запуску контейнера.</span></li>
+</ul>
+
+<h3>&#128313; Docker Compose</h3>
+<p data-uk="Docker Compose — інструмент для визначення та запуску багатоконтейнерних додатків через YAML-файл docker-compose.yml. Дозволяє описати сервіси, мережі, томи, змінні середовища та залежності між контейнерами. Одна команда <code>docker compose up</code> піднімає всю інфраструктуру додатка." data-ru="Docker Compose — инструмент для определения и запуска многоконтейнерных приложений через YAML-файл docker-compose.yml. Позволяет описать сервисы, сети, тома, переменные среды и зависимости между контейнерами. Одна команда docker compose up поднимает всю инфраструктуру приложения." data-en="Docker Compose is a tool for defining and running multi-container applications via a docker-compose.yml YAML file. It allows describing services, networks, volumes, environment variables and dependencies between containers. One command docker compose up brings up the entire application infrastructure.">Docker Compose — інструмент для визначення та запуску багатоконтейнерних додатків через YAML-файл docker-compose.yml. Дозволяє описати сервіси, мережі, томи, змінні середовища та залежності між контейнерами. Одна команда <code>docker compose up</code> піднімає всю інфраструктуру додатка.</p>
+</section>
+
+<section class="section" id="k8s">
+<h2><span class="icon">&#128300;</span> <span data-uk="Kubernetes — оркестрація контейнерів" data-ru="Kubernetes — оркестрация контейнеров" data-en="Kubernetes — Container Orchestration">Kubernetes — оркестрація контейнерів</span></h2>
+<p data-uk="Kubernetes (K8s) — відкрита платформа для автоматизації розгортання, масштабування та управління контейнеризованими додатками. Розроблена Google на основі внутрішньої системи Borg, передана CNCF у 2015 році. Сьогодні — де-факто стандарт оркестрації контейнерів." data-ru="Kubernetes (K8s) — открытая платформа для автоматизации развёртывания, масштабирования и управления контейнеризированными приложениями. Разработана Google на основе внутренней системы Borg, передана CNCF в 2015 году. Сегодня — де-факто стандарт оркестрации контейнеров." data-en="Kubernetes (K8s) is an open platform for automating the deployment, scaling and management of containerized applications. Developed by Google based on their internal Borg system, donated to CNCF in 2015. Today it is the de facto standard for container orchestration.">Kubernetes (K8s) — відкрита платформа для автоматизації розгортання, масштабування та управління контейнеризованими додатками. Розроблена Google на основі внутрішньої системи Borg, передана CNCF у 2015 році. Сьогодні — де-факто стандарт оркестрації контейнерів.</p>
+
+<h3>&#128313; <span data-uk="Архітектура Kubernetes" data-ru="Архитектура Kubernetes" data-en="Kubernetes Architecture">Архітектура Kubernetes</span></h3>
+<ul>
+<li data-uk="Control Plane (Master) — мозок кластера. Містить: API Server (єдиний вхід для всіх команд), etcd (розподілене сховище конфігурації), Scheduler (призначає поди на вузли), Controller Manager (відстежує стан ресурсів)." data-ru="Control Plane (Master) — мозг кластера. Содержит: API Server (единый вход для всех команд), etcd (распределённое хранилище конфигурации), Scheduler (назначает поды на узлы), Controller Manager (отслеживает состояние ресурсов)." data-en="Control Plane (Master) — the cluster brain. Contains: API Server (single entry point for all commands), etcd (distributed configuration store), Scheduler (assigns pods to nodes), Controller Manager (tracks resource state).">Control Plane (Master) — мозок кластера. Містить: API Server (єдиний вхід для всіх команд), etcd (розподілене сховище конфігурації), Scheduler (призначає поди на вузли), Controller Manager (відстежує стан ресурсів).</li>
+<li data-uk="Worker Nodes — вузли, де фактично виконуються контейнери. Кожен вузол містить: kubelet (агент, що керує подами), kube-proxy (мережеві правила iptables/IPVS), Container Runtime (containerd, CRI-O)." data-ru="Worker Nodes — узлы, где фактически выполняются контейнеры. Каждый узел содержит: kubelet (агент, управляющий подами), kube-proxy (сетевые правила iptables/IPVS), Container Runtime (containerd, CRI-O)." data-en="Worker Nodes — nodes where containers actually run. Each node contains: kubelet (agent managing pods), kube-proxy (network rules iptables/IPVS), Container Runtime (containerd, CRI-O).">Worker Nodes — вузли, де фактично виконуються контейнери. Кожен вузол містить: kubelet (агент, що керує подами), kube-proxy (мережеві правила iptables/IPVS), Container Runtime (containerd, CRI-O).</li>
+</ul>
+
+<h3>&#128313; <span data-uk="Ключові абстракції K8s" data-ru="Ключевые абстракции K8s" data-en="Key K8s Abstractions">Ключові абстракції K8s</span></h3>
+<div class="protocol-grid">
+<div class="protocol-card">
+<h4>Pod</h4>
+<p data-uk="Найменша розгортаєма одиниця. Містить один або кілька контейнерів, що ділять мережу та томи. Поди — епемеральні: їх створюють і знищують, але не оновлюють на місці." data-ru="Минимальная развёртываемая единица. Содержит один или несколько контейнеров, делящих сеть и томы. Поды — эфемерные: их создают и уничтожают, но не обновляют на месте." data-en="The smallest deployable unit. Contains one or more containers sharing network and volumes. Pods are ephemeral: they are created and destroyed, not updated in place.">Найменша розгортаєма одиниця. Містить один або кілька контейнерів, що ділять мережу та томи. Поди — епемеральні: їх створюють і знищують, але не оновлюють на місці.</p>
+</div>
+<div class="protocol-card">
+<h4>Deployment</h4>
+<p data-uk="Декларативне управління станом подів. Визначає бажану кількість реплік, стратегію оновлення (RollingUpdate, Recreate). При зміні образу Deployment автоматично створює нові поди та видаляє старі." data-ru="Декларативное управление состоянием подов. Определяет желаемое количество реплик, стратегию обновления (RollingUpdate, Recreate). При изменении образа Deployment автоматически создаёт новые поды и удаляет старые." data-en="Declarative management of pod state. Defines the desired number of replicas, update strategy (RollingUpdate, Recreate). When the image changes, Deployment automatically creates new pods and removes old ones.">Декларативне управління станом подів. Визначає бажану кількість реплік, стратегію оновлення (RollingUpdate, Recreate). При зміні образу Deployment автоматично створює нові поди та видаляє старі.</p>
+</div>
+<div class="protocol-card">
+<h4>Service</h4>
+<p data-uk="Абстракція для доступу до групи подів. Типи: ClusterIP (внутрішній), NodePort (порт на вузлі), LoadBalancer (хмарний балансувальник), ExternalName (CNAME DNS)." data-ru="Абстракция для доступа к группе подов. Типы: ClusterIP (внутренний), NodePort (порт на узле), LoadBalancer (облачный балансировщик), ExternalName (CNAME DNS)." data-en="An abstraction for accessing a group of pods. Types: ClusterIP (internal), NodePort (port on node), LoadBalancer (cloud load balancer), ExternalName (CNAME DNS).">Абстракція для доступу до групи подів. Типи: ClusterIP (внутрішній), NodePort (порт на вузлі), LoadBalancer (хмарний балансувальник), ExternalName (CNAME DNS).</p>
+</div>
+<div class="protocol-card">
+<h4>Ingress</h4>
+<p data-uk="Правила маршрутизації HTTP/HTTPS-трафіку до сервісів. Ingress Controller (NGINX, Traefik, HAProxy) реалізує ці правила. Дозволяє керувати SSL, rewrite, rate limiting." data-ru="Правила маршрутизации HTTP/HTTPS-трафика к сервисам. Ingress Controller (NGINX, Traefik, HAProxy) реализует эти правила. Позволяет управлять SSL, rewrite, rate limiting." data-en="Rules for routing HTTP/HTTPS traffic to services. Ingress Controller (NGINX, Traefik, HAProxy) implements these rules. Allows managing SSL, rewrite, rate limiting.">Правила маршрутизації HTTP/HTTPS-трафіку до сервісів. Ingress Controller (NGINX, Traefik, HAProxy) реалізує ці правила. Дозволяє керувати SSL, rewrite, rate limiting.</p>
+</div>
+<div class="protocol-card">
+<h4>ConfigMap / Secret</h4>
+<p data-uk="Зовнішня конфігурація додатка без перезбірки образу. ConfigMap — для нечутливих даних (налаштування). Secret — для паролів, токенів, ключів (base64, не шифрується за замовчуванням)." data-ru="Внешняя конфигурация приложения без пересборки образа. ConfigMap — для несекретных данных (настройки). Secret — для паролей, токенов, ключей (base64, не шифруется по умолчанию)." data-en="External application configuration without rebuilding the image. ConfigMap — for non-sensitive data (settings). Secret — for passwords, tokens, keys (base64, not encrypted by default).">Зовнішня конфігурація додатка без перезбірки образу. ConfigMap — для нечутливих даних (налаштування). Secret — для паролів, токенів, ключів (base64, не шифрується за замовчуванням).</p>
+</div>
+<div class="protocol-card">
+<h4>StatefulSet / DaemonSet</h4>
+<p data-uk="StatefulSet — для станових додатків (БД) зі стабільними ідентифікаторами та постійними томами. DaemonSet — гарантує по одному поду на кожному вузлі (логи, моніторинг)." data-ru="StatefulSet — для stateful приложений (БД) со стабильными идентификаторами и постоянными томами. DaemonSet — гарантирует по одному поду на каждом узле (логи, мониторинг)." data-en="StatefulSet — for stateful applications (databases) with stable identifiers and persistent volumes. DaemonSet — guarantees one pod per node (logs, monitoring).">StatefulSet — для станових додатків (БД) зі стабільними ідентифікаторами та постійними томами. DaemonSet — гарантує по одному поду на кожному вузлі (логи, моніторинг).</p>
+</div>
+</div>
+
+<h3>&#128313; <span data-uk="Масштабування в K8s" data-ru="Масштабирование в K8s" data-en="Scaling in K8s">Масштабування в K8s</span></h3>
+<ul>
+<li data-uk="Horizontal Pod Autoscaler (HPA) — автоматично збільшує/зменшує кількість реплік подів на основі метрик CPU, пам'яті або кастомних метрик (Prometheus)." data-ru="Horizontal Pod Autoscaler (HPA) — автоматически увеличивает/уменьшает количество реплик подов на основе метрик CPU, памяти или кастомных метрик (Prometheus)." data-en="Horizontal Pod Autoscaler (HPA) — automatically increases/decreases the number of pod replicas based on CPU, memory or custom metrics (Prometheus).">Horizontal Pod Autoscaler (HPA) — автоматично збільшує/зменшує кількість реплік подів на основі метрик CPU, пам'яті або кастомних метрик (Prometheus).</li>
+<li data-uk="Vertical Pod Autoscaler (VPA) — коригує запити ресурсів (CPU/RAM) для подів на основі реального використання." data-ru="Vertical Pod Autoscaler (VPA) — корректирует запросы ресурсов (CPU/RAM) для подов на основе реального использования." data-en="Vertical Pod Autoscaler (VPA) — adjusts resource requests (CPU/RAM) for pods based on actual usage.">Vertical Pod Autoscaler (VPA) — коригує запити ресурсів (CPU/RAM) для подів на основі реального використання.</li>
+<li data-uk="Cluster Autoscaler — додає/видаляє вузли (worker nodes) у хмарному кластері, коли поди не можуть бути розміщені через брак ресурсів." data-ru="Cluster Autoscaler — добавляет/удаляет узлы (worker nodes) в облачном кластере, когда поды не могут быть размещены из-за нехватки ресурсов." data-en="Cluster Autoscaler — adds/removes worker nodes in a cloud cluster when pods cannot be scheduled due to resource shortage.">Cluster Autoscaler — додає/видаляє вузли (worker nodes) у хмарному кластері, коли поди не можуть бути розміщені через брак ресурсів.</li>
+</ul>
+</section>
+
+<section class="section" id="serverless">
+<h2><span class="icon">&#9889;</span> <span data-uk="Serverless — обчислення без серверів" data-ru="Serverless — вычисления без серверов" data-en="Serverless — computing without servers">Serverless — обчислення без серверів</span></h2>
+<p data-uk="Serverless (FaaS — Function as a Service) — модель хмарних обчислень, де розробник пише лише код, а вся інфраструктура (сервери, масштабування, патчі, моніторинг) лежить на провайдері. Платите лише за фактичний час виконання функції (мілісекунди)." data-ru="Serverless (FaaS — Function as a Service) — модель облачных вычислений, где разработчик пишет только код, а вся инфраструктура (серверы, масштабирование, патчи, мониторинг) лежит на провайдере. Платите только за фактическое время выполнения функции (миллисекунды)." data-en="Serverless (FaaS — Function as a Service) is a cloud computing model where the developer writes only code, and all infrastructure (servers, scaling, patches, monitoring) is handled by the provider. You pay only for the actual function execution time (milliseconds).">Serverless (FaaS — Function as a Service) — модель хмарних обчислень, де розробник пише лише код, а вся інфраструктура (сервери, масштабування, патчі, моніторинг) лежить на провайдері. Платите лише за фактичний час виконання функції (мілісекунди).</p>
+
+<h3>&#128313; <span data-uk="Популярні serverless-платформи" data-ru="Популярные serverless-платформы" data-en="Popular Serverless Platforms">Популярні serverless-платформи</span></h3>
+<div class="protocol-grid">
+<div class="protocol-card">
+<h4>AWS Lambda</h4>
+<p data-uk="Піонер FaaS. Підтримує Python, Node.js, Java, Go, Ruby, C#. Інтеграція з 200+ сервісами AWS. Ліміти: 15 хвилин на виконання, 10 ГБ пам'яті, 6 МБ запит (sync) / 250 КБ (async)." data-ru="Пионер FaaS. Поддерживает Python, Node.js, Java, Go, Ruby, C#. Интеграция с 200+ сервисами AWS. Лимиты: 15 минут на выполнение, 10 ГБ памяти, 6 МБ запрос (sync) / 250 КБ (async)." data-en="The FaaS pioneer. Supports Python, Node.js, Java, Go, Ruby, C#. Integration with 200+ AWS services. Limits: 15 minutes execution, 10 GB memory, 6 MB request (sync) / 250 KB (async).">Піонер FaaS. Підтримує Python, Node.js, Java, Go, Ruby, C#. Інтеграція з 200+ сервісами AWS. Ліміти: 15 хвилин на виконання, 10 ГБ пам'яті, 6 МБ запит (sync) / 250 КБ (async).</p>
+</div>
+<div class="protocol-card">
+<h4>Azure Functions</h4>
+<p data-uk="Мicrosoft-альтернатива Lambda. Плани споживання (Consumption), Premium та Dedicated (App Service). Підтримує .NET, Python, Node.js, Java, PowerShell. Durable Functions для довготривалих workflows." data-ru="Microsoft-альтернатива Lambda. Планы потребления (Consumption), Premium и Dedicated (App Service). Поддерживает .NET, Python, Node.js, Java, PowerShell. Durable Functions для длительных workflows." data-en="Microsoft's alternative to Lambda. Consumption, Premium and Dedicated (App Service) plans. Supports .NET, Python, Node.js, Java, PowerShell. Durable Functions for long-running workflows.">Microsoft-альтернатива Lambda. Плани споживання (Consumption), Premium та Dedicated (App Service). Підтримує .NET, Python, Node.js, Java, PowerShell. Durable Functions для довготривалих workflows.</p>
+</div>
+<div class="protocol-card">
+<h4>Google Cloud Functions</h4>
+<p data-uk="Інтеграція з Firebase, Cloud Storage, Pub/Sub. Gen 2 — на базі Cloud Run з підтримкою більших образів, довших таймаутів (60 хв) та більших запитів (32 МБ)." data-ru="Интеграция с Firebase, Cloud Storage, Pub/Sub. Gen 2 — на базе Cloud Run с поддержкой больших образов, длинных таймаутов (60 мин) и больших запросов (32 МБ)." data-en="Integration with Firebase, Cloud Storage, Pub/Sub. Gen 2 — based on Cloud Run with support for larger images, longer timeouts (60 min) and larger requests (32 MB).">Інтеграція з Firebase, Cloud Storage, Pub/Sub. Gen 2 — на базі Cloud Run з підтримкою більших образів, довших таймаутів (60 хв) та більших запитів (32 МБ).</p>
+</div>
+<div class="protocol-card">
+<h4>Cloudflare Workers</h4>
+<p data-uk="Edge computing serverless. Функції виконуються у 300+ дата-центрах Cloudflare (ближче до користувача). Підтримує JavaScript/TypeScript, Rust, Python (WASM). 0 мс cold start, 50 мс CPU ліміт на безкоштовному плані." data-ru="Edge computing serverless. Функции выполняются в 300+ дата-центрах Cloudflare (ближе к пользователю). Поддерживает JavaScript/TypeScript, Rust, Python (WASM). 0 мс cold start, 50 мс CPU лимит на бесплатном плане." data-en="Edge computing serverless. Functions run in 300+ Cloudflare data centers (closer to the user). Supports JavaScript/TypeScript, Rust, Python (WASM). 0 ms cold start, 50 ms CPU limit on the free plan.">Edge computing serverless. Функції виконуються у 300+ дата-центрах Cloudflare (ближче до користувача). Підтримує JavaScript/TypeScript, Rust, Python (WASM). 0 мс cold start, 50 мс CPU ліміт на безкоштовному плані.</p>
+</div>
+</div>
+
+<h3>&#128313; <span data-uk="Переваги та обмеження" data-ru="Преимущества и ограничения" data-en="Pros and Cons">Переваги та обмеження</span></h3>
+<ul>
+<li data-uk="Переваги: нульове адміністрування інфраструктури, автоматичне масштабування до нуля/нескінченності, pay-per-use (платите лише за виклики), швидкий time-to-market." data-ru="Преимущества: нулевое администрирование инфраструктуры, автоматическое масштабирование до нуля/бесконечности, pay-per-use (платите только за вызовы), быстрый time-to-market." data-en="Pros: zero infrastructure administration, automatic scaling to zero/infinity, pay-per-use, fast time-to-market.">Переваги: нульове адміністрування інфраструктури, автоматичне масштабування до нуля/нескінченності, pay-per-use (платите лише за виклики), швидкий time-to-market.</li>
+<li data-uk="Обмеження: cold start (затримка при першому виклику після простою), обмеження часу виконання, складність відлагодження, vendor lock-in, не підходить для довготривалих процесів та stateful-додатків." data-ru="Ограничения: cold start (задержка при первом вызове после простоя), ограничения времени выполнения, сложность отладки, vendor lock-in, не подходит для длительных процессов и stateful-приложений." data-en="Limitations: cold start (latency on first call after idle), execution time limits, debugging complexity, vendor lock-in, not suitable for long-running processes and stateful applications.">Обмеження: cold start (затримка при першому виклику після простою), обмеження часу виконання, складність відлагодження, vendor lock-in, не підходить для довготривалих процесів та stateful-додатків.</li>
+</ul>
+</section>
+
+<section class="section" id="cloud">
+<h2><span class="icon">&#9729;</span> <span data-uk="Хмарні платформи та моделі" data-ru="Облачные платформы и модели" data-en="Cloud Platforms and Models">Хмарні платформи та моделі</span></h2>
+
+<h3>&#128313; <span data-uk="Моделі хмарних послуг" data-ru="Модели облачных услуг" data-en="Cloud Service Models">Моделі хмарних послуг</span></h3>
+<div class="protocol-grid">
+<div class="protocol-card">
+<h4>IaaS</h4>
+<p data-uk="Infrastructure as a Service — віртуальні машини, мережі, сховища, балансувальники. Ви керуєте ОС, додатками та даними. Приклади: AWS EC2, Azure VMs, Google Compute Engine, DigitalOcean." data-ru="Infrastructure as a Service — виртуальные машины, сети, хранилища, балансировщики. Вы управляете ОС, приложениями и данными. Примеры: AWS EC2, Azure VMs, Google Compute Engine, DigitalOcean." data-en="Infrastructure as a Service — virtual machines, networks, storage, load balancers. You manage the OS, applications and data. Examples: AWS EC2, Azure VMs, Google Compute Engine, DigitalOcean.">Infrastructure as a Service — віртуальні машини, мережі, сховища, балансувальники. Ви керуєте ОС, додатками та даними. Приклади: AWS EC2, Azure VMs, Google Compute Engine, DigitalOcean.</p>
+</div>
+<div class="protocol-card">
+<h4>PaaS</h4>
+<p data-uk="Platform as a Service — платформа для розробки та розгортання без управління інфраструктурою. Приклади: Heroku, Google App Engine, AWS Elastic Beanstalk, Vercel, Railway, Render." data-ru="Platform as a Service — платформа для разработки и развёртывания без управления инфраструктурой. Примеры: Heroku, Google App Engine, AWS Elastic Beanstalk, Vercel, Railway, Render." data-en="Platform as a Service — a platform for developing and deploying without managing infrastructure. Examples: Heroku, Google App Engine, AWS Elastic Beanstalk, Vercel, Railway, Render.">Platform as a Service — платформа для розробки та розгортання без управління інфраструктурою. Приклади: Heroku, Google App Engine, AWS Elastic Beanstalk, Vercel, Railway, Render.</p>
+</div>
+<div class="protocol-card">
+<h4>SaaS</h4>
+<p data-uk="Software as a Service — готові програми через браузер. Приклади: Gmail, Zoom, Salesforce, Notion, Figma, Google Docs, Slack, Trello. Користувач лише використовує, не керує." data-ru="Software as a Service — готовые программы через браузер. Примеры: Gmail, Zoom, Salesforce, Notion, Figma, Google Docs, Slack, Trello. Пользователь только использует, не управляет." data-en="Software as a Service — ready-made programs via browser. Examples: Gmail, Zoom, Salesforce, Notion, Figma, Google Docs, Slack, Trello. The user only uses, does not manage.">Software as a Service — готові програми через браузер. Приклади: Gmail, Zoom, Salesforce, Notion, Figma, Google Docs, Slack, Trello. Користувач лише використовує, не керує.</p>
+</div>
+<div class="protocol-card">
+<h4>FaaS / Serverless</h4>
+<p data-uk="Function as a Service — запуск окремих функцій у відповідь на події. Автоматичне масштабування до нуля. Приклади: AWS Lambda, Azure Functions, Google Cloud Functions, Cloudflare Workers." data-ru="Function as a Service — запуск отдельных функций в ответ на события. Автоматическое масштабирование до нуля. Примеры: AWS Lambda, Azure Functions, Google Cloud Functions, Cloudflare Workers." data-en="Function as a Service — running individual functions in response to events. Automatic scaling to zero. Examples: AWS Lambda, Azure Functions, Google Cloud Functions, Cloudflare Workers.">Function as a Service — запуск окремих функцій у відповідь на події. Автоматичне масштабування до нуля. Приклади: AWS Lambda, Azure Functions, Google Cloud Functions, Cloudflare Workers.</p>
+</div>
+</div>
+
+<h3>&#128313; <span data-uk="Топ-3 хмарних провайдери" data-ru="Топ-3 облачных провайдера" data-en="Top 3 Cloud Providers">Топ-3 хмарних провайдери</span></h3>
+<ul>
+<li data-uk="AWS (Amazon Web Services) — лідер ринку (~32%). 200+ сервісів: EC2, S3, RDS, Lambda, EKS, CloudFront, Route 53. Найширша географія регіонів та зон доступності." data-ru="AWS (Amazon Web Services) — лидер рынка (~32%). 200+ сервисов: EC2, S3, RDS, Lambda, EKS, CloudFront, Route 53. Самая широкая география регионов и зон доступности." data-en="AWS (Amazon Web Services) — market leader (~32%). 200+ services: EC2, S3, RDS, Lambda, EKS, CloudFront, Route 53. The widest geographic coverage of regions and availability zones.">AWS (Amazon Web Services) — лідер ринку (~32%). 200+ сервісів: EC2, S3, RDS, Lambda, EKS, CloudFront, Route 53. Найширша географія регіонів та зон доступності.</li>
+<li data-uk="Microsoft Azure — ~23% ринку. Глибока інтеграція з Windows, Office 365, Active Directory. Сильні позиції у enterprise та гібридних хмарах (Azure Stack)." data-ru="Microsoft Azure — ~23% рынка. Глубокая интеграция с Windows, Office 365, Active Directory. Сильные позиции в enterprise и гибридных облаках (Azure Stack)." data-en="Microsoft Azure — ~23% market share. Deep integration with Windows, Office 365, Active Directory. Strong positions in enterprise and hybrid clouds (Azure Stack).">Microsoft Azure — ~23% ринку. Глибока інтеграція з Windows, Office 365, Active Directory. Сильні позиції у enterprise та гібридних хмарах (Azure Stack).</li>
+<li data-uk="Google Cloud Platform (GCP) — ~10% ринку. Лідер у AI/ML (Vertex AI, TPUs), BigQuery (аналітика), Kubernetes (GKE — перший managed K8s)." data-ru="Google Cloud Platform (GCP) — ~10% рынка. Лидер в AI/ML (Vertex AI, TPUs), BigQuery (аналитика), Kubernetes (GKE — первый managed K8s)." data-en="Google Cloud Platform (GCP) — ~10% market share. Leader in AI/ML (Vertex AI, TPUs), BigQuery (analytics), Kubernetes (GKE — the first managed K8s).">Google Cloud Platform (GCP) — ~10% ринку. Лідер у AI/ML (Vertex AI, TPUs), BigQuery (аналітика), Kubernetes (GKE — перший managed K8s).</li>
+</ul>
+
+<h3>&#128313; <span data-uk="Моделі розгортання" data-ru="Модели развёртывания" data-en="Deployment Models">Моделі розгортання</span></h3>
+<ul>
+<li data-uk="Public Cloud — ресурси провайдера, доступні через Інтернет (AWS, Azure, GCP). Масштабованість, pay-as-you-go, мінімальні капітальні витрати." data-ru="Public Cloud — ресурсы провайдера, доступные через Интернет (AWS, Azure, GCP). Масштабируемость, pay-as-you-go, минимальные капитальные затраты." data-en="Public Cloud — provider resources accessible via the Internet (AWS, Azure, GCP). Scalability, pay-as-you-go, minimal capital expenditure.">Public Cloud — ресурси провайдера, доступні через Інтернет (AWS, Azure, GCP). Масштабованість, pay-as-you-go, мінімальні капітальні витрати.</li>
+<li data-uk="Private Cloud — інфраструктура всередині організації (OpenStack, VMware vCloud, Nutanix). Повний контроль, безпека, відповідність compliance." data-ru="Private Cloud — инфраструктура внутри организации (OpenStack, VMware vCloud, Nutanix). Полный контроль, безопасность, соответствие compliance." data-en="Private Cloud — infrastructure inside the organization (OpenStack, VMware vCloud, Nutanix). Full control, security, compliance.">Private Cloud — інфраструктура всередині організації (OpenStack, VMware vCloud, Nutanix). Повний контроль, безпека, відповідність compliance.</li>
+<li data-uk="Hybrid Cloud — поєднання public та private з оркестрацією між ними. Дозволяє тримати чутливі дані on-premise, а пікові навантаження виносити у public." data-ru="Hybrid Cloud — сочетание public и private с оркестрацией между ними. Позволяет держать чувствительные данные on-premise, а пиковые нагрузки выносить в public." data-en="Hybrid Cloud — a combination of public and private with orchestration between them. Allows keeping sensitive data on-premise while offloading peak loads to public.">Hybrid Cloud — поєднання public та private з оркестрацією між ними. Дозволяє тримати чутливі дані on-premise, а пікові навантаження виносити у public.</li>
+<li data-uk="Multi-Cloud — використання кількох провайдерів одночасно для зниження ризику vendor lock-in та покращення відмовостійкості." data-ru="Multi-Cloud — использование нескольких провайдеров одновременно для снижения риска vendor lock-in и улучшения отказоустойчивости." data-en="Multi-Cloud — using multiple providers simultaneously to reduce vendor lock-in risk and improve fault tolerance.">Multi-Cloud — використання кількох провайдерів одночасно для зниження ризику vendor lock-in та покращення відмовостійкості.</li>
+</ul>
+</section>
+
+<section class="section" id="compare">
+<h2><span class="icon">&#128202;</span> <span data-uk="VM vs Container vs Serverless" data-ru="ВМ vs Контейнер vs Serverless" data-en="VM vs Container vs Serverless">VM vs Container vs Serverless</span></h2>
+<table class="comparison-table">
+<tr>
+<th data-uk="Параметр" data-ru="Параметр" data-en="Parameter">Параметр</th>
+<th data-uk="Віртуальна машина" data-ru="Виртуальная машина" data-en="Virtual Machine">Віртуальна машина</th>
+<th data-uk="Контейнер (Docker)" data-ru="Контейнер (Docker)" data-en="Container (Docker)">Контейнер (Docker)</th>
+<th data-uk="Serverless (FaaS)" data-ru="Serverless (FaaS)" data-en="Serverless (FaaS)">Serverless (FaaS)</th>
+</tr>
+<tr>
+<td data-uk="Одиниці масштабування" data-ru="Единицы масштабирования" data-en="Scaling unit">Одиниці масштабування</td>
+<td data-uk="Ціла VM" data-ru="Целая VM" data-en="Entire VM">Ціла VM</td>
+<td data-uk="Окремий контейнер / под" data-ru="Отдельный контейнер / под" data-en="Individual container / pod">Окремий контейнер / под</td>
+<td data-uk="Окрема функція" data-ru="Отдельная функция" data-en="Individual function">Окрема функція</td>
+</tr>
+<tr>
+<td data-uk="Час запуску" data-ru="Время запуска" data-en="Startup time">Час запуску</td>
+<td data-uk="Хвилини" data-ru="Минуты" data-en="Minutes">Хвилини</td>
+<td data-uk="Секунди" data-ru="Секунды" data-en="Seconds">Секунди</td>
+<td data-uk="Мілісекунди (cold start ~100-500 мс)" data-ru="Миллисекунды (cold start ~100-500 мс)" data-en="Milliseconds (cold start ~100-500 ms)">Мілісекунди (cold start ~100-500 мс)</td>
+</tr>
+<tr>
+<td data-uk="Ізоляція" data-ru="Изоляция" data-en="Isolation">Ізоляція</td>
+<td data-uk="Апаратна (гіпервізор)" data-ru="Аппаратная (гипервизор)" data-en="Hardware (hypervisor)">Апаратна (гіпервізор)</td>
+<td data-uk="Процесна (namespaces, cgroups)" data-ru="Процессная (namespaces, cgroups)" data-en="Process (namespaces, cgroups)">Процесна (namespaces, cgroups)</td>
+<td data-uk="Повна ізоляція (пісочниця провайдера)" data-ru="Полная изоляция (песочница провайдера)" data-en="Full isolation (provider sandbox)">Повна ізоляція (пісочниця провайдера)</td>
+</tr>
+<tr>
+<td data-uk="Керування" data-ru="Управление" data-en="Management">Керування</td>
+<td data-uk="Повне (ОС, патчі, моніторинг)" data-ru="Полное (ОС, патчи, мониторинг)" data-en="Full (OS, patches, monitoring)">Повне (ОС, патчі, моніторинг)</td>
+<td data-uk="Часткове (образи, оркестрація)" data-ru="Частичное (образы, оркестрация)" data-en="Partial (images, orchestration)">Часткове (образи, оркестрація)</td>
+<td data-uk="Нульове (провайдер керує всім)" data-ru="Нулевое (провайдер управляет всем)" data-en="Zero (provider manages everything)">Нульове (провайдер керує всім)</td>
+</tr>
+<tr>
+<td data-uk="Вартість" data-ru="Стоимость" data-en="Cost">Вартість</td>
+<td data-uk="Постійна (платите за VM 24/7)" data-ru="Постоянная (платите за VM 24/7)" data-en="Fixed (pay for VM 24/7)">Постійна (платите за VM 24/7)</td>
+<td data-uk="Постійна (worker nodes)" data-ru="Постоянная (worker nodes)" data-en="Fixed (worker nodes)">Постійна (worker nodes)</td>
+<td data-uk="Змінна (pay-per-invocation)" data-ru="Переменная (pay-per-invocation)" data-en="Variable (pay-per-invocation)">Змінна (pay-per-invocation)</td>
+</tr>
+<tr>
+<td data-uk="Використання" data-ru="Применение" data-en="Use case">Використання</td>
+<td data-uk="Legacy-додатки, моноліти, БД" data-ru="Legacy-приложения, монолиты, БД" data-en="Legacy apps, monoliths, databases">Legacy-додатки, моноліти, БД</td>
+<td data-uk="Мікросервіси, веб-додатки, CI/CD" data-ru="Микросервисы, веб-приложения, CI/CD" data-en="Microservices, web apps, CI/CD">Мікросервіси, веб-додатки, CI/CD</td>
+<td data-uk="Обробка подій, API, ETL, чат-боти" data-ru="Обработка событий, API, ETL, чат-боты" data-en="Event processing, APIs, ETL, chatbots">Обробка подій, API, ETL, чат-боти</td>
+</tr>
+</table>
+</section>
+
+<section class="section" id="devops">
+<h2><span class="icon">&#128295;</span> <span data-uk="DevOps, CI/CD та інфраструктура як код" data-ru="DevOps, CI/CD и инфраструктура как код" data-en="DevOps, CI/CD and Infrastructure as Code">DevOps, CI/CD та інфраструктура як код</span></h2>
+<p data-uk="DevOps — культура, практики та інструменти, що об'єднують розробку (Development) та операції (Operations) для скорочення життєвого циклу додатків та забезпечення безперервної поставки (Continuous Delivery)." data-ru="DevOps — культура, практики и инструменты, объединяющие разработку (Development) и операции (Operations) для сокращения жизненного цикла приложений и обеспечения непрерывной поставки (Continuous Delivery)." data-en="DevOps is a culture, practices and tools that unite development and operations to shorten application lifecycles and ensure continuous delivery.">DevOps — культура, практики та інструменти, що об'єднують розробку (Development) та операції (Operations) для скорочення життєвого циклу додатків та забезпечення безперервної поставки (Continuous Delivery).</p>
+
+<h3>&#128313; CI/CD Pipeline</h3>
+<ul>
+<li data-uk="CI (Continuous Integration) — автоматична збірка та тестування коду при кожному коміті. Інструменти: GitHub Actions, GitLab CI, Jenkins, CircleCI, Travis CI, Azure DevOps." data-ru="CI (Continuous Integration) — автоматическая сборка и тестирование кода при каждом коммите. Инструменты: GitHub Actions, GitLab CI, Jenkins, CircleCI, Travis CI, Azure DevOps." data-en="CI (Continuous Integration) — automatic building and testing of code on every commit. Tools: GitHub Actions, GitLab CI, Jenkins, CircleCI, Travis CI, Azure DevOps.">CI (Continuous Integration) — автоматична збірка та тестування коду при кожному коміті. Інструменти: GitHub Actions, GitLab CI, Jenkins, CircleCI, Travis CI, Azure DevOps.</li>
+<li data-uk="CD (Continuous Delivery/Deployment) — автоматичне розгортання протестованого коду у staging/production. Continuous Delivery — ручне схвалення перед production. Continuous Deployment — повна автоматизація без ручного втручання." data-ru="CD (Continuous Delivery/Deployment) — автоматическое развёртывание протестированного кода в staging/production. Continuous Delivery — ручное одобрение перед production. Continuous Deployment — полная автоматизация без ручного вмешательства." data-en="CD (Continuous Delivery/Deployment) — automatic deployment of tested code to staging/production. Continuous Delivery — manual approval before production. Continuous Deployment — full automation without manual intervention.">CD (Continuous Delivery/Deployment) — автоматичне розгортання протестованого коду у staging/production. Continuous Delivery — ручне схвалення перед production. Continuous Deployment — повна автоматизація без ручного втручання.</li>
+</ul>
+
+<h3>&#128313; <span data-uk="IaC — Інфраструктура як код" data-ru="IaC — Инфраструктура как код" data-en="IaC — Infrastructure as Code">IaC — Інфраструктура як код</span></h3>
+<ul>
+<li data-uk="Terraform — декларативний інструмент від HashiCorp. Описує бажаний стан інфраструктури у HCL-файлах. Підтримує 3000+ провайдерів (AWS, Azure, GCP, Kubernetes, GitHub). План змін (terraform plan) перед застосуванням (terraform apply)." data-ru="Terraform — декларативный инструмент от HashiCorp. Описывает желаемое состояние инфраструктуры в HCL-файлах. Поддерживает 3000+ провайдеров (AWS, Azure, GCP, Kubernetes, GitHub). План изменений (terraform plan) перед применением (terraform apply)." data-en="Terraform — a declarative tool from HashiCorp. Describes the desired infrastructure state in HCL files. Supports 3000+ providers (AWS, Azure, GCP, Kubernetes, GitHub). Change plan (terraform plan) before applying (terraform apply).">Terraform — декларативний інструмент від HashiCorp. Описує бажаний стан інфраструктури у HCL-файлах. Підтримує 3000+ провайдерів (AWS, Azure, GCP, Kubernetes, GitHub). План змін (terraform plan) перед застосуванням (terraform apply).</li>
+<li data-uk="Ansible — імперативний інструмент керування конфігурацією. Використовує YAML playbooks. Агентless (працює через SSH). Ідеальний для налаштування серверів, встановлення ПЗ, розгортання додатків." data-ru="Ansible — императивный инструмент управления конфигурацией. Использует YAML playbooks. Агентless (работает через SSH). Идеален для настройки серверов, установки ПО, развёртывания приложений." data-en="Ansible — an imperative configuration management tool. Uses YAML playbooks. Agentless (works via SSH). Ideal for server configuration, software installation, application deployment.">Ansible — імперативний інструмент керування конфігурацією. Використовує YAML playbooks. Агентless (працює через SSH). Ідеальний для налаштування серверів, встановлення ПЗ, розгортання додатків.</li>
+<li data-uk="Pulumi — IaC на звичайних мовах програмування (TypeScript, Python, Go, C#). Дозволяє використовувати цикли, умови, функції — повноцінну логіку." data-ru="Pulumi — IaC на обычных языках программирования (TypeScript, Python, Go, C#). Позволяет использовать циклы, условия, функции — полноценную логику." data-en="Pulumi — IaC in regular programming languages (TypeScript, Python, Go, C#). Allows using loops, conditions, functions — full-fledged logic.">Pulumi — IaC на звичайних мовах програмування (TypeScript, Python, Go, C#). Дозволяє використовувати цикли, умови, функції — повноцінну логіку.</li>
+<li data-uk="CloudFormation (AWS) / ARM (Azure) / Deployment Manager (GCP) — нативні IaC-інструменти хмарних провайдерів." data-ru="CloudFormation (AWS) / ARM (Azure) / Deployment Manager (GCP) — нативные IaC-инструменты облачных провайдеров." data-en="CloudFormation (AWS) / ARM (Azure) / Deployment Manager (GCP) — native IaC tools from cloud providers.">CloudFormation (AWS) / ARM (Azure) / Deployment Manager (GCP) — нативні IaC-інструменти хмарних провайдерів.</li>
+</ul>
+
+<h3>&#128313; <span data-uk="GitOps" data-ru="GitOps" data-en="GitOps">GitOps</span></h3>
+<p data-uk="GitOps — підхід, де Git-репозиторій є єдиним джерелом правди (single source of truth) для інфраструктури та додатків. Інструменти на кшталт ArgoCD або Flux постійно синхронізують стан кластера Kubernetes зі станом репозиторію. Будь-яка зміна — це pull request у Git." data-ru="GitOps — подход, где Git-репозиторий является единым источником правды (single source of truth) для инфраструктуры и приложений. Инструменты вроде ArgoCD или Flux постоянно синхронизируют состояние кластера Kubernetes с состоянием репозитория. Любое изменение — это pull request в Git." data-en="GitOps is an approach where the Git repository is the single source of truth for infrastructure and applications. Tools like ArgoCD or Flux continuously synchronize the Kubernetes cluster state with the repository state. Any change is a pull request in Git.">GitOps — підхід, де Git-репозиторій є єдиним джерелом правди (single source of truth) для інфраструктури та додатків. Інструменти на кшталт ArgoCD або Flux постійно синхронізують стан кластера Kubernetes зі станом репозиторію. Будь-яка зміна — це pull request у Git.</p>
+</section>
+
+<section class="section" id="summary">
+<h2><span class="icon">&#127919;</span> <span data-uk="Підсумок" data-ru="Итог" data-en="Summary">Підсумок</span></h2>
+<p data-uk="Віртуалізація та хмарні обчислення перетворили IT-індустрію за останнє десятиліття. Від віртуальних машин, які емулюють повноцінні комп'ютери, через легкі контейнери Docker, що революціонізували доставку додатків, до serverless-функцій, які масштабуються до нуля — кожен рівень абстракції розв'язує свої задачі." data-ru="Виртуализация и облачные вычисления преобразили IT-индустрию за последнее десятилетие. От виртуальных машин, эмулирующих полноценные компьютеры, через лёгкие контейнеры Docker, революционизировавшие доставку приложений, до serverless-функций, масштабирующихся до нуля — каждый уровень абстракции решает свои задачи." data-en="Virtualization and cloud computing have transformed the IT industry over the past decade. From virtual machines that emulate full computers, through lightweight Docker containers that revolutionized application delivery, to serverless functions that scale to zero — each abstraction level solves its own tasks.">Віртуалізація та хмарні обчислення перетворили IT-індустрію за останнє десятиліття. Від віртуальних машин, які емулюють повноцінні комп'ютери, через легкі контейнери Docker, що революціонізували доставку додатків, до serverless-функцій, які масштабуються до нуля — кожен рівень абстракції розв'язує свої задачі.</p>
+<p data-uk="Kubernetes став операційною системою дата-центрів, а Terraform та GitOps — стандартом управління інфраструктурою. Хмарні провайдери (AWS, Azure, GCP) пропонують сотні сервісів, що дозволяють будувати глобальні додатки без власних дата-центрів." data-ru="Kubernetes стал операционной системой дата-центров, а Terraform и GitOps — стандартом управления инфраструктурой. Облачные провайдеры (AWS, Azure, GCP) предлагают сотни сервисов, позволяющих строить глобальные приложения без собственных дата-центров." data-en="Kubernetes has become the data center operating system, while Terraform and GitOps are the standard for infrastructure management. Cloud providers (AWS, Azure, GCP) offer hundreds of services that allow building global applications without owning data centers.">Kubernetes став операційною системою дата-центрів, а Terraform та GitOps — стандартом управління інфраструктурою. Хмарні провайдери (AWS, Azure, GCP) пропонують сотні сервісів, що дозволяють будувати глобальні додатки без власних дата-центрів.</p>
+<p data-uk="Ключові тренди: WebAssembly (WASM) як альтернатива контейнерам для edge, Kubernetes на bare metal (Talos, K3s), GitOps як стандарт розгортання, FinOps для оптимізації хмарних витрат, а також поява платформної інженерії (Platform Engineering) — внутрішніх developer portals (Backstage) для самообслуговування розробників." data-ru="Ключевые тренды: WebAssembly (WASM) как альтернатива контейнерам для edge, Kubernetes на bare metal (Talos, K3s), GitOps как стандарт развёртывания, FinOps для оптимизации облачных затрат, а также появление платформенной инженерии (Platform Engineering) — внутренних developer portals (Backstage) для самообслуживания разработчиков." data-en="Key trends: WebAssembly (WASM) as a container alternative for edge, Kubernetes on bare metal (Talos, K3s), GitOps as the deployment standard, FinOps for cloud cost optimization, and the rise of Platform Engineering — internal developer portals (Backstage) for developer self-service.">Ключові тренди: WebAssembly (WASM) як альтернатива контейнерам для edge, Kubernetes на bare metal (Talos, K3s), GitOps як стандарт розгортання, FinOps для оптимізації хмарних витрат, а також поява платформної інженерії (Platform Engineering) — внутрішніх developer portals (Backstage) для самообслуговування розробників.</p>
+</section>
+</main>
+
+<footer class="footer">
+<p>&larr; <a href="index.html" data-uk="Повернутися на головну сторінку" data-ru="Вернуться на главную страницу" data-en="Return to home page">Повернутися на головну сторінку</a></p>
+<p style="margin-top:10px; font-size:0.8rem;">&copy; 2026 — <span data-uk="Навчальний проєкт. Хмари та віртуалізація." data-ru="Учебный проект. Облака и виртуализация." data-en="Educational project. Cloud & Virtualization.">Навчальний проєкт. Хмари та віртуалізація.</span></p>
+</footer>
+
+<script>
+function toggleTheme() {
+  var body = document.body;
+  var btn = document.querySelector('.theme-toggle');
+  var current = body.getAttribute('data-theme');
+  if (current === 'light') {
+    body.removeAttribute('data-theme');
+    btn.innerHTML = '&#127769;';
+    localStorage.setItem('theme', 'dark');
+  } else {
+    body.setAttribute('data-theme', 'light');
+    btn.innerHTML = '&#9728;';
+    localStorage.setItem('theme', 'light');
+  }
+}
+(function(){
+  var saved = localStorage.getItem('theme');
+  if (saved === 'light') {
+    document.body.setAttribute('data-theme', 'light');
+    document.querySelector('.theme-toggle').innerHTML = '&#9728;';
+  }
+})();
+
+function setLang(lang) {
+  document.querySelectorAll('.lang-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.querySelectorAll('.lang-btn').forEach(function(btn){
+    if (btn.textContent.toLowerCase() === lang) btn.classList.add('active');
+  });
+  document.querySelectorAll('[data-uk][data-ru][data-en]').forEach(function(el){
+    var text = el.getAttribute('data-' + lang);
+    if (text) el.textContent = text;
+  });
+  var titleEl = document.querySelector('title');
+  if (titleEl) {
+    var titleText = titleEl.getAttribute('data-' + lang);
+    if (titleText) document.title = titleText;
+  }
+  document.querySelector('html').setAttribute('lang', lang === 'uk' ? 'uk' : lang === 'ru' ? 'ru' : 'en');
+  localStorage.setItem('lang', lang);
+}
+(function(){
+  var saved = localStorage.getItem('lang');
+  if (saved && saved !== 'uk') setLang(saved);
+})();
+
+// === SCROLL SPY ===
+(function(){
+  var sections = document.querySelectorAll('.section[id]');
+  var navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
+  function onScroll() {
+    var scrollPos = window.scrollY + 150;
+    sections.forEach(function(sec){
+      var top = sec.offsetTop;
+      var bottom = top + sec.offsetHeight;
+      var id = sec.getAttribute('id');
+      if (scrollPos >= top && scrollPos < bottom) {
+        navLinks.forEach(function(link){
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + id) link.classList.add('active');
+        });
+      }
+    });
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+})();
+</script>
+</body>
+</html>

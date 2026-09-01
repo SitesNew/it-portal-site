@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Системи контролю версій (Git, GitHub, GitLab) — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #27ae60;
+            --accent-2: #2196f3;
+            --gradient: linear-gradient(135deg, #27ae60, #2196f3);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.5rem 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.55rem;
+        }
+        .intro p:last-child { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(39,174,96,0.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(39,174,96,0.15); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(33,150,243,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .mfg-links {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .mfg-link {
+            color: var(--text);
+            background: var(--surface-hover);
+            text-decoration: none;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .mfg-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">🔀 Системи контролю версій</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button type="button" onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button type="button" onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button type="button" onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button type="button" class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+(function () {
+    "use strict";
+
+    function safeGet(key, fallback) {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    const categories = {
+        basics: {
+            uk: "📚 Основи контролю версій",
+            ru: "📚 Основы контроля версий",
+            en: "📚 Version Control Basics"
+        },
+        git: {
+            uk: "⚙️ Git — основні можливості",
+            ru: "⚙️ Git — основные возможности",
+            en: "⚙️ Git — Core Features"
+        },
+        platforms: {
+            uk: "☁️ Платформи (GitHub, GitLab…)",
+            ru: "☁️ Платформы (GitHub, GitLab…)",
+            en: "☁️ Platforms (GitHub, GitLab…)"
+        },
+        workflows: {
+            uk: "🔄 Робочі процеси та практики",
+            ru: "🔄 Рабочие процессы и практики",
+            en: "🔄 Workflows & Practices"
+        },
+        other: {
+            uk: "📦 Інші системи та інструменти",
+            ru: "📦 Другие системы и инструменты",
+            en: "📦 Other Systems & Tools"
+        }
+    };
+
+    const items = [
+        {
+            cat: "basics",
+            icon: "📂",
+            name: {
+                uk: "Що таке система контролю версій",
+                ru: "Что такое система контроля версий",
+                en: "What is a Version Control System"
+            },
+            desc: {
+                uk: "Система контролю версій (VCS) зберігає історію змін файлів, дозволяє повертатися до попередніх станів, порівнювати версії та працювати над одним проєктом кільком людям одночасно без хаосу.",
+                ru: "Система контроля версий (VCS) хранит историю изменений файлов, позволяет возвращаться к предыдущим состояниям, сравнивать версии и работать над одним проектом нескольким людям одновременно без хаоса.",
+                en: "A Version Control System (VCS) stores the history of file changes, lets you go back to previous states, compare versions and collaborate on the same project without chaos."
+            },
+            traits: {
+                uk: "Історія змін, Відкат, Порівняння, Співпраця, Резервні копії",
+                ru: "История изменений, Откат, Сравнение, Совместная работа, Резервные копии",
+                en: "Change history, Rollback, Diff, Collaboration, Backups"
+            },
+            spec: {
+                uk: "Основа сучасної розробки ПЗ",
+                ru: "Основа современной разработки ПО",
+                en: "Foundation of modern software development"
+            },
+            links: [
+                { name: "Git Book", url: "https://git-scm.com/book/en/v2" },
+                { name: "Atlassian Git Tutorials", url: "https://www.atlassian.com/git/tutorials" }
+            ]
+        },
+        {
+            cat: "basics",
+            icon: "🔀",
+            name: {
+                uk: "Централізовані та розподілені VCS",
+                ru: "Централизованные и распределенные VCS",
+                en: "Centralized vs Distributed VCS"
+            },
+            desc: {
+                uk: "Централізовані системи (SVN, CVS) мають один головний сервер. Розподілені (Git, Mercurial) дають кожному розробнику повну копію репозиторію — можна працювати офлайн і швидше виконувати більшість операцій.",
+                ru: "Централизованные системы (SVN, CVS) имеют один главный сервер. Распределенные (Git, Mercurial) дают каждому разработчику полную копию репозитория — можно работать офлайн и быстрее выполнять большинство операций.",
+                en: "Centralized systems (SVN, CVS) rely on a single main server. Distributed ones (Git, Mercurial) give every developer a full copy of the repository — offline work and faster everyday operations."
+            },
+            traits: {
+                uk: "Центральний сервер, Повна копія, Офлайн-робота, Швидкість, Надійність",
+                ru: "Центральный сервер, Полная копия, Офлайн-работа, Скорость, Надежность",
+                en: "Central server, Full copy, Offline work, Speed, Reliability"
+            },
+            spec: {
+                uk: "Git став стандартом де-факто",
+                ru: "Git стал стандартом де-факто",
+                en: "Git became the de-facto standard"
+            },
+            links: [
+                { name: "Git vs SVN", url: "https://www.atlassian.com/git/tutorials/what-is-git" }
+            ]
+        },
+        {
+            cat: "git",
+            icon: "📌",
+            name: {
+                uk: "Основні поняття Git",
+                ru: "Основные понятия Git",
+                en: "Core Git concepts"
+            },
+            desc: {
+                uk: "Репозиторій, коміт, гілка, індекс (staging area), віддалений репозиторій, злиття та перебазування — базові терміни, без яких неможливо ефективно користуватися Git.",
+                ru: "Репозиторий, коммит, ветка, индекс (staging area), удаленный репозиторий, слияние и перебазирование — базовые термины, без которых невозможно эффективно пользоваться Git.",
+                en: "Repository, commit, branch, staging area, remote, merge and rebase — the core terms you need to use Git effectively."
+            },
+            traits: {
+                uk: "Репозиторій, Коміт, Гілка, Staging, Remote, Merge, Rebase",
+                ru: "Репозиторий, Коммит, Ветка, Staging, Remote, Merge, Rebase",
+                en: "Repository, Commit, Branch, Staging, Remote, Merge, Rebase"
+            },
+            spec: {
+                uk: "Розуміння моделі даних Git — ключ до майстерності",
+                ru: "Понимание модели данных Git — ключ к мастерству",
+                en: "Understanding Git’s data model is the key to mastery"
+            },
+            links: [
+                { name: "Pro Git Book", url: "https://git-scm.com/book/en/v2" },
+                { name: "Git Immersion", url: "https://gitimmersion.com" }
+            ]
+        },
+        {
+            cat: "git",
+            icon: "🌿",
+            name: {
+                uk: "Гілки, злиття та конфлікти",
+                ru: "Ветки, слияние и конфликты",
+                en: "Branches, merges and conflicts"
+            },
+            desc: {
+                uk: "Гілки дозволяють паралельно розробляти функції та виправлення. Злиття (merge) і перебазування (rebase) об’єднують зміни. Конфлікти виникають, коли зміни торкаються одних і тих самих рядків — їх потрібно вирішувати вручну.",
+                ru: "Ветки позволяют параллельно разрабатывать функции и исправления. Слияние (merge) и перебазирование (rebase) объединяют изменения. Конфликты возникают, когда изменения затрагивают одни и те же строки — их нужно решать вручную.",
+                en: "Branches enable parallel development of features and fixes. Merge and rebase combine changes. Conflicts appear when the same lines are modified — they must be resolved manually."
+            },
+            traits: {
+                uk: "Feature-гілки, Merge, Rebase, Конфлікти, Fast-forward, Pull Request",
+                ru: "Feature-ветки, Merge, Rebase, Конфликты, Fast-forward, Pull Request",
+                en: "Feature branches, Merge, Rebase, Conflicts, Fast-forward, Pull Request"
+            },
+            spec: {
+                uk: "Гілки — основа сучасної командної роботи",
+                ru: "Ветки — основа современной командной работы",
+                en: "Branches are the foundation of modern team collaboration"
+            },
+            links: [
+                { name: "Git Branching", url: "https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell" },
+                { name: "Learn Git Branching", url: "https://learngitbranching.js.org" }
+            ]
+        },
+        {
+            cat: "git",
+            icon: "⌨️",
+            name: {
+                uk: "Корисні команди Git",
+                ru: "Полезные команды Git",
+                en: "Useful Git commands"
+            },
+            desc: {
+                uk: "Базовий набір: clone, status, add, commit, push, pull, branch, checkout/switch, log, diff, stash, reset. Розуміння цих команд покриває більшість щоденних завдань.",
+                ru: "Базовый набор: clone, status, add, commit, push, pull, branch, checkout/switch, log, diff, stash, reset. Понимание этих команд покрывает большинство ежедневных задач.",
+                en: "Core set: clone, status, add, commit, push, pull, branch, checkout/switch, log, diff, stash, reset. Mastering these covers most daily tasks."
+            },
+            traits: {
+                uk: "clone, commit, push/pull, branch, log, stash, reset, rebase",
+                ru: "clone, commit, push/pull, branch, log, stash, reset, rebase",
+                en: "clone, commit, push/pull, branch, log, stash, reset, rebase"
+            },
+            spec: {
+                uk: "Краще розуміти, ніж запам’ятовувати",
+                ru: "Лучше понимать, чем запоминать",
+                en: "Better to understand than memorize"
+            },
+            links: [
+                { name: "Git Cheat Sheet", url: "https://education.github.com/git-cheat-sheet-education.pdf" },
+                { name: "git-scm.com docs", url: "https://git-scm.com/docs" }
+            ]
+        },
+        {
+            cat: "platforms",
+            icon: "🐙",
+            name: {
+                uk: "GitHub",
+                ru: "GitHub",
+                en: "GitHub"
+            },
+            desc: {
+                uk: "Найпопулярніша платформа для хостингу Git-репозиторіїв. Pull Request, Issues, Actions (CI/CD), Projects, Packages, Codespaces — повний набір інструментів для спільної розробки та open source.",
+                ru: "Самая популярная платформа для хостинга Git-репозиториев. Pull Request, Issues, Actions (CI/CD), Projects, Packages, Codespaces — полный набор инструментов для совместной разработки и open source.",
+                en: "The most popular platform for hosting Git repositories. Pull Requests, Issues, Actions (CI/CD), Projects, Packages, Codespaces — a complete toolkit for collaboration and open source."
+            },
+            traits: {
+                uk: "Pull Request, Issues, Actions, Discussions, Codespaces, Marketplace",
+                ru: "Pull Request, Issues, Actions, Discussions, Codespaces, Marketplace",
+                en: "Pull Request, Issues, Actions, Discussions, Codespaces, Marketplace"
+            },
+            spec: {
+                uk: "Стандарт для open source і багатьох компаній",
+                ru: "Стандарт для open source и многих компаний",
+                en: "Standard for open source and many companies"
+            },
+            links: [
+                { name: "GitHub", url: "https://github.com" },
+                { name: "GitHub Docs", url: "https://docs.github.com" },
+                { name: "GitHub Actions", url: "https://github.com/features/actions" }
+            ]
+        },
+        {
+            cat: "platforms",
+            icon: "🦊",
+            name: {
+                uk: "GitLab",
+                ru: "GitLab",
+                en: "GitLab"
+            },
+            desc: {
+                uk: "Повна DevOps-платформа з вбудованим CI/CD, Issue Tracker, Wiki, Container Registry, Security Scanning. Можна використовувати як хмарний сервіс або встановити на власних серверах (self-hosted).",
+                ru: "Полная DevOps-платформа со встроенным CI/CD, Issue Tracker, Wiki, Container Registry, Security Scanning. Можно использовать как облачный сервис или установить на своих серверах (self-hosted).",
+                en: "A complete DevOps platform with built-in CI/CD, Issue Tracker, Wiki, Container Registry and Security Scanning. Available as a cloud service or self-hosted."
+            },
+            traits: {
+                uk: "CI/CD, Merge Request, Self-hosted, Security, Container Registry, Wiki",
+                ru: "CI/CD, Merge Request, Self-hosted, Security, Container Registry, Wiki",
+                en: "CI/CD, Merge Request, Self-hosted, Security, Container Registry, Wiki"
+            },
+            spec: {
+                uk: "Сильний вибір для self-hosted і enterprise",
+                ru: "Сильный выбор для self-hosted и enterprise",
+                en: "Strong choice for self-hosted and enterprise"
+            },
+            links: [
+                { name: "GitLab", url: "https://about.gitlab.com" },
+                { name: "GitLab Docs", url: "https://docs.gitlab.com" },
+                { name: "GitLab CI/CD", url: "https://docs.gitlab.com/ee/ci/" }
+            ]
+        },
+        {
+            cat: "platforms",
+            icon: "🪣",
+            name: {
+                uk: "Bitbucket та інші платформи",
+                ru: "Bitbucket и другие платформы",
+                en: "Bitbucket and other platforms"
+            },
+            desc: {
+                uk: "Bitbucket (Atlassian) добре інтегрується з Jira та Confluence. Існують також Azure Repos, AWS CodeCommit, Gitea, Gogs, SourceHut — варіанти для різних потреб і бюджетів.",
+                ru: "Bitbucket (Atlassian) хорошо интегрируется с Jira и Confluence. Также существуют Azure Repos, AWS CodeCommit, Gitea, Gogs, SourceHut — варианты для разных потребностей и бюджетов.",
+                en: "Bitbucket (Atlassian) integrates tightly with Jira and Confluence. Other options include Azure Repos, AWS CodeCommit, Gitea, Gogs, SourceHut — for different needs and budgets."
+            },
+            traits: {
+                uk: "Bitbucket, Azure Repos, Gitea, CodeCommit, Інтеграція з Jira",
+                ru: "Bitbucket, Azure Repos, Gitea, CodeCommit, Интеграция с Jira",
+                en: "Bitbucket, Azure Repos, Gitea, CodeCommit, Jira integration"
+            },
+            spec: {
+                uk: "Вибір залежить від екосистеми команди",
+                ru: "Выбор зависит от экосистемы команды",
+                en: "Choice depends on the team’s ecosystem"
+            },
+            links: [
+                { name: "Bitbucket", url: "https://bitbucket.org" },
+                { name: "Gitea", url: "https://gitea.io" },
+                { name: "Azure Repos", url: "https://azure.microsoft.com/en-us/products/devops/repos" }
+            ]
+        },
+        {
+            cat: "workflows",
+            icon: "🌊",
+            name: {
+                uk: "Git Flow, GitHub Flow, Trunk-Based",
+                ru: "Git Flow, GitHub Flow, Trunk-Based",
+                en: "Git Flow, GitHub Flow, Trunk-Based"
+            },
+            desc: {
+                uk: "Популярні моделі гілкування: Git Flow (складніший, з develop і release-гілками), GitHub Flow (простий, через main + feature-гілки), Trunk-Based Development (короткоживучі гілки, швидкі злиття в main).",
+                ru: "Популярные модели ветвления: Git Flow (более сложный, с develop и release-ветками), GitHub Flow (простой, через main + feature-ветки), Trunk-Based Development (короткоживущие ветки, быстрые слияния в main).",
+                en: "Popular branching models: Git Flow (more complex, with develop and release branches), GitHub Flow (simple, main + feature branches), Trunk-Based Development (short-lived branches, frequent merges to main)."
+            },
+            traits: {
+                uk: "Git Flow, GitHub Flow, Trunk-Based, Feature flags, Continuous Delivery",
+                ru: "Git Flow, GitHub Flow, Trunk-Based, Feature flags, Continuous Delivery",
+                en: "Git Flow, GitHub Flow, Trunk-Based, Feature flags, Continuous Delivery"
+            },
+            spec: {
+                uk: "Обирайте під розмір команди та частоту релізів",
+                ru: "Выбирайте под размер команды и частоту релизов",
+                en: "Choose based on team size and release frequency"
+            },
+            links: [
+                { name: "Git Flow", url: "https://nvie.com/posts/a-successful-git-branching-model/" },
+                { name: "GitHub Flow", url: "https://docs.github.com/en/get-started/using-github/github-flow" },
+                { name: "Trunk Based Development", url: "https://trunkbaseddevelopment.com" }
+            ]
+        },
+        {
+            cat: "workflows",
+            icon: "👀",
+            name: {
+                uk: "Code Review та Pull / Merge Request",
+                ru: "Code Review и Pull / Merge Request",
+                en: "Code Review and Pull / Merge Requests"
+            },
+            desc: {
+                uk: "Перевірка коду колегами перед злиттям у основну гілку. Підвищує якість, поширює знання в команді та зменшує кількість дефектів. Pull Request (GitHub) і Merge Request (GitLab) — стандартний спосіб організації огляду.",
+                ru: "Проверка кода коллегами перед слиянием в основную ветку. Повышает качество, распространяет знания в команде и снижает количество дефектов. Pull Request (GitHub) и Merge Request (GitLab) — стандартный способ организации обзора.",
+                en: "Peer review of code before it is merged into the main branch. Improves quality, spreads knowledge and reduces defects. Pull Requests (GitHub) and Merge Requests (GitLab) are the standard way to organize reviews."
+            },
+            traits: {
+                uk: "Огляд коду, Коментарі, Захист гілок, Правила злиття, Статус перевірок",
+                ru: "Обзор кода, Комментарии, Защита веток, Правила слияния, Статус проверок",
+                en: "Code review, Comments, Branch protection, Merge rules, Check status"
+            },
+            spec: {
+                uk: "Одна з найефективніших практик якості",
+                ru: "Одна из самых эффективных практик качества",
+                en: "One of the most effective quality practices"
+            },
+            links: [
+                { name: "GitHub Pull Requests", url: "https://docs.github.com/en/pull-requests" },
+                { name: "Google Engineering Practices", url: "https://google.github.io/eng-practices/review/" }
+            ]
+        },
+        {
+            cat: "workflows",
+            icon: "🔐",
+            name: {
+                uk: "Безпека та права доступу",
+                ru: "Безопасность и права доступа",
+                en: "Security and access control"
+            },
+            desc: {
+                uk: "Захист гілок, обов’язкові перевірки перед злиттям, двофакторна автентифікація, SSH-ключі, токени доступу, підпис комітів (GPG/SSH) та секрети в CI — важливі елементи безпечної роботи з репозиторіями.",
+                ru: "Защита веток, обязательные проверки перед слиянием, двухфакторная аутентификация, SSH-ключи, токены доступа, подпись коммитов (GPG/SSH) и секреты в CI — важные элементы безопасной работы с репозиториями.",
+                en: "Branch protection, required checks before merge, two-factor authentication, SSH keys, access tokens, commit signing (GPG/SSH) and CI secrets — essential for secure repository work."
+            },
+            traits: {
+                uk: "Branch protection, 2FA, SSH, Tokens, Signed commits, Secrets",
+                ru: "Branch protection, 2FA, SSH, Tokens, Signed commits, Secrets",
+                en: "Branch protection, 2FA, SSH, Tokens, Signed commits, Secrets"
+            },
+            spec: {
+                uk: "Безпека починається з налаштувань репозиторію",
+                ru: "Безопасность начинается с настроек репозитория",
+                en: "Security starts with repository settings"
+            },
+            links: [
+                { name: "GitHub Security", url: "https://docs.github.com/en/authentication" },
+                { name: "GitLab Security", url: "https://docs.gitlab.com/ee/user/permissions.html" }
+            ]
+        },
+        {
+            cat: "other",
+            icon: "📜",
+            name: {
+                uk: "SVN, Mercurial та історичні системи",
+                ru: "SVN, Mercurial и исторические системы",
+                en: "SVN, Mercurial and historical systems"
+            },
+            desc: {
+                uk: "Subversion (SVN) довго був стандартом у корпоративному середовищі. Mercurial — ще одна розподілена система. Сьогодні Git домінує, але знання відмінностей допомагає підтримувати старі проєкти та розуміти еволюцію інструментів.",
+                ru: "Subversion (SVN) долго был стандартом в корпоративной среде. Mercurial — еще одна распределенная система. Сегодня Git доминирует, но знание отличий помогает поддерживать старые проекты и понимать эволюцию инструментов.",
+                en: "Subversion (SVN) was long the corporate standard. Mercurial is another distributed system. Git dominates today, but knowing the differences helps maintain legacy projects and understand tool evolution."
+            },
+            traits: {
+                uk: "SVN, Mercurial, CVS, Централізована модель, Міграція на Git",
+                ru: "SVN, Mercurial, CVS, Централизованная модель, Миграция на Git",
+                en: "SVN, Mercurial, CVS, Centralized model, Migration to Git"
+            },
+            spec: {
+                uk: "Корисно знати для підтримки legacy",
+                ru: "Полезно знать для поддержки legacy",
+                en: "Useful for supporting legacy systems"
+            },
+            links: [
+                { name: "Subversion", url: "https://subversion.apache.org" },
+                { name: "Mercurial", url: "https://www.mercurial-scm.org" }
+            ]
+        },
+        {
+            cat: "other",
+            icon: "🛠️",
+            name: {
+                uk: "Клієнти, GUI та допоміжні інструменти",
+                ru: "Клиенты, GUI и вспомогательные инструменты",
+                en: "Clients, GUIs and helper tools"
+            },
+            desc: {
+                uk: "Окрім командного рядка існують зручні графічні клієнти: GitHub Desktop, GitKraken, SourceTree, Sublime Merge, VS Code / JetBrains інтеграції. Також корисні git-lfs (великі файли), git-filter-repo, pre-commit хуки.",
+                ru: "Помимо командной строки существуют удобные графические клиенты: GitHub Desktop, GitKraken, SourceTree, Sublime Merge, интеграции VS Code / JetBrains. Также полезны git-lfs (большие файлы), git-filter-repo, pre-commit хуки.",
+                en: "Besides the command line there are convenient GUIs: GitHub Desktop, GitKraken, SourceTree, Sublime Merge, VS Code / JetBrains integrations. Also useful: git-lfs (large files), git-filter-repo, pre-commit hooks."
+            },
+            traits: {
+                uk: "GUI-клієнти, Git LFS, Pre-commit, IDE-інтеграції, Хуки",
+                ru: "GUI-клиенты, Git LFS, Pre-commit, IDE-интеграции, Хуки",
+                en: "GUI clients, Git LFS, Pre-commit, IDE integrations, Hooks"
+            },
+            spec: {
+                uk: "Обирайте інструменти під свій стиль роботи",
+                ru: "Выбирайте инструменты под свой стиль работы",
+                en: "Choose tools that match your working style"
+            },
+            links: [
+                { name: "GitHub Desktop", url: "https://desktop.github.com" },
+                { name: "GitKraken", url: "https://www.gitkraken.com" },
+                { name: "pre-commit", url: "https://pre-commit.com" },
+                { name: "Git LFS", url: "https://git-lfs.com" }
+            ]
+        },
+        {
+            cat: "other",
+            icon: "📦",
+            name: {
+                uk: "Монорепозиторії та великі проєкти",
+                ru: "Монорепозитории и большие проекты",
+                en: "Monorepos and large projects"
+            },
+            desc: {
+                uk: "Монорепозиторій зберігає багато проєктів в одному репозиторії. Це спрощує спільні зміни, але вимагає спеціальних інструментів (Nx, Turborepo, Bazel, Lerna) і дисципліни для масштабування.",
+                ru: "Монорепозиторий хранит много проектов в одном репозитории. Это упрощает общие изменения, но требует специальных инструментов (Nx, Turborepo, Bazel, Lerna) и дисциплины для масштабирования.",
+                en: "A monorepo stores many projects in one repository. It simplifies cross-cutting changes but needs special tools (Nx, Turborepo, Bazel, Lerna) and discipline to scale."
+            },
+            traits: {
+                uk: "Monorepo, Polyrepo, Nx, Turborepo, Bazel, Масштабування",
+                ru: "Monorepo, Polyrepo, Nx, Turborepo, Bazel, Масштабирование",
+                en: "Monorepo, Polyrepo, Nx, Turborepo, Bazel, Scaling"
+            },
+            spec: {
+                uk: "Підхід залежить від розміру та структури команди",
+                ru: "Подход зависит от размера и структуры команды",
+                en: "Approach depends on team size and structure"
+            },
+            links: [
+                { name: "Nx", url: "https://nx.dev" },
+                { name: "Turborepo", url: "https://turbo.build/repo" },
+                { name: "Bazel", url: "https://bazel.build" }
+            ]
+        }
+    ];
+
+    const ui = {
+        uk: {
+            title: "Системи контролю версій (Git, GitHub, GitLab) — Довідник",
+            pageTitle: "🔀 Системи контролю версій",
+            home: "Головна сторінка",
+            all: "Усі розділи",
+            traits: "Ключові елементи та поняття",
+            mfgText: "Корисні ресурси:",
+            noResults: "Нічого не знайдено.",
+            footer: "🔀 Системи контролю версій | Git | Довідник 2026",
+            introTitle: "Що таке системи контролю версій і навіщо вони потрібні?",
+            intro1: "Системи контролю версій (Version Control Systems) зберігають історію змін коду, дозволяють безпечно експериментувати, повертатися до робочих станів і працювати над одним проєктом цілій команді одночасно. Без них сучасна розробка програмного забезпечення практично неможлива.",
+            intro2: "Сьогодні стандартом де-факто став Git разом із платформами GitHub, GitLab і Bitbucket. Розуміння гілок, комітів, Pull/Merge Request, робочих процесів (Git Flow, Trunk-Based) та практик code review значно підвищує ефективність і якість роботи команди."
+        },
+        ru: {
+            title: "Системы контроля версий (Git, GitHub, GitLab) — Справочник",
+            pageTitle: "🔀 Системы контроля версий",
+            home: "Главная страница",
+            all: "Все разделы",
+            traits: "Ключевые элементы и понятия",
+            mfgText: "Полезные ресурсы:",
+            noResults: "Ничего не найдено.",
+            footer: "🔀 Системы контроля версий | Git | Справочник 2026",
+            introTitle: "Что такое системы контроля версий и зачем они нужны?",
+            intro1: "Системы контроля версий (Version Control Systems) хранят историю изменений кода, позволяют безопасно экспериментировать, возвращаться к рабочим состояниям и работать над одним проектом целой команде одновременно. Без них современная разработка программного обеспечения практически невозможна.",
+            intro2: "Сегодня стандартом де-факто стал Git вместе с платформами GitHub, GitLab и Bitbucket. Понимание веток, коммитов, Pull/Merge Request, рабочих процессов (Git Flow, Trunk-Based) и практик code review значительно повышает эффективность и качество работы команды."
+        },
+        en: {
+            title: "Version Control Systems (Git, GitHub, GitLab) — Guide",
+            pageTitle: "🔀 Version Control Systems",
+            home: "Home page",
+            all: "All sections",
+            traits: "Key concepts and elements",
+            mfgText: "Useful resources:",
+            noResults: "Nothing found.",
+            footer: "🔀 Version Control Systems | Git | Guide 2026",
+            introTitle: "What are version control systems and why do they matter?",
+            intro1: "Version Control Systems store the history of code changes, let you experiment safely, return to working states and collaborate on the same project as a team. Modern software development is practically impossible without them.",
+            intro2: "Today the de-facto standard is Git together with platforms such as GitHub, GitLab and Bitbucket. Understanding branches, commits, Pull/Merge Requests, workflows (Git Flow, Trunk-Based) and code-review practices significantly improves team efficiency and quality."
+        }
+    };
+
+    let currentLang = safeGet("lang-vcs", "uk");
+    let activeCategory = "all";
+
+    function setLang(lang) {
+        if (!ui[lang]) return;
+        currentLang = lang;
+        safeSet("lang-vcs", lang);
+        document.documentElement.lang = lang === "uk" ? "uk" : (lang === "ru" ? "ru" : "en");
+        ["uk", "ru", "en"].forEach(function (l) {
+            const btn = document.getElementById("btn-" + l);
+            if (btn) btn.classList.toggle("active", l === lang);
+        });
+        document.title = ui[lang].title;
+        const home = document.getElementById("home-link");
+        if (home) home.textContent = ui[lang].home;
+        const title = document.getElementById("page-title");
+        if (title) title.textContent = ui[lang].pageTitle;
+        renderFilters();
+        render();
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const cur = html.getAttribute("data-theme");
+        const next = cur === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        safeSet("theme", next);
+    }
+
+    document.documentElement.setAttribute("data-theme", safeGet("theme", "dark"));
+
+    function renderFilters() {
+        const c = document.getElementById("filters");
+        if (!c) return;
+        let h = '<button type="button" class="filter-btn ' + (activeCategory === "all" ? "active" : "") + '" onclick="setCat(\'all\')">' + ui[currentLang].all + "</button>";
+        for (const k in categories) {
+            if (!categories.hasOwnProperty(k)) continue;
+            h += '<button type="button" class="filter-btn ' + (activeCategory === k ? "active" : "") + '" onclick="setCat(\'' + k + '\')">' + categories[k][currentLang] + "</button>";
+        }
+        c.innerHTML = h;
+    }
+
+    function setCat(cat) {
+        activeCategory = cat;
+        renderFilters();
+        render();
+    }
+
+    function render() {
+        const main = document.getElementById("main");
+        if (!main) return;
+        let html = "";
+
+        html += '<div class="intro"><h2>' + ui[currentLang].introTitle + "</h2>" +
+            "<p>" + ui[currentLang].intro1 + "</p>" +
+            "<p>" + ui[currentLang].intro2 + "</p></div>";
+
+        const cats = activeCategory === "all" ? Object.keys(categories) : [activeCategory];
+
+        cats.forEach(function (catKey) {
+            const list = items.filter(function (e) { return e.cat === catKey; });
+            if (!list.length) return;
+            html += '<div class="section-title">' + categories[catKey][currentLang] + '</div><div class="grid">';
+            list.forEach(function (e) {
+                const tags = e.traits[currentLang].split(",").map(function (t) {
+                    return '<span class="tag">' + t.trim() + "</span>";
+                }).join("");
+
+                let linksHtml = "";
+                if (e.links && e.links.length) {
+                    linksHtml = '<div class="mfg-links"><strong style="width:100%;font-size:0.7rem;color:var(--text-muted);margin-bottom:2px;">' +
+                        ui[currentLang].mfgText + "</strong>";
+                    e.links.forEach(function (l) {
+                        linksHtml += '<a href="' + l.url + '" target="_blank" rel="noopener" class="mfg-link">🔗 ' + l.name + "</a>";
+                    });
+                    linksHtml += "</div>";
+                }
+
+                html += '<div class="card">' +
+                    '<div class="card-header"><div class="card-icon">' + e.icon + '</div>' +
+                    '<div class="card-title">' + e.name[currentLang] + "</div></div>" +
+                    '<div class="card-desc">' + e.desc[currentLang] + "</div>" +
+                    '<div class="card-meta"><strong>' + ui[currentLang].traits + "</strong>" +
+                    '<div style="margin-top:0.25rem">' + tags + "</div></div>" +
+                    '<div class="spec-tag">📌 ' + e.spec[currentLang] + "</div>" +
+                    linksHtml +
+                    "</div>";
+            });
+            html += "</div>";
+        });
+
+        main.innerHTML = html || ('<div class="no-results">' + ui[currentLang].noResults + "</div>");
+        const footer = document.getElementById("footer");
+        if (footer) footer.textContent = ui[currentLang].footer;
+    }
+
+    window.setLang = setLang;
+    window.setCat = setCat;
+    window.toggleTheme = toggleTheme;
+
+    setLang(currentLang);
+})();
+</script>
+</body>
+</html>

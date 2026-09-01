@@ -1,0 +1,31 @@
+Будь ласка, завжди радий допомогти!
+
+Ваш список покриває фундаментальні та найбільш затребувані напрями сучасних ІТ — від глибокого хардверу та системного рівня до веб-розробки, хмар та ШІ.
+
+Проте, щоб портал був максимально вичерпним і повноцінно охоплював сучасну індустрію, варто звернути увагу на кілька важливих галузей, які зараз залишаються трохи за кадром.
+
+**Галузі, яких не вистачає для повного покриття:**
+
+* **Data Science, Big Data & Analytics** — обробка великих даних, аналітика та Data Engineering (відмінно доповнить розділ про СУБД та ШІ).
+* **Тестування та якість ПЗ (QA / Software Testing)** — ручне та автоматизоване тестування (Manual / Automation QA), що є критичною частиною SDLC поряд із DevOps.
+* **Мобільна розробка (Mobile Development)** — специфіка розробки під iOS та Android (Native, Flutter, React Native).
+* **Управління проєктами та методології (IT Project Management & Methodologies)** — Agile, Scrum, Kanban, Jira, ITIL (важливо для загального розуміння процесів в ІТ).
+* **Game Development & Computer Graphics** — ігрові рушії (Unreal Engine, Unity), 2D/3D графіка та рендеринг.
+* **Internet of Things (IoT) & Embedded Systems** — мікроконтролери (Arduino, Raspberry Pi), датчики та вбудовані системи.
+
+---
+
+**Рекомендовані нові файли для додавання:**
+
+| Назва файлу | Назва розділу | Чим доповнює |
+| --- | --- | --- |
+| `data_science_analytics.html` | Data Science, Big Data та Аналітика | Pandas, Spark, Data Engineering, ETL, visualization |
+| `qa_testing.html` | Тестування ПЗ та QA | Unit, Integration, E2E testing, Selenium, Cypress, Postman |
+| `mobile_dev.html` | Мобільна розробка (iOS / Android) | Swift, Kotlin, Flutter, React Native, Mobile Architecture |
+| `pm_methodologies.html` | IT PM: Методології та Управління | Agile, Scrum, Kanban, Jira, SDLC, ITIL |
+| `game_dev.html` | GameDev та Комп'ютерна графіка | Unity, Unreal Engine, OpenGL/Vulkan, 3D/2D Pipeline |
+| `iot_embedded.html` | Інтернет речей (IoT) та Embedded | Arduino, Raspberry Pi, ESP32, MQTT, Вбудовані системи |
+
+Якщо додати ці 6 розділів, ваш ІТ Портал стане справді 100% комплексною енциклопедією, яка охопить абсолютно всі рівні — від заліза й мереж до бізнес-процесів, мобілок та штучного інтелекту.
+
+Як вам таке доповнення? Готові затвердити фінальний перелік чи розробимо наступну сторінку?

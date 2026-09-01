@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Апаратне забезпечення ПК — Довідник</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #ff9f43;
+            --accent-2: #00e5b0;
+            --gradient: linear-gradient(135deg, #ff9f43, #ff5252);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 5% 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        .home-link::before { content: "← "; }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #000; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #000; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(255,159,67,0.3);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.55; margin: 0.5rem 0; flex: 1;
+        }
+        .card-meta {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+        .card-meta strong {
+            color: var(--text); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(255,159,67,0.12); color: var(--accent);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0;
+        }
+        .spec-tag {
+            display: inline-block;
+            background: rgba(0,229,176,0.12); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.6rem 1.8rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+        [data-theme="light"] .intro { border-color: rgba(0,0,0,0.06); }
+        .intro h2 {
+            font-size: 1.35rem; margin-bottom: 0.8rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro h3 { font-size: 1.05rem; margin: 1.25rem 0 0.45rem; color: var(--accent); }
+        .intro p { margin-bottom: 0.7rem; }
+        .intro ul { margin: 0.4rem 0 0.8rem 1.25rem; }
+        .intro li { margin-bottom: 0.4rem; }
+        .intro strong { color: var(--text); }
+
+        .resource-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1.2rem;
+        }
+        .resource-card {
+            background: var(--surface-hover);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 0.75rem;
+            padding: 1.2rem;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .resource-card h4 { color: var(--text); font-size: 1rem; margin-bottom: 0.4rem; }
+        .resource-card p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
+        .btn-external {
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+            background: var(--accent); color: #000; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            text-decoration: none; font-weight: 700; font-size: 0.85rem; transition: 0.2s;
+        }
+        .btn-external:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="brand-area">
+            <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+            <div class="page-title" id="page-title">⚙️ Апаратне забезпечення ПК</div>
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        </div>
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+<footer id="footer"></footer>
+
+<script>
+const categories = {
+    cpu: { uk: "🧠 Процесори (CPU)", ru: "🧠 Процессоры (CPU)", en: "🧠 Processors (CPU)" },
+    ram: { uk: "⚡ Оперативна пам'ять (RAM)", ru: "⚡ Оперативная память (RAM)", en: "⚡ Memory (RAM)" },
+    storage: { uk: "💾 Накопичувачі (SSD/HDD)", ru: "💾 Накопители (SSD/HDD)", en: "💾 Storage (SSD/HDD)" },
+    motherboard: { uk: "🔌 Материнські плати", ru: "🔌 Материнские платы", en: "🔌 Motherboards" }
+};
+
+const items = [
+    { cat: "cpu", icon: "🔳", name: "ЦП / Процесор (CPU)",
+      desc: { uk: "Головний обчислювальний мозок комп'ютера. Виконує інструкції програм та керує іншими компонентами.",
+              ru: "Главный вычислительный мозг компьютера. Выполняет инструкции программ и управляет компонентами.",
+              en: "The primary component that executes instructions and performs computer calculations." },
+      traits: { uk: "Тактова частота, Ядра/Потоки, Кеш L1/L2/L3, TDP", ru: "Тактовая частота, Ядра/Потоки, Кэш L1/L2/L3, TDP", en: "Clock speed, Cores/Threads, L1/L2/L3 Cache, TDP" },
+      spec: "Ключ: Архітектура x86 / ARM" },
+
+    { cat: "ram", icon: "📟", name: "ОЗП / Оперативна пам'ять (RAM)",
+      desc: { uk: "Швидка енергозалежна пам'ять для тимчасового зберігання даних активних програм та операційної системи.",
+              ru: "Быстрая энергозависимая память для временного хранения данных активных программ и ОС.",
+              en: "High-speed volatile memory used to store working data and machine code currently in use." },
+      traits: { uk: "Об'єм (ГБ), Частота (МГц), Таймінги (CL), Двоканальний режим", ru: "Объём (ГБ), Частота (МГц), Тайминги (CL), Двухканальный режим", en: "Capacity (GB), Speed (MHz), Latency (CL), Dual-channel" },
+      spec: "Стандарти: DDR4 / DDR5" },
+
+    { cat: "storage", icon: "🚀", name: "NVMe M.2 SSD",
+      desc: { uk: "Напівпровідниковий накопичувач надвисокої швидкості, що підключається безпосередньо через шину PCIe.",
+              ru: "Сверхскоростной твердотельный накопитель, подключаемый напрямую через шину PCIe.",
+              en: "Ultra-fast solid-state drive operating over the PCIe protocol for maximum throughput." },
+      traits: { uk: "Швидкість до 7000+ МБ/с, PCIe 4.0/5.0, Форм-фактор 2280", ru: "Скорость до 7000+ МБ/с, PCIe 4.0/5.0, Форм-фактор 2280", en: "Speeds up to 7000+ MB/s, PCIe 4.0/5.0, Form factor 2280" },
+      spec: "Тип: NAND Flash (TLC/QLC)" },
+
+    { cat: "storage", icon: "💽", name: "Жорсткий диск (HDD)",
+      desc: { uk: "Магнітний накопичувач великої ємності з рухомими механічними частинами. Використовується для архівів.",
+              ru: "Магнитный накопитель большой ёмкости с механическими частями. Используется для архивов.",
+              en: "High-capacity magnetic storage using spinning platters. Best for data archiving." },
+      traits: { uk: "Низька ціна за 1 ГБ, 5400/7200 RPM, SATA III", ru: "Низкая цена за 1 ГБ, 5400/7200 RPM, SATA III", en: "Low cost per GB, 5400/7200 RPM, SATA III interface" },
+      spec: "Швидкість: ~150-200 МБ/с" },
+
+    { cat: "motherboard", icon: "🟫", name: "Материнська плата",
+      desc: { uk: "Основна друкована плата, що об'єднує всі компоненти систему у єдиний організм.",
+              ru: "Основная печатная плата, объединяющая все компоненты системы в единый организм.",
+              en: "The main printed circuit board connecting all internal hardware components together." },
+      traits: { uk: "Сокет (LGA/AM5), Чипсет (B-серія, Z-серія), Живлення VRM", ru: "Сокет (LGA/AM5), Чипсет (B-серия, Z-серия), Питание VRM", en: "Socket (LGA/AM5), Chipset (B-series, Z-series), VRM design" },
+      spec: "Форм-фактори: ATX, Micro-ATX, Mini-ITX" }
+];
+
+const content = {
+    overview: {
+        uk: {
+            title: "Основи архітектури комп'ютера",
+            body: `
+<p>Сучасні комп'ютери будуються за <strong>архітектурою Фон Неймана</strong> або її модифікаціями. Вона передбачає наявність центрального процесора, оперативної пам'яті та пристроїв введення/виведення.</p>
+<h3>Основні вузли системи:</h3>
+<ul>
+<li><strong>Центральний процесор (CPU):</strong> виконує обчислення та логічні операції.</li>
+<li><strong>Система пам'яті:</strong> розділена на надшвидкі регістри, кеш-пам'ять (L1-L3), ОЗП та енергонезалежні накопичувачі.</li>
+<li><strong>Шини даних:</strong> провідники, що забезпечують обмін інформацією між CPU, RAM та відеокартою (наприклад, PCIe).</li>
+</ul>
+`
+        },
+        ru: {
+            title: "Основы архитектуры компьютера",
+            body: `
+<p>Современные ПК строятся по <strong>архитектуре Фон Неймана</strong>. Она включает центральный процессор, оперативную память и устройства ввода/вывода.</p>
+<h3>Основные узлы системы:</h3>
+<ul>
+<li><strong>Центральный процессор (CPU):</strong> выполняет вычисления и логику.</li>
+<li><strong>Система памяти:</strong> регистры, кэш-память (L1-L3), ОЗУ и энергонезависимые накопители.</li>
+<li><strong>Шины данных:</strong> обеспечивают обмен информацией между компонентами (например, PCIe).</li>
+</ul>
+`
+        },
+        en: {
+            title: "Computer Architecture Fundamentals",
+            body: `
+<p>Modern PCs rely on the <strong>Von Neumann Architecture</strong> model, comprising a processing unit, primary memory, and I/O devices.</p>
+<h3>Key Subsystems:</h3>
+<ul>
+<li><strong>Central Processing Unit (CPU):</strong> Executes instructions and logical calculations.</li>
+<li><strong>Memory Hierarchy:</strong> Registers, L1-L3 Cache, RAM, and Non-volatile storage.</li>
+<li><strong>System Bus:</strong> High-speed interconnects between hardware components (e.g., PCIe bus).</li>
+</ul>
+`
+        }
+    },
+    tools: {
+        uk: {
+            title: "Інтерактивні ресурси та інструменти підбору",
+            body: `
+<p>Скористайтеся готовими онлайн-інструментами для перевірки сумісності комплектуючих та тестування:</p>
+<div class="resource-cards">
+    <div class="resource-card">
+        <h4>🔧 PCPartPicker</h4>
+        <p>Найкращий сервіс для автоматичної перевірки сумісності процесорів, плат та пам'яті.</p>
+        <a href="https://pcpartpicker.com" target="_blank" rel="noopener" class="btn-external">🔗 Відкрити PCPartPicker</a>
+    </div>
+    <div class="resource-card">
+        <h4>📊 UserBenchmark</h4>
+        <p>Порівняльна база даних продуктивності CPU, GPU та SSD на основі мільйонів тестів.</p>
+        <a href="https://www.userbenchmark.com" target="_blank" rel="noopener" class="btn-external">🔗 Відкрити UserBenchmark</a>
+    </div>
+</div>
+`
+        },
+        ru: {
+            title: "Интерактивные ресурсы и инструменты подбора",
+            body: `
+<p>Воспользуйтесь готовыми сервисами для проверки совместимости и тестирования комплектующих:</p>
+<div class="resource-cards">
+    <div class="resource-card">
+        <h4>🔧 PCPartPicker</h4>
+        <p>Популярный сервис для автоматической проверки совместимости комплектующих ПК.</p>
+        <a href="https://pcpartpicker.com" target="_blank" rel="noopener" class="btn-external">🔗 Открыть PCPartPicker</a>
+    </div>
+    <div class="resource-card">
+        <h4>📊 UserBenchmark</h4>
+        <p>Сравнительная база данных производительности комплектующих на основе тестов.</p>
+        <a href="https://www.userbenchmark.com" target="_blank" rel="noopener" class="btn-external">🔗 Открыть UserBenchmark</a>
+    </div>
+</div>
+`
+        },
+        en: {
+            title: "Interactive Tools & PC Builders",
+            body: `
+<p>Use these free tools to check hardware compatibility and performance benchmarks:</p>
+<div class="resource-cards">
+    <div class="resource-card">
+        <h4>🔧 PCPartPicker</h4>
+        <p>Industry standard tool to build PCs and check hardware component compatibility.</p>
+        <a href="https://pcpartpicker.com" target="_blank" rel="noopener" class="btn-external">🔗 Open PCPartPicker</a>
+    </div>
+    <div class="resource-card">
+        <h4>📊 UserBenchmark</h4>
+        <p>Compare real-world user performance data for CPUs, GPUs, and SSDs.</p>
+        <a href="https://www.userbenchmark.com" target="_blank" rel="noopener" class="btn-external">🔗 Open UserBenchmark</a>
+    </div>
+</div>
+`
+        }
+    }
+};
+
+const ui = {
+    uk: {
+        title: "Апаратне забезпечення ПК — Довідник",
+        pageTitle: "⚙️ Апаратне забезпечення ПК",
+        home: "Головна сторінка",
+        all: "Усі комплектуючі",
+        overview: "💡 Архітектура ПК",
+        tools: "🔗 Корисні інструменти",
+        traits: "Ключові параметри",
+        noResults: "Нічого не знайдено.",
+        footer: "⚙️ Комп'ютерне залізо | 2026 | Довідник"
+    },
+    ru: {
+        title: "Аппаратное обеспечение ПК — Справочник",
+        pageTitle: "⚙️ Аппаратное обеспечение ПК",
+        home: "Главная страница",
+        all: "Все комплектующие",
+        overview: "💡 Архитектура ПК",
+        tools: "🔗 Полезные инструменты",
+        traits: "Ключевые параметры",
+        noResults: "Ничего не найдено.",
+        footer: "⚙️ Компьютерное железо | 2026 | Справочник"
+    },
+    en: {
+        title: "PC Hardware Guide",
+        pageTitle: "⚙️ PC Hardware Essentials",
+        home: "Home page",
+        all: "All Components",
+        overview: "💡 Architecture",
+        tools: "🔗 Useful Tools",
+        traits: "Key Specifications",
+        noResults: "Nothing found.",
+        footer: "⚙️ PC Hardware Guide | 2026"
+    }
+};
+
+let currentLang = localStorage.getItem('lang-hw') || 'uk';
+let activeCategory = 'overview';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang-hw', lang);
+    document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+    ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+    document.title = ui[lang].title;
+    document.getElementById('home-link').textContent = ui[lang].home;
+    document.getElementById('page-title').textContent = ui[lang].pageTitle;
+    renderFilters();
+    render();
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const cur = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+function renderFilters() {
+    const c = document.getElementById('filters');
+    let h = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+    h += `<button class="filter-btn ${activeCategory==='overview'?'active':''}" onclick="setCat('overview')">${ui[currentLang].overview}</button>`;
+    h += `<button class="filter-btn ${activeCategory==='tools'?'active':''}" onclick="setCat('tools')">${ui[currentLang].tools}</button>`;
+    for (const [k,v] of Object.entries(categories)) {
+        h += `<button class="filter-btn ${activeCategory===k?'active':''}" onclick="setCat('${k}')">${v[currentLang]}</button>`;
+    }
+    c.innerHTML = h;
+}
+
+function setCat(cat) {
+    activeCategory = cat;
+    renderFilters();
+    render();
+}
+
+function render() {
+    const main = document.getElementById('main');
+
+    if (['overview','tools'].includes(activeCategory)) {
+        const o = content[activeCategory][currentLang];
+        main.innerHTML = `<div class="intro"><h2>${o.title}</h2>${o.body}</div>`;
+        document.getElementById('footer').textContent = ui[currentLang].footer;
+        return;
+    }
+
+    let html = '';
+    const cats = (activeCategory === 'all') ? Object.keys(categories) : [activeCategory];
+
+    cats.forEach(catKey => {
+        const list = items.filter(e => e.cat === catKey);
+        if (!list.length) return;
+        html += `<div class="section-title">${categories[catKey][currentLang]}</div><div class="grid">`;
+        list.forEach(e => {
+            const tags = e.traits[currentLang].split(',').map(t => `<span class="tag">${t.trim()}</span>`).join('');
+            html += `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">${e.icon}</div>
+                        <div class="card-title">${e.name}</div>
+                    </div>
+                    <div class="card-desc">${e.desc[currentLang]}</div>
+                    <div class="card-meta">
+                        <strong>${ui[currentLang].traits}</strong>
+                        <div style="margin-top:0.25rem">${tags}</div>
+                    </div>
+                    <div class="spec-tag">📌 ${e.spec}</div>
+                </div>`;
+        });
+        html += `</div>`;
+    });
+
+    if (!html) html = `<div class="no-results">${ui[currentLang].noResults}</div>`;
+    main.innerHTML = html;
+    document.getElementById('footer').textContent = ui[currentLang].footer;
+}
+
+setLang(currentLang);
+</script>
+</body>
+</html>

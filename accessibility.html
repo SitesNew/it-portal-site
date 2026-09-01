@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доступність (Accessibility / a11y) — Довідник</title>
+    <style>
+        :root { --bg: #0a0a12; --surface: #12121f; --surface-hover: #1a1a2e; --card: #16162a; --text: #f0f0f5; --text-muted: #8b8ba3; --accent: #27ae60; --accent-2: #2196f3; --gradient: linear-gradient(135deg, #27ae60, #2196f3); --shadow: 0 4px 24px rgba(0,0,0,0.4); --radius: 1rem; }
+        [data-theme="light"] { --bg: #f4f6fb; --surface: #ffffff; --surface-hover: #f0f2f8; --card: #ffffff; --text: #0f0f1a; --text-muted: #5a5a70; --shadow: 0 4px 24px rgba(0,0,0,0.08); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; transition: background 0.3s, color 0.3s; }
+        header { background: var(--surface); border-bottom: 1px solid rgba(255,255,255,0.04); padding: 1rem 5% 0.8rem; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; }
+        .brand-area { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+        .home-link { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.95rem; white-space: nowrap; transition: opacity 0.2s; }
+        .home-link:hover { opacity: 0.8; } .home-link::before { content: "← "; }
+        .page-title { font-size: 1.2rem; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher { display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px; }
+        .lang-switcher button { background: transparent; border: none; color: var(--text-muted); padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer; font-size: 0.75rem; font-weight: 700; transition: 0.2s; }
+        .lang-switcher button.active { background: var(--accent); color: #fff; }
+        .theme-btn { width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--surface-hover); color: var(--text); cursor: pointer; font-size: 1rem; transition: 0.2s; }
+        .theme-btn:hover { transform: scale(1.1); }
+        .filters { max-width: 1200px; margin: 1rem auto; padding: 0 5%; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .filter-btn { padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08); background: var(--surface); color: var(--text-muted); cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap; }
+        .filter-btn:hover, .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+        main { max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem; }
+        .section-title { font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+        .card { background: var(--card); border: 1px solid rgba(255,255,255,0.04); border-radius: var(--radius); padding: 1.3rem; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
+        [data-theme="light"] .card { border-color: rgba(0,0,0,0.06); }
+        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: rgba(39,174,96,0.4); }
+        .card-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem; }
+        .card-icon { width: 44px; height: 44px; border-radius: 10px; background: var(--surface-hover); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+        .card-title { font-weight: 700; font-size: 1.05rem; }
+        .card-desc { color: var(--text-muted); font-size: 0.9rem; line-height: 1.55; margin: 0.5rem 0; flex: 1; }
+        .card-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem; }
+        .card-meta strong { color: var(--text); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; display: block; margin-bottom: 0.15rem; }
+        .tag { display: inline-block; background: rgba(39,174,96,0.15); color: var(--accent); padding: 0.15rem 0.5rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; margin: 0.1rem 0.15rem 0 0; }
+        .spec-tag { display: inline-block; background: rgba(33,150,243,0.12); color: var(--accent-2); padding: 0.15rem 0.5rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 700; margin-top: 0.6rem; }
+        .mfg-links { margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.06); display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .mfg-link { color: var(--text); background: var(--surface-hover); text-decoration: none; padding: 0.2rem 0.55rem; border-radius: 0.4rem; font-size: 0.75rem; font-weight: 600; transition: 0.2s; }
+        .mfg-link:hover { background: var(--accent); color: #fff; }
+        footer { text-align: center; padding: 2rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem; }
+        @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } .page-title { font-size: 1.02rem; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <div class="brand-area">
+                <a href="index.html" class="home-link" id="home-link">Головна сторінка</a>
+                <div class="page-title" id="page-title">♿ Доступність (Accessibility / a11y)</div>
+            </div>
+            <div class="controls">
+                <div class="lang-switcher">
+                    <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                    <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                    <button onclick="setLang('en')" id="btn-en">EN</button>
+                </div>
+                <button class="theme-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+            </div>
+        </div>
+        <div class="filters" id="filters"></div>
+    </header>
+    <main id="main"></main>
+    <footer id="footer"></footer>
+
+    <script>
+        const categories = {
+            standards: { uk: "📜 Стандарти та принципи", ru: "📜 Стандарты и принципы", en: "📜 Standards & Principles" },
+            dev: { uk: "👨‍💻 Розробка та код", ru: "👨‍💻 Разработка и код", en: "👨‍💻 Development & Code" },
+            design: { uk: "🎨 Дизайн та UX", ru: "🎨 Дизайн и UX", en: "🎨 Design & UX" },
+            tools: { uk: "🛠️ Інструменти тестування", ru: "🛠️ Инструменты тестирования", en: "🛠️ Testing Tools" }
+        };
+
+        const items = [
+            { cat: "standards", icon: "📋", name: { uk: "WCAG (Web Content Accessibility Guidelines)", ru: "WCAG (Руководство по доступности веб-контента)", en: "WCAG (Web Content Accessibility Guidelines)" }, desc: { uk: "Головний міжнародний стандарт, що описує, як робити веб-контент доступним для людей з інвалідністю. Базується на 4 принципах: POUR.", ru: "Главный международный стандарт, описывающий, как делать веб-контент доступным для людей с инвалидностью. Базируется на 4 принципах: POUR.", en: "The main international standard describing how to make web content accessible to people with disabilities. Based on 4 principles: POUR." }, traits: { uk: "POUR, Рівні A, AA, AAA, W3C", ru: "POUR, Уровни A, AA, AAA, W3C", en: "POUR, Levels A, AA, AAA, W3C" }, spec: { uk: "Фокус: Сприйняття, Керованість, Зрозумілість, Надійність", ru: "Фокус: Восприятие, Управляемость, Понятность, Надежность", en: "Focus: Perceivable, Operable, Understandable, Robust" }, links: [ { name: "W3C WCAG Overview", url: "https://www.w3.org/WAI/standards-guidelines/wcag/" } ]},
+            { cat: "dev", icon: "🏷️", name: { uk: "ARIA (WAI-ARIA)", ru: "ARIA (WAI-ARIA)", en: "ARIA (WAI-ARIA)" }, desc: { uk: "Набір атрибутів для HTML, що додають семантику для допоміжних технологій (скрінрідерів), коли стандартного HTML недостатньо.", ru: "Набор атрибутов для HTML, добавляющих семантику для вспомогательных технологий (скринридеров), когда стандартного HTML недостаточно.", en: "Set of HTML attributes that add semantics for assistive technologies (screen readers) when standard HTML is not enough." }, traits: { uk: "Roles, States, Properties, live regions", ru: "Roles, States, Properties, live regions", en: "Roles, States, Properties, live regions" }, spec: { uk: "Правило: Не використовувати ARIA, якщо можна обійтися нативним HTML", ru: "Правило: Не использовать ARIA, если можно обойтись нативным HTML", en: "Rule: No ARIA is better than bad ARIA" }, links: [ { name: "ARIA Authoring Practices", url: "https://www.w3.org/WAI/ARIA/apg/" } ]},
+            { cat: "dev", icon: "⌨️", name: { uk: "Навігація з клавіатури", ru: "Навигация с клавиатуры", en: "Keyboard Navigation" }, desc: { uk: "Забезпечення можливості повноцінної роботи з сайтом без миші. Управління через Tab, Enter, Space та стрілки.", ru: "Обеспечение возможности полноценной работы с сайтом без мыши. Управление через Tab, Enter, Space и стрелки.", en: "Ensuring the ability to fully use the site without a mouse. Control via Tab, Enter, Space, and arrows." }, traits: { uk: "Tabindex, Focus management, Skip links", ru: "Tabindex, Focus management, Skip links", en: "Tabindex, Focus management, Skip links" }, spec: { uk: "Вимога: WCAG 2.1.1 (Level A)", ru: "Требование: WCAG 2.1.1 (Level A)", en: "Requirement: WCAG 2.1.1 (Level A)" }, links: [ { name: "WebAIM Keyboard Accessibility", url: "https://webaim.org/techniques/keyboard/" } ]},
+            { cat: "design", icon: "👁️", name: { uk: "Кольоровий контраст", ru: "Цветовой контраст", en: "Color Contrast" }, desc: { uk: "Забезпечення достатнього співвідношення яскравості між текстом та фоном для людей з порушеннями зору або дальтонізмом.", ru: "Обеспечение достаточного соотношения яркости между текстом и фоном для людей с нарушениями зрения или дальтонизмом.", en: "Ensuring sufficient brightness ratio between text and background for people with visual impairments or color blindness." }, traits: { uk: "Ratio 4.5:1 (AA), 7:1 (AAA), WCAG", ru: "Ratio 4.5:1 (AA), 7:1 (AAA), WCAG", en: "Ratio 4.5:1 (AA), 7:1 (AAA), WCAG" }, spec: { uk: "Інструмент: Контрастні перевірки", ru: "Инструмент: Контрастные проверки", en: "Tool: Contrast Checkers" }, links: [ { name: "WebAIM Contrast Checker", url: "https://webaim.org/resources/contrastchecker/" } ]},
+            { cat: "design", icon: "🔍", name: { uk: "Масштабованість та Adaptivity", ru: "Масштабируемость и Adaptivity", en: "Scalability & Adaptivity" }, desc: { uk: "Можливість збільшувати текст до 200% без втрати функціональності та адаптивний дизайн під різні екрани.", ru: "Возможность увеличивать текст до 200% без потери функциональности и адаптивный дизайн под разные экраны.", en: "Ability to zoom text up to 200% without losing functionality and responsive design for different screens." }, traits: { uk: "Responsive Web Design (RWD), rem/em, Viewport", ru: "Responsive Web Design (RWD), rem/em, Viewport", en: "Responsive Web Design (RWD), rem/em, Viewport" }, spec: { uk: "Стандарт: WCAG 1.4.4", ru: "Стандарт: WCAG 1.4.4", en: "Standard: WCAG 1.4.4" }, links: [ { name: "MDN Responsive Design", url: "https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Responsive_Design" } ]},
+            { cat: "tools", icon: "🔊", name: { uk: "Скрінрідери (Screen Readers)", ru: "Скринридеры (Screen Readers)", en: "Screen Readers" }, desc: { uk: "Програми, що озвучують текст з екрана для сліпих та слабозорих користувачів. Розробники мають тестувати сайти з ними.", ru: "Программы, озвучивающие текст с экрана для слепых и слабовидящих пользователей. Разработчики должны тестировать сайты с ними.", en: "Programs that read screen text aloud for blind and low-vision users. Developers must test sites with them." }, traits: { uk: "NVDA, JAWS, VoiceOver, TalkBack", ru: "NVDA, JAWS, VoiceOver, TalkBack", en: "NVDA, JAWS, VoiceOver, TalkBack" }, spec: { uk: "Ціль: Тестування в реальних умовах", ru: "Цель: Тестирование в реальных условиях", en: "Goal: Real-world Testing" }, links: [ { name: "NVDA (Free)", url: "https://www.nvaccess.org/" } ]},
+            { cat: "tools", icon: "🤖", name: { uk: "Автоматизовані аудити", ru: "Автоматизированные аудиты", en: "Automated Audits" }, desc: { uk: "Інструменти, що швидко сканують код сторінки на наявність типових помилок доступності (відсутній alt, поганий контраст тощо).", ru: "Инструменты, быстро сканирующие код страницы на наличие типичных ошибок доступности (отсутствует alt, плохой контраст и т.д.).", en: "Tools that quickly scan page code for common accessibility errors (missing alt, poor contrast, etc.)." }, traits: { uk: "Lighthouse, axe, WAVE, Stark", ru: "Lighthouse, axe, WAVE, Stark", en: "Lighthouse, axe, WAVE, Stark" }, spec: { uk: "Етап: Dev та QA", ru: "Этап: Dev и QA", en: "Stage: Dev & QA" }, links: [ { name: "WAVE Evaluation Tool", url: "https://wave.webaim.org/" }, { name: "axe DevTools", url: "https://www.deque.com/axe/devtools/" } ]}
+        ];
+
+        const ui = {
+            uk: { title: "Доступність (Accessibility / a11y) — Довідник", pageTitle: "♿ Доступність (Accessibility / a11y)", home: "Головна сторінка", all: "Усі розділи", traits: "Ключові поняття", mfgText: "Інструменти та стандарти:", noResults: "Нічого не знайдено.", footer: "♿ Доступність (Accessibility / a11y) | Довідник 2025" },
+            ru: { title: "Доступность (Accessibility / a11y) — Справочник", pageTitle: "♿ Доступность (Accessibility / a11y)", home: "Главная страница", all: "Все разделы", traits: "Ключевые понятия", mfgText: "Инструменты и стандарты:", noResults: "Ничего не найдено.", footer: "♿ Доступность (Accessibility / a11y) | Справочник 2025" },
+            en: { title: "Accessibility (a11y) — Guide", pageTitle: "♿ Accessibility (a11y)", home: "Home page", all: "All Sections", traits: "Key Concepts", mfgText: "Tools & Standards:", noResults: "Nothing found.", footer: "♿ Accessibility (a11y) | Guide 2025" }
+        };
+
+        let currentLang = localStorage.getItem('lang-a11y') || 'uk';
+        let activeCategory = 'all';
+
+        function setLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang-a11y', lang);
+            document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+            ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+            document.title = ui[lang].title;
+            document.getElementById('home-link').textContent = ui[lang].home;
+            document.getElementById('page-title').textContent = ui[lang].pageTitle;
+            renderFilters();
+            render();
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const cur = html.getAttribute('data-theme');
+            html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+            localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+        }
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+        function renderFilters() {
+            const c = document.getElementById('filters');
+            let h = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+            for (const [k,v] of Object.entries(categories)) {
+                h += `<button class="filter-btn ${activeCategory===k?'active':''}" onclick="setCat('${k}')">${v[currentLang]}</button>`;
+            }
+            c.innerHTML = h;
+        }
+
+        function setCat(cat) {
+            activeCategory = cat;
+            renderFilters();
+            render();
+        }
+
+        function render() {
+            const main = document.getElementById('main');
+            let html = '';
+            const cats = (activeCategory === 'all') ? Object.keys(categories) : [activeCategory];
+
+            cats.forEach(catKey => {
+                const list = items.filter(e => e.cat === catKey);
+                if (!list.length) return;
+                html += `<div class="section-title">${categories[catKey][currentLang]}</div><div class="grid">`;
+                list.forEach(e => {
+                    const tags = e.traits[currentLang].split(',').map(t => `<span class="tag">${t.trim()}</span>`).join('');
+                    let linksHtml = '';
+                    if (e.links && e.links.length) {
+                        linksHtml = `<div class="mfg-links"><strong style="width:100%; font-size:0.7rem; color:var(--text-muted); margin-bottom:2px;">${ui[currentLang].mfgText}</strong>` + e.links.map(l => `<a href="${l.url}" target="_blank" rel="noopener" class="mfg-link">🔗 ${l.name}</a>`).join('') + `</div>`;
+                    }
+                    html += `<div class="card"><div class="card-header"><div class="card-icon">${e.icon}</div><div class="card-title">${e.name[currentLang]}</div></div><div class="card-desc">${e.desc[currentLang]}</div><div class="card-meta"><strong>${ui[currentLang].traits}</strong><div style="margin-top:0.25rem">${tags}</div></div><div class="spec-tag">📌 ${e.spec[currentLang]}</div>${linksHtml}</div>`;
+                });
+                html += `</div>`;
+            });
+            if (!html) html = `<div class="no-results">${ui[currentLang].noResults}</div>`;
+            main.innerHTML = html;
+            document.getElementById('footer').textContent = ui[currentLang].footer;
+        }
+
+        setLang(currentLang);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Portal</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { darkMode: 'class', theme: { extend: {} } };
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+body { font-family: 'Inter', sans-serif; }
+html { scroll-behavior: smooth; scroll-padding-top: 120px; }
+.nav-item { white-space: nowrap; }
+.lang-block { display: none; }
+.lang-block.active { display: block; }
+
+/* Dark theme guaranteed contrast */
+.dark .nav-item { color: #ffffff !important; }
+.dark .nav-item:hover { background-color: rgba(255,255,255,0.15) !important; }
+.dark #app a[href^="mailto"] { color: #60a5fa !important; }
+</style>
+</head>
+<body>
+
+<div id="app" class="min-h-screen bg-gray-50 dark:bg-slate-900 dark:text-white transition-colors duration-500">
+
+<!-- Навігація -->
+<nav class="sticky top-0 z-50 backdrop-blur-md border-b border-gray-200 bg-white/80 dark:border-slate-700 dark:bg-slate-900 transition-colors duration-500">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center justify-between py-2">
+      <a href="index.html" class="flex items-center gap-2 hover:opacity-80 transition-opacity text-gray-900 dark:text-white">
+        <span class="text-2xl">&#128187;</span>
+        <span class="text-lg font-bold tracking-tight">IT Portal</span>
+      </a>
+      <div class="flex items-center gap-2">
+        <button onclick="setLang('ua')" class="px-3 py-1 rounded-full text-sm font-medium transition-all hover:scale-105 bg-blue-500 text-white" id="btn-ua">&#127482;&#127462; UA</button>
+        <button onclick="setLang('ru')" class="px-3 py-1 rounded-full text-sm font-medium transition-all hover:scale-105 bg-gray-200 text-gray-700" id="btn-ru">&#127479;&#127482; RU</button>
+        <button onclick="setLang('en')" class="px-3 py-1 rounded-full text-sm font-medium transition-all hover:scale-105 bg-gray-200 text-gray-700" id="btn-en">&#127468;&#127463; EN</button>
+        <button onclick="toggleTheme()" class="p-2 rounded-full transition-all hover:scale-110 bg-gray-200 text-gray-900" id="theme-btn" title="Theme">&#9728;</button>
+      </div>
+    </div>
+    <div class="flex flex-wrap justify-center gap-x-1 gap-y-1 pb-2">
+<a href="#group1" class="nav-item px-2 py-1 rounded-md text-xs font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors dark:text-white" data-ua="&#127963; Історія та основи" data-ru="&#127963; История и основы" data-en="&#127963; History & Fundamentals">&#127963; Історія та основи</a>
+<a href="#group2" class="nav-item px-2 py-1 rounded-md text-xs font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors dark:text-white" data-ua="&#128187; Програмування" data-ru="&#128187; Программирование" data-en="&#128187; Programming">&#128187; Програмування</a>
+<a href="#group3" class="nav-item px-2 py-1 rounded-md text-xs font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors dark:text-white" data-ua="&#127760; Мережі та інфраструктура" data-ru="&#127760; Сети и инфраструктура" data-en="&#127760; Networks & Infrastructure">&#127760; Мережі та інфраструктура</a>
+<a href="#group4" class="nav-item px-2 py-1 rounded-md text-xs font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors dark:text-white" data-ua="&#129504; ШІ та аналітика" data-ru="&#129504; ИИ и аналитика" data-en="&#129504; AI & Analytics">&#129504; ШІ та аналітика</a>
+<a href="#group5" class="nav-item px-2 py-1 rounded-md text-xs font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors dark:text-white" data-ua="&#128737; Безпека та ОС" data-ru="&#128737; Безопасность и ОС" data-en="&#128737; Security & OS">&#128737; Безпека та ОС</a>
+<a href="#group6" class="nav-item px-2 py-1 rounded-md text-xs font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors dark:text-white" data-ua="&#127758; Веб та соціальні технології" data-ru="&#127758; Веб и социальные технологии" data-en="&#127758; Web & Social Tech">&#127758; Веб та соціальні технології</a>
+<a href="#group7" class="nav-item px-2 py-1 rounded-md text-xs font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors dark:text-white" data-ua="&#10024; Нові технології" data-ru="&#10024; Новые технологии" data-en="&#10024; Emerging Tech">&#10024; Нові технології</a>
+<a href="#group8" class="nav-item px-2 py-1 rounded-md text-xs font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors dark:text-white" data-ua="&#128188; Бізнес та карєра" data-ru="&#128188; Бизнес и карьера" data-en="&#128188; Business & Career">&#128188; Бізнес та карєра</a>
+<a href="#group9" class="nav-item px-2 py-1 rounded-md text-xs font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors dark:text-white" data-ua="&#128300; Теорія та спецтеми" data-ru="&#128300; Теория и спецтемы" data-en="&#128300; Theory & Special Topics">&#128300; Теорія та спецтеми</a>
+<a href="it-news.html" class="nav-item px-2 py-1 rounded-md text-xs font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors dark:text-white" data-ua="&#128240; Новини" data-ru="&#128240; Новости" data-en="&#128240; News">&#128240; Новини</a>
+<a href="#footer" class="nav-item px-2 py-1 rounded-md text-xs font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors dark:text-white" data-ua="&#128231; Контакти" data-ru="&#128231; Контакты" data-en="&#128231; Contacts">&#128231; Контакти</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Контент UA -->
+<div class="lang-block" id="content-ua">
+<header class="relative overflow-hidden">
+<div class="max-w-7xl mx-auto px-4 py-12 md:py-16">
+<div class="grid md:grid-cols-2 gap-10 items-center">
+<div class="space-y-5">
+<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold backdrop-blur-sm border border-gray-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800 dark:text-white">
+<span>&#128218;</span><span>Навчально-методичний довідник</span>
+</div>
+<h1 class="text-4xl md:text-5xl font-extrabold leading-tight" data-hero-h1 style="color:#ff0000">Що таке Інформаційні Технології?</h1>
+<p class="text-lg md:text-xl leading-relaxed" data-hero-p style="color:#ff0000">ІТ — це нервова система сучасної цивілізації, що поєднує мільярди пристроїв та людей у єдине цифрове середовище.</p>
+</div>
+<div class="relative">
+<img src="rozvitok_it.png" alt="IT Evolution" class="rounded-2xl shadow-2xl w-full object-cover border-2 border-gray-200 dark:border-slate-700"/>
+<div class="absolute -bottom-4 -right-4 text-4xl animate-bounce">&#128640;</div>
+</div>
+</div>
+</div>
+</header>
+<section class="max-w-7xl mx-auto px-4 py-10">
+<div class="grid md:grid-cols-3 gap-5">
+<div class="p-5 rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-xl">
+<div class="text-3xl mb-2">&#127919;</div>
+<h3 class="text-lg font-bold mb-1 dark:text-white">Для чого потрібні?</h3>
+<p class="opacity-80 text-sm leading-relaxed dark:opacity-100 dark:text-gray-200">Від лікування пацієнтів і запуску супутників до управління фінансами та навчання дітей. ІТ автоматизують рутину, аналізують дані та з'єднують людей через континенти.</p>
+</div>
+<div class="p-5 rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-xl">
+<div class="text-3xl mb-2">&#127757;</div>
+<h3 class="text-lg font-bold mb-1 dark:text-white">Місце в житті</h3>
+<p class="opacity-80 text-sm leading-relaxed dark:opacity-100 dark:text-gray-200">Смартфон у кишені, безконтактна оплата, відеозв'язок з рідними — усе це результат праці мільйонів фахівців. ІТ перетворилися з привілею на базову інфраструктуру.</p>
+</div>
+<div class="p-5 rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-xl">
+<div class="text-3xl mb-2">&#128302;</div>
+<h3 class="text-lg font-bold mb-1 dark:text-white">Перспективи та майбутнє</h3>
+<p class="opacity-80 text-sm leading-relaxed dark:opacity-100 dark:text-gray-200">ШІ, хмарні технології, кібербезпека, IoT та квантові обчислення — ІТ стають інфраструктурою суспільства, підсилюючи людину, а не замінюючи її.</p>
+</div>
+</div>
+</section>
+<section class="max-w-7xl mx-auto px-4 py-10">
+<h2 class="text-3xl font-bold text-center mb-8 dark:text-white">&#128450; Розділи порталу</h2>
+<div class="mb-10" id="group1">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#127963;</span> Історія та основи
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="history-computing.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128421;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Історія обчислювальної техніки</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Від абака та механічних калькуляторів до суперкомп'ютерів і квантових систем — еволюція обчислень крізь століття.</p>
+</div>
+</div>
+</a>
+<a href="history-programming-languages.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128220;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Історія мов програмування</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Від машинного коду та Fortran до сучасних мов — як змінювався спосіб спілкування з комп'ютерами.</p>
+</div>
+</div>
+</a>
+<a href="architecture_it.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127959;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Архітектури ІТ</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Фон Нейман, Гарвардська архітектура, багатоядерність та сучасні підходи до побудови обчислювальних систем.</p>
+</div>
+</div>
+</a>
+<a href="hardware.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128421;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Класифікація комп'ютерних систем</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Суперкомп'ютери, мейнфрейми, робочі станції, вбудовані системи — типи та їхнє призначення.</p>
+</div>
+</div>
+</a>
+<a href="apparat.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128295;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Апаратне забезпечення комп'ютерів</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Процесори, материнські плати, відеокарти, блоки живлення — будова сучасного ПК зсередини.</p>
+</div>
+</div>
+</a>
+<a href="storage-devices.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128190;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Засоби збереження інформації</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">HDD, SSD, NVMe, оптичні диски, хмарні сховища — еволюція та порівняння технологій зберігання.</p>
+</div>
+</div>
+</a>
+<a href="ports.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128268;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Порти та інтерфейси</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">USB, HDMI, Thunderbolt, PCIe, SATA — роз'єми та протоколи, що поєднують пристрої у єдину систему.</p>
+</div>
+</div>
+</a>
+<a href="file_systems.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128193;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Файлові системи</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">NTFS, ext4, APFS, FAT32 — як ОС організовують дані на дисках та забезпечують їх цілісність.</p>
+</div>
+</div>
+</a>
+<a href="legacy-mainframes.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127963;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Легасі-системи та Мейнфрейми</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">IBM z/OS, COBOL та інші технології, що досі працюють у банках та держустановах по всьому світу.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group2">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#128187;</span> Програмування
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="proglang-directory.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128216;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Довідник мов програмування</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Python, Java, C++, Rust, Go — огляд синтаксису, парадигм та сфер застосування класичних мов.</p>
+</div>
+</div>
+</a>
+<a href="weblang-directory.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127760;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Довідник мов веб-програмування</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">HTML, CSS, JavaScript, TypeScript, PHP — інструментарій для створення сучасних веб-застосунків.</p>
+</div>
+</div>
+</a>
+<a href="design_patterns.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#129513;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Патерни проєктування</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Singleton, Factory, Observer, MVC — перевірені часом рішення для типових задач програмування.</p>
+</div>
+</div>
+</a>
+<a href="data-structures-algorithms.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128202;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Структури даних та алгоритми</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Масиви, списки, дерева, графи, сортування, пошук — фундамент ефективного програмування.</p>
+</div>
+</div>
+</a>
+<a href="compilers-interpreters.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#9881;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Компілятори та інтерпретатори</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Лексичний аналіз, синтаксичне дерево, оптимізація — як код перетворюється на машинні інструкції.</p>
+</div>
+</div>
+</a>
+<a href="developer_tools.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128736;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Інструменти розробника</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">IDE, відладчики, лінтери, профайлери — арсенал сучасного програміста для продуктивної роботи.</p>
+</div>
+</div>
+</a>
+<a href="software-engineering-sdlc.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127981;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Основи програмної інженерії / SDLC</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Waterfall, Agile, Scrum, Kanban — методології та життєвий цикл розробки програмного забезпечення.</p>
+</div>
+</div>
+</a>
+<a href="software-testing-qa.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#129514;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Тестування ПЗ (QA / Testing)</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Unit-тести, інтеграційне тестування, автоматизація, TDD — як забезпечити якість коду.</p>
+</div>
+</div>
+</a>
+<a href="version-control-systems.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127807;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Системи контролю версій</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Git, SVN, Mercurial — відстеження змін, гілкування, злиття та колективна розробка коду.</p>
+</div>
+</div>
+</a>
+<a href="api-microservices-integrations.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128279;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">API, мікросервіси та інтеграції</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">REST, GraphQL, gRPC, SOAP — проєктування інтерфейсів та архітектура розподілених систем.</p>
+</div>
+</div>
+</a>
+<a href="mobile-development.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128241;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Мобільна розробка</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">iOS, Android, Flutter, React Native — створення застосунків для смартфонів та планшетів.</p>
+</div>
+</div>
+</a>
+<a href="game-development.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127918;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Розробка ігор (Game Development)</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Unity, Unreal Engine, фізика, шейдери, ігрові цикли — магія створення інтерактивних світів.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group3">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#127760;</span> Мережі та інфраструктура
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="networks_and_protocols.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-purple-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127760;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Мережі та протоколи</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">TCP/IP, HTTP/3, DNS, VPN — як дані подорожують Інтернетом та як працює мережева інфраструктура.</p>
+</div>
+</div>
+</a>
+<a href="cloud_virtualization.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-purple-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#9729;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Хмари та віртуалізація</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">AWS, Azure, GCP, Docker, Kubernetes — хмарні технології та контейнеризація сучасних застосунків.</p>
+</div>
+</div>
+</a>
+<a href="devops-basics.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-purple-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128260;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Основи DevOps & CI/CD</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Jenkins, GitLab CI, Ansible, Terraform — автоматизація збірки, тестування та розгортання ПЗ.</p>
+</div>
+</div>
+</a>
+<a href="parallel-distributed-computing.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-purple-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#9889;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Паралельні та розподілені обчислення</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">MPI, OpenMP, MapReduce, grid-обчислення — як розподілити задачу між тисячами процесорів.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group4">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#129504;</span> ШІ та аналітика
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="spr_ai_servises.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-pink-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#129302;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Довідник сервісів ШІ</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">ChatGPT, Midjourney, Claude, Copilot — огляд інструментів штучного інтелекту для різних задач.</p>
+</div>
+</div>
+</a>
+<a href="machine-learning-ai.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-pink-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#129504;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Машинне навчання та ШІ</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Нейронні мережі, глибоке навчання, NLP, комп'ютерний зір — теорія та практика ML.</p>
+</div>
+</div>
+</a>
+<a href="data-science-bigdata.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-pink-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128200;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Data Science, Big Data та аналітика</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Pandas, Spark, Hadoop, візуалізація — як перетворити терабайти даних на корисні інсайти.</p>
+</div>
+</div>
+</a>
+<a href="spr_subd.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-pink-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128451;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Довідник СУБД</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">MySQL, PostgreSQL, MongoDB, Redis — реляційні та NoSQL бази даних, їхні особливості та застосування.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group5">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#128737;</span> Безпека та ОС
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="cybersecurity.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-red-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128737;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Кібербезпека</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Шифрування, пентестинг, SOC, zero trust — захист систем, даних та мереж від кібератак.</p>
+</div>
+</div>
+</a>
+<a href="spr_os.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-red-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128039;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Довідник операційних систем</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Windows, Linux, macOS, BSD — архітектура, ядро, процеси, пам'ять та управління ресурсами.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group6">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#127758;</span> Веб та соціальні технології
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="search-engines.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-cyan-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128269;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Пошукові системи</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Google, Bing, DuckDuckGo — як працює індексація, ранжування та пошукові алгоритми.</p>
+</div>
+</div>
+</a>
+<a href="seo-tools.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-cyan-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128202;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">SEO-інструменти</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Оптимізація для пошукових систем, аналіз ключових слів, технічний SEO та контент-стратегія.</p>
+</div>
+</div>
+</a>
+<a href="social_networks.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-cyan-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128101;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Соціальні мережі</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Архітектура соцмереж, алгоритми стрічок, масштабування та соціальні аспекти цифрових платформ.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group7">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#10024;</span> Нові технології
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="internet-of-things.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-yellow-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127968;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Інтернет речей (IoT)</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Розумний дім, промислові сенсори, MQTT — як пов'язані пристрої змінюють світ навколо нас.</p>
+</div>
+</div>
+</a>
+<a href="blockchain-distributed-ledgers.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-yellow-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#9939;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Блокчейн та розподілені реєстри</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Криптовалюти, смарт-контракти, DeFi — децентралізовані технології та їхній потенціал.</p>
+</div>
+</div>
+</a>
+<a href="ar-vr-metaverse.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-yellow-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#129371;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">AR/VR / метавсесвіти</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Доповнена та віртуальна реальність, просторові обчислення — нові виміри цифрової взаємодії.</p>
+</div>
+</div>
+</a>
+<a href="quantum-computing.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-yellow-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#9883;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Квантові обчислення</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Кубіти, квантове переплутування, алгоритм Шора — обчислення на межі фізики майбутнього.</p>
+</div>
+</div>
+</a>
+<a href="robotics.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-yellow-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#129470;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Робототехніка (Robotics)</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Автономні системи, ROS, маніпулятори, дрони — як машини набувають фізичної форми та розуму.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group8">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#128188;</span> Бізнес та кар'єра
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="it-and-business.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-orange-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128188;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">ІТ та Бізнес-процеси</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">ERP, CRM, BPM — як інформаційні технології трансформують бізнес-моделі та операційну ефективність.</p>
+</div>
+</div>
+</a>
+<a href="it-project-management.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-orange-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128203;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Управління ІТ-проєктами</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">PMBOK, PRINCE2, Agile-менеджмент — як довести технологічний проєкт від ідеї до релізу.</p>
+</div>
+</div>
+</a>
+<a href="it-careers-specialties.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-orange-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127891;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Кар'єра в ІТ / спеціальності</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Розробник, DevOps, аналітик, архітектор — кар'єрні шляхи, навички та тренди ІТ-ринку праці.</p>
+</div>
+</div>
+</a>
+<a href="office_editors.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-orange-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128221;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Текстові редактори та офісні програми</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Microsoft Office, LibreOffice, LaTeX, Markdown — інструменти для створення та обробки документів.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group9">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#128300;</span> Теорія та спецтеми
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="formal-methods.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-indigo-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128208;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Формальні методи / Теорія обчислень</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Автомати, лямбда-числення, логіка Хоара — математичні основи, що лежать в основі всіх програм.</p>
+</div>
+</div>
+</a>
+<a href="ui-ux-design.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-indigo-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127912;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">UI/UX та дизайн інтерфейсів</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Принципи зручності, доступності та естетики — як створювати інтерфейси, якими приємно користуватися.</p>
+</div>
+</div>
+</a>
+<a href="accessibility.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-indigo-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#9855;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Доступність (Accessibility / a11y)</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">WCAG, screen readers, семантична верстка — як зробити технології доступними для кожної людини.</p>
+</div>
+</div>
+</a>
+<a href="it-glossary.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-indigo-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128214;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Глосарій термінів ІТ</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Алфавітний покажчик ключових понять, акронімів та професійного сленгу світу технологій.</p>
+</div>
+</div>
+</a>
+<a href="it-news.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-indigo-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128240;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Рух та новини ІТ</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Актуальні події, релізи, злиття компаній та технологічні тренди, що формують індустрію сьогодні.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+</section>
+<footer id="footer" class="border-t border-gray-200 dark:border-slate-700 mt-12 py-10 bg-white dark:bg-slate-900 transition-colors">
+<div class="max-w-7xl mx-auto px-4 text-center space-y-4">
+<div class="font-semibold text-lg dark:text-white">&#128218; Навчально-методичний довідник: "Що таке Інформаційні Технології?"</div>
+<div class="opacity-80 dark:text-gray-200">Copyright &#169; 2025 - <span class="yr"></span> рік.</div>
+<div>&#128231; E-mail: <a href="mailto:_pvi@ukr.net" class="underline hover:no-underline transition-colors text-blue-600 dark:text-blue-400" target="_blank">_pvi@ukr.net</a></div>
+<div class="text-sm opacity-60 max-w-3xl mx-auto leading-relaxed pt-4 border-t border-gray-200 dark:border-slate-700 dark:text-gray-400">Всі матеріали, надані на цьому інформаційному ресурсі, призначені ВИКЛЮЧНО з ОЗНАЙОМЧОЮ, НАВЧАЛЬНОЮ та ОСВІТНЬОЮ МЕТОЮ.<br>Адміністрація ресурсу не претендує на їх авторство і не несе відповідальності за їхній зміст.<br>Створено з допомогою різних Сервісів Штучного Інтелекту &#129302;</div>
+</div>
+</footer>
+</div>
+<!-- Контент RU -->
+<div class="lang-block" id="content-ru">
+<header class="relative overflow-hidden">
+<div class="max-w-7xl mx-auto px-4 py-12 md:py-16">
+<div class="grid md:grid-cols-2 gap-10 items-center">
+<div class="space-y-5">
+<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold backdrop-blur-sm border border-gray-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800 dark:text-white">
+<span>&#128218;</span><span>Учебно-методический справочник</span>
+</div>
+<h1 class="text-4xl md:text-5xl font-extrabold leading-tight" data-hero-h1 style="color:#ff0000">Что такое Информационные Технологии?</h1>
+<p class="text-lg md:text-xl leading-relaxed" data-hero-p style="color:#ff0000">ИТ — это нервная система современной цивилизации, объединяющая миллиарды устройств и людей в единую цифровую среду.</p>
+</div>
+<div class="relative">
+<img src="rozvitok_it.png" alt="IT Evolution" class="rounded-2xl shadow-2xl w-full object-cover border-2 border-gray-200 dark:border-slate-700"/>
+<div class="absolute -bottom-4 -right-4 text-4xl animate-bounce">&#128640;</div>
+</div>
+</div>
+</div>
+</header>
+<section class="max-w-7xl mx-auto px-4 py-10">
+<div class="grid md:grid-cols-3 gap-5">
+<div class="p-5 rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-xl">
+<div class="text-3xl mb-2">&#127919;</div>
+<h3 class="text-lg font-bold mb-1 dark:text-white">Для чего нужны?</h3>
+<p class="opacity-80 text-sm leading-relaxed dark:opacity-100 dark:text-gray-200">От лечения пациентов и запуска спутников до управления финансами и обучения детей. ИТ автоматизируют рутину, анализируют данные и соединяют людей через континенты.</p>
+</div>
+<div class="p-5 rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-xl">
+<div class="text-3xl mb-2">&#127757;</div>
+<h3 class="text-lg font-bold mb-1 dark:text-white">Место в жизни</h3>
+<p class="opacity-80 text-sm leading-relaxed dark:opacity-100 dark:text-gray-200">Смартфон в кармане, бесконтактная оплата, видеосвязь с близкими — всё это результат труда миллионов специалистов. ИТ превратились из привилегии в базовую инфраструктуру.</p>
+</div>
+<div class="p-5 rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-xl">
+<div class="text-3xl mb-2">&#128302;</div>
+<h3 class="text-lg font-bold mb-1 dark:text-white">Перспективы и будущее</h3>
+<p class="opacity-80 text-sm leading-relaxed dark:opacity-100 dark:text-gray-200">ИИ, облачные технологии, кибербезопасность, IoT и квантовые вычисления — ИТ становятся инфраструктурой общества, усиливая человека, а не заменяя его.</p>
+</div>
+</div>
+</section>
+<section class="max-w-7xl mx-auto px-4 py-10">
+<h2 class="text-3xl font-bold text-center mb-8 dark:text-white">&#128450; Разделы портала</h2>
+<div class="mb-10" id="group1">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#127963;</span> История и основы
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="history-computing.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128421;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">История вычислительной техники</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">От абака и механических калькуляторов до суперкомпьютеров и квантовых систем — эволюция вычислений сквозь века.</p>
+</div>
+</div>
+</a>
+<a href="history-programming-languages.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128220;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">История языков программирования</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">От машинного кода и Fortran до современных языков — как менялся способ общения с компьютерами.</p>
+</div>
+</div>
+</a>
+<a href="architecture_it.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127959;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Архитектуры ИТ</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Фон Нейман, Гарвардская архитектура, многоядерность и современные подходы к построению вычислительных систем.</p>
+</div>
+</div>
+</a>
+<a href="hardware.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128421;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Классификация компьютерных систем</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Суперкомпьютеры, мейнфреймы, рабочие станции, встроенные системы — типы и их назначение.</p>
+</div>
+</div>
+</a>
+<a href="apparat.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128295;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Аппаратное обеспечение компьютеров</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Процессоры, материнские платы, видеокарты, блоки питания — устройство современного ПК изнутри.</p>
+</div>
+</div>
+</a>
+<a href="storage-devices.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128190;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Средства хранения информации</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">HDD, SSD, NVMe, оптические диски, облачные хранилища — эволюция и сравнение технологий хранения.</p>
+</div>
+</div>
+</a>
+<a href="ports.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128268;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Порты и интерфейсы</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">USB, HDMI, Thunderbolt, PCIe, SATA — разъёмы и протоколы, соединяющие устройства в единую систему.</p>
+</div>
+</div>
+</a>
+<a href="file_systems.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128193;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Файловые системы</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">NTFS, ext4, APFS, FAT32 — как ОС организуют данные на дисках и обеспечивают их целостность.</p>
+</div>
+</div>
+</a>
+<a href="legacy-mainframes.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127963;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Легаси-системы и Мейнфреймы</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">IBM z/OS, COBOL и другие технологии, которые до сих пор работают в банках и госучреждениях по всему миру.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group2">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#128187;</span> Программирование
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="proglang-directory.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128216;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Справочник языков программирования</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Python, Java, C++, Rust, Go — обзор синтаксиса, парадигм и сфер применения классических языков.</p>
+</div>
+</div>
+</a>
+<a href="weblang-directory.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127760;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Справочник языков веб-программирования</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">HTML, CSS, JavaScript, TypeScript, PHP — инструментарий для создания современных веб-приложений.</p>
+</div>
+</div>
+</a>
+<a href="design_patterns.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#129513;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Паттерны проектирования</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Singleton, Factory, Observer, MVC — проверенные временем решения для типичных задач программирования.</p>
+</div>
+</div>
+</a>
+<a href="data-structures-algorithms.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128202;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Структуры данных и алгоритмы</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Массивы, списки, деревья, графы, сортировка, поиск — фундамент эффективного программирования.</p>
+</div>
+</div>
+</a>
+<a href="compilers-interpreters.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#9881;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Компиляторы и интерпретаторы</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Лексический анализ, синтаксическое дерево, оптимизация — как код превращается в машинные инструкции.</p>
+</div>
+</div>
+</a>
+<a href="developer_tools.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128736;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Инструменты разработчика</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">IDE, отладчики, линтеры, профайлеры — арсенал современного программиста для продуктивной работы.</p>
+</div>
+</div>
+</a>
+<a href="software-engineering-sdlc.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127981;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Основы программной инженерии / SDLC</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Waterfall, Agile, Scrum, Kanban — методологии и жизненный цикл разработки программного обеспечения.</p>
+</div>
+</div>
+</a>
+<a href="software-testing-qa.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#129514;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Тестирование ПО (QA / Testing)</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Unit-тесты, интеграционное тестирование, автоматизация, TDD — как обеспечить качество кода.</p>
+</div>
+</div>
+</a>
+<a href="version-control-systems.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127807;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Системы контроля версий</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Git, SVN, Mercurial — отслеживание изменений, ветвление, слияние и коллективная разработка кода.</p>
+</div>
+</div>
+</a>
+<a href="api-microservices-integrations.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128279;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">API, микросервисы и интеграции</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">REST, GraphQL, gRPC, SOAP — проектирование интерфейсов и архитектура распределённых систем.</p>
+</div>
+</div>
+</a>
+<a href="mobile-development.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128241;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Мобильная разработка</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">iOS, Android, Flutter, React Native — создание приложений для смартфонов и планшетов.</p>
+</div>
+</div>
+</a>
+<a href="game-development.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127918;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Разработка игр (Game Development)</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Unity, Unreal Engine, физика, шейдеры, игровые циклы — магия создания интерактивных миров.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group3">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#127760;</span> Сети и инфраструктура
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="networks_and_protocols.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-purple-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127760;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Сети и протоколы</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">TCP/IP, HTTP/3, DNS, VPN — как данные путешествуют по Интернету и как работает сетевая инфраструктура.</p>
+</div>
+</div>
+</a>
+<a href="cloud_virtualization.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-purple-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#9729;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Облака и виртуализация</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">AWS, Azure, GCP, Docker, Kubernetes — облачные технологии и контейнеризация современных приложений.</p>
+</div>
+</div>
+</a>
+<a href="devops-basics.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-purple-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128260;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Основы DevOps & CI/CD</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Jenkins, GitLab CI, Ansible, Terraform — автоматизация сборки, тестирования и развёртывания ПО.</p>
+</div>
+</div>
+</a>
+<a href="parallel-distributed-computing.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-purple-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#9889;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Параллельные и распределённые вычисления</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">MPI, OpenMP, MapReduce, grid-вычисления — как распределить задачу между тысячами процессоров.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group4">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#129504;</span> ИИ и аналитика
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="spr_ai_servises.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-pink-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#129302;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Справочник сервисов ИИ</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">ChatGPT, Midjourney, Claude, Copilot — обзор инструментов искусственного интеллекта для разных задач.</p>
+</div>
+</div>
+</a>
+<a href="machine-learning-ai.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-pink-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#129504;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Машинное обучение и ИИ</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Нейронные сети, глубокое обучение, NLP, компьютерное зрение — теория и практика ML.</p>
+</div>
+</div>
+</a>
+<a href="data-science-bigdata.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-pink-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128200;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Data Science, Big Data и аналитика</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Pandas, Spark, Hadoop, визуализация — как превратить терабайты данных в полезные инсайты.</p>
+</div>
+</div>
+</a>
+<a href="spr_subd.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-pink-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128451;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Справочник СУБД</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">MySQL, PostgreSQL, MongoDB, Redis — реляционные и NoSQL базы данных, их особенности и применение.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group5">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#128737;</span> Безопасность и ОС
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="cybersecurity.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-red-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128737;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Кибербезопасность</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Шифрование, пентестинг, SOC, zero trust — защита систем, данных и сетей от кибератак.</p>
+</div>
+</div>
+</a>
+<a href="spr_os.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-red-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128039;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Справочник операционных систем</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Windows, Linux, macOS, BSD — архитектура, ядро, процессы, память и управление ресурсами.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group6">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#127758;</span> Веб и социальные технологии
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="search-engines.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-cyan-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128269;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Поисковые системы</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Google, Bing, DuckDuckGo — как работает индексация, ранжирование и поисковые алгоритмы.</p>
+</div>
+</div>
+</a>
+<a href="seo-tools.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-cyan-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128202;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">SEO-инструменты</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Оптимизация для поисковых систем, анализ ключевых слов, технический SEO и контент-стратегия.</p>
+</div>
+</div>
+</a>
+<a href="social_networks.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-cyan-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128101;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Социальные сети</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Архитектура соцсетей, алгоритмы лент, масштабирование и социальные аспекты цифровых платформ.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group7">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#10024;</span> Новые технологии
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="internet-of-things.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-yellow-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127968;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Интернет вещей (IoT)</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Умный дом, промышленные сенсоры, MQTT — как связанные устройства меняют мир вокруг нас.</p>
+</div>
+</div>
+</a>
+<a href="blockchain-distributed-ledgers.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-yellow-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#9939;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Блокчейн и распределённые реестры</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Криптовалюты, смарт-контракты, DeFi — децентрализованные технологии и их потенциал.</p>
+</div>
+</div>
+</a>
+<a href="ar-vr-metaverse.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-yellow-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#129371;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">AR/VR / метавселенные</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Дополненная и виртуальная реальность, пространственные вычисления — новые измерения цифрового взаимодействия.</p>
+</div>
+</div>
+</a>
+<a href="quantum-computing.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-yellow-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#9883;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Квантовые вычисления</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Кубиты, квантовое запутывание, алгоритм Шора — вычисления на грани физики будущего.</p>
+</div>
+</div>
+</a>
+<a href="robotics.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-yellow-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#129470;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Робототехника (Robotics)</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Автономные системы, ROS, манипуляторы, дроны — как машины обретают физическую форму и разум.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group8">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#128188;</span> Бизнес и карьера
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="it-and-business.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-orange-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128188;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">ИТ и Бизнес-процессы</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">ERP, CRM, BPM — как информационные технологии трансформируют бизнес-модели и операционную эффективность.</p>
+</div>
+</div>
+</a>
+<a href="it-project-management.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-orange-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128203;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Управление ИТ-проектами</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">PMBOK, PRINCE2, Agile-менеджмент — как довести технологический проект от идеи до релиза.</p>
+</div>
+</div>
+</a>
+<a href="it-careers-specialties.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-orange-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127891;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Карьера в ИТ / специальности</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Разработчик, DevOps, аналитик, архитектор — карьерные пути, навыки и тренды ИТ-рынка труда.</p>
+</div>
+</div>
+</a>
+<a href="office_editors.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-orange-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128221;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Текстовые редакторы и офисные программы</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Microsoft Office, LibreOffice, LaTeX, Markdown — инструменты для создания и обработки документов.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group9">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#128300;</span> Теория и спецтемы
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="formal-methods.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-indigo-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128208;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Формальные методы / Теория вычислений</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Автоматы, лямбда-исчисление, логика Хоара — математические основы, лежащие в основе всех программ.</p>
+</div>
+</div>
+</a>
+<a href="ui-ux-design.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-indigo-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127912;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">UI/UX и дизайн интерфейсов</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Принципы удобства, доступности и эстетики — как создавать интерфейсы, которыми приятно пользоваться.</p>
+</div>
+</div>
+</a>
+<a href="accessibility.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-indigo-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#9855;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Доступность (Accessibility / a11y)</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">WCAG, screen readers, семантическая вёрстка — как сделать технологии доступными для каждого человека.</p>
+</div>
+</div>
+</a>
+<a href="it-glossary.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-indigo-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128214;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Глоссарий терминов ИТ</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Алфавитный указатель ключевых понятий, акронимов и профессионального сленга мира технологий.</p>
+</div>
+</div>
+</a>
+<a href="it-news.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-indigo-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128240;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Движение и новости ИТ</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Актуальные события, релизы, слияния компаний и технологические тренды, формирующие индустрию сегодня.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+</section>
+<footer id="footer" class="border-t border-gray-200 dark:border-slate-700 mt-12 py-10 bg-white dark:bg-slate-900 transition-colors">
+<div class="max-w-7xl mx-auto px-4 text-center space-y-4">
+<div class="font-semibold text-lg dark:text-white">&#128218; Учебно-методический справочник: "Что такое Информационные Технологии?"</div>
+<div class="opacity-80 dark:text-gray-200">Copyright &#169; 2025 - <span class="yr"></span> год.</div>
+<div>&#128231; E-mail: <a href="mailto:_pvi@ukr.net" class="underline hover:no-underline transition-colors text-blue-600 dark:text-blue-400" target="_blank">_pvi@ukr.net</a></div>
+<div class="text-sm opacity-60 max-w-3xl mx-auto leading-relaxed pt-4 border-t border-gray-200 dark:border-slate-700 dark:text-gray-400">Все материалы, представленные на данном информационном ресурсе, предназначены ИСКЛЮЧИТЕЛЬНО для ОЗНАКОМИТЕЛЬНЫХ, УЧЕБНЫХ и ОБРАЗОВАТЕЛЬНЫХ ЦЕЛЕЙ.<br>Администрация ресурса не претендует на их авторство и не несёт ответственности за их содержание.<br>Создано с помощью различных Сервисов Искусственного Интеллекта &#129302;</div>
+</div>
+</footer>
+</div>
+<!-- Контент EN -->
+<div class="lang-block" id="content-en">
+<header class="relative overflow-hidden">
+<div class="max-w-7xl mx-auto px-4 py-12 md:py-16">
+<div class="grid md:grid-cols-2 gap-10 items-center">
+<div class="space-y-5">
+<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold backdrop-blur-sm border border-gray-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800 dark:text-white">
+<span>&#128218;</span><span>Educational & Methodological Handbook</span>
+</div>
+<h1 class="text-4xl md:text-5xl font-extrabold leading-tight" data-hero-h1 style="color:#ff0000">What are Information Technologies?</h1>
+<p class="text-lg md:text-xl leading-relaxed" data-hero-p style="color:#ff0000">IT is the nervous system of modern civilization, connecting billions of devices and people into a single digital environment.</p>
+</div>
+<div class="relative">
+<img src="rozvitok_it.png" alt="IT Evolution" class="rounded-2xl shadow-2xl w-full object-cover border-2 border-gray-200 dark:border-slate-700"/>
+<div class="absolute -bottom-4 -right-4 text-4xl animate-bounce">&#128640;</div>
+</div>
+</div>
+</div>
+</header>
+<section class="max-w-7xl mx-auto px-4 py-10">
+<div class="grid md:grid-cols-3 gap-5">
+<div class="p-5 rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-xl">
+<div class="text-3xl mb-2">&#127919;</div>
+<h3 class="text-lg font-bold mb-1 dark:text-white">Why do we need them?</h3>
+<p class="opacity-80 text-sm leading-relaxed dark:opacity-100 dark:text-gray-200">From treating patients and launching satellites to managing finances and educating children. IT automates routine, analyzes data, and connects people across continents.</p>
+</div>
+<div class="p-5 rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-xl">
+<div class="text-3xl mb-2">&#127757;</div>
+<h3 class="text-lg font-bold mb-1 dark:text-white">Place in life</h3>
+<p class="opacity-80 text-sm leading-relaxed dark:opacity-100 dark:text-gray-200">A smartphone in your pocket, contactless payment, video calls with loved ones — all this is the result of millions of specialists' work. IT has turned from a privilege into basic infrastructure.</p>
+</div>
+<div class="p-5 rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-xl">
+<div class="text-3xl mb-2">&#128302;</div>
+<h3 class="text-lg font-bold mb-1 dark:text-white">Prospects & Future</h3>
+<p class="opacity-80 text-sm leading-relaxed dark:opacity-100 dark:text-gray-200">AI, cloud technologies, cybersecurity, IoT and quantum computing — IT is becoming the infrastructure of society, empowering humans rather than blindly replacing them.</p>
+</div>
+</div>
+</section>
+<section class="max-w-7xl mx-auto px-4 py-10">
+<h2 class="text-3xl font-bold text-center mb-8 dark:text-white">&#128450; Portal Sections</h2>
+<div class="mb-10" id="group1">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#127963;</span> History & Fundamentals
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="history-computing.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128421;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">History of Computing</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">From the abacus and mechanical calculators to supercomputers and quantum systems — the evolution of computing through the centuries.</p>
+</div>
+</div>
+</a>
+<a href="history-programming-languages.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128220;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">History of Programming Languages</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">From machine code and Fortran to modern languages — how human-computer communication has evolved.</p>
+</div>
+</div>
+</a>
+<a href="architecture_it.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127959;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">IT Architectures</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Von Neumann, Harvard architecture, multicore and modern approaches to building computing systems.</p>
+</div>
+</div>
+</a>
+<a href="hardware.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128421;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Computer Systems Classification</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Supercomputers, mainframes, workstations, embedded systems — types and their purposes.</p>
+</div>
+</div>
+</a>
+<a href="apparat.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128295;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Computer Hardware</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Processors, motherboards, graphics cards, power supplies — the anatomy of a modern PC.</p>
+</div>
+</div>
+</a>
+<a href="storage-devices.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128190;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Storage Devices</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">HDD, SSD, NVMe, optical discs, cloud storage — evolution and comparison of storage technologies.</p>
+</div>
+</div>
+</a>
+<a href="ports.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128268;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Ports & Interfaces</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">USB, HDMI, Thunderbolt, PCIe, SATA — connectors and protocols that unite devices into a single system.</p>
+</div>
+</div>
+</a>
+<a href="file_systems.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128193;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">File Systems</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">NTFS, ext4, APFS, FAT32 — how operating systems organize data on disks and ensure its integrity.</p>
+</div>
+</div>
+</a>
+<a href="legacy-mainframes.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127963;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Legacy Systems & Mainframes</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">IBM z/OS, COBOL and other technologies still running in banks and government institutions worldwide.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group2">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#128187;</span> Programming
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="proglang-directory.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128216;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Programming Languages Directory</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Python, Java, C++, Rust, Go — overview of syntax, paradigms and application areas of classic languages.</p>
+</div>
+</div>
+</a>
+<a href="weblang-directory.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127760;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Web Programming Languages Directory</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">HTML, CSS, JavaScript, TypeScript, PHP — the toolkit for building modern web applications.</p>
+</div>
+</div>
+</a>
+<a href="design_patterns.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#129513;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Design Patterns</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Singleton, Factory, Observer, MVC — time-tested solutions for typical programming problems.</p>
+</div>
+</div>
+</a>
+<a href="data-structures-algorithms.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128202;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Data Structures & Algorithms</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Arrays, lists, trees, graphs, sorting, searching — the foundation of efficient programming.</p>
+</div>
+</div>
+</a>
+<a href="compilers-interpreters.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#9881;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Compilers & Interpreters</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Lexical analysis, syntax trees, optimization — how code is transformed into machine instructions.</p>
+</div>
+</div>
+</a>
+<a href="developer_tools.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128736;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Developer Tools</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">IDEs, debuggers, linters, profilers — the modern programmer's arsenal for productive work.</p>
+</div>
+</div>
+</a>
+<a href="software-engineering-sdlc.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127981;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Software Engineering / SDLC</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Waterfall, Agile, Scrum, Kanban — methodologies and the software development life cycle.</p>
+</div>
+</div>
+</a>
+<a href="software-testing-qa.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#129514;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Software Testing (QA)</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Unit tests, integration testing, automation, TDD — how to ensure code quality.</p>
+</div>
+</div>
+</a>
+<a href="version-control-systems.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127807;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Version Control Systems</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Git, SVN, Mercurial — tracking changes, branching, merging and collaborative code development.</p>
+</div>
+</div>
+</a>
+<a href="api-microservices-integrations.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128279;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">API, Microservices & Integrations</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">REST, GraphQL, gRPC, SOAP — interface design and distributed systems architecture.</p>
+</div>
+</div>
+</a>
+<a href="mobile-development.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128241;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Mobile Development</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">iOS, Android, Flutter, React Native — creating applications for smartphones and tablets.</p>
+</div>
+</div>
+</a>
+<a href="game-development.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-green-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127918;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Game Development</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Unity, Unreal Engine, physics, shaders, game loops — the magic of creating interactive worlds.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group3">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#127760;</span> Networks & Infrastructure
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="networks_and_protocols.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-purple-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127760;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Networks & Protocols</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">TCP/IP, HTTP/3, DNS, VPN — how data travels the Internet and how network infrastructure works.</p>
+</div>
+</div>
+</a>
+<a href="cloud_virtualization.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-purple-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#9729;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Cloud & Virtualization</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">AWS, Azure, GCP, Docker, Kubernetes — cloud technologies and containerization of modern applications.</p>
+</div>
+</div>
+</a>
+<a href="devops-basics.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-purple-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128260;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">DevOps & CI/CD Basics</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Jenkins, GitLab CI, Ansible, Terraform — automating build, testing and software deployment.</p>
+</div>
+</div>
+</a>
+<a href="parallel-distributed-computing.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-purple-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#9889;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Parallel & Distributed Computing</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">MPI, OpenMP, MapReduce, grid computing — how to distribute a task across thousands of processors.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group4">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#129504;</span> AI & Analytics
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="spr_ai_servises.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-pink-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#129302;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">AI Services Directory</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">ChatGPT, Midjourney, Claude, Copilot — overview of artificial intelligence tools for various tasks.</p>
+</div>
+</div>
+</a>
+<a href="machine-learning-ai.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-pink-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#129504;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Machine Learning & AI</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Neural networks, deep learning, NLP, computer vision — the theory and practice of ML.</p>
+</div>
+</div>
+</a>
+<a href="data-science-bigdata.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-pink-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128200;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Data Science, Big Data & Analytics</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Pandas, Spark, Hadoop, visualization — how to turn terabytes of data into useful insights.</p>
+</div>
+</div>
+</a>
+<a href="spr_subd.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-pink-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128451;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">DBMS Directory</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">MySQL, PostgreSQL, MongoDB, Redis — relational and NoSQL databases, their features and applications.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group5">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#128737;</span> Security & OS
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="cybersecurity.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-red-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128737;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Cybersecurity</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Encryption, pentesting, SOC, zero trust — protecting systems, data and networks from cyberattacks.</p>
+</div>
+</div>
+</a>
+<a href="spr_os.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-red-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128039;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Operating Systems Directory</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Windows, Linux, macOS, BSD — architecture, kernel, processes, memory and resource management.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group6">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#127758;</span> Web & Social Tech
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="search-engines.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-cyan-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128269;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Search Engines</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Google, Bing, DuckDuckGo — how indexing, ranking and search algorithms work.</p>
+</div>
+</div>
+</a>
+<a href="seo-tools.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-cyan-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128202;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">SEO Tools</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Search engine optimization, keyword analysis, technical SEO and content strategy.</p>
+</div>
+</div>
+</a>
+<a href="social_networks.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-cyan-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128101;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Social Networks</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Social network architecture, feed algorithms, scaling and social aspects of digital platforms.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group7">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#10024;</span> Emerging Tech
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="internet-of-things.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-yellow-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127968;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Internet of Things (IoT)</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Smart home, industrial sensors, MQTT — how connected devices change the world around us.</p>
+</div>
+</div>
+</a>
+<a href="blockchain-distributed-ledgers.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-yellow-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#9939;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Blockchain & Distributed Ledgers</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Cryptocurrencies, smart contracts, DeFi — decentralized technologies and their potential.</p>
+</div>
+</div>
+</a>
+<a href="ar-vr-metaverse.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-yellow-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#129371;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">AR/VR / Metaverses</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Augmented and virtual reality, spatial computing — new dimensions of digital interaction.</p>
+</div>
+</div>
+</a>
+<a href="quantum-computing.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-yellow-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#9883;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Quantum Computing</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Qubits, quantum entanglement, Shor's algorithm — computing at the edge of future physics.</p>
+</div>
+</div>
+</a>
+<a href="robotics.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-yellow-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#129470;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Robotics</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Autonomous systems, ROS, manipulators, drones — how machines acquire physical form and intelligence.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group8">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#128188;</span> Business & Career
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="it-and-business.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-orange-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128188;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">IT & Business Processes</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">ERP, CRM, BPM — how information technologies transform business models and operational efficiency.</p>
+</div>
+</div>
+</a>
+<a href="it-project-management.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-orange-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128203;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">IT Project Management</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">PMBOK, PRINCE2, Agile management — how to bring a technology project from idea to release.</p>
+</div>
+</div>
+</a>
+<a href="it-careers-specialties.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-orange-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127891;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">IT Careers & Specialties</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Developer, DevOps, analyst, architect — career paths, skills and trends in the IT job market.</p>
+</div>
+</div>
+</a>
+<a href="office_editors.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-orange-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128221;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Text Editors & Office Software</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Microsoft Office, LibreOffice, LaTeX, Markdown — tools for creating and processing documents.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="mb-10" id="group9">
+<h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-4 py-2 rounded-lg w-fit bg-gray-100 dark:bg-slate-800 dark:text-white">
+<span>&#128300;</span> Theory & Special Topics
+</h3>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+<a href="formal-methods.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-indigo-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128208;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Formal Methods / Theory of Computation</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Automata, lambda calculus, Hoare logic — the mathematical foundations underlying all programs.</p>
+</div>
+</div>
+</a>
+<a href="ui-ux-design.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-indigo-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#127912;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">UI/UX & Interface Design</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Principles of usability, accessibility and aesthetics — how to create interfaces that are pleasant to use.</p>
+</div>
+</div>
+</a>
+<a href="accessibility.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-indigo-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#9855;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">Accessibility (a11y)</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">WCAG, screen readers, semantic markup — how to make technology accessible to every person.</p>
+</div>
+</div>
+</a>
+<a href="it-glossary.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-indigo-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128214;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">IT Glossary</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Alphabetical index of key concepts, acronyms and professional slang of the technology world.</p>
+</div>
+</div>
+</a>
+<a href="it-news.html" class="group p-5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-indigo-400 block">
+<div class="flex items-start gap-3">
+<span class="text-2xl group-hover:scale-110 transition-transform">&#128240;</span>
+<div>
+<h4 class="font-bold mb-1 dark:text-white">IT News & Trends</h4>
+<p class="text-sm opacity-70 dark:opacity-100 dark:text-gray-200">Current events, releases, company mergers and technology trends shaping the industry today.</p>
+</div>
+</div>
+</a>
+</div>
+</div>
+</section>
+<footer id="footer" class="border-t border-gray-200 dark:border-slate-700 mt-12 py-10 bg-white dark:bg-slate-900 transition-colors">
+<div class="max-w-7xl mx-auto px-4 text-center space-y-4">
+<div class="font-semibold text-lg dark:text-white">&#128218; Educational Handbook: "What are Information Technologies?"</div>
+<div class="opacity-80 dark:text-gray-200">Copyright &#169; 2025 - <span class="yr"></span> year.</div>
+<div>&#128231; E-mail: <a href="mailto:_pvi@ukr.net" class="underline hover:no-underline transition-colors text-blue-600 dark:text-blue-400" target="_blank">_pvi@ukr.net</a></div>
+<div class="text-sm opacity-60 max-w-3xl mx-auto leading-relaxed pt-4 border-t border-gray-200 dark:border-slate-700 dark:text-gray-400">All materials provided on this informational resource are intended EXCLUSIVELY for EDUCATIONAL and INFORMATIONAL PURPOSES.<br>The resource administration does not claim authorship and is not responsible for their content.<br>Created with the help of various Artificial Intelligence Services &#129302;</div>
+</div>
+</footer>
+</div>
+
+<script>
+function setLang(lang) {
+  document.querySelectorAll('.lang-block').forEach(function(el) {
+    el.classList.remove('active');
+  });
+  document.getElementById('content-' + lang).classList.add('active');
+
+  // Update nav items text
+  document.querySelectorAll('nav a[data-ua]').forEach(function(el) {
+    var txt = el.getAttribute('data-' + lang);
+    if (txt) el.innerHTML = txt;
+  });
+
+  var btns = {ua: document.getElementById('btn-ua'), ru: document.getElementById('btn-ru'), en: document.getElementById('btn-en')};
+  for (var l in btns) {
+    var b = btns[l];
+    if (l === lang) {
+      b.classList.remove('bg-gray-200', 'text-gray-700', 'bg-gray-700', 'text-gray-200');
+      b.classList.add('bg-blue-500', 'text-white');
+    } else {
+      b.classList.remove('bg-blue-500', 'text-white');
+      if (document.getElementById('app').classList.contains('dark')) {
+        b.classList.add('bg-gray-700', 'text-gray-200');
+      } else {
+        b.classList.add('bg-gray-200', 'text-gray-700');
+      }
+    }
+  }
+}
+
+function toggleTheme() {
+  var app = document.getElementById('app');
+  var btn = document.getElementById('theme-btn');
+  if (app.classList.contains('dark')) {
+    app.classList.remove('dark');
+    btn.innerHTML = '&#9728;';
+    btn.classList.remove('bg-gray-700', 'text-white');
+    btn.classList.add('bg-gray-200', 'text-gray-900');
+  } else {
+    app.classList.add('dark');
+    btn.innerHTML = '&#127769;';
+    btn.classList.remove('bg-gray-200', 'text-gray-900');
+    btn.classList.add('bg-gray-700', 'text-white');
+  }
+  // Оновити кнопки мов
+  var active = document.querySelector('.lang-block.active');
+  var lang = active ? active.id.replace('content-', '') : 'ua';
+  setLang(lang);
+}
+
+// Nav click handler - scrolls within the ACTIVE language block
+function initNavClicks() {
+  document.querySelectorAll('nav a[href^="#group"]').forEach(function(el) {
+    el.addEventListener('click', function(e) {
+      var href = this.getAttribute('href');
+      var activeBlock = document.querySelector('.lang-block.active');
+      if (activeBlock) {
+        var target = activeBlock.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+  });
+}
+
+// Ініціалізація
+var d = new Date();
+document.querySelectorAll('.yr').forEach(function(el){ el.textContent = d.getFullYear(); });
+document.getElementById('content-ua').classList.add('active');
+initNavClicks();
+</script>
+</body>
+</html>

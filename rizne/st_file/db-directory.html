@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB Directory — Довідник СУБД</title>
+    <style>
+        :root {
+            --bg: #0a0a12;
+            --surface: #12121f;
+            --surface-hover: #1a1a2e;
+            --card: #16162a;
+            --text: #f0f0f5;
+            --text-muted: #8b8ba3;
+            --accent: #00e5b0;
+            --accent-2: #7c3aed;
+            --accent-3: #ff9f43;
+            --gradient: linear-gradient(135deg, #00e5b0, #7c3aed);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --radius: 1rem;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f8;
+            --card: #ffffff;
+            --text: #0f0f1a;
+            --text-muted: #5a5a70;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1.2rem 5%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        [data-theme="light"] header { border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        .home-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: opacity 0.2s;
+        }
+        .home-link:hover { opacity: 0.8; }
+        
+        .page-title-center {
+            flex: 1;
+            text-align: center;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text);
+            padding: 0 1rem;
+            line-height: 1.3;
+        }
+        .page-title-center .sub {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .controls { display: flex; align-items: center; gap: 0.8rem; }
+        .lang-switcher {
+            display: flex; background: var(--surface-hover); border-radius: 2rem; padding: 3px;
+        }
+        .lang-switcher button {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.35rem 0.7rem; border-radius: 2rem; cursor: pointer;
+            font-size: 0.75rem; font-weight: 700; transition: 0.2s;
+        }
+        .lang-switcher button.active { background: var(--accent); color: #000; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: none;
+            background: var(--surface-hover); color: var(--text); cursor: pointer;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        .search-wrap {
+            max-width: 1200px; margin: 1.5rem auto 0; padding: 0 5%;
+        }
+        .search-box {
+            width: 100%; padding: 0.9rem 1.2rem; border-radius: var(--radius);
+            border: 1px solid rgba(255,255,255,0.08); background: var(--bg);
+            color: var(--text); font-size: 1rem; outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-box:focus { border-color: var(--accent); }
+        [data-theme="light"] .search-box { border-color: rgba(0,0,0,0.1); }
+        .search-box::placeholder { color: var(--text-muted); }
+
+        .filters {
+            max-width: 1200px; margin: 1rem auto; padding: 0 5%;
+            display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.08);
+            background: var(--surface); color: var(--text-muted); cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: 0.2s; white-space: nowrap;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent); color: #000; border-color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px; margin: 0 auto; padding: 1.5rem 5% 4rem;
+        }
+        .section-title {
+            font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1rem;
+        }
+        .card, .content-section {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        .content-section { margin-bottom: 2rem; }
+        [data-theme="light"] .card, [data-theme="light"] .content-section { border-color: rgba(0,0,0,0.06); }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: rgba(0,229,176,0.2);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.7rem;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            background: var(--surface-hover);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; flex-shrink: 0;
+        }
+        .card-title {
+            font-weight: 700; font-size: 1.05rem;
+        }
+        .card-desc {
+            color: var(--text-muted); font-size: 0.9rem;
+            line-height: 1.5; margin-bottom: 0.3rem;
+        }
+        .card-section {
+            margin-top: 0.7rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .card-section strong {
+            color: var(--text);
+            display: block;
+            margin-bottom: 0.15rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .query-tag {
+            display: inline-block;
+            background: rgba(124,58,237,0.1); color: var(--accent-2);
+            padding: 0.15rem 0.5rem; border-radius: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; margin-top: 0.2rem;
+        }
+        .card-link {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            color: var(--accent); text-decoration: none;
+            font-weight: 600; font-size: 0.85rem;
+            transition: gap 0.2s; margin-top: 0.8rem;
+        }
+        .card-link:hover { gap: 0.7rem; }
+        .card-link::after { content: "→"; }
+
+        .license-free { color: #00e5b0; }
+        .license-paid { color: #ff9f43; }
+        .license-mix { color: #7c3aed; }
+
+        .no-results {
+            text-align: center; color: var(--text-muted);
+            padding: 3rem; font-size: 1.1rem; grid-column: 1 / -1;
+        }
+
+        footer {
+            text-align: center; padding: 2rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem;
+        }
+
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .header-top { flex-direction: column; align-items: flex-start; }
+            .page-title-center { text-align: left; padding: 0.5rem 0; }
+            .controls { align-self: flex-end; margin-top: -3rem; }
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-hover); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="header-left">
+            <a href="index.html" class="home-link">🏠 На Головну / Home</a>
+        </div>
+        <div class="page-title-center" id="page-title">
+            <!-- Динамічна багатомовна назва -->
+        </div>
+        <div class="controls">
+            <div class="lang-switcher">
+                <button onclick="setLang('uk')" class="active" id="btn-uk">UA</button>
+                <button onclick="setLang('ru')" id="btn-ru">RU</button>
+                <button onclick="setLang('en')" id="btn-en">EN</button>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()">🌓</button>
+        </div>
+    </div>
+    <div class="search-wrap">
+        <input type="text" class="search-box" id="search" placeholder="Пошук СУБД..." oninput="render()">
+    </div>
+    <div class="filters" id="filters"></div>
+</header>
+
+<main id="main"></main>
+
+<footer id="footer"></footer>
+
+<script>
+// ===================== ДАНІ =====================
+const categories = {
+    dbf_history: { uk: "🕰️ Епоха .DBF", ru: "🕰️ Эпоха .DBF", en: "🕰️ .DBF Era" },
+    sql_overview: { uk: "🗄️ Основи SQL", ru: "🗄️ Основы SQL", en: "🗄️ SQL Basics" },
+    relational: { uk: "🔗 Реляційні (SQL)", ru: "🔗 Реляционные (SQL)", en: "🔗 Relational (SQL)" },
+    document:   { uk: "📄 Документні (NoSQL)", ru: "📄 Документные (NoSQL)", en: "📄 Document (NoSQL)" },
+    kv:         { uk: "🔑 Ключ-значення", ru: "🔑 Ключ-значение", en: "🔑 Key-Value" },
+    columnar:   { uk: "📊 Колонкові / Аналітичні", ru: "📊 Колоночные / Аналитические", en: "📊 Columnar / Analytical" },
+    graph:      { uk: "🕸 Графові", ru: "🕸 Графовые", en: "🕸 Graph" },
+    ts:         { uk: "⏱ Часові ряди", ru: "⏱ Временные ряды", en: "⏱ Time-Series" },
+    search:     { uk: "🔍 Пошукові", ru: "🔍 Поисковые", en: "🔍 Search Engines" },
+    memory:     { uk: "⚡ In-memory", ru: "⚡ In-memory", en: "⚡ In-memory" },
+    cloud:      { uk: "☁️ Хмарні / Serverless", ru: "☁️ Облачные / Serverless", en: "☁️ Cloud / Serverless" }
+};
+
+const dbList = [
+    // === РЕЛЯЦІЙНІ ===
+    { id:"postgres", cat:"relational", icon:"🐘", name:"PostgreSQL",
+      url:"https://www.postgresql.org/download/",
+      desc:{ uk:"Найпотужніша відкрита реляційна СУБД. Підтримка JSON, геоданих, повнотекстового пошуку та розширень.",
+             ru:"Самая мощная открытая реляционная СУБД. Поддержка JSON, геоданных, полнотекстового поиска и расширений.",
+             en:"The most powerful open-source relational DB. Supports JSON, geospatial data, full-text search and extensions." },
+      features:{ uk:"ACID, реплікація, партиціювання, PostGIS, PL/pgSQL, JSONB, логічна реплікація, підтримка до 32 ТБ на БД.",
+                ru:"ACID, репликация, партиционирование, PostGIS, PL/pgSQL, JSONB, логическая репликация, поддержка до 32 ТБ на БД.",
+                en:"ACID, replication, partitioning, PostGIS, PL/pgSQL, JSONB, logical replication, up to 32 TB per DB." },
+      license:{ uk:"Безкоштовна (PostgreSQL License)", ru:"Бесплатная (PostgreSQL License)", en:"Free (PostgreSQL License)" },
+      query:"SQL, PL/pgSQL, PL/Python, PL/Rust" },
+
+    { id:"mysql", cat:"relational", icon:"🐬", name:"MySQL",
+      url:"https://dev.mysql.com/downloads/",
+      desc:{ uk:"Найпопулярніша відкрита реляційна СУБД. Широко використовується у веб-розробці (LAMP-стек).",
+             ru:"Самая популярная открытая реляционная СУБД. Широко используется в веб-разработке (LAMP-стек).",
+             en:"The most popular open-source relational DB. Widely used in web development (LAMP stack)." },
+      features:{ uk:"InnoDB, MyISAM, реплікація master-slave, Group Replication, partitioning, JSON, X Protocol, Workbench.",
+                ru:"InnoDB, MyISAM, репликация master-slave, Group Replication, партиционирование, JSON, X Protocol, Workbench.",
+                en:"InnoDB, MyISAM, master-slave replication, Group Replication, partitioning, JSON, X Protocol, Workbench." },
+      license:{ uk:"GPL v2 / Комерційна (Oracle)", ru:"GPL v2 / Коммерческая (Oracle)", en:"GPL v2 / Commercial (Oracle)" },
+      query:"SQL, Stored Procedures, Triggers" },
+
+    { id:"informix", cat:"relational", icon:"🔷", name:"IBM Informix",
+      url:"https://www.ibm.com/products/informix",
+      desc:{ uk:"Високопродуктивна реляційна СУБД з багатою історією. Славиться надійністю, мінімальним 'відбитком' та вбудованими рішеннями для телеметрії та фінансів.",
+             ru:"Высокопроизводительная реляционная СУБД с богатой историей. Славится надежностью, минимальным 'отпечатком' и встроенными решениями для телеметрии и финансов.",
+             en:"High-performance relational DB with a rich history. Known for reliability, minimal footprint, and built-in solutions for telemetry and finance." },
+      features:{ uk:"ESQL/C, TimeSeries Data, NoSQL (MongoAPI) підтримка, висока щільність транзакцій, вбудовування в апаратне забезпечення (POS-термінали).",
+                ru:"ESQL/C, TimeSeries Data, поддержка NoSQL (MongoAPI), высокая плотность транзакций, встраивание в аппаратное обеспечение (POS-терминалы).",
+                en:"ESQL/C, TimeSeries Data, NoSQL (MongoAPI) support, high transaction density, embedding in hardware (POS terminals)." },
+      license:{ uk:"Платна / Express-C — безкоштовна", ru:"Платная / Express-C — бесплатная", en:"Paid / Express-C free" },
+      query:"SQL, ESQL/C, MongoDB API" },
+
+    { id:"mariadb", cat:"relational", icon:"🦭", name:"MariaDB",
+      url:"https://mariadb.org/download/",
+      desc:{ uk:"Спільнотна заміна MySQL від оригінального автора. Повна сумісність із MySQL + нові функції.",
+             ru:"Сообщественная замена MySQL от оригинального автора. Полная совместимость с MySQL + новые функции.",
+             en:"Community replacement for MySQL by the original author. Fully compatible with MySQL + new features." },
+      features:{ uk:"Aria, ColumnStore, Spider (шардінг), Galera Cluster, temporal tables, JSON, Oracle-режим сумісності.",
+                ru:"Aria, ColumnStore, Spider (шардинг), Galera Cluster, temporal tables, JSON, Oracle-режим совместимости.",
+                en:"Aria, ColumnStore, Spider (sharding), Galera Cluster, temporal tables, JSON, Oracle compatibility mode." },
+      license:{ uk:"GPL v2", ru:"GPL v2", en:"GPL v2" },
+      query:"SQL, PL/SQL (сумісність), Stored Procedures" },
+
+    { id:"sqlite", cat:"relational", icon:"🪶", name:"SQLite",
+      url:"https://sqlite.org/download.html",
+      desc:{ uk:"Вбудована реляційна БД без сервера. Ідеальна для мобільних додатків, IoT та локального сховища.",
+             ru:"Встроенная реляционная БД без сервера. Идеальна для мобильных приложений, IoT и локального хранилища.",
+             en:"Embedded relational DB without a server. Ideal for mobile apps, IoT and local storage." },
+      features:{ uk:"Zero-configuration, ACID, файлова БД, кросплатформна, підтримка до 281 ТБ, FTS5, R*Tree, JSON1.",
+                ru:"Zero-configuration, ACID, файловая БД, кроссплатформенная, поддержка до 281 ТБ, FTS5, R*Tree, JSON1.",
+                en:"Zero-configuration, ACID, single-file DB, cross-platform, up to 281 TB, FTS5, R*Tree, JSON1." },
+      license:{ uk:"Public Domain (SQLite)", ru:"Public Domain (SQLite)", en:"Public Domain (SQLite)" },
+      query:"SQL (діалект SQLite)" },
+
+    { id:"oracle", cat:"relational", icon:"🔴", name:"Oracle Database",
+      url:"https://www.oracle.com/database/technologies/",
+      desc:{ uk:"Корпоративна СУБД №1 у світі. Лідер для великих підприємств, банків та критичних систем.",
+             ru:"Корпоративная СУБД №1 в мире. Лидер для крупных предприятий, банков и критичных систем.",
+             en:"The world's #1 enterprise DB. Leader for large enterprises, banks and mission-critical systems." },
+      features:{ uk:"RAC (кластеризація), Data Guard, Partitioning, Multitenant, In-Memory, Advanced Security, Machine Learning.",
+                ru:"RAC (кластеризация), Data Guard, Partitioning, Multitenant, In-Memory, Advanced Security, Machine Learning.",
+                en:"RAC clustering, Data Guard, Partitioning, Multitenant, In-Memory, Advanced Security, Machine Learning." },
+      license:{ uk:"Платна (пропрієтарна)", ru:"Платная (проприетарная)", en:"Paid (proprietary)" },
+      query:"SQL, PL/SQL, Java, Python (всередині БД)" },
+
+    { id:"mssql", cat:"relational", icon:"🟦", name:"Microsoft SQL Server",
+      url:"https://www.microsoft.com/sql-server",
+      desc:{ uk:"Корпоративна СУБД від Microsoft. Глибока інтеграція з .NET, Azure та екосистемою Windows.",
+             ru:"Корпоративная СУБД от Microsoft. Глубокая интеграция с .NET, Azure и экосистемой Windows.",
+             en:"Enterprise DB by Microsoft. Deep integration with .NET, Azure and the Windows ecosystem." },
+      features:{ uk:"Always On Availability Groups, Columnstore, In-Memory OLTP, PolyBase, Machine Learning Services, SSIS/SSAS/SSRS.",
+                ru:"Always On Availability Groups, Columnstore, In-Memory OLTP, PolyBase, Machine Learning Services, SSIS/SSAS/SSRS.",
+                en:"Always On Availability Groups, Columnstore, In-Memory OLTP, PolyBase, ML Services, SSIS/SSAS/SSRS." },
+      license:{ uk:"Платна / Express — безкоштовна", ru:"Платная / Express — бесплатная", en:"Paid / Express free" },
+      query:"T-SQL, CLR (.NET languages)" },
+
+    { id:"cockroach", cat:"relational", icon:"🪳", name:"CockroachDB",
+      url:"https://www.cockroachlabs.com/get-cockroachdb/",
+      desc:{ uk:"Розподілена SQL-СУБД, натхненна Google Spanner. Автоматичне шардінг, реплікація та відновлення.",
+             ru:"Распределённая SQL-СУБД, вдохновлённая Google Spanner. Автоматический шардинг, репликация и восстановление.",
+             en:"Distributed SQL DB inspired by Google Spanner. Automatic sharding, replication and recovery." },
+      features:{ uk:"Horizontal scaling, multi-region, ACID, follower reads, cost-based optimizer, backup/restore, CDC.",
+                ru:"Горизонтальное масштабирование, multi-region, ACID, follower reads, cost-based optimizer, backup/restore, CDC.",
+                en:"Horizontal scaling, multi-region, ACID, follower reads, cost-based optimizer, backup/restore, CDC." },
+      license:{ uk:"Core — безкоштовна / Enterprise — платна", ru:"Core — бесплатная / Enterprise — платная", en:"Core free / Enterprise paid" },
+      query:"SQL (PostgreSQL-совместимый)" },
+
+    { id:"yugabyte", cat:"relational", icon:"🟣", name:"YugabyteDB",
+      url:"https://download.yugabyte.com/",
+      desc:{ uk:"Розподілена SQL-СУБД з відкритим кодом. Поєднує горизонтальне масштабування NoSQL з ACID SQL.",
+             ru:"Распределённая SQL-СУБД с открытым кодом. Сочетает горизонтальное масштабирование NoSQL с ACID SQL.",
+             en:"Open-source distributed SQL DB. Combines NoSQL horizontal scaling with ACID SQL." },
+      features:{ uk:"Auto-sharding, Raft consensus, distributed transactions, Cassandra-compatible YEDIS, Kubernetes-native.",
+                ru:"Auto-sharding, Raft consensus, distributed transactions, Cassandra-совместимый YEDIS, Kubernetes-native.",
+                en:"Auto-sharding, Raft consensus, distributed transactions, Cassandra-compatible YEDIS, Kubernetes-native." },
+      license:{ uk:"Apache 2.0", ru:"Apache 2.0", en:"Apache 2.0" },
+      query:"YSQL (PostgreSQL-compatible), YCQL (Cassandra-compatible)" },
+
+    { id:"db2", cat:"relational", icon:"🐝", name:"IBM Db2",
+      url:"https://www.ibm.com/products/db2",
+      desc:{ uk:"Корпоративна СУБД від IBM для великих даних, AI та хмарних середовищ. Підтримка лінійних та AI-запитів.",
+             ru:"Корпоративная СУБД от IBM для больших данных, ИИ и облачных сред. Поддержка линейных и ИИ-запросов.",
+             en:"Enterprise DB by IBM for big data, AI and cloud environments. Supports linear and AI queries." },
+      features:{ uk:"BLU Acceleration (in-memory), pureScale, Db2 Warehouse, AI-оптимізатор, підтримка JSON, Time Travel.",
+                ru:"BLU Acceleration (in-memory), pureScale, Db2 Warehouse, AI-оптимизатор, поддержка JSON, Time Travel.",
+                en:"BLU Acceleration (in-memory), pureScale, Db2 Warehouse, AI optimizer, JSON support, Time Travel." },
+      license:{ uk:"Платна / Community — безкоштовна", ru:"Платная / Community — бесплатная", en:"Paid / Community free" },
+      query:"SQL, PL/SQL, Python, R (внутри БД)" },
+
+    // === ДОКУМЕНТНІ ===
+    { id:"mongodb", cat:"document", icon:"🍃", name:"MongoDB",
+      url:"https://www.mongodb.com/try/download/community",
+      desc:{ uk:"Найпопулярніша документна NoSQL-СУБД. Гнучка схема, горизонтальне масштабування та агрегаційні фреймворки.",
+             ru:"Самая популярная документная NoSQL-СУБД. Гибкая схема, горизонтальное масштабирование и агрегационные фреймворки.",
+             en:"The most popular document NoSQL DB. Flexible schema, horizontal scaling and aggregation frameworks." },
+      features:{ uk:"Replica Sets, Sharding, Atlas (хмара), Compass GUI, Change Streams, ACID-транзакції, Time-Series колекції.",
+                ru:"Replica Sets, Sharding, Atlas (облако), Compass GUI, Change Streams, ACID-транзакции, Time-Series коллекции.",
+                en:"Replica Sets, Sharding, Atlas cloud, Compass GUI, Change Streams, ACID transactions, Time-Series collections." },
+      license:{ uk:"SSPL / Enterprise — платна", ru:"SSPL / Enterprise — платная", en:"SSPL / Enterprise paid" },
+      query:"MongoDB Query Language (MQL), Aggregation Pipeline" },
+
+    { id:"couchbase", cat:"document", icon:"🛋", name:"Couchbase",
+      url:"https://www.couchbase.com/downloads",
+      desc:{ uk:"Розподілена документна СУБД з підтримкою SQL++ та in-memory. Для високонавантажених веб-додатків.",
+             ru:"Распределённая документная СУБД с поддержкой SQL++ и in-memory. Для высоконагруженных веб-приложений.",
+             en:"Distributed document DB with SQL++ and in-memory support. For high-performance web applications." },
+      features:{ uk:"N1QL (SQL++), Full-text search, Eventing, Analytics, Mobile Sync (Couchbase Lite), XDCR реплікація.",
+                ru:"N1QL (SQL++), Full-text search, Eventing, Analytics, Mobile Sync (Couchbase Lite), XDCR репликация.",
+                en:"N1QL (SQL++), Full-text search, Eventing, Analytics, Mobile Sync (Couchbase Lite), XDCR replication." },
+      license:{ uk:"Community — безкоштовна / Enterprise — платна", ru:"Community — бесплатная / Enterprise — платная", en:"Community free / Enterprise paid" },
+      query:"N1QL (SQL++), Key-Value, Full Text Search" },
+
+    { id:"firestore", cat:"document", icon:"🔥", name:"Cloud Firestore",
+      url:"https://firebase.google.com/docs/firestore",
+      desc:{ uk:"Документна БД від Google у хмарі. Реальний час, офлайн-синхронізація та автоматичне масштабування.",
+             ru:"Документная БД от Google в облаке. Реальное время, офлайн-синхронизация и автоматическое масштабирование.",
+             en:"Google's cloud document DB. Real-time, offline sync and automatic scaling." },
+      features:{ uk:"Real-time listeners, offline persistence, mobile SDKs, security rules, composite indexes, multi-region.",
+                ru:"Real-time listeners, offline persistence, mobile SDKs, security rules, composite indexes, multi-region.",
+                en:"Real-time listeners, offline persistence, mobile SDKs, security rules, composite indexes, multi-region." },
+      license:{ uk:"Платна (Pay-as-you-go)", ru:"Платная (Pay-as-you-go)", en:"Paid (Pay-as-you-go)" },
+      query:"Firestore API, SDK (JS, Swift, Android, Flutter)" },
+
+    { id:"ravendb", cat:"document", icon:"🐦‍⬛", name:"RavenDB",
+      url:"https://ravendb.net/download",
+      desc:{ uk:"Відкрита документна СУБД для .NET-екосистеми. Вбудований повнотекстовий пошук, графи та time-series.",
+             ru:"Открытая документная СУБД для .NET-экосистемы. Встроенный полнотекстовый поиск, графы и time-series.",
+             en:"Open-source document DB for .NET ecosystem. Built-in full-text search, graphs and time-series." },
+      features:{ uk:"ACID, automatic indexing, MapReduce, replication, ETL, counters, time-series, spatial queries, encryption.",
+                ru:"ACID, automatic indexing, MapReduce, репликация, ETL, counters, time-series, spatial queries, encryption.",
+                en:"ACID, automatic indexing, MapReduce, replication, ETL, counters, time-series, spatial queries, encryption." },
+      license:{ uk:"AGPL v3 / Commercial", ru:"AGPL v3 / Commercial", en:"AGPL v3 / Commercial" },
+      query:"RQL (Raven Query Language), LINQ" },
+
+    // === КЛЮЧ-ЗНАЧЕННЯ ===
+    { id:"redis", cat:"kv", icon:"🔺", name:"Redis",
+      url:"https://redis.io/download/",
+      desc:{ uk:"In-memory сховище ключ-значення. Найпопулярніше для кешування, сесій, черг та real-time аналітики.",
+             ru:"In-memory хранилище ключ-значение. Самое популярное для кэширования, сессий, очередей и real-time аналитики.",
+             en:"In-memory key-value store. Most popular for caching, sessions, queues and real-time analytics." },
+      features:{ uk:"Strings, Lists, Sets, Sorted Sets, Hashes, Streams, Pub/Sub, RedisJSON, RediSearch, RedisGraph, persistence.",
+                ru:"Strings, Lists, Sets, Sorted Sets, Hashes, Streams, Pub/Sub, RedisJSON, RediSearch, RedisGraph, persistence.",
+                en:"Strings, Lists, Sets, Sorted Sets, Hashes, Streams, Pub/Sub, RedisJSON, RediSearch, RedisGraph, persistence." },
+      license:{ uk:"BSD 3 / Redis Source Available License", ru:"BSD 3 / Redis Source Available License", en:"BSD 3 / Redis Source Available License" },
+      query:"Redis commands, Lua scripts" },
+
+    { id:"dynamodb", cat:"kv", icon:"🟧", name:"Amazon DynamoDB",
+      url:"https://aws.amazon.com/dynamodb/",
+      desc:{ uk:"Повністю керована NoSQL-СУБД від AWS. Мільйони запитів на секунду з автоматичним масштабуванням.",
+             ru:"Полностью управляемая NoSQL-СУБД от AWS. Миллионы запросов в секунду с автоматическим масштабированием.",
+             en:"Fully managed NoSQL DB by AWS. Millions of requests per second with automatic scaling." },
+      features:{ uk:"Serverless, on-demand capacity, Global Tables, DAX (кеш), Streams, TTL, ACID-транзакції, PartiQL.",
+                ru:"Serverless, on-demand capacity, Global Tables, DAX (кэш), Streams, TTL, ACID-транзакции, PartiQL.",
+                en:"Serverless, on-demand capacity, Global Tables, DAX cache, Streams, TTL, ACID transactions, PartiQL." },
+      license:{ uk:"Платна (AWS)", ru:"Платная (AWS)", en:"Paid (AWS)" },
+      query:"PartiQL, DynamoDB API, SDK" },
+
+    { id:"etcd", cat:"kv", icon:"🔧", name:"etcd",
+      url:"https://github.com/etcd-io/etcd/releases",
+      desc:{ uk:"Розподілене сховище конфігурацій від CNCF. Основа Kubernetes для зберігання стану кластера.",
+             ru:"Распределённое хранилище конфигураций от CNCF. Основа Kubernetes для хранения состояния кластера.",
+             en:"Distributed configuration store by CNCF. Backbone of Kubernetes for cluster state storage." },
+      features:{ uk:"Raft consensus, watch API, TTL keys, transactions, gRPC, JSON/Protobuf, висока доступність.",
+                ru:"Raft consensus, watch API, TTL keys, transactions, gRPC, JSON/Protobuf, высокая доступность.",
+                en:"Raft consensus, watch API, TTL keys, transactions, gRPC, JSON/Protobuf, high availability." },
+      license:{ uk:"Apache 2.0", ru:"Apache 2.0", en:"Apache 2.0" },
+      query:"etcd API (gRPC/HTTP), etcdctl" },
+
+    { id:"rocksdb", cat:"kv", icon:"🪨", name:"RocksDB",
+      url:"https://github.com/facebook/rocksdb/releases",
+      desc:{ uk:"Вбудована БД ключ-значення від Meta (Facebook). Оптимізована для флеш-накопичувачів та SSD.",
+             ru:"Встроенная БД ключ-значение от Meta (Facebook). Оптимизирована для флеш-накопителей и SSD.",
+             en:"Embedded key-value DB by Meta (Facebook). Optimized for flash storage and SSDs." },
+      features:{ uk:"LSM-tree, column families, transactions, backups, Bloom filters, rate limiting, підтримка 10+ мов програмування.",
+                ru:"LSM-tree, column families, transactions, backups, Bloom filters, rate limiting, поддержка 10+ языков программирования.",
+                en:"LSM-tree, column families, transactions, backups, Bloom filters, rate limiting, 10+ language bindings." },
+      license:{ uk:"GPL v2 / Apache 2.0", ru:"GPL v2 / Apache 2.0", en:"GPL v2 / Apache 2.0" },
+      query:"C++ API, bindings (Python, Java, Go, Rust)" },
+
+    // === КОЛОНКОВІ ===
+    { id:"cassandra", cat:"columnar", icon:"🔱", name:"Apache Cassandra",
+      url:"https://cassandra.apache.org/_/download.html",
+      desc:{ uk:"Розподілена колонкова СУБД для великих даних. Відмовостійкість та лінійне масштабування без єдиної точки відмови.",
+             ru:"Распределённая колоночная СУБД для больших данных. Отказоустойчивость и линейное масштабирование без единой точки отказа.",
+             en:"Distributed columnar DB for big data. Fault tolerance and linear scaling without a single point of failure." },
+      features:{ uk:"Peer-to-peer архітектура, eventual consistency, CQL, multi-DC replication, lightweight transactions, Spark integration.",
+                ru:"Peer-to-peer архитектура, eventual consistency, CQL, multi-DC репликация, lightweight transactions, Spark integration.",
+                en:"Peer-to-peer architecture, eventual consistency, CQL, multi-DC replication, lightweight transactions, Spark integration." },
+      license:{ uk:"Apache 2.0", ru:"Apache 2.0", en:"Apache 2.0" },
+      query:"CQL (Cassandra Query Language)" },
+
+    { id:"scylla", cat:"columnar", icon:"🌊", name:"ScyllaDB",
+      url:"https://www.scylladb.com/download/",
+      desc:{ uk:"Високопродуктивна заміна Cassandra на C++. У 10 разів швидше з меншою затримкою та автоматичним шардінгом.",
+             ru:"Высокопроизводительная замена Cassandra на C++. В 10 раз быстрее с меньшей задержкой и автоматическим шардингом.",
+             en:"High-performance Cassandra replacement in C++. 10x faster with lower latency and automatic sharding." },
+      features:{ uk:"Auto-tuning, shard-per-core, CQL-compatible, DynamoDB-compatible API, Kubernetes operator, monitoring.",
+                ru:"Auto-tuning, shard-per-core, CQL-совместимость, DynamoDB-совместимый API, Kubernetes operator, monitoring.",
+                en:"Auto-tuning, shard-per-core, CQL compatible, DynamoDB-compatible API, Kubernetes operator, monitoring." },
+      license:{ uk:"AGPL / Enterprise", ru:"AGPL / Enterprise", en:"AGPL / Enterprise" },
+      query:"CQL, DynamoDB-compatible API" },
+
+    { id:"clickhouse", cat:"columnar", icon:"🖱", name:"ClickHouse",
+      url:"https://clickhouse.com/",
+      desc:{ uk:"Стовпчикова аналітична СУБД з відкритим кодом. Надшвидка обробка великих обсягів даних у реальному часі.",
+             ru:"Столбцовая аналитическая СУБД с открытым кодом. Сверхбыстрая обработка больших объёмов данных в реальном времени.",
+             en:"Open-source columnar analytical DB. Ultra-fast processing of large data volumes in real time." },
+      features:{ uk:"Vectorized execution, materialized views, replication, sharding, SQL, 10+ форматів імпорту, Geo, ML.",
+                ru:"Vectorized execution, materialized views, репликация, шардинг, SQL, 10+ форматов импорта, Geo, ML.",
+                en:"Vectorized execution, materialized views, replication, sharding, SQL, 10+ import formats, Geo, ML." },
+      license:{ uk:"Apache 2.0", ru:"Apache 2.0", en:"Apache 2.0" },
+      query:"SQL (діалект ClickHouse)" },
+
+    { id:"druid", cat:"columnar", icon:"🧙", name:"Apache Druid",
+      url:"https://druid.apache.org/downloads.html",
+      desc:{ uk:"Розподілена аналітична БД для OLAP та подій у реальному часі. Ідеальна для телеметрії та IoT.",
+             ru:"Распределённая аналитическая БД для OLAP и событий в реальном времени. Идеальна для телеметрии и IoT.",
+             en:"Distributed analytical DB for OLAP and real-time events. Ideal for telemetry and IoT." },
+      features:{ uk:"Stream ingestion (Kafka/Kinesis), sub-second queries, roll-up, tiering, SQL via Druid SQL, multi-tenant.",
+                ru:"Stream ingestion (Kafka/Kinesis), sub-second queries, roll-up, tiering, SQL via Druid SQL, multi-tenant.",
+                en:"Stream ingestion (Kafka/Kinesis), sub-second queries, roll-up, tiering, SQL via Druid SQL, multi-tenant." },
+      license:{ uk:"Apache 2.0", ru:"Apache 2.0", en:"Apache 2.0" },
+      query:"Druid SQL, Native JSON queries" },
+
+    { id:"hbase", cat:"columnar", icon:"🐘", name:"Apache HBase",
+      url:"https://hbase.apache.org/downloads.html",
+      desc:{ uk:"Колонкова СУБД на базі Hadoop HDFS. Для великих розподілених даних із сильною консистентністю.",
+             ru:"Колоночная СУБД на базе Hadoop HDFS. Для больших распределённых данных с сильной консистентностью.",
+             en:"Columnar DB on top of Hadoop HDFS. For large distributed data with strong consistency." },
+      features:{ uk:"Strong consistency, automatic sharding, replication, Hadoop integration, MapReduce, Bloom filters, compression.",
+                ru:"Strong consistency, automatic sharding, репликация, Hadoop integration, MapReduce, Bloom filters, compression.",
+                en:"Strong consistency, automatic sharding, replication, Hadoop integration, MapReduce, Bloom filters, compression." },
+      license:{ uk:"Apache 2.0", ru:"Apache 2.0", en:"Apache 2.0" },
+      query:"HBase Shell, Java API, REST API, Thrift" },
+
+    // === ГРАФОВІ ===
+    { id:"neo4j", cat:"graph", icon:"🕸", name:"Neo4j",
+      url:"https://neo4j.com/download/",
+      desc:{ uk:"Найпопулярніша графова СУБД. Зберігає дані як вузли та зв'язки. Ідеальна для соціальних мереж, рекомендацій.",
+             ru:"Самая популярная графовая СУБД. Хранит данные как узлы и связи. Идеальна для соцсетей, рекомендаций.",
+             en:"The most popular graph DB. Stores data as nodes and relationships. Ideal for social networks, recommendations." },
+      features:{ uk:"Cypher query language, ACID, clustering (Enterprise), Graph Data Science Library, Bloom visualization, APOC.",
+                ru:"Cypher query language, ACID, кластеризация (Enterprise), Graph Data Science Library, Bloom visualization, APOC.",
+                en:"Cypher query language, ACID, clustering (Enterprise), Graph Data Science Library, Bloom visualization, APOC." },
+      license:{ uk:"GPL v3 / Enterprise — платна", ru:"GPL v3 / Enterprise — платная", en:"GPL v3 / Enterprise paid" },
+      query:"Cypher, GQL (стандарт), APOC" },
+
+    { id:"arangodb", cat:"graph", icon:"🥭", name:"ArangoDB",
+      url:"https://www.arangodb.com/download/",
+      desc:{ uk:"Мультимодельна СУБД: документи, графи та ключ-значення в одній БД. Універсальний інструмент для складних даних.",
+             ru:"Мультимодельная СУБД: документы, графы и ключ-значение в одной БД. Универсальный инструмент для сложных данных.",
+             en:"Multi-model DB: documents, graphs and key-value in one database. Universal tool for complex data." },
+      features:{ uk:"AQL (універсальна мова), Foxx (microservices), ArangoSearch, SatelliteCollections, Oasis (хмара), multi-model.",
+                ru:"AQL (универсальный язык), Foxx (microservices), ArangoSearch, SatelliteCollections, Oasis (облако), multi-model.",
+                en:"AQL (universal language), Foxx microservices, ArangoSearch, SatelliteCollections, Oasis cloud, multi-model." },
+      license:{ uk:"Apache 2.0 / Enterprise", ru:"Apache 2.0 / Enterprise", en:"Apache 2.0 / Enterprise" },
+      query:"AQL (ArangoDB Query Language)" },
+
+    { id:"neptune", cat:"graph", icon:"🔱", name:"Amazon Neptune",
+      url:"https://aws.amazon.com/neptune/",
+      desc:{ uk:"Повністю керована графова БД від AWS. Підтримує Property Graph та RDF. Для соціальних графів, рекомендацій.",
+             ru:"Полностью управляемая графовая БД от AWS. Поддерживает Property Graph и RDF. Для социальных графов, рекомендаций.",
+             en:"Fully managed graph DB by AWS. Supports Property Graph and RDF. For social graphs, recommendations." },
+      features:{ uk:"Gremlin, SPARQL, openCypher, автоматичне масштабування, read replicas, ML (Graph Neural Networks), serverless.",
+                ru:"Gremlin, SPARQL, openCypher, автоматическое масштабирование, read replicas, ML (Graph Neural Networks), serverless.",
+                en:"Gremlin, SPARQL, openCypher, automatic scaling, read replicas, ML (Graph Neural Networks), serverless." },
+      license:{ uk:"Платна (AWS)", ru:"Платная (AWS)", en:"Paid (AWS)" },
+      query:"Gremlin, SPARQL, openCypher" },
+
+    { id:"dgraph", cat:"graph", icon:"🎯", name:"Dgraph",
+      url:"https://dgraph.io/downloads",
+      desc:{ uk:"Розподілена графова СУБД з горизонтальним масштабуванням. Нативна підтримка GraphQL+-.",
+             ru:"Распределённая графовая СУБД с горизонтальным масштабированием. Нативная поддержка GraphQL+-.",
+             en:"Distributed graph DB with horizontal scaling. Native GraphQL+- support." },
+      features:{ uk:"Horizontal sharding, RAFT groups, DQL (GraphQL+-), Slash GraphQL (хмара), full-text search, geospatial.",
+                ru:"Horizontal sharding, RAFT groups, DQL (GraphQL+-), Slash GraphQL (облако), full-text search, geospatial.",
+                en:"Horizontal sharding, RAFT groups, DQL (GraphQL+-), Slash GraphQL cloud, full-text search, geospatial." },
+      license:{ uk:"Apache 2.0", ru:"Apache 2.0", en:"Apache 2.0" },
+      query:"DQL (Dgraph Query Language), GraphQL" },
+
+    // === ЧАСОВІ РЯДИ ===
+    { id:"influxdb", cat:"ts", icon:"🌊", name:"InfluxDB",
+      url:"https://www.influxdata.com/downloads/",
+      desc:{ uk:"Спеціалізована БД для часових рядів. Моніторинг, IoT, метрики та аналітика подій у реальному часі.",
+             ru:"Специализированная БД для временных рядов. Мониторинг, IoT, метрики и аналитика событий в реальном времени.",
+             en:"Specialized DB for time-series. Monitoring, IoT, metrics and real-time event analytics." },
+      features:{ uk:"Flux query language, retention policies, continuous queries, Telegraf (агент), Kapacitor (обробка), SQL (v3).",
+                ru:"Flux query language, retention policies, continuous queries, Telegraf (агент), Kapacitor (обработка), SQL (v3).",
+                en:"Flux query language, retention policies, continuous queries, Telegraf agent, Kapacitor processing, SQL (v3)." },
+      license:{ uk:"MIT / Enterprise", ru:"MIT / Enterprise", en:"MIT / Enterprise" },
+      query:"Flux, InfluxQL, SQL (v3)" },
+
+    { id:"timescale", cat:"ts", icon:"⏳", name:"TimescaleDB",
+      url:"https://www.timescale.com/download",
+      desc:{ uk:"Розширення PostgreSQL для часових рядів. Поєднує SQL з продуктивністю спеціалізованих TSDB.",
+             ru:"Расширение PostgreSQL для временных рядов. Сочетает SQL с производительностью специализированных TSDB.",
+             en:"PostgreSQL extension for time-series. Combines SQL with the performance of specialized TSDBs." },
+      features:{ uk:"Hypertables, continuous aggregation, retention, compression, real-time analytics, full SQL, Prometheus remote_read.",
+                ru:"Hypertables, continuous aggregation, retention, compression, real-time analytics, full SQL, Prometheus remote_read.",
+                en:"Hypertables, continuous aggregation, retention, compression, real-time analytics, full SQL, Prometheus remote_read." },
+      license:{ uk:"Apache 2.0 / Timescale License", ru:"Apache 2.0 / Timescale License", en:"Apache 2.0 / Timescale License" },
+      query:"SQL (PostgreSQL-совместимый)" },
+
+    { id:"prometheus", cat:"ts", icon:"🔥", name:"Prometheus",
+      url:"https://prometheus.io/download/",
+      desc:{ uk:"Система моніторингу та зберігання метрик часових рядів. Стандарт для Kubernetes та cloud-native середовищ.",
+             ru:"Система мониторинга и хранения метрик временных рядов. Стандарт для Kubernetes и cloud-native сред.",
+             en:"Monitoring system and time-series metrics storage. Standard for Kubernetes and cloud-native environments." },
+      features:{ uk:"Pull-модель, PromQL, Alertmanager, exporters, service discovery, federation, Grafana integration, histograms.",
+                ru:"Pull-модель, PromQL, Alertmanager, exporters, service discovery, federation, Grafana integration, histograms.",
+                en:"Pull model, PromQL, Alertmanager, exporters, service discovery, federation, Grafana integration, histograms." },
+      license:{ uk:"Apache 2.0", ru:"Apache 2.0", en:"Apache 2.0" },
+      query:"PromQL" },
+
+    // === ПОШУКОВІ ===
+    { id:"elasticsearch", cat:"search", icon:"🔎", name:"Elasticsearch",
+      url:"https://www.elastic.co/downloads/elasticsearch",
+      desc:{ uk:"Розподілений пошуковий та аналітичний рушій. Повнотекстовий пошук, логи, метрики та APM.",
+             ru:"Распределённый поисковый и аналитический движок. Полнотекстовый поиск, логи, метрики и APM.",
+             en:"Distributed search and analytics engine. Full-text search, logs, metrics and APM." },
+      features:{ uk:"Inverted index, relevance scoring, aggregations, geo-search, machine learning, Kibana, Logstash, Beats.",
+                ru:"Inverted index, relevance scoring, агрегации, geo-search, machine learning, Kibana, Logstash, Beats.",
+                en:"Inverted index, relevance scoring, aggregations, geo-search, machine learning, Kibana, Logstash, Beats." },
+      license:{ uk:"SSPL / Elastic License", ru:"SSPL / Elastic License", en:"SSPL / Elastic License" },
+      query:"Elasticsearch Query DSL, SQL (обмежено)" },
+
+    { id:"opensearch", cat:"search", icon:"🔍", name:"OpenSearch",
+      url:"https://opensearch.org/downloads.html",
+      desc:{ uk:"Форк Elasticsearch з відкритим кодом від AWS. Пошук, аналітика, візуалізація та безпека даних.",
+             ru:"Форк Elasticsearch с открытым кодом от AWS. Поиск, аналитика, визуализация и безопасность данных.",
+             en:"Open-source fork of Elasticsearch by AWS. Search, analytics, visualization and data security." },
+      features:{ uk:"Full-text search, OpenSearch Dashboards, alerting, anomaly detection, ML Commons, security plugins, k-NN.",
+                ru:"Full-text search, OpenSearch Dashboards, alerting, anomaly detection, ML Commons, security plugins, k-NN.",
+                en:"Full-text search, OpenSearch Dashboards, alerting, anomaly detection, ML Commons, security plugins, k-NN." },
+      license:{ uk:"Apache 2.0", ru:"Apache 2.0", en:"Apache 2.0" },
+      query:"Query DSL, SQL, PPL (Piped Processing Language)" },
+
+    { id:"meilisearch", cat:"search", icon:"🚀", name:"Meilisearch",
+      url:"https://www.meilisearch.com/docs/learn/getting_started/installation",
+      desc:{ uk:"Легкий та швидкий пошуковий рушій для додатків. Миттєві результати з типографськими помилками.",
+             ru:"Лёгкий и быстрый поисковый движок для приложений. Мгновенные результаты с опечатками.",
+             en:"Lightweight and fast search engine for apps. Instant results with typo tolerance." },
+      features:{ uk:"Typo tolerance, faceted search, geosearch, synonyms, filtering, multi-tenancy, SDK для 10+ мов, self-hosted.",
+                ru:"Typo tolerance, faceted search, geosearch, synonyms, filtering, multi-tenancy, SDK для 10+ языков, self-hosted.",
+                en:"Typo tolerance, faceted search, geosearch, synonyms, filtering, multi-tenancy, SDK for 10+ languages, self-hosted." },
+      license:{ uk:"MIT", ru:"MIT", en:"MIT" },
+      query:"REST API, SDK" },
+
+    { id:"typesense", cat:"search", icon:"🔤", name:"Typesense",
+      url:"https://typesense.org/downloads/",
+      desc:{ uk:"Відкрита пошукова БД з фокусом на швидкість та простоту. Альтернатива Algolia для self-hosted.",
+             ru:"Открытая поисковая БД с фокусом на скорость и простоту. Альтернатива Algolia для self-hosted.",
+             en:"Open-source search DB focused on speed and simplicity. Self-hosted alternative to Algolia." },
+      features:{ uk:"Typo tolerance, faceting, geo-search, synonyms, scoped API keys, Raft consensus, multi-tenancy, vector search.",
+                ru:"Typo tolerance, faceting, geo-search, synonyms, scoped API keys, Raft consensus, multi-tenancy, vector search.",
+                en:"Typo tolerance, faceting, geo-search, synonyms, scoped API keys, Raft consensus, multi-tenancy, vector search." },
+      license:{ uk:"GPL v3", ru:"GPL v3", en:"GPL v3" },
+      query:"REST API, SDK" },
+
+    // === IN-MEMORY ===
+    { id:"memcached", cat:"memory", icon:"💾", name:"Memcached",
+      url:"https://memcached.org/downloads",
+      desc:{ uk:"Класична in-memory система кешування об'єктів. Розподілена, проста та надшвидка для зменшення навантаження на БД.",
+             ru:"Классическая in-memory система кэширования объектов. Распределённая, простая и сверхбыстрая для снижения нагрузки на БД.",
+             en:"Classic in-memory object caching system. Distributed, simple and ultra-fast for reducing DB load." },
+      features:{ uk:"Key-value cache, LRU eviction, multi-threaded, binary protocol, SASL auth, slab allocation, no persistence.",
+                ru:"Key-value cache, LRU eviction, multi-threaded, binary protocol, SASL auth, slab allocation, no persistence.",
+                en:"Key-value cache, LRU eviction, multi-threaded, binary protocol, SASL auth, slab allocation, no persistence." },
+      license:{ uk:"BSD 3", ru:"BSD 3", en:"BSD 3" },
+      query:"Memcached protocol (get/set/delete)" },
+
+    { id:"hana", cat:"memory", icon:"🟡", name:"SAP HANA",
+      url:"https://www.sap.com/products/technology-platform/hana.html",
+      desc:{ uk:"In-memory платформа для аналітики та транзакцій від SAP. Обробка великих даних у реальному часі.",
+             ru:"In-memory платформа для аналитики и транзакций от SAP. Обработка больших данных в реальном времени.",
+             en:"In-memory platform for analytics and transactions by SAP. Real-time big data processing." },
+      features:{ uk:"Column-oriented & row-oriented, multi-engine, predictive analytics, spatial processing, text analytics, ML, cloud.",
+                ru:"Column-oriented & row-oriented, multi-engine, predictive analytics, spatial processing, text analytics, ML, cloud.",
+                en:"Column-oriented & row-oriented, multi-engine, predictive analytics, spatial processing, text analytics, ML, cloud." },
+      license:{ uk:"Платна (SAP)", ru:"Платная (SAP)", en:"Paid (SAP)" },
+      query:"SQL, SQLScript, MDX, Graph" },
+
+    // === ХМАРНІ ===
+    { id:"snowflake", cat:"cloud", icon:"❄", name:"Snowflake",
+      url:"https://www.snowflake.com",
+      desc:{ uk:"Хмарна аналітична платформа даних. Повністю керована, масштабована та підтримує структуровані та напівструктуровані дані.",
+             ru:"Облачная аналитическая платформа данных. Полностью управляемая, масштабируемая и поддерживает структурированные и полуструктурированные данные.",
+             en:"Cloud data analytics platform. Fully managed, scalable and supports structured and semi-structured data." },
+      features:{ uk:"Zero-copy cloning, time travel, data sharing, Snowpark (Python, Java, Scala), Streams & Tasks, governance.",
+                ru:"Zero-copy cloning, time travel, data sharing, Snowpark (Python, Java, Scala), Streams & Tasks, governance.",
+                en:"Zero-copy cloning, time travel, data sharing, Snowpark (Python, Java, Scala), Streams & Tasks, governance." },
+      license:{ uk:"Платна (Pay-as-you-go)", ru:"Платная (Pay-as-you-go)", en:"Paid (Pay-as-you-go)" },
+      query:"SQL, Snowpark API" },
+
+    { id:"bigquery", cat:"cloud", icon:"🔵", name:"Google BigQuery",
+      url:"https://cloud.google.com/bigquery",
+      desc:{ uk:"Безсерверна хмарна аналітична СУБД від Google. Обробка петабайтів даних за секунди через SQL.",
+             ru:"Бессерверная облачная аналитическая СУБД от Google. Обработка петабайтов данных за секунды через SQL.",
+             en:"Serverless cloud analytical DB by Google. Processes petabytes of data in seconds via SQL." },
+      features:{ uk:"Serverless, auto-scaling, ML.BigQuery, BI Engine, streaming inserts, data transfer service, federated queries.",
+                ru:"Serverless, auto-scaling, ML.BigQuery, BI Engine, streaming inserts, data transfer service, federated queries.",
+                en:"Serverless, auto-scaling, ML.BigQuery, BI Engine, streaming inserts, data transfer service, federated queries." },
+      license:{ uk:"Платна (Pay-as-you-go)", ru:"Платная (Pay-as-you-go)", en:"Paid (Pay-as-you-go)" },
+      query:"Standard SQL, BigQuery ML" },
+
+    { id:"supabase", cat:"cloud", icon:"⚡", name:"Supabase",
+      url:"https://supabase.com",
+      desc:{ uk:"Відкрита альтернатива Firebase на базі PostgreSQL. База даних, аутентифікація, real-time та storage.",
+             ru:"Открытая альтернатива Firebase на базе PostgreSQL. База данных, аутентификация, real-time и storage.",
+             en:"Open-source Firebase alternative based on PostgreSQL. Database, auth, real-time and storage." },
+      features:{ uk:"PostgreSQL, auto-generated REST API, GraphQL, real-time subscriptions, Row Level Security, edge functions, storage.",
+                ru:"PostgreSQL, auto-generated REST API, GraphQL, real-time subscriptions, Row Level Security, edge functions, storage.",
+                en:"PostgreSQL, auto-generated REST API, GraphQL, real-time subscriptions, Row Level Security, edge functions, storage." },
+      license:{ uk:"Apache 2.0 / Хмара — платна", ru:"Apache 2.0 / Облако — платная", en:"Apache 2.0 / Cloud paid" },
+      query:"SQL, REST API, GraphQL, Realtime" },
+
+    { id:"planetscale", cat:"cloud", icon:"🪐", name:"PlanetScale",
+      url:"https://planetscale.com",
+      desc:{ uk:"Хмарна MySQL-СУБД для розробників. Git-подібні гілки, zero-downtime міграції та serverless масштабування.",
+             ru:"Облачная MySQL-СУБД для разработчиков. Git-подобные ветки, zero-downtime миграции и serverless масштабирование.",
+             en:"Cloud MySQL DB for developers. Git-like branches, zero-downtime migrations and serverless scaling." },
+      features:{ uk:"Deploy requests, branching, revert schema changes, Vitess-based scaling, Insights (аналітика запитів), deploy with PR.",
+                ru:"Deploy requests, branching, revert schema changes, Vitess-based scaling, Insights (аналитика запросов), deploy with PR.",
+                en:"Deploy requests, branching, revert schema changes, Vitess-based scaling, Insights (query analytics), deploy with PR." },
+      license:{ uk:"Хмара — платна / Vitess — Apache 2.0", ru:"Облако — платная / Vitess — Apache 2.0", en:"Cloud paid / Vitess Apache 2.0" },
+      query:"SQL (MySQL-compatible)" }
+];
+
+// ===================== ЛОКАЛІЗАЦІЯ =====================
+const ui = {
+    uk: {
+        title: "DB Directory — Довідник СУБД",
+        pageTitle: "Довідник систем управління базами даних",
+        pageTitleSub: "Історія, архітектура та огляд сучасних СУБД",
+        searchPlaceholder: "Пошук СУБД...",
+        all: "🏠 Усі категорії",
+        open: "Сайт / Завантаження →",
+        noResults: "Нічого не знайдено. Спробуйте інший запит.",
+        footer: "🗄️ Універсальний довідник СУБД | 2026 | Код вільний для редагування",
+        features: "Особливості",
+        license: "Ліцензія",
+        query: "Мова запитів / API",
+        
+        dbfTitle: "Епоха .DBF та xBase (Данина поваги піонерам ПК)",
+        dbfDesc1: "Перш ніж хмарні обчислення та NoSQL стали буденністю, світ ПК належав файлам формату .DBF. У 80-х та 90-х роках інструменти сімейства xBase дозволили тисячам розробників створювати потужні облікові системи на звичайних ПК.",
+        dbfDesc2: "Цей розділ — наша подяка інструментам-піонерам:",
+        dbfDbasе: "\"Батько\" всіх xBase-систем, стандарт де-факто для ранніх реляційних БД.",
+        dbfClipper: "Легендарний компілятор для створення швидких .EXE-файлів, вибір професіоналів DOS-епохи.",
+        dbfFox: "Інструменти з неймовірною швидкістю обробки даних, місток між командним рядком та графічним інтерфейсом.",
+        dbfVfp: "Потужне RAD-середовище, яке залишається в серцях розробників завдяки своїй елегантності.",
+        dbfNote: "Хоча сьогодні .DBF — це історична спадщина, логіка індексів та архітектура додатків, закладені в Clipper та FoxPro, назавжди змінили ІТ-індустрію.",
+        
+        sqlTitle: "SQL: Універсальна мова реляційних баз даних",
+        sqlDesc: "SQL (Structured Query Language) — це стандартизований спосіб взаємодії зі структурованими даними, затверджений ANSI та ISO. Він є спільним знаменником для більшості сучасних СУБД.",
+        sqlLink1: "📖 Довідник SQL (W3Schools)",
+        sqlLink2: "🏗️ Архітектура реляційних БД (IBM)",
+        sqlArchTitle: "Архітектура SQL: 4 основні підмови",
+        sqlDdl: "Опис структури: CREATE, ALTER, DROP, TRUNCATE",
+        sqlDml: "Робота з даними: SELECT, INSERT, UPDATE, DELETE",
+        sqlDcl: "Керування доступом: GRANT, REVOKE",
+        sqlTcl: "Цілісність транзакцій: COMMIT, ROLLBACK, SAVEPOINT",
+        sqlNote: "Процедурні розширення (PL/pgSQL, T-SQL, PL/SQL) дозволяють реалізовувати складну бізнес-логіку безпосередньо на стороні сервера БД."
+    },
+    ru: {
+        title: "DB Directory — Справочник СУБД",
+        pageTitle: "Справочник систем управления базами данных",
+        pageTitleSub: "История, архитектура и обзор современных СУБД",
+        searchPlaceholder: "Поиск СУБД...",
+        all: "🏠 Все категории",
+        open: "Сайт / Скачивание →",
+        noResults: "Ничего не найдено. Попробуйте другой запрос.",
+        footer: "🗄️ Универсальный справочник СУБД | 2026 | Код свободен для редактирования",
+        features: "Особенности",
+        license: "Лицензия",
+        query: "Язык запросов / API",
+        
+        dbfTitle: "Эпоха .DBF и xBase (Дань уважения пионерам ПК)",
+        dbfDesc1: "Прежде чем облачные вычисления и NoSQL стали обыденностью, мир ПК принадлежал файлам формата .DBF. В 80-х и 90-х годах инструменты семейства xBase позволили тысячам разработчиков создавать мощные учетные системы на обычных ПК.",
+        dbfDesc2: "Этот раздел — наша благодарность инструментам-пионерам:",
+        dbfDbasе: "\"Отец\" всех xBase-систем, стандарт де-факто для ранних реляционных БД.",
+        dbfClipper: "Легендарный компилятор для создания быстрых .EXE-файлов, выбор профессионалов DOS-эпохи.",
+        dbfFox: "Инструменты с невероятной скоростью обработки данных, мостик между командной строкой и графическим интерфейсом.",
+        dbfVfp: "Мощная RAD-среда, которая остается в сердцах разработчиков благодаря своей элегантности.",
+        dbfNote: "Хотя сегодня .DBF — это историческое наследие, логика индексов и архитектура приложений, заложенные в Clipper и FoxPro, навсегда изменили ИТ-индустрию.",
+        
+        sqlTitle: "SQL: Универсальный язык реляционных баз данных",
+        sqlDesc: "SQL (Structured Query Language) — это стандартизированный способ взаимодействия со структурированными данными, утвержденный ANSI и ISO. Он является общим знаменателем для большинства современных СУБД.",
+        sqlLink1: "📖 Справочник SQL (W3Schools)",
+        sqlLink2: "🏗️ Архитектура реляционных БД (IBM)",
+        sqlArchTitle: "Архитектура SQL: 4 основные подязыка",
+        sqlDdl: "Описание структуры: CREATE, ALTER, DROP, TRUNCATE",
+        sqlDml: "Работа с данными: SELECT, INSERT, UPDATE, DELETE",
+        sqlDcl: "Управление доступом: GRANT, REVOKE",
+        sqlTcl: "Целостность транзакций: COMMIT, ROLLBACK, SAVEPOINT",
+        sqlNote: "Процедурные расширения (PL/pgSQL, T-SQL, PL/SQL) позволяют реализовывать сложную бизнес-логику непосредственно на стороне сервера БД."
+    },
+    en: {
+        title: "DB Directory — Database Systems Catalog",
+        pageTitle: "Database Management Systems Directory",
+        pageTitleSub: "History, architecture, and overview of modern DBMS",
+        searchPlaceholder: "Search DB...",
+        all: "🏠 All Categories",
+        open: "Website / Download →",
+        noResults: "Nothing found. Try a different query.",
+        footer: "🗄️ Universal DBMS Directory | 2026 | Code is free to edit",
+        features: "Features",
+        license: "License",
+        query: "Query Language / API",
+        
+        dbfTitle: ".DBF & xBase Era (A Tribute to PC Pioneers)",
+        dbfDesc1: "Before cloud computing and NoSQL became commonplace, the PC world belonged to .DBF format files. In the 80s and 90s, xBase family tools allowed thousands of developers to create powerful accounting systems on ordinary PCs.",
+        dbfDesc2: "This section is our tribute to the pioneer tools:",
+        dbfDbasе: "The \"father\" of all xBase systems, the de facto standard for early relational databases.",
+        dbfClipper: "A legendary compiler for creating fast .EXE files, the choice of DOS-era professionals.",
+        dbfFox: "Tools with incredible data processing speed, a bridge between the command line and graphical interfaces.",
+        dbfVfp: "A powerful RAD environment that remains in developers' hearts due to its elegance.",
+        dbfNote: "Although .DBF is a historical legacy today, the index logic and application architecture embedded in Clipper and FoxPro forever changed the IT industry.",
+        
+        sqlTitle: "SQL: The Universal Language of Relational Databases",
+        sqlDesc: "SQL (Structured Query Language) is a standardized way to interact with structured data, approved by ANSI and ISO. It is the common denominator for most modern DBMS.",
+        sqlLink1: "📖 SQL Reference (W3Schools)",
+        sqlLink2: "🏗️ Relational DB Architecture (IBM)",
+        sqlArchTitle: "SQL Architecture: 4 Main Sublanguages",
+        sqlDdl: "Structure definition: CREATE, ALTER, DROP, TRUNCATE",
+        sqlDml: "Data manipulation: SELECT, INSERT, UPDATE, DELETE",
+        sqlDcl: "Access control: GRANT, REVOKE",
+        sqlTcl: "Transaction integrity: COMMIT, ROLLBACK, SAVEPOINT",
+        sqlNote: "Procedural extensions (PL/pgSQL, T-SQL, PL/SQL) allow implementing complex business logic directly on the database server side."
+    }
+};
+
+let currentLang = localStorage.getItem('db-dir-lang') || 'uk';
+let activeCategory = 'all';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('db-dir-lang', lang);
+    document.documentElement.lang = lang === 'uk' ? 'uk' : (lang === 'ru' ? 'ru' : 'en');
+    ['uk','ru','en'].forEach(l => document.getElementById('btn-'+l).classList.toggle('active', l===lang));
+    document.getElementById('search').placeholder = ui[lang].searchPlaceholder;
+    document.title = ui[lang].title;
+    
+    // Оновлення централізованої багатомовної назви
+    document.getElementById('page-title').innerHTML = `
+        ${ui[lang].pageTitle}
+        <span class="sub">${ui[lang].pageTitleSub}</span>
+    `;
+    
+    renderFilters();
+    render();
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const cur = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', cur === 'light' ? 'dark' : 'light');
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+function renderFilters() {
+    const container = document.getElementById('filters');
+    let html = `<button class="filter-btn ${activeCategory==='all'?'active':''}" onclick="setCat('all')">${ui[currentLang].all}</button>`;
+    for (const [key, val] of Object.entries(categories)) {
+        html += `<button class="filter-btn ${activeCategory===key?'active':''}" onclick="setCat('${key}')">${val[currentLang]}</button>`;
+    }
+    container.innerHTML = html;
+}
+
+function setCat(cat) {
+    activeCategory = cat;
+    document.getElementById('search').value = '';
+    renderFilters();
+    render();
+}
+
+function getLicenseClass(lic) {
+    const l = lic.toLowerCase();
+    if (l.includes('безкоштовна') || l.includes('бесплатная') || l.includes('free') || l.includes('open source') || l.includes('bsd') || l.includes('mit') || l.includes('gpl') || l.includes('apache') || l.includes('public domain') || l.includes('sspl')) return 'license-free';
+    if (l.includes('платна') || l.includes('платная') || l.includes('paid')) return 'license-paid';
+    return 'license-mix';
+}
+
+function render() {
+    const query = document.getElementById('search').value.toLowerCase();
+    const main = document.getElementById('main');
+    let html = '';
+    
+    const renderDBF = () => `
+        <section class="content-section" style="border-left: 4px solid var(--accent-3);">
+            <h2 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">🕰️ ${ui[currentLang].dbfTitle}</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">${ui[currentLang].dbfDesc1}</p>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">${ui[currentLang].dbfDesc2}</p>
+            <ul style="color: var(--text); margin-left: 1.5rem; line-height: 1.6;">
+                <li><strong>dBASE (Ashton-Tate):</strong> ${ui[currentLang].dbfDbasе}</li>
+                <li><strong>Clipper (Nantucket):</strong> ${ui[currentLang].dbfClipper}</li>
+                <li><strong>FoxBase та FoxPro:</strong> ${ui[currentLang].dbfFox}</li>
+                <li><strong>Microsoft Visual FoxPro (VFP):</strong> ${ui[currentLang].dbfVfp}</li>
+            </ul>
+            <div style="background: rgba(255, 159, 67, 0.1); border-left: 3px solid var(--accent-3); padding: 1rem; margin-top: 1rem; border-radius: 0 0.5rem 0.5rem 0; color: var(--text); font-style: italic;">
+                💡 ${ui[currentLang].dbfNote}
+            </div>
+        </section>
+    `;
+
+    const renderSQL = () => `
+        <section class="content-section" style="border-left: 4px solid var(--accent);">
+            <h2 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">🗄️ ${ui[currentLang].sqlTitle}</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">${ui[currentLang].sqlDesc}</p>
+            <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                <a href="https://www.w3schools.com/sql/" target="_blank" class="card-link" style="margin-top:0; background: var(--surface-hover); padding: 0.6rem 1rem; border-radius: 0.5rem; border: 1px solid rgba(255,255,255,0.08);">${ui[currentLang].sqlLink1}</a>
+                <a href="https://www.ibm.com/cloud/learn/relational-databases" target="_blank" class="card-link" style="margin-top:0; background: var(--surface-hover); padding: 0.6rem 1rem; border-radius: 0.5rem; border: 1px solid rgba(255,255,255,0.08);">${ui[currentLang].sqlLink2}</a>
+            </div>
+            <h3 style="font-size: 1.1rem; font-weight: 600; margin: 1rem 0 0.5rem; color: var(--text);">${ui[currentLang].sqlArchTitle}</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                <div style="background: var(--surface-hover); padding: 1rem; border-radius: 0.5rem;">
+                    <strong style="color: var(--accent);">1. DDL (Data Definition)</strong><br>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;">${ui[currentLang].sqlDdl}</span>
+                </div>
+                <div style="background: var(--surface-hover); padding: 1rem; border-radius: 0.5rem;">
+                    <strong style="color: var(--accent-2);">2. DML (Data Manipulation)</strong><br>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;">${ui[currentLang].sqlDml}</span>
+                </div>
+                <div style="background: var(--surface-hover); padding: 1rem; border-radius: 0.5rem;">
+                    <strong style="color: var(--accent-3);">3. DCL (Data Control)</strong><br>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;">${ui[currentLang].sqlDcl}</span>
+                </div>
+                <div style="background: var(--surface-hover); padding: 1rem; border-radius: 0.5rem;">
+                    <strong style="color: #00e5b0;">4. TCL (Transaction Control)</strong><br>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;">${ui[currentLang].sqlTcl}</span>
+                </div>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.9rem;"><em>${ui[currentLang].sqlNote}</em></p>
+        </section>
+    `;
+
+    // Логіка відображення інформаційних блоків
+    if (activeCategory === 'all' && query === '') {
+        html += renderDBF();
+        html += renderSQL();
+    } else if (activeCategory === 'dbf_history') {
+        html += renderDBF();
+    } else if (activeCategory === 'sql_overview') {
+        html += renderSQL();
+    }
+
+    // Логіка відображення карток СУБД
+    if (activeCategory === 'all' || !['dbf_history', 'sql_overview'].includes(activeCategory)) {
+        const catsToShow = activeCategory === 'all' 
+            ? Object.keys(categories).filter(k => k !== 'dbf_history' && k !== 'sql_overview') 
+            : [activeCategory];
+            
+        let hasResults = false;
+
+        catsToShow.forEach(catKey => {
+            const catDB = dbList.filter(d => {
+                if (d.cat !== catKey) return false;
+                if (!query) return true;
+                return d.name.toLowerCase().includes(query) || d.desc[currentLang].toLowerCase().includes(query);
+            });
+
+            if (catDB.length === 0) return;
+            hasResults = true;
+
+            html += `<div class="section-title">${categories[catKey][currentLang]}</div>`;
+            html += `<div class="grid">`;
+            catDB.forEach(d => {
+                const licClass = getLicenseClass(d.license[currentLang]);
+                html += `
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">${d.icon}</div>
+                            <div>
+                                <div class="card-title">${d.name}</div>
+                            </div>
+                        </div>
+                        <div class="card-desc">${d.desc[currentLang]}</div>
+                        <div class="card-section">
+                            <strong>${ui[currentLang].features}</strong>
+                            ${d.features[currentLang]}
+                        </div>
+                        <div class="card-section">
+                            <strong>${ui[currentLang].license}</strong>
+                            <span class="${licClass}">${d.license[currentLang]}</span>
+                        </div>
+                        <div class="card-section">
+                            <strong>${ui[currentLang].query}</strong>
+                            <div class="query-tag">${d.query}</div>
+                        </div>
+                        <a href="${d.url}" target="_blank" class="card-link">${ui[currentLang].open}</a>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+        });
+
+        if (!hasResults && activeCategory !== 'dbf_history' && activeCategory !== 'sql_overview') {
+            html += `<div class="no-results">${ui[currentLang].noResults}</div>`;
+        }
+    }
+
+    main.innerHTML = html;
+    document.getElementById('footer').textContent = ui[currentLang].footer;
+}
+
+// Init
+setLang(currentLang);
+</script>
+</body>
+</html>
